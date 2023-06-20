@@ -3,9 +3,7 @@ package org.ssglobal.training.codes.controller;
 import java.util.List;
 
 import org.jooq.Row6;
-import org.jooq.tools.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,20 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.service.AdminUserService;
 import org.ssglobal.training.codes.tables.pojos.AdminUser;
 
-import lombok.extern.log4j.Log4j2;
-
 @RestController
 @RequestMapping(value = "/api/adminuser")
-@Log4j2
 public class AdminUserController {
 
 	@Autowired
 	private AdminUserService adminUserService;
-	
-	@Bean
-	public JSONObject jsonObject() {
-		return new JSONObject();
-	}
 
 	@GetMapping(value = "/get")
 	public ResponseEntity<List<AdminUser>> selectCartByUser() {
