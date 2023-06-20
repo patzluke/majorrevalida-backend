@@ -11,7 +11,8 @@ create table program (
     program_id serial primary key,
     program_code int default nextval('program_sequence') not null unique,
     program_title varchar(50),
-    major varchar(50)
+    major varchar(50),
+    foreign key(student_id) references student(student_id) on delete cascade
 ); 
 
 drop sequence if exists student_sequence;
