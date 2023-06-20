@@ -114,3 +114,5 @@ create table admin_user (
     last_name varchar(50),
     admin_type varchar(15)
 ); 
+
+insert into admin_user(username, password, first_name, last_name, admin_type) values('pastrero', '123456', 'patrick', 'astrero', 'Admin');
