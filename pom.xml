@@ -67,6 +67,54 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+			   <groupId>org.jooq</groupId>
+			   <artifactId>jooq-codegen-maven</artifactId>
+			   <executions>
+			      <execution>
+			         <id>generate-postgre</id>
+			         <phase>generate-sources</phase>
+			         <goals>
+			            <goal>generate</goal>
+			         </goals>
+			         <configuration>
+			            <!--Insert your DB configuration-->
+			            <jdbc>
+			               <driver>org.postgresql.Driver</driver>
+			               <url>jdbc:postgresql://localhost:5432/majorrevalida</url>
+			               <user>postgres</user>
+			               <password>admin2255</password>
+			            </jdbc>
+			            <generator>
+			               <database>
+			                  <name>
+			                     org.jooq.meta.postgres.PostgresDatabase
+			                  </name>
+			                  <includes>.*</includes>
+			                  <excludes></excludes>
+			                  <inputSchema>public</inputSchema>
+			               </database>
+			               <generate>
+			                  <pojos>true</pojos>
+			                  <pojosEqualsAndHashCode>
+			                     true
+			                  </pojosEqualsAndHashCode>
+			                  <javaTimeTypes>true</javaTimeTypes>
+			                  <fluentSetters>true</fluentSetters>
+			               </generate>
+			               <target>
+			                  <packageName>
+			                     org.ssglobal.training.codes
+			                  </packageName>
+			                  <directory>
+			                     target/generated-sources/annotations
+			                  </directory>
+			               </target>
+			            </generator>
+			         </configuration>
+			      </execution>
+			   </executions>
+			</plugin>
 		</plugins>
 	</build>
 
