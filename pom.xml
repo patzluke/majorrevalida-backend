@@ -14,7 +14,7 @@
 	<name>majorrevalida-backend</name>
 	<description>Angular backend revalida</description>
 	<properties>
-		<java.version>19</java.version>
+		<java.version>20</java.version>
 		<spring.version>5.2.24.RELEASE</spring.version>
 	</properties>
 	<dependencies>
