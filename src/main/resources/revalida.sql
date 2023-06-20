@@ -136,4 +136,7 @@ insert into admin_user(username, password, first_name, last_name, admin_type) va
 --insert into subject table
 insert into subject(subject_title, units, pre_requisites, active_deactive) values('Data Structures', 3, 'Math in the Modern World', 't');
 
+--insert into professor table
+insert into professor(professor_name, password, work, gender, status, birth_date, active_deactive) values('pastrero', '123456', 'data structure prof', 'male', 'employed', '2001-07-25', 't');
+
 

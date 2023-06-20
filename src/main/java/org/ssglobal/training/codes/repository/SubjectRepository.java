@@ -53,7 +53,7 @@ public class SubjectRepository {
 					  	 .valuesRow();
 	}
 	
-	public Row6<Integer, Integer, String, Integer, String, Boolean> deleteProgramById(Integer programId) {
+	public Row6<Integer, Integer, String, Integer, String, Boolean> deleteSubjectById(Integer programId) {
 		return dslContext.deleteFrom(SUBJECT)
 			  	 .where(SUBJECT.SUBJECT_ID.eq(programId))
 			  	 .returning()

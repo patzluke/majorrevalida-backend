@@ -71,7 +71,7 @@ public class SubjectController {
 	@DeleteMapping(value = "/delete/{subjectId}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Subject> deleteSubject(@PathVariable(name = "subjectId") Integer subjectId) {
 		try {
-			Row6<Integer, Integer, String, Integer, String, Boolean> deletedSubject = subjectService.deleteProgramById(subjectId);
+			Row6<Integer, Integer, String, Integer, String, Boolean> deletedSubject = subjectService.deleteSubjectById(subjectId);
 			if (deletedSubject != null) {
 				Subject newSubject = new Subject(Integer.parseInt(deletedSubject.field(0).getName()), Integer.parseInt(deletedSubject.field(1).getName()), 
 												 deletedSubject.field(2).getName(), Integer.parseInt(deletedSubject.field(3).getName()),

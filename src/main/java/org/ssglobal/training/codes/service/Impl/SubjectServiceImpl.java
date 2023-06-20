@@ -31,7 +31,7 @@ public class SubjectServiceImpl implements SubjectService {
 	}
 
 	@Override
-	public Row6<Integer, Integer, String, Integer, String, Boolean> deleteProgramById(Integer programId) {
-		return repository.deleteProgramById(programId);
+	public Row6<Integer, Integer, String, Integer, String, Boolean> deleteSubjectById(Integer programId) {
+		return repository.deleteSubjectById(programId);
 	}
 }
