@@ -3,11 +3,13 @@ create database majorrevalida;
 
 \c majorrevalida
 
+drop sequence if exists program_sequence;
+create sequence program_sequence as int increment by 1 start with 3001;
 
 drop table if exists program cascade;
 create table program (
     program_id serial primary key,
-    program_code int unique,
+    program_code int default nextval('program_sequence') not null unique,
     program_title varchar(50),
     major varchar(50)
 ); 
@@ -43,7 +45,7 @@ create table subject (
     subject_id serial primary key,
     subject_code int default nextval('subject_sequence') not null unique,
     subject_title varchar(50),
-    units varchar(70),
+    units int,
     pre_requisites varchar(70),
     active_deactive boolean
 ); 
@@ -115,4 +117,23 @@ create table admin_user (
     admin_type varchar(15)
 ); 
 
+drop table if exists parent cascade;
+create table parent (
+    parent_id serial primary key,
+    student_id int,
+    username varchar(50),
+    password varchar(100),
+    last_name varchar(50),
+    foreign key(student_id) references student(student_id) on delete cascade
+); 
+
+--insert into program table
+insert into program(program_title, major) values('BS IT', 'Application Development');
+
+--insert into admin_user table
 insert into admin_user(username, password, first_name, last_name, admin_type) values('pastrero', '123456', 'patrick', 'astrero', 'Admin');
+
+--insert into subject table
+insert into subject(subject_title, units, pre_requisites, active_deactive) values('Data Structures', 3, 'Math in the Modern World', 't');
+
+

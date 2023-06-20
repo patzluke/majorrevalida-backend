@@ -1,3 +1,4 @@
+
 package org.ssglobal.training.codes.controller;
 
 import java.util.List;
@@ -66,7 +67,7 @@ public class AdminUserController {
 	}
 	
 	@DeleteMapping(value = "/delete/{adminUserId}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<AdminUser> updateUser(@PathVariable(name = "adminUserId") Integer adminUserId) {
+	public ResponseEntity<AdminUser> deleteAdminUser(@PathVariable(name = "adminUserId") Integer adminUserId) {
 		try {
 			Row6<Integer, String, String, String, String, String> addedAdmin = adminUserService.deleteAdminUser(adminUserId);
 			if (addedAdmin != null) {
