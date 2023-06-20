@@ -45,7 +45,7 @@ create table subject (
     subject_id serial primary key,
     subject_code int default nextval('subject_sequence') not null unique,
     subject_title varchar(50),
-    units varchar(70),
+    units int,
     pre_requisites varchar(70),
     active_deactive boolean
 ); 
@@ -128,11 +128,12 @@ create table parent (
 ); 
 
 --insert into program table
-insert into program(program_title, major) values('BS IT', 'Application Development')
+insert into program(program_title, major) values('BS IT', 'Application Development');
 
 --insert into admin_user table
 insert into admin_user(username, password, first_name, last_name, admin_type) values('pastrero', '123456', 'patrick', 'astrero', 'Admin');
 
-
+--insert into subject table
+insert into subject(subject_title, units, pre_requisites, active_deactive) values('Data Structures', 3, 'Math in the Modern World', 't');
 
 
