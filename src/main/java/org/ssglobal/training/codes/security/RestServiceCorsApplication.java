@@ -19,39 +19,39 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @Configuration
 public class RestServiceCorsApplication {
 	
-	@Autowired
-	private MyJwtTokenValidator myJwtTokenValidator;
-	
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		return http
-			   .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			   .and()
-			   .cors().configurationSource(new CorsConfigurationSource() {	
-					@Override
-					public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-						CorsConfiguration config = new CorsConfiguration();
-						config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-						config.setAllowedMethods(Collections.singletonList("*"));
-						config.setAllowCredentials(true);
-						config.setAllowedHeaders(Collections.singletonList("*"));
-						config.setExposedHeaders(Arrays.asList("Authorization"));
-						config.setMaxAge(3600L);
-						return config;
-					}
-			   }).and()
-			   	.csrf()
-			   	.disable()
-			   	.addFilterBefore(myJwtTokenValidator, BasicAuthenticationFilter.class)
-			   	.authorizeHttpRequests()
-			   	.requestMatchers(new RequestMatcher() {
-					@Override
-					public boolean matches(HttpServletRequest request) {
-						return request.getRequestURI().matches("/*");
-					}
-			   	})
-				.permitAll()
-				.and()
-				.getOrBuild();
-	}
+//	@Autowired
+//	private MyJwtTokenValidator myJwtTokenValidator;
+//	
+//	@Bean
+//	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//		return http
+//			   .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//			   .and()
+//			   .cors().configurationSource(new CorsConfigurationSource() {	
+//					@Override
+//					public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+//						CorsConfiguration config = new CorsConfiguration();
+//						config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+//						config.setAllowedMethods(Collections.singletonList("*"));
+//						config.setAllowCredentials(true);
+//						config.setAllowedHeaders(Collections.singletonList("*"));
+//						config.setExposedHeaders(Arrays.asList("Authorization"));
+//						config.setMaxAge(3600L);
+//						return config;
+//					}
+//			   }).and()
+//			   	.csrf()
+//			   	.disable()
+//			   	.addFilterBefore(myJwtTokenValidator, BasicAuthenticationFilter.class)
+//			   	.authorizeRequests()
+//			   	.requestMatchers(new RequestMatcher() {
+//					@Override
+//					public boolean matches(HttpServletRequest request) {
+//						return request.getRequestURI().matches("/*");
+//					}
+//			   	})
+//				.permitAll()
+//				.and()
+//				.getOrBuild();
+//	}
 }
