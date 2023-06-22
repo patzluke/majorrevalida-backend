@@ -27,7 +27,7 @@ public class StudentCapabilitiesController {
 				return ResponseEntity.ok(updatedStudent);
 			}
 		} catch (Exception e) {
-			System.out.println("%s".formatted(e));
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.badRequest().build();
