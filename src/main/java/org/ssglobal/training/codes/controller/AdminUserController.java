@@ -1,6 +1,7 @@
 //
 //package org.ssglobal.training.codes.controller;
 //
+//import java.util.HashMap;
 //import java.util.List;
 //
 //import org.jooq.Row6;
@@ -50,7 +51,7 @@
 //	}
 //	
 //	@PutMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-//	public ResponseEntity<AdminUser> updateUser(@RequestBody AdminUser adminUser) {
+//	public ResponseEntity<AdminUser> updateUser(@RequestBody UserAndStudent adminUser) {
 //		try {
 //			Row6<Integer, String, String, String, String, String> addedAdmin = adminUserService.updateAdminUser(adminUser);
 //			if (addedAdmin != null) {
