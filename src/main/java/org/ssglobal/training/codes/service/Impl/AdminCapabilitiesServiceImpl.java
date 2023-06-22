@@ -1,5 +1,7 @@
 package org.ssglobal.training.codes.service.Impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.ssglobal.training.codes.model.UserAndAdmin;
@@ -25,5 +27,15 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public UserAndAdmin deleteAdminUser(Integer userAdminId) {
 		return repository.deleteAdminUser(userAdminId);
+	}
+
+	@Override
+	public List<UserAndAdmin> selectAllAdmin() {
+		return repository.selectAllAdmin();
+	}
+
+	@Override
+	public UserAndAdmin selectAdmin(Integer adminNo) {
+		return repository.selectAdmin(adminNo);
 	}
 }

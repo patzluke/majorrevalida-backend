@@ -1,10 +1,13 @@
 package org.ssglobal.training.codes.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,7 +30,6 @@ public class AdminCapabilitiesController {
 		try {
 			UserAndAdmin addedAdmin = service.insertAdminUser(userAndAdmin);
 			if (addedAdmin != null) {
-				System.out.println(addedAdmin + " heyyy");
 				return ResponseEntity.ok(addedAdmin);
 			}
 		} catch (Exception e) {
@@ -43,7 +45,6 @@ public class AdminCapabilitiesController {
 		try {
 			UserAndAdmin updatedAdmin = service.updateAdminUser(userAndAdmin);
 			if (updatedAdmin != null) {
-				System.out.println(updatedAdmin + " heyyy");
 				return ResponseEntity.ok(updatedAdmin);
 			}
 		} catch (Exception e) {
@@ -58,7 +59,35 @@ public class AdminCapabilitiesController {
 		try {
 			UserAndAdmin updatedAdmin = service.deleteAdminUser(userId);
 			if (updatedAdmin != null) {
-				System.out.println(updatedAdmin + " heyyy");
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@GetMapping(value = "/get", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<List<UserAndAdmin>> selectAllAdmin() {
+		try {
+			List<UserAndAdmin> updatedAdmin = service.selectAllAdmin();
+			System.out.println(updatedAdmin + " hey");
+			if (!updatedAdmin.isEmpty()) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@GetMapping(value = "/get/{adminNo}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<UserAndAdmin> selectAdmin(@PathVariable(name = "adminNo") Integer adminNo) {
+		try {
+			UserAndAdmin updatedAdmin = service.selectAdmin(adminNo);
+			if (updatedAdmin != null) {
 				return ResponseEntity.ok(updatedAdmin);
 			}
 		} catch (Exception e) {
