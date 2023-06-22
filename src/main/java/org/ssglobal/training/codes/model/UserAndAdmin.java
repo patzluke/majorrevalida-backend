@@ -2,6 +2,8 @@ package org.ssglobal.training.codes.model;
 
 import java.time.LocalDate;
 
+import org.jooq.Field;
+
 public class UserAndAdmin {
 
 	private Integer   userId;
@@ -10,6 +12,7 @@ public class UserAndAdmin {
     private String    firstName;
     private String    middleName;
     private String    lastName;
+    private String    userType;
     private LocalDate birthDate;
     private String    address;
     private String    civilStatus;
@@ -31,6 +34,7 @@ public class UserAndAdmin {
         this.firstName = value.firstName;
         this.middleName = value.middleName;
         this.lastName = value.lastName;
+        this.userType = value.userType;
         this.birthDate = value.birthDate;
         this.address = value.address;
         this.civilStatus = value.civilStatus;
@@ -51,6 +55,7 @@ public class UserAndAdmin {
         String    firstName,
         String    middleName,
         String    lastName,
+        String    userType,
         LocalDate birthDate,
         String    address,
         String    civilStatus,
@@ -58,6 +63,7 @@ public class UserAndAdmin {
         String    nationality,
         Boolean   activeDeactive,
         String    image,
+        
         Integer adminId,
         Integer adminNo
     ) {
@@ -67,6 +73,7 @@ public class UserAndAdmin {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
+        this.userType = userType;
         this.birthDate = birthDate;
         this.address = address;
         this.civilStatus = civilStatus;
@@ -78,7 +85,7 @@ public class UserAndAdmin {
         this.adminNo = adminNo;
     }
 
-    public Integer getUserId() {
+	public Integer getUserId() {
         return this.userId;
     }
 
@@ -132,7 +139,15 @@ public class UserAndAdmin {
         return this;
     }
 
-    public LocalDate getBirthDate() {
+    public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+
+	public LocalDate getBirthDate() {
         return this.birthDate;
     }
 
@@ -212,4 +227,13 @@ public class UserAndAdmin {
         this.adminNo = adminNo;
         return this;
     }
+
+	@Override
+	public String toString() {
+		return "UserAndAdmin [userId=" + userId + ", username=" + username + ", password=" + password + ", firstName="
+				+ firstName + ", middleName=" + middleName + ", lastName=" + lastName + ", userType=" + userType
+				+ ", birthDate=" + birthDate + ", address=" + address + ", civilStatus=" + civilStatus + ", gender="
+				+ gender + ", nationality=" + nationality + ", activeDeactive=" + activeDeactive + ", image=" + image
+				+ ", adminId=" + adminId + ", adminNo=" + adminNo + "]";
+	}
 }
