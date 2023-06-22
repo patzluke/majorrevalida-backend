@@ -20,8 +20,23 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Admin ADMIN = org.ssglobal.training.codes.tables.Admin.ADMIN;
 
 	
-	public List<UserAndAdmin> selectAllAdmin(UserAndAdmin userAdmin) {		  
-		return null;
+	public List<UserAndAdmin> selectAllAdmin() {		  
+		return dslContext.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.FIRST_NAME, 
+								 USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, 
+								 USERS.ADDRESS, USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, 
+								 USERS.ACTIVE_DEACTIVE, USERS.IMAGE, ADMIN.ADMIN_ID, ADMIN.ADMIN_NO)
+								 .from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID))
+								 .fetchInto(UserAndAdmin.class);								
+	}
+	
+	public UserAndAdmin selectAdmin(Integer adminNo) {		  
+		return dslContext.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.FIRST_NAME, 
+								 USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, 
+								 USERS.ADDRESS, USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, 
+								 USERS.ACTIVE_DEACTIVE, USERS.IMAGE, ADMIN.ADMIN_ID, ADMIN.ADMIN_NO)
+								 .from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID))
+								 .where(ADMIN.ADMIN_NO.eq(adminNo))
+								 .fetchOneInto(UserAndAdmin.class);								
 	}
 	
 	//------------------------FOR ADMIN

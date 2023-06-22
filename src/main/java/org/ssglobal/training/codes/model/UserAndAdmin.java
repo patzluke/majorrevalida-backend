@@ -2,8 +2,6 @@ package org.ssglobal.training.codes.model;
 
 import java.time.LocalDate;
 
-import org.jooq.Field;
-
 public class UserAndAdmin {
 
 	private Integer   userId;
