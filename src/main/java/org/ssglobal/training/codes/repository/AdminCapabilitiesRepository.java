@@ -48,12 +48,12 @@ public class AdminCapabilitiesRepository {
 																  .returning()
 																  .fetchOne()
 																  .valuesRow();
-		if (insertedUser != null && insertedAdmin != null) {
-			UserAndAdmin newUserAdmin = new UserAndAdmin(insertedUser.field1(), insertedUser.field2(), insertedUser.field3(), insertedUser.field4(), 
-														 insertedUser.field5(), insertedUser.field6(), insertedUser.field7(), insertedUser.field8(), 
-														 insertedUser.field9(), insertedUser.field10(), insertedUser.field11(), insertedUser.field13(), 
-														 insertedUser.field14(), insertedAdmin.field1(), insertedAdmin.field3());
-		}
+//		if (insertedUser != null && insertedAdmin != null) {
+//			UserAndAdmin newUserAdmin = new UserAndAdmin(insertedUser.field1(), insertedUser.field2(), insertedUser.field3(), insertedUser.field4(), 
+//														 insertedUser.field5(), insertedUser.field6(), insertedUser.field7(), insertedUser.field8(), 
+//														 insertedUser.field9(), insertedUser.field10(), insertedUser.field11(), insertedUser.field13(), 
+//														 insertedUser.field14(), insertedAdmin.field1(), insertedAdmin.field3());
+//		}
 		 return null;
 	}
 
