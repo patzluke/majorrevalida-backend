@@ -74,6 +74,16 @@ create table users (
     image varchar(50)
 ); 
 
+drop sequence if exists parent_sequence;
+create sequence parent_sequence as int increment by 1 start with 5001;
+
+drop table if exists parent cascade;
+create table parent(
+    parent_id serial primary key,
+    user_id int,
+    foreign key(user_id) references users(user_id) on delete cascade
+); 
+
 drop sequence if exists student_sequence;
 create sequence student_sequence as int increment by 1 start with 77001;
 
@@ -83,23 +93,14 @@ create table student (
     user_id int,
     student_no int default nextval('student_sequence') not null unique,
     curriculum_id int,
+    parent_id int,
     sem int,
     year_level int,
     academic_year_id int,
     foreign key(user_id) references users(user_id) on delete cascade,
+    foreign key(parent_id) references parent(parent_id) on delete cascade,
     foreign key(curriculum_id) references curriculum(curriculum_id) on delete cascade,
     foreign key(academic_year_id) references academic_year(academic_year_id) on delete cascade
-); 
-
-drop sequence if exists parent_sequence;
-create sequence parent_sequence as int increment by 1 start with 5001;
-
-drop table if exists parent cascade;
-create table parent (
-    parent_id serial primary key,
-    user_id int,
-    student_no int default nextval('parent_sequence') not null unique,
-    foreign key(user_id) references users(user_id) on delete cascade
 ); 
 
 drop sequence if exists admin_sequence;

@@ -1,7 +1,6 @@
 package org.ssglobal.training.codes.repository;
 
 import java.util.List;
-
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -14,29 +13,40 @@ import org.ssglobal.training.codes.tables.pojos.Users;
 @Repository
 public class AdminCapabilitiesRepository {
 
+
 	@Autowired
 	private DSLContext dslContext;
 
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 	private final org.ssglobal.training.codes.tables.Admin ADMIN = org.ssglobal.training.codes.tables.Admin.ADMIN;
 
-	// Use for student function
-	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
-
-	// ------------------------FOR ADMIN
+	
+	//------------------------FOR ADMIN
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) {
-		Users insertedUser = dslContext.insertInto(USERS).set(USERS.USERNAME, userAdmin.getUsername())
-				.set(USERS.PASSWORD, userAdmin.getPassword()).set(USERS.FIRST_NAME, userAdmin.getFirstName())
-				.set(USERS.MIDDLE_NAME, userAdmin.getMiddleName()).set(USERS.LAST_NAME, userAdmin.getLastName())
-				.set(USERS.USER_TYPE, userAdmin.getUserType()).set(USERS.BIRTH_DATE, userAdmin.getBirthDate())
-				.set(USERS.ADDRESS, userAdmin.getAddress()).set(USERS.CIVIL_STATUS, userAdmin.getCivilStatus())
-				.set(USERS.GENDER, userAdmin.getGender()).set(USERS.NATIONALITY, userAdmin.getNationality())
-				.set(USERS.ACTIVE_DEACTIVE, userAdmin.getActiveDeactive()).set(USERS.IMAGE, userAdmin.getImage())
-				.returning().fetchOne().into(Users.class);
-
-		Admin insertedAdmin = dslContext.insertInto(ADMIN).set(ADMIN.USER_ID, insertedUser.getUserId()).returning()
-				.fetchOne().into(Admin.class);
-
+		Users insertedUser =  dslContext.insertInto(USERS)
+									    .set(USERS.USERNAME, userAdmin.getUsername())
+										.set(USERS.PASSWORD, userAdmin.getPassword())
+										.set(USERS.FIRST_NAME, userAdmin.getFirstName())
+										.set(USERS.MIDDLE_NAME, userAdmin.getMiddleName())
+										.set(USERS.LAST_NAME, userAdmin.getLastName())
+										.set(USERS.USER_TYPE, userAdmin.getUserType())
+										.set(USERS.BIRTH_DATE, userAdmin.getBirthDate())
+										.set(USERS.ADDRESS, userAdmin.getAddress())
+										.set(USERS.CIVIL_STATUS, userAdmin.getCivilStatus())
+										.set(USERS.GENDER, userAdmin.getGender())
+										.set(USERS.NATIONALITY, userAdmin.getNationality())
+										.set(USERS.ACTIVE_DEACTIVE, userAdmin.getActiveDeactive())
+										.set(USERS.IMAGE, userAdmin.getImage())
+										.returning()
+										.fetchOne()
+										.into(Users.class);
+		
+		 Admin insertedAdmin = dslContext.insertInto(ADMIN)
+										.set(ADMIN.USER_ID, insertedUser.getUserId())
+										.returning()
+										.fetchOne()
+										.into(Admin.class);
+																  
 		if (insertedUser != null && insertedAdmin != null) {
 			UserAndAdmin newUserAdmin = new UserAndAdmin(insertedUser.getUserId(), insertedUser.getUsername(),
 					insertedUser.getPassword(), insertedUser.getFirstName(), insertedUser.getMiddleName(),
