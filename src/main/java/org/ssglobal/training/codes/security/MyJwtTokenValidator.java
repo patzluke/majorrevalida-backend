@@ -25,7 +25,7 @@ public class MyJwtTokenValidator extends OncePerRequestFilter {
 			throws ServletException, IOException {
 //		String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 //		String token = authorizationHeader.substring("Bearer".length()).trim();
-		response.sendError(HttpStatus.FORBIDDEN.value(), "not available");
+//		response.sendError(HttpStatus.FORBIDDEN.value(), "not available");
 //		if ((authorizationHeader == null 
 //			 || !authorizationHeader.startsWith("Bearer")
 //			) && !validateToken(token)) {

@@ -64,7 +64,7 @@ create table users (
     first_name varchar(70),
     middle_name varchar(70),
     last_name varchar(70),
-    user_type varchar(70),
+    user_type varchar(30),
     birth_date date,
     address text,
     civil_status varchar(20),
