@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.UserAndAdmin;
+import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.AdminCapabilitiesService;
 
 @RestController
@@ -31,7 +32,7 @@ public class AdminCapabilitiesController {
 				return ResponseEntity.ok(addedAdmin);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("%s".formatted(e));
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.badRequest().build();
@@ -47,7 +48,7 @@ public class AdminCapabilitiesController {
 				return ResponseEntity.ok(updatedAdmin);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("%s".formatted(e));
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.badRequest().build();
@@ -62,7 +63,22 @@ public class AdminCapabilitiesController {
 				return ResponseEntity.ok(updatedAdmin);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	// -------- For Student 
+	@PostMapping(value = "/insert/student", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<UserAndStudent> insertStudent(@RequestBody UserAndStudent student) {
+		try {
+			UserAndStudent addedStudent = service.insertStudent(student);
+			if (addedStudent != null) {
+				return ResponseEntity.ok(addedStudent);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.badRequest().build();
