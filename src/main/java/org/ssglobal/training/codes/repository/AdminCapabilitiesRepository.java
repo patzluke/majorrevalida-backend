@@ -1,5 +1,7 @@
 package org.ssglobal.training.codes.repository;
 
+import java.util.List;
+
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -17,6 +19,10 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 	private final org.ssglobal.training.codes.tables.Admin ADMIN = org.ssglobal.training.codes.tables.Admin.ADMIN;
 
+	
+	public List<UserAndAdmin> selectAllAdmin(UserAndAdmin userAdmin) {		  
+		return null;
+	}
 	
 	//------------------------FOR ADMIN
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) {
@@ -43,6 +49,8 @@ public class AdminCapabilitiesRepository {
 										.returning()
 										.fetchOne()
 										.into(Admin.class);
+		 
+		 
 																  
 		if (insertedUser != null && insertedAdmin != null) {
 			UserAndAdmin newUserAdmin = new UserAndAdmin(insertedUser.getUserId(), insertedUser.getUsername(), insertedUser.getPassword(), 
