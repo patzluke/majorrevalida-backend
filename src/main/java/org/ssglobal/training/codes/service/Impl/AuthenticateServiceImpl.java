@@ -6,10 +6,9 @@ import org.ssglobal.training.codes.repository.AuthenticateRepository;
 import org.ssglobal.training.codes.service.AuthenticateService;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
-
 @Service
 public class AuthenticateServiceImpl implements AuthenticateService {
-	
+
 	@Autowired
 	private AuthenticateRepository repository;
 

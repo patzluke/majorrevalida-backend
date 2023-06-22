@@ -12,7 +12,9 @@ public interface AdminCapabilitiesService {
 	UserAndAdmin updateAdminUser(UserAndAdmin userAdmin);
 
 	UserAndAdmin deleteAdminUser(Integer userAdminId);
+
 	List<UserAndAdmin> selectAllAdmin();
+
 	UserAndAdmin selectAdmin(Integer adminNo);
 
 	UserAndStudent insertStudent(UserAndStudent student);

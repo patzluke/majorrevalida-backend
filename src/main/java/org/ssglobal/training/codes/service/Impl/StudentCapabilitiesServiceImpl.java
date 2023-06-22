@@ -7,14 +7,14 @@ import org.ssglobal.training.codes.repository.StudentCapabilitiesRepository;
 import org.ssglobal.training.codes.service.StudentCapabilitiesService;
 
 @Service
-public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesService{
+public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesService {
 
 	@Autowired
-	private StudentCapabilitiesRepository repository;	
-	
+	private StudentCapabilitiesRepository repository;
+
 	@Override
 	public UserAndStudent updateStudent(UserAndStudent student, Integer studentId) {
 		return repository.updateStudent(student, studentId);
 	}
-	
+
 }
