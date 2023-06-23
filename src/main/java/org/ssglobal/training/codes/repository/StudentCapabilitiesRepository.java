@@ -4,6 +4,7 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndStudent;
+import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
@@ -15,6 +16,7 @@ public class StudentCapabilitiesRepository {
 
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
+	private final org.ssglobal.training.codes.tables.Grades GRADES = org.ssglobal.training.codes.tables.Grades.GRADES;
 
 	public UserAndStudent viewStudentProfile(Integer studentNo) {
 
@@ -38,10 +40,10 @@ public class StudentCapabilitiesRepository {
 		return information;
 	}
 
-	public UserAndStudent updateStudent(UserAndStudent student, Integer studentId) {
+	public UserAndStudent updateStudentProfile(UserAndStudent student, Integer studentId) {
 		/*
 		 * This will add the User's data limited to: username, password, email,
-		 * contactNo first_name, middle_name, last_name, birth_date, address,
+		 * contactNo, first_name, middle_name, last_name, birth_date, address,
 		 * civil_status, gender, nationality, active_deactive, and image
 		 */
 		Users updatedUser = dslContext.insertInto(USERS).set(USERS.USERNAME, student.getUsername())
@@ -74,6 +76,15 @@ public class StudentCapabilitiesRepository {
 				updatedStudent.getAcademicYearId());
 
 		return information;
+	}
+
+	public Grades viewStudentGrade(Integer studentId) {
+		// Get the grade where the studentId equal to the Grade's table student_no 
+		Grades studentGrade = dslContext.selectFrom(GRADES).where(GRADES.STUDENT_NO.eq(studentId))
+				.fetchOneInto(Grades.class);
+
+		return studentGrade;
+
 	}
 
 }
