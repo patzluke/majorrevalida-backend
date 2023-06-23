@@ -16,6 +16,24 @@ public class StudentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 
+	public UserAndStudent viewStudentProfile(Integer userId) {
+		// Get the student's data via users table
+		Users userData = dslContext.selectFrom(USERS).where(USERS.USER_ID.eq(userId)).fetchOneInto(Users.class);
+
+		// Get the student's data via student table
+		Student studentData = dslContext.selectFrom(STUDENT).where(STUDENT.USER_ID.eq(userId))
+				.fetchOneInto(Student.class);
+
+		// Return all the information of the updated student
+		UserAndStudent info = new UserAndStudent(studentData.getSem(), studentData.getYearLevel(),
+				userData.getUsername(), userData.getPassword(), userData.getFirstName(), userData.getMiddleName(),
+				userData.getLastName(), userData.getUserType(), userData.getBirthDate(), userData.getAddress(),
+				userData.getCivilStatus(), userData.getGender(), userData.getNationality(),
+				userData.getActiveDeactive(), userData.getImage());
+
+		return info;
+	}
+
 	public UserAndStudent updateStudent(UserAndStudent student, Integer studentId) {
 		/*
 		 * This will add the User's data limited to: username, password, first_name,
@@ -33,19 +51,20 @@ public class StudentCapabilitiesRepository {
 
 		/*
 		 * This will add the Student's data limited to: user_id, sem, year_level
+		 * NOTE: NEED TO ADD curriculum_id and academic_year_id 
 		 */
 		Student insertStudent = dslContext.update(STUDENT).set(STUDENT.USER_ID, insertUser.getUserId())
 				.set(STUDENT.SEM, student.getSem()).set(STUDENT.YEAR_LEVEL, student.getYear_level())
 				.where(STUDENT.USER_ID.eq(studentId)).returning().fetchOne().into(Student.class);
 
 		// Return all the information of the updated student
-		UserAndStudent value = new UserAndStudent(insertStudent.getSem(), insertStudent.getYearLevel(),
+		UserAndStudent info = new UserAndStudent(insertStudent.getSem(), insertStudent.getYearLevel(),
 				insertUser.getUsername(), insertUser.getPassword(), insertUser.getFirstName(),
 				insertUser.getMiddleName(), insertUser.getLastName(), insertUser.getUserType(),
 				insertUser.getBirthDate(), insertUser.getAddress(), insertUser.getCivilStatus(), insertUser.getGender(),
 				insertUser.getNationality(), insertUser.getActiveDeactive(), insertUser.getImage());
 
-		return value;
+		return info;
 	}
 
 }

@@ -13,6 +13,11 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	private StudentCapabilitiesRepository repository;
 
 	@Override
+	public UserAndStudent viewStudentProfile(Integer studentId) {
+		return repository.viewStudentProfile(studentId);
+	}
+
+	@Override
 	public UserAndStudent updateStudent(UserAndStudent student, Integer studentId) {
 		return repository.updateStudent(student, studentId);
 	}
