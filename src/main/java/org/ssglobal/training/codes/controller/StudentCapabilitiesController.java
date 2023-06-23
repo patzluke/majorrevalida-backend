@@ -40,26 +40,6 @@ public class StudentCapabilitiesController {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserAndStudent> updateStudent(@RequestBody UserAndStudent student,
 			@PathVariable("studentId") Integer studentId) {
-
-	@GetMapping(value = "/view/{studentId}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
-			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<UserAndStudent> viewStudentProfile(@PathVariable("studentId") Integer studentId) {
-		try {
-			UserAndStudent studentProfile = service.viewStudentProfile(studentId);
-			if (studentProfile != null) {
-				return ResponseEntity.ok(studentProfile);
-			}
-		} catch (Exception e) {
-			System.out.println("%s".formatted(e));
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.badRequest().build();
-	}
-
-	@PutMapping(value = "/update/{studentId}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
-			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<UserAndStudent> updateStudent(@RequestBody UserAndStudent student,
-			@PathVariable("studentId") Integer studentId) {
 		try {
 			UserAndStudent updatedStudent = service.updateStudent(student, studentId);
 			if (updatedStudent != null) {

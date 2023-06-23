@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.service.AuthenticateService;
-import org.ssglobal.training.codes.tables.pojos.Users;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -27,7 +26,7 @@ public class AuthenticateController {
 	public ResponseEntity<List<Object>> authenticate(@RequestBody Map<String, String> payload) {
 		String username = payload.get("username");
 		String password = payload.get("password");
-		Users authenticatedUser = service.searchUserByUsernameAndPassword(username, password);
+		Object authenticatedUser = service.searchUserByUsernameAndPassword(username, password);
 		if (authenticatedUser != null) {
 			List<Object> usertoken = new ArrayList<>();
 //			String token = userService
