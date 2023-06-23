@@ -40,7 +40,10 @@ public class StudentCapabilitiesRepository {
 				studentData.getStudentNo(), studentData.getCurriculumCode(),
 				studentData.getParentNo(), studentData.getSem(), studentData.getYearLevel(),
 				studentData.getAcademicYearId());
+				
 		return information;
+		}
+		return null;
 	}
 
 	public UserAndStudent updateStudentProfile(UserAndStudent student, Integer studentId) {
@@ -80,15 +83,6 @@ public class StudentCapabilitiesRepository {
 			return information;
 		}
 		return null;
-	}
-
-	public Grades viewStudentGrade(Integer studentId) {
-		// Get the grade where the studentId equal to the Grade's table student_no 
-		Grades studentGrade = dslContext.selectFrom(GRADES).where(GRADES.STUDENT_NO.eq(studentId))
-				.fetchOneInto(Grades.class);
-
-		return studentGrade;
-
 	}
 
 	public Grades viewStudentGrade(Integer studentId) {
