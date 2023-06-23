@@ -3,6 +3,25 @@ create database majorrevalida;
 
 \c majorrevalida
 
+drop table if exists student_applicant cascade;
+create table student_applicant (
+    student_applicant_id serial primary key,
+    email varchar(50),
+    contact_no varchar(50),
+    first_name varchar(70),
+    middle_name varchar(70),
+    last_name varchar(70),
+    birth_date date,
+    address text,
+    civil_status varchar(20),
+    gender varchar(15),
+    nationality varchar(30),
+    date_applied timestamp,
+    date_accepted timestamp,
+    status varchar(30),
+    student_type varhcar(30)
+); 
+
 drop sequence if exists program_sequence;
 create sequence program_sequence as int increment by 1 start with 1001;
 
@@ -61,6 +80,8 @@ create table users (
 	user_id serial primary key,
     username varchar(50),
     password varchar(50),
+ 	email varchar(50),
+    contact_no varchar(50),
     first_name varchar(70),
     middle_name varchar(70),
     last_name varchar(70),
@@ -135,7 +156,7 @@ create table subject (
     subject_id serial primary key,
     subject_code int default nextval('subject_sequence') not null unique,
     subject_title varchar(50),
-    units int,
+    units float,
     pre_requisites varchar(70),
     active_deactive boolean
 );
