@@ -4,20 +4,22 @@ import java.time.LocalDate;
 
 public class UserAndParent {
 	
-	private Integer   userId;
-    private String    username;
-    private String    password;
-    private String    firstName;
-    private String    middleName;
-    private String    lastName;
-    private String    userType;
-    private LocalDate birthDate;
-    private String    address;
-    private String    civilStatus;
-    private String    gender;
-    private String    nationality;
-    private Boolean   activeDeactive;
-    private String    image;
+	private Integer userId;
+	private String username;
+	private String password;
+	private String email;
+    private String contactNo;
+	private String firstName;
+	private String middleName;
+	private String lastName;
+	private String userType;
+	private LocalDate birthDate;
+	private String address;
+	private String civilStatus;
+	private String gender;
+	private String nationality;
+	private Boolean activeDeactive;
+	private String image;
     
     private Integer parentId;
     
@@ -46,19 +48,21 @@ public class UserAndParent {
 	
 	public UserAndParent (UserAndParent value) {
 		this.userId = value.userId;
-        this.username = value.username;
-        this.password = value.password;
-        this.firstName = value.firstName;
-        this.middleName = value.middleName;
-        this.lastName = value.lastName;
-        this.userType = value.userType;
-        this.birthDate = value.birthDate;
-        this.address = value.address;
-        this.civilStatus = value.civilStatus;
-        this.gender = value.gender;
-        this.nationality = value.nationality;
-        this.activeDeactive = value.activeDeactive;
-        this.image = value.image;
+		this.username = value.username;
+		this.password = value.password;
+		this.email = value.email;
+        this.contactNo = value.contactNo;
+		this.firstName = value.firstName;
+		this.middleName = value.middleName;
+		this.lastName = value.lastName;
+		this.userType = value.userType;
+		this.birthDate = value.birthDate;
+		this.address = value.address;
+		this.civilStatus = value.civilStatus;
+		this.gender = value.gender;
+		this.nationality = value.nationality;
+		this.activeDeactive = value.activeDeactive;
+		this.image = value.image;
         
         this.parentId = value.parentId;
 	}
@@ -85,6 +89,22 @@ public class UserAndParent {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getContactNo() {
+		return contactNo;
+	}
+
+	public void setContactNo(String contactNo) {
+		this.contactNo = contactNo;
 	}
 
 	public String getFirstName() {

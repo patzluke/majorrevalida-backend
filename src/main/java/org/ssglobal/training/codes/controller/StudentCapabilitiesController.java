@@ -17,6 +17,7 @@ import org.ssglobal.training.codes.service.StudentCapabilitiesService;
 @RequestMapping(value = "/api/student")
 public class StudentCapabilitiesController {
 
+
 	@Autowired
 	private StudentCapabilitiesService service;
 
@@ -49,5 +50,5 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-
-}
+	
+}	
