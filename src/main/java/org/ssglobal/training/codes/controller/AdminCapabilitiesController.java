@@ -22,6 +22,7 @@ import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
+import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 
 @RestController
 @RequestMapping(value = "/api/admin")
