@@ -27,46 +27,53 @@ public class StudentCapabilitiesRepository {
 				.fetchOneInto(Users.class);
 
 		// Return all the information of the updated student
-		UserAndStudent info = new UserAndStudent(studentData.getSem(), studentData.getYearLevel(),
-				userData.getUsername(), userData.getPassword(), userData.getFirstName(), userData.getMiddleName(),
+		UserAndStudent information = new UserAndStudent(userData.getUsername(), userData.getPassword(),
+				userData.getEmail(), userData.getContactNo(), userData.getFirstName(), userData.getMiddleName(),
 				userData.getLastName(), userData.getUserType(), userData.getBirthDate(), userData.getAddress(),
 				userData.getCivilStatus(), userData.getGender(), userData.getNationality(),
-				userData.getActiveDeactive(), userData.getImage());
+				userData.getActiveDeactive(), userData.getImage(), studentData.getUserId(),
+				studentData.getCurriculumCode(), studentData.getParentNo(), studentData.getSem(),
+				studentData.getYearLevel(), studentData.getAcademicYearId());
 
-		return info;
+		return information;
 	}
 
 	public UserAndStudent updateStudent(UserAndStudent student, Integer studentId) {
 		/*
-		 * This will add the User's data limited to: username, password, first_name,
-		 * middle_name, last_name, birth_date, address, civil_status, gender,
-		 * nationality, active_deactive, image
+		 * This will add the User's data limited to: username, password, email,
+		 * contactNo first_name, middle_name, last_name, birth_date, address,
+		 * civil_status, gender, nationality, active_deactive, and image
 		 */
-		Users insertUser = dslContext.update(USERS).set(USERS.USERNAME, student.getUsername())
-				.set(USERS.PASSWORD, student.getPassword()).set(USERS.FIRST_NAME, student.getFirst_name())
-				.set(USERS.MIDDLE_NAME, student.getMiddle_name()).set(USERS.LAST_NAME, student.getLast_name())
-				.set(USERS.USER_TYPE, student.getUser_type()).set(USERS.BIRTH_DATE, student.getBirth_date())
-				.set(USERS.ADDRESS, student.getAddress()).set(USERS.CIVIL_STATUS, student.getCivil_status())
+		Users updatedUser = dslContext.insertInto(USERS).set(USERS.USERNAME, student.getUsername())
+				.set(USERS.PASSWORD, student.getPassword()).set(USERS.EMAIL, student.getEmail())
+				.set(USERS.CONTACT_NO, student.getContactNo()).set(USERS.FIRST_NAME, student.getFirstName())
+				.set(USERS.MIDDLE_NAME, student.getMiddleName()).set(USERS.LAST_NAME, student.getLastName())
+				.set(USERS.USER_TYPE, student.getUserType()).set(USERS.BIRTH_DATE, student.getBirthDate())
+				.set(USERS.ADDRESS, student.getAddress()).set(USERS.CIVIL_STATUS, student.getCivilStatus())
 				.set(USERS.GENDER, student.getGender()).set(USERS.NATIONALITY, student.getNationality())
-				.set(USERS.ACTIVE_DEACTIVE, student.getActive_deactive()).set(USERS.IMAGE, student.getImage())
-				.where(USERS.USER_ID.eq(studentId)).returning().fetchOne().into(Users.class);
+				.set(USERS.ACTIVE_DEACTIVE, student.getActiveDeactive()).set(USERS.IMAGE, student.getImage())
+				.returning().fetchOne().into(Users.class);
 
 		/*
-		 * This will add the Student's data limited to: user_id, sem, year_level NOTE:
-		 * NEED TO ADD curriculum_id and academic_year_id
+		 * This will add the Student's data limited to: user_id, curriculumCode,
+		 * parentNo, sem, yearLevel, academicYearId
 		 */
-		Student insertStudent = dslContext.update(STUDENT).set(STUDENT.USER_ID, insertUser.getUserId())
-				.set(STUDENT.SEM, student.getSem()).set(STUDENT.YEAR_LEVEL, student.getYear_level())
-				.where(STUDENT.USER_ID.eq(studentId)).returning().fetchOne().into(Student.class);
+		Student updatedStudent = dslContext.insertInto(STUDENT).set(STUDENT.USER_ID, updatedUser.getUserId())
+				.set(STUDENT.CURRICULUM_CODE, student.getCurriculumCode()).set(STUDENT.PARENT_NO, student.getParentNo())
+				.set(STUDENT.SEM, student.getSem()).set(STUDENT.YEAR_LEVEL, student.getYearLevel())
+				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId()).returning().fetchOne().into(Student.class);
 
 		// Return all the information of the updated student
-		UserAndStudent info = new UserAndStudent(insertStudent.getSem(), insertStudent.getYearLevel(),
-				insertUser.getUsername(), insertUser.getPassword(), insertUser.getFirstName(),
-				insertUser.getMiddleName(), insertUser.getLastName(), insertUser.getUserType(),
-				insertUser.getBirthDate(), insertUser.getAddress(), insertUser.getCivilStatus(), insertUser.getGender(),
-				insertUser.getNationality(), insertUser.getActiveDeactive(), insertUser.getImage());
+		UserAndStudent information = new UserAndStudent(updatedUser.getUsername(), updatedUser.getPassword(),
+				updatedUser.getEmail(), updatedUser.getContactNo(), updatedUser.getFirstName(),
+				updatedUser.getMiddleName(), updatedUser.getLastName(), updatedUser.getUserType(),
+				updatedUser.getBirthDate(), updatedUser.getAddress(), updatedUser.getCivilStatus(),
+				updatedUser.getGender(), updatedUser.getNationality(), updatedUser.getActiveDeactive(),
+				updatedUser.getImage(), updatedStudent.getUserId(), updatedStudent.getCurriculumCode(),
+				updatedStudent.getParentNo(), updatedStudent.getSem(), updatedStudent.getYearLevel(),
+				updatedStudent.getAcademicYearId());
 
-		return info;
+		return information;
 	}
 
 }

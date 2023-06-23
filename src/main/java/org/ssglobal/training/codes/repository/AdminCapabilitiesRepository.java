@@ -9,6 +9,9 @@ import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Admin;
+import org.ssglobal.training.codes.tables.pojos.Course;
+import org.ssglobal.training.codes.tables.pojos.Curriculum;
+import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
@@ -130,35 +133,40 @@ public class AdminCapabilitiesRepository {
 
 	public UserAndStudent insertStudent(UserAndStudent student) {
 		/*
-		 * This will add the User's data limited to: username, password, first_name,
-		 * middle_name, last_name, birth_date, address, civil_status, gender,
-		 * nationality, active_deactive, and image
+		 * This will add the User's data limited to: username, password, email,
+		 * contactNo first_name, middle_name, last_name, birth_date, address,
+		 * civil_status, gender, nationality, active_deactive, and image
 		 */
 		Users insertUser = dslContext.insertInto(USERS).set(USERS.USERNAME, student.getUsername())
-				.set(USERS.PASSWORD, student.getPassword()).set(USERS.FIRST_NAME, student.getFirst_name())
-				.set(USERS.MIDDLE_NAME, student.getMiddle_name()).set(USERS.LAST_NAME, student.getLast_name())
-				.set(USERS.USER_TYPE, student.getUser_type()).set(USERS.BIRTH_DATE, student.getBirth_date())
-				.set(USERS.ADDRESS, student.getAddress()).set(USERS.CIVIL_STATUS, student.getCivil_status())
+				.set(USERS.PASSWORD, student.getPassword()).set(USERS.EMAIL, student.getEmail())
+				.set(USERS.CONTACT_NO, student.getContactNo()).set(USERS.FIRST_NAME, student.getFirstName())
+				.set(USERS.MIDDLE_NAME, student.getMiddleName()).set(USERS.LAST_NAME, student.getLastName())
+				.set(USERS.USER_TYPE, student.getUserType()).set(USERS.BIRTH_DATE, student.getBirthDate())
+				.set(USERS.ADDRESS, student.getAddress()).set(USERS.CIVIL_STATUS, student.getCivilStatus())
 				.set(USERS.GENDER, student.getGender()).set(USERS.NATIONALITY, student.getNationality())
-				.set(USERS.ACTIVE_DEACTIVE, student.getActive_deactive()).set(USERS.IMAGE, student.getImage())
+				.set(USERS.ACTIVE_DEACTIVE, student.getActiveDeactive()).set(USERS.IMAGE, student.getImage())
 				.returning().fetchOne().into(Users.class);
 
 		/*
-		 * This will add the Student's data limited to: user_id, sem, and year_level
-		 * NOTE: NEED TO ADD curriculum_id and academic_year_id
+		 * This will add the Student's data limited to: user_id, curriculumCode,
+		 * parentNo, sem, yearLevel, academicYearId
 		 */
+
 		Student insertStudent = dslContext.insertInto(STUDENT).set(STUDENT.USER_ID, insertUser.getUserId())
-				.set(STUDENT.SEM, student.getSem()).set(STUDENT.YEAR_LEVEL, student.getYear_level()).returning()
-				.fetchOne().into(Student.class);
+				.set(STUDENT.CURRICULUM_CODE, student.getCurriculumCode()).set(STUDENT.PARENT_NO, student.getParentNo())
+				.set(STUDENT.SEM, student.getSem()).set(STUDENT.YEAR_LEVEL, student.getYearLevel())
+				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId()).returning().fetchOne().into(Student.class);
 
 		// Return all the information of the student
-		UserAndStudent value = new UserAndStudent(insertStudent.getSem(), insertStudent.getYearLevel(),
-				insertUser.getUsername(), insertUser.getPassword(), insertUser.getFirstName(),
-				insertUser.getMiddleName(), insertUser.getLastName(), insertUser.getUserType(),
-				insertUser.getBirthDate(), insertUser.getAddress(), insertUser.getCivilStatus(), insertUser.getGender(),
-				insertUser.getNationality(), insertUser.getActiveDeactive(), insertUser.getImage());
+		UserAndStudent information = new UserAndStudent(insertUser.getUsername(), insertUser.getPassword(),
+				insertUser.getEmail(), insertUser.getContactNo(), insertUser.getFirstName(), insertUser.getMiddleName(),
+				insertUser.getLastName(), insertUser.getUserType(), insertUser.getBirthDate(), insertUser.getAddress(),
+				insertUser.getCivilStatus(), insertUser.getGender(), insertUser.getNationality(),
+				insertUser.getActiveDeactive(), insertUser.getImage(), insertStudent.getUserId(),
+				insertStudent.getCurriculumCode(), insertStudent.getParentNo(), insertStudent.getSem(),
+				insertStudent.getYearLevel(), insertStudent.getAcademicYearId());
 
-		return value;
+		return information;
 	}
 
 	// ------------------------FOR Applicants
@@ -167,7 +175,7 @@ public class AdminCapabilitiesRepository {
 		List<StudentApplicant> students = dslContext.selectFrom(STUDENT_APPLICANT).fetchInto(StudentApplicant.class);
 		return students;
 	}
-	
+
 	public StudentApplicant updateStudentApplicantStats(StudentApplicant studentApplicant) {
 		/*
 		 * This will add the User's data limited to: username, password, first_name,
@@ -175,24 +183,22 @@ public class AdminCapabilitiesRepository {
 		 * nationality, active_deactive, image
 		 */
 		StudentApplicant applicant = dslContext.update(STUDENT_APPLICANT)
-									.set(STUDENT_APPLICANT.EMAIL, studentApplicant.getEmail())
-									.set(STUDENT_APPLICANT.CONTACT_NO, studentApplicant.getContactNo())
-									.set(STUDENT_APPLICANT.FIRST_NAME, studentApplicant.getFirstName())
-									.set(STUDENT_APPLICANT.MIDDLE_NAME, studentApplicant.getMiddleName())
-									.set(STUDENT_APPLICANT.LAST_NAME, studentApplicant.getLastName())
-									.set(STUDENT_APPLICANT.BIRTH_DATE, studentApplicant.getBirthDate())
-									.set(STUDENT_APPLICANT.ADDRESS, studentApplicant.getAddress())
-									.set(STUDENT_APPLICANT.CIVIL_STATUS, studentApplicant.getCivilStatus())
-									.set(STUDENT_APPLICANT.GENDER, studentApplicant.getGender())
-									.set(STUDENT_APPLICANT.NATIONALITY, studentApplicant.getNationality())
-									.set(STUDENT_APPLICANT.DATE_APPLIED, studentApplicant.getDateApplied())
-									.set(STUDENT_APPLICANT.DATE_ACCEPTED, studentApplicant.getDateAccepted())
-									.set(STUDENT_APPLICANT.STATUS, studentApplicant.getStatus())
-									.set(STUDENT_APPLICANT.STUDENT_TYPE, studentApplicant.getStudentType())
-									.where(STUDENT_APPLICANT.STUDENT_APPLICANT_ID.eq(studentApplicant.getStudentApplicantId()))
-									.returning()
-									.fetchOne()
-									.into(StudentApplicant.class);
+				.set(STUDENT_APPLICANT.EMAIL, studentApplicant.getEmail())
+				.set(STUDENT_APPLICANT.CONTACT_NO, studentApplicant.getContactNo())
+				.set(STUDENT_APPLICANT.FIRST_NAME, studentApplicant.getFirstName())
+				.set(STUDENT_APPLICANT.MIDDLE_NAME, studentApplicant.getMiddleName())
+				.set(STUDENT_APPLICANT.LAST_NAME, studentApplicant.getLastName())
+				.set(STUDENT_APPLICANT.BIRTH_DATE, studentApplicant.getBirthDate())
+				.set(STUDENT_APPLICANT.ADDRESS, studentApplicant.getAddress())
+				.set(STUDENT_APPLICANT.CIVIL_STATUS, studentApplicant.getCivilStatus())
+				.set(STUDENT_APPLICANT.GENDER, studentApplicant.getGender())
+				.set(STUDENT_APPLICANT.NATIONALITY, studentApplicant.getNationality())
+				.set(STUDENT_APPLICANT.DATE_APPLIED, studentApplicant.getDateApplied())
+				.set(STUDENT_APPLICANT.DATE_ACCEPTED, studentApplicant.getDateAccepted())
+				.set(STUDENT_APPLICANT.STATUS, studentApplicant.getStatus())
+				.set(STUDENT_APPLICANT.STUDENT_TYPE, studentApplicant.getStudentType())
+				.where(STUDENT_APPLICANT.STUDENT_APPLICANT_ID.eq(studentApplicant.getStudentApplicantId())).returning()
+				.fetchOne().into(StudentApplicant.class);
 		return applicant;
 	}
 
@@ -210,16 +216,48 @@ public class AdminCapabilitiesRepository {
 	// -------------------------- FOR PROGRAM
 	public Program addProgram(Program program) {
 		/*
-		 * The program data added is limited to: program_code and program_title
+		 * The program data added is limited to: program_title
 		 */
-		Program addedProgram = dslContext.insertInto(PROGRAM).set(PROGRAM.PROGRAM_CODE, program.getProgramCode())
-				.set(PROGRAM.PROGRAM_TITLE, program.getProgramTitle()).returning().fetchOne().into(Program.class);
+		Program addedProgram = dslContext.insertInto(PROGRAM).set(PROGRAM.PROGRAM_TITLE, program.getProgramTitle())
+				.returning().fetchOne().into(Program.class);
 
 		return addedProgram;
 	}
 
 	// -------------------------- FOR COURSE
+	public Course addCourse(Course course) {
+		/*
+		 * The program data added is limited to: program_code and course_title
+		 */
+		Course addedCourse = dslContext.insertInto(COURSE).set(COURSE.PROGRAM_CODE, course.getProgramCode())
+				.set(COURSE.COURSE_TITLE, course.getCourseTitle()).returning().fetchOne().into(Course.class);
+
+		return addedCourse;
+	}
+
 	// -------------------------- FOR MAJOR
+	public Major addMajor(Major major) {
+		/*
+		 * The program data added is limited to: course_code and major_title
+		 */
+		Major addedMajor = dslContext.insertInto(MAJOR).set(MAJOR.COURSE_CODE, major.getCourseCode())
+				.set(MAJOR.MAJOR_TITLE, major.getMajorTitle()).returning().fetchOne().into(Major.class);
+
+		return addedMajor;
+	}
+
 	// -------------------------- FOR CURRICULUM
+	public Curriculum addCurriculum(Curriculum curriculum) {
+		/*
+		 * The program data added is limited to: major_code and curriculum_name
+		 */
+		Curriculum addedCurriculum = dslContext.insertInto(CURRICULUM)
+				.set(CURRICULUM.MAJOR_CODE, curriculum.getMajorCode())
+				.set(CURRICULUM.CURRICULUM_NAME, curriculum.getCurriculumName()).returning().fetchOne()
+				.into(Curriculum.class);
+
+		return addedCurriculum;
+
+	}
 
 }
