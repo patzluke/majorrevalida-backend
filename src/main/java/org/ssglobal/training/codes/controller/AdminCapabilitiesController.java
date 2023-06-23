@@ -121,6 +121,19 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
+	@GetMapping(value = "/get/studentapplicant")
+	public ResponseEntity<List<StudentApplicant>> selectAllStudentApplicants() {
+		try {
+			List<StudentApplicant> studentProfile = service.selectAllStudentApplicants();
+			if (studentProfile != null) {
+				return ResponseEntity.ok(studentProfile);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
 	// -------- For Academic Year
 	@PostMapping(value = "/insert/academic-year", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })

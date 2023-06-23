@@ -49,29 +49,4 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public UserAndAdmin selectAdmin(Integer adminNo) {
 		return repository.selectAdmin(adminNo);
 	}
-
-	@Override
-	public AcademicYear addAcademicYear(AcademicYear academicYear) {
-		return repository.addAcademicYear(academicYear);
-	}
-
-	@Override
-	public Program addProgram(Program program) {
-		return repository.addProgram(program);
-	}
-
-	@Override
-	public Course addCourse(Course course) {
-		return repository.addCourse(course);
-	}
-
-	@Override
-	public Major addMajor(Major major) {
-		return repository.addMajor(major);
-	}
-
-	@Override
-	public Curriculum addCurriculum(Curriculum curriculum) {
-		return repository.addCurriculum(curriculum);
-	}
 }

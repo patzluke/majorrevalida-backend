@@ -6,7 +6,7 @@ create database majorrevalida;
 drop table if exists student_applicant cascade;
 create table student_applicant (
     student_applicant_id serial primary key,
-    email varchar(50),
+    email varchar(50) unique,
     contact_no varchar(50),
     first_name varchar(70),
     middle_name varchar(70),
@@ -80,7 +80,7 @@ create table users (
 	user_id serial primary key,
     username varchar(50),
     password varchar(50),
- 	email varchar(50),
+ 	email varchar(50) unique,
     contact_no varchar(50),
     first_name varchar(70),
     middle_name varchar(70),
