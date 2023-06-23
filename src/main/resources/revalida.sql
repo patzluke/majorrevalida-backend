@@ -155,6 +155,8 @@ create table grades (
     grade_id serial primary key,
     student_id int,
     subject_detail_his_id int,
+    prelim float,
+    finals float,
     grade float,
     comment text,
     date_inserted timestamp,

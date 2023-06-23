@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.tables.pojos.Grades;
+import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
 @Repository
@@ -61,6 +62,11 @@ public class ParentCapabilitiesRepository {
 	}
 	
 	//---------------------------------------FOR STUDENTS
+	
+	public List<Student> selectAllChildren(Integer parentId) {
+		
+		return null;
+	}
 	
 	public List<Grades> selectAllGrades(Integer studentId) {
 //		return dslContext.select(GRADES.GRADE_ID)
