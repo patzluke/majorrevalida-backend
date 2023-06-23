@@ -1,6 +1,7 @@
 package org.ssglobal.training.codes.repository;
 
 import java.util.List;
+
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -8,6 +9,7 @@ import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Admin;
+import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.Users;
@@ -21,12 +23,13 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 	private final org.ssglobal.training.codes.tables.Admin ADMIN = org.ssglobal.training.codes.tables.Admin.ADMIN;
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
+	private final org.ssglobal.training.codes.tables.StudentApplicant STUDENT_APPLICANT = org.ssglobal.training.codes.tables.StudentApplicant.STUDENT_APPLICANT;
 	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
 	private final org.ssglobal.training.codes.tables.Program PROGRAM = org.ssglobal.training.codes.tables.Program.PROGRAM;
 	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
-	
+
 	// ------------------------FOR ADMIN
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) {
 		Users insertedUser = dslContext.insertInto(USERS).set(USERS.USERNAME, userAdmin.getUsername())
@@ -157,14 +160,14 @@ public class AdminCapabilitiesRepository {
 
 		return value;
 	}
-	
+
 	// ------------------------FOR Applicants
-	
+
 	public List<StudentApplicant> selectAllStudentApplicants() {
 		List<StudentApplicant> students = dslContext.selectFrom(STUDENT_APPLICANT).fetchInto(StudentApplicant.class);
 		return students;
 	}
-	
+
 	public StudentApplicant updateStudentApplicantStats(StudentApplicant studentApplicant) {
 		/*
 		 * This will add the User's data limited to: username, password, first_name,
@@ -172,24 +175,22 @@ public class AdminCapabilitiesRepository {
 		 * nationality, active_deactive, image
 		 */
 		StudentApplicant applicant = dslContext.update(STUDENT_APPLICANT)
-									.set(STUDENT_APPLICANT.EMAIL, studentApplicant.getEmail())
-									.set(STUDENT_APPLICANT.CONTACT_NO, studentApplicant.getContactNo())
-									.set(STUDENT_APPLICANT.FIRST_NAME, studentApplicant.getFirstName())
-									.set(STUDENT_APPLICANT.MIDDLE_NAME, studentApplicant.getMiddleName())
-									.set(STUDENT_APPLICANT.LAST_NAME, studentApplicant.getLastName())
-									.set(STUDENT_APPLICANT.BIRTH_DATE, studentApplicant.getBirthDate())
-									.set(STUDENT_APPLICANT.ADDRESS, studentApplicant.getAddress())
-									.set(STUDENT_APPLICANT.CIVIL_STATUS, studentApplicant.getCivilStatus())
-									.set(STUDENT_APPLICANT.GENDER, studentApplicant.getGender())
-									.set(STUDENT_APPLICANT.NATIONALITY, studentApplicant.getNationality())
-									.set(STUDENT_APPLICANT.DATE_APPLIED, studentApplicant.getDateApplied())
-									.set(STUDENT_APPLICANT.DATE_ACCEPTED, studentApplicant.getDateAccepted())
-									.set(STUDENT_APPLICANT.STATUS, studentApplicant.getStatus())
-									.set(STUDENT_APPLICANT.STUDENT_TYPE, studentApplicant.getStudentType())
-									.where(STUDENT_APPLICANT.STUDENT_APPLICANT_ID.eq(studentApplicant.getStudentApplicantId()))
-									.returning()
-									.fetchOne()
-									.into(StudentApplicant.class);
+				.set(STUDENT_APPLICANT.EMAIL, studentApplicant.getEmail())
+				.set(STUDENT_APPLICANT.CONTACT_NO, studentApplicant.getContactNo())
+				.set(STUDENT_APPLICANT.FIRST_NAME, studentApplicant.getFirstName())
+				.set(STUDENT_APPLICANT.MIDDLE_NAME, studentApplicant.getMiddleName())
+				.set(STUDENT_APPLICANT.LAST_NAME, studentApplicant.getLastName())
+				.set(STUDENT_APPLICANT.BIRTH_DATE, studentApplicant.getBirthDate())
+				.set(STUDENT_APPLICANT.ADDRESS, studentApplicant.getAddress())
+				.set(STUDENT_APPLICANT.CIVIL_STATUS, studentApplicant.getCivilStatus())
+				.set(STUDENT_APPLICANT.GENDER, studentApplicant.getGender())
+				.set(STUDENT_APPLICANT.NATIONALITY, studentApplicant.getNationality())
+				.set(STUDENT_APPLICANT.DATE_APPLIED, studentApplicant.getDateApplied())
+				.set(STUDENT_APPLICANT.DATE_ACCEPTED, studentApplicant.getDateAccepted())
+				.set(STUDENT_APPLICANT.STATUS, studentApplicant.getStatus())
+				.set(STUDENT_APPLICANT.STUDENT_TYPE, studentApplicant.getStudentType())
+				.where(STUDENT_APPLICANT.STUDENT_APPLICANT_ID.eq(studentApplicant.getStudentApplicantId())).returning()
+				.fetchOne().into(StudentApplicant.class);
 		return applicant;
 	}
 
@@ -203,11 +204,20 @@ public class AdminCapabilitiesRepository {
 				.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus()).returning().fetchOne().into(AcademicYear.class);
 		return addedAcademicYear;
 	}
-	
-	// -------------------------- FOR PROGRAM 
-	// -------------------------- FOR COURSE 
-	// -------------------------- FOR MAJOR 
-	// -------------------------- FOR CURRICULUM 
-	
+
+	// -------------------------- FOR PROGRAM
+	public Program addProgram(Program program) {
+		/*
+		 * The program data added is limited to: program_code and program_title
+		 */
+		Program addedProgram = dslContext.insertInto(PROGRAM).set(PROGRAM.PROGRAM_CODE, program.getProgramCode())
+				.set(PROGRAM.PROGRAM_TITLE, program.getProgramTitle()).returning().fetchOne().into(Program.class);
+
+		return addedProgram;
+	}
+
+	// -------------------------- FOR COURSE
+	// -------------------------- FOR MAJOR
+	// -------------------------- FOR CURRICULUM
 
 }
