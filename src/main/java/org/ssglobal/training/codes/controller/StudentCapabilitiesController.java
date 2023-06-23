@@ -21,8 +21,7 @@ public class StudentCapabilitiesController {
 	@Autowired
 	private StudentCapabilitiesService service;
 
-	@GetMapping(value = "/view/{studentId}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
-			MediaType.APPLICATION_JSON_VALUE })
+	@GetMapping(value = "/view/{studentId}")
 	public ResponseEntity<UserAndStudent> viewStudentProfile(@PathVariable("studentId") Integer studentId) {
 		try {
 			UserAndStudent studentProfile = service.viewStudentProfile(studentId);

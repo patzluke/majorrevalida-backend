@@ -16,13 +16,15 @@ public class StudentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 
-	public UserAndStudent viewStudentProfile(Integer userId) {
-		// Get the student's data via users table
-		Users userData = dslContext.selectFrom(USERS).where(USERS.USER_ID.eq(userId)).fetchOneInto(Users.class);
+	public UserAndStudent viewStudentProfile(Integer studentNo) {
 
 		// Get the student's data via student table
-		Student studentData = dslContext.selectFrom(STUDENT).where(STUDENT.USER_ID.eq(userId))
+		Student studentData = dslContext.selectFrom(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo))
 				.fetchOneInto(Student.class);
+
+		// Get the student's data via users table
+		Users userData = dslContext.selectFrom(USERS).where(USERS.USER_ID.eq(studentData.getStudentId()))
+				.fetchOneInto(Users.class);
 
 		// Return all the information of the updated student
 		UserAndStudent info = new UserAndStudent(studentData.getSem(), studentData.getYearLevel(),
@@ -50,8 +52,8 @@ public class StudentCapabilitiesRepository {
 				.where(USERS.USER_ID.eq(studentId)).returning().fetchOne().into(Users.class);
 
 		/*
-		 * This will add the Student's data limited to: user_id, sem, year_level
-		 * NOTE: NEED TO ADD curriculum_id and academic_year_id 
+		 * This will add the Student's data limited to: user_id, sem, year_level NOTE:
+		 * NEED TO ADD curriculum_id and academic_year_id
 		 */
 		Student insertStudent = dslContext.update(STUDENT).set(STUDENT.USER_ID, insertUser.getUserId())
 				.set(STUDENT.SEM, student.getSem()).set(STUDENT.YEAR_LEVEL, student.getYear_level())

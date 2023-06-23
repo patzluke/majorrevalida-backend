@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndStudent;
+import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Admin;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
@@ -20,8 +21,12 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 	private final org.ssglobal.training.codes.tables.Admin ADMIN = org.ssglobal.training.codes.tables.Admin.ADMIN;
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
-	private final org.ssglobal.training.codes.tables.StudentApplicant STUDENT_APPLICANT = org.ssglobal.training.codes.tables.StudentApplicant.STUDENT_APPLICANT;
-
+	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
+	private final org.ssglobal.training.codes.tables.Program PROGRAM = org.ssglobal.training.codes.tables.Program.PROGRAM;
+	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
+	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
+	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
+	
 	// ------------------------FOR ADMIN
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) {
 		Users insertedUser = dslContext.insertInto(USERS).set(USERS.USERNAME, userAdmin.getUsername())
@@ -174,4 +179,22 @@ public class AdminCapabilitiesRepository {
 									.into(StudentApplicant.class);
 		return applicant;
 	}
+
+	// -------------------------- FOR ACADEMIC YEAR
+	public AcademicYear addAcademicYear(AcademicYear academicYear) {
+		/*
+		 * The academic data added is limited to: academic_year and status
+		 */
+		AcademicYear addedAcademicYear = dslContext.insertInto(ACADEMIC_YEAR)
+				.set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
+				.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus()).returning().fetchOne().into(AcademicYear.class);
+		return addedAcademicYear;
+	}
+	
+	// -------------------------- FOR PROGRAM 
+	// -------------------------- FOR COURSE 
+	// -------------------------- FOR MAJOR 
+	// -------------------------- FOR CURRICULUM 
+	
+
 }
