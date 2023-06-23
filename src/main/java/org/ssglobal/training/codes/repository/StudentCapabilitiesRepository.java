@@ -28,15 +28,18 @@ public class StudentCapabilitiesRepository {
 		Users userData = dslContext.selectFrom(USERS).where(USERS.USER_ID.eq(studentData.getStudentId()))
 				.fetchOneInto(Users.class);
 
+		if (studentData != null && userData != null) {
+		
 		// Return all the information of the updated student
-		UserAndStudent information = new UserAndStudent(userData.getUsername(), userData.getPassword(),
-				userData.getEmail(), userData.getContactNo(), userData.getFirstName(), userData.getMiddleName(),
-				userData.getLastName(), userData.getUserType(), userData.getBirthDate(), userData.getAddress(),
+		UserAndStudent information = new UserAndStudent(userData.getUserId(), userData.getUsername(),
+				userData.getPassword(), userData.getEmail(), userData.getContactNo(),
+				userData.getFirstName(), userData.getMiddleName(), userData.getLastName(),
+				userData.getUserType(), userData.getBirthDate(), userData.getAddress(),
 				userData.getCivilStatus(), userData.getGender(), userData.getNationality(),
-				userData.getActiveDeactive(), userData.getImage(), studentData.getUserId(),
-				studentData.getCurriculumCode(), studentData.getParentNo(), studentData.getSem(),
-				studentData.getYearLevel(), studentData.getAcademicYearId());
-
+				userData.getActiveDeactive(), userData.getImage(), studentData.getStudentId(),
+				studentData.getStudentNo(), studentData.getCurriculumCode(),
+				studentData.getParentNo(), studentData.getSem(), studentData.getYearLevel(),
+				studentData.getAcademicYearId());
 		return information;
 	}
 
@@ -56,26 +59,36 @@ public class StudentCapabilitiesRepository {
 				.set(USERS.ACTIVE_DEACTIVE, student.getActiveDeactive()).set(USERS.IMAGE, student.getImage())
 				.returning().fetchOne().into(Users.class);
 
-		/*
-		 * This will add the Student's data limited to: user_id, curriculumCode,
-		 * parentNo, sem, yearLevel, academicYearId
-		 */
-		Student updatedStudent = dslContext.insertInto(STUDENT).set(STUDENT.USER_ID, updatedUser.getUserId())
-				.set(STUDENT.CURRICULUM_CODE, student.getCurriculumCode()).set(STUDENT.PARENT_NO, student.getParentNo())
+		Student updatedStudent = dslContext.update(STUDENT)
+				.set(STUDENT.CURRICULUM_CODE, student.getCurriculumCode())
+				.set(STUDENT.PARENT_NO, student.getParentNo())
 				.set(STUDENT.SEM, student.getSem()).set(STUDENT.YEAR_LEVEL, student.getYearLevel())
-				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId()).returning().fetchOne().into(Student.class);
+				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId())
+				.returning().fetchOne().into(Student.class);
 
-		// Return all the information of the updated student
-		UserAndStudent information = new UserAndStudent(updatedUser.getUsername(), updatedUser.getPassword(),
-				updatedUser.getEmail(), updatedUser.getContactNo(), updatedUser.getFirstName(),
-				updatedUser.getMiddleName(), updatedUser.getLastName(), updatedUser.getUserType(),
-				updatedUser.getBirthDate(), updatedUser.getAddress(), updatedUser.getCivilStatus(),
-				updatedUser.getGender(), updatedUser.getNationality(), updatedUser.getActiveDeactive(),
-				updatedUser.getImage(), updatedStudent.getUserId(), updatedStudent.getCurriculumCode(),
-				updatedStudent.getParentNo(), updatedStudent.getSem(), updatedStudent.getYearLevel(),
-				updatedStudent.getAcademicYearId());
+		if (updatedUser != null && updatedStudent != null) {
+			
+			UserAndStudent information = new UserAndStudent(updatedUser.getUserId(), updatedUser.getUsername(),
+					updatedUser.getPassword(), updatedUser.getEmail(), updatedUser.getContactNo(),
+					updatedUser.getFirstName(), updatedUser.getMiddleName(), updatedUser.getLastName(),
+					updatedUser.getUserType(), updatedUser.getBirthDate(), updatedUser.getAddress(),
+					updatedUser.getCivilStatus(), updatedUser.getGender(), updatedUser.getNationality(),
+					updatedUser.getActiveDeactive(), updatedUser.getImage(),
+					updatedStudent.getStudentId(), updatedStudent.getStudentNo(),
+					updatedStudent.getCurriculumCode(), updatedStudent.getParentNo(), 
+					updatedStudent.getSem(),updatedStudent.getYearLevel(), updatedStudent.getAcademicYearId());
+			return information;
+		}
+		return null;
+	}
 
-		return information;
+	public Grades viewStudentGrade(Integer studentId) {
+		// Get the grade where the studentId equal to the Grade's table student_no 
+		Grades studentGrade = dslContext.selectFrom(GRADES).where(GRADES.STUDENT_NO.eq(studentId))
+				.fetchOneInto(Grades.class);
+
+		return studentGrade;
+
 	}
 
 	public Grades viewStudentGrade(Integer studentId) {

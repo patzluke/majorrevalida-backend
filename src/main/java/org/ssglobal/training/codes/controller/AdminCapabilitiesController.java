@@ -3,6 +3,7 @@ package org.ssglobal.training.codes.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.UserAndAdmin;
+import org.ssglobal.training.codes.model.UserAndProfessor;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.AdminCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
@@ -32,52 +34,6 @@ public class AdminCapabilitiesController {
 	private AdminCapabilitiesService service;
 
 	// -------- For Admin
-	@PostMapping(value = "/insert/admin", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
-			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<UserAndAdmin> createUser(@RequestBody UserAndAdmin userAndAdmin) {
-		System.out.println(userAndAdmin);
-		try {
-			UserAndAdmin addedAdmin = service.insertAdminUser(userAndAdmin);
-			if (addedAdmin != null) {
-				return ResponseEntity.ok(addedAdmin);
-			}
-		} catch (Exception e) {
-			System.out.println("%s".formatted(e));
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.badRequest().build();
-	}
-
-	@PutMapping(value = "/update/admin", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
-			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<UserAndAdmin> updateAdminUser(@RequestBody UserAndAdmin userAndAdmin) {
-		System.out.println(userAndAdmin);
-		try {
-			UserAndAdmin updatedAdmin = service.updateAdminUser(userAndAdmin);
-			if (updatedAdmin != null) {
-				return ResponseEntity.ok(updatedAdmin);
-			}
-		} catch (Exception e) {
-			System.out.println("%s".formatted(e));
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.badRequest().build();
-	}
-
-	@DeleteMapping(value = "/delete/admin/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<UserAndAdmin> deleteAdminUser(@PathVariable(name = "userId") Integer userId) {
-		try {
-			UserAndAdmin updatedAdmin = service.deleteAdminUser(userId);
-			if (updatedAdmin != null) {
-				return ResponseEntity.ok(updatedAdmin);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.badRequest().build();
-	}
-
 	@GetMapping(value = "/get/admin", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<UserAndAdmin>> selectAllAdmin() {
 		try {
@@ -101,6 +57,58 @@ public class AdminCapabilitiesController {
 			}
 		} catch (Exception e) {
 			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PostMapping(value = "/insert/admin", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity createUser(@RequestBody UserAndAdmin userAndAdmin) {
+		UserAndAdmin addedAdmin;
+		try {
+			addedAdmin = service.insertAdminUser(userAndAdmin);
+			if (addedAdmin != null) {
+				return ResponseEntity.ok(addedAdmin);
+			}
+		} catch (DuplicateKeyException e1) {
+			return ResponseEntity.badRequest().body(e1.getMessage());
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			return ResponseEntity.badRequest().body("something went wrong");
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update/admin", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity updateAdminUser(@RequestBody UserAndAdmin userAndAdmin) {
+		UserAndAdmin updatedAdmin;
+		try {
+			updatedAdmin = service.insertAdminUser(userAndAdmin);
+			if (updatedAdmin != null) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (DuplicateKeyException e1) {
+			return ResponseEntity.badRequest().body(e1.getMessage());
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			return ResponseEntity.badRequest().body("something went wrong");
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+
+	@DeleteMapping(value = "/delete/admin/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<UserAndAdmin> deleteAdminUser(@PathVariable(name = "userId") Integer userId) {
+		try {
+			UserAndAdmin updatedAdmin = service.deactivateAdminUser(userId);
+			if (updatedAdmin != null) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.badRequest().build();
@@ -135,6 +143,50 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+	
+	// -------- For Professor
+	@GetMapping(value = "/get/professor/{professorNo}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<UserAndProfessor> selectProfessor(@PathVariable(name = "professorNo") Integer professorNo) {
+		try {
+			UserAndProfessor selectedProfessor = service.selectProfessor(professorNo);
+			if (selectedProfessor != null) {
+				return ResponseEntity.ok(selectedProfessor);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@PostMapping(value = "/insert/professor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<UserAndProfessor> insertProfessor(@RequestBody UserAndProfessor userAndProfessor) {
+		try {
+			UserAndProfessor addedProfessor = service.insertProfessor(userAndProfessor);
+			if (addedProfessor != null) {
+				return ResponseEntity.ok(addedProfessor);
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+
+	
+	@PutMapping(value = "/update/professor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<UserAndProfessor> updateProfessor(@RequestBody UserAndProfessor userAndProfessor) {
+		try {
+			UserAndProfessor updatedProfessor = service.updateProfessor(userAndProfessor);
+			if (updatedProfessor != null) {
+				return ResponseEntity.ok(updatedProfessor);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
 	// -------- For Academic Year
 	@PostMapping(value = "/insert/academic-year", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
