@@ -7,6 +7,8 @@ public class UserAndAdmin {
 	private Integer userId;
 	private String username;
 	private String password;
+	private String email;
+    private String contactNo;
 	private String firstName;
 	private String middleName;
 	private String lastName;
@@ -30,6 +32,8 @@ public class UserAndAdmin {
 		this.userId = value.userId;
 		this.username = value.username;
 		this.password = value.password;
+		this.email = value.email;
+        this.contactNo = value.contactNo;
 		this.firstName = value.firstName;
 		this.middleName = value.middleName;
 		this.lastName = value.lastName;
@@ -47,15 +51,17 @@ public class UserAndAdmin {
 		this.adminNo = value.adminNo;
 	}
 
-	public UserAndAdmin(Integer userId, String username, String password, String firstName, String middleName,
-			String lastName, String userType, LocalDate birthDate, String address, String civilStatus, String gender,
-			String nationality, Boolean activeDeactive, String image,
+	public UserAndAdmin(Integer userId, String username, String password, String email, String contactNo,
+			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
+			String civilStatus, String gender, String nationality, Boolean activeDeactive, String image,
 
 			Integer adminId, Integer adminNo) {
 		this.userId = userId;
 		this.username = username;
 		this.password = password;
 		this.firstName = firstName;
+		this.email = email;
+		this.contactNo = contactNo;
 		this.middleName = middleName;
 		this.lastName = lastName;
 		this.userType = userType;
@@ -95,6 +101,22 @@ public class UserAndAdmin {
 	public UserAndAdmin setPassword(String password) {
 		this.password = password;
 		return this;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getContactNo() {
+		return contactNo;
+	}
+
+	public void setContactNo(String contactNo) {
+		this.contactNo = contactNo;
 	}
 
 	public String getFirstName() {

@@ -8,6 +8,7 @@ import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.Admin;
 import org.ssglobal.training.codes.tables.pojos.Student;
+import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
 @Repository
@@ -19,11 +20,13 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 	private final org.ssglobal.training.codes.tables.Admin ADMIN = org.ssglobal.training.codes.tables.Admin.ADMIN;
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
+	private final org.ssglobal.training.codes.tables.StudentApplicant STUDENT_APPLICANT = org.ssglobal.training.codes.tables.StudentApplicant.STUDENT_APPLICANT;
 
 	// ------------------------FOR ADMIN
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) {
 		Users insertedUser = dslContext.insertInto(USERS).set(USERS.USERNAME, userAdmin.getUsername())
-				.set(USERS.PASSWORD, userAdmin.getPassword()).set(USERS.FIRST_NAME, userAdmin.getFirstName())
+				.set(USERS.PASSWORD, userAdmin.getPassword()).set(USERS.EMAIL, userAdmin.getEmail())
+				.set(USERS.CONTACT_NO, userAdmin.getContactNo()).set(USERS.FIRST_NAME, userAdmin.getFirstName())
 				.set(USERS.MIDDLE_NAME, userAdmin.getMiddleName()).set(USERS.LAST_NAME, userAdmin.getLastName())
 				.set(USERS.USER_TYPE, userAdmin.getUserType()).set(USERS.BIRTH_DATE, userAdmin.getBirthDate())
 				.set(USERS.ADDRESS, userAdmin.getAddress()).set(USERS.CIVIL_STATUS, userAdmin.getCivilStatus())
@@ -36,14 +39,14 @@ public class AdminCapabilitiesRepository {
 
 		if (insertedUser != null && insertedAdmin != null) {
 			UserAndAdmin newUserAdmin = new UserAndAdmin(insertedUser.getUserId(), insertedUser.getUsername(),
-					insertedUser.getPassword(), insertedUser.getFirstName(), insertedUser.getMiddleName(),
-					insertedUser.getLastName(), insertedUser.getUserType(), insertedUser.getBirthDate(),
-					insertedUser.getAddress(), insertedUser.getCivilStatus(), insertedUser.getGender(),
-					insertedUser.getNationality(), insertedUser.getActiveDeactive(), insertedUser.getImage(),
-					insertedAdmin.getAdminId(), insertedAdmin.getAdminNo());
+					insertedUser.getPassword(), insertedUser.getEmail(), insertedUser.getContactNo(),
+					insertedUser.getFirstName(), insertedUser.getMiddleName(), insertedUser.getLastName(),
+					insertedUser.getUserType(), insertedUser.getBirthDate(), insertedUser.getAddress(),
+					insertedUser.getCivilStatus(), insertedUser.getGender(), insertedUser.getNationality(),
+					insertedUser.getActiveDeactive(), insertedUser.getImage(), insertedAdmin.getAdminId(),
+					insertedAdmin.getAdminNo());
 			return newUserAdmin;
 		}
-
 		return null;
 	}
 
@@ -59,11 +62,12 @@ public class AdminCapabilitiesRepository {
 
 		if (updatedUser != null) {
 			UserAndAdmin newUserAdmin = new UserAndAdmin(updatedUser.getUserId(), updatedUser.getUsername(),
-					updatedUser.getPassword(), updatedUser.getFirstName(), updatedUser.getMiddleName(),
-					updatedUser.getLastName(), updatedUser.getUserType(), updatedUser.getBirthDate(),
-					updatedUser.getAddress(), updatedUser.getCivilStatus(), updatedUser.getGender(),
-					updatedUser.getNationality(), updatedUser.getActiveDeactive(), updatedUser.getImage(),
-					userAdmin.getAdminId(), userAdmin.getAdminNo());
+					updatedUser.getPassword(), updatedUser.getEmail(), updatedUser.getContactNo(),
+					updatedUser.getFirstName(), updatedUser.getMiddleName(), updatedUser.getLastName(),
+					updatedUser.getUserType(), updatedUser.getBirthDate(), updatedUser.getAddress(),
+					updatedUser.getCivilStatus(), updatedUser.getGender(), updatedUser.getNationality(),
+					updatedUser.getActiveDeactive(), updatedUser.getImage(), userAdmin.getAdminId(),
+					userAdmin.getAdminNo());
 			return newUserAdmin;
 		}
 
@@ -79,11 +83,12 @@ public class AdminCapabilitiesRepository {
 
 		if (deletedUser != null && deletedAdmin != null) {
 			UserAndAdmin newUserAdmin = new UserAndAdmin(deletedUser.getUserId(), deletedUser.getUsername(),
-					deletedUser.getPassword(), deletedUser.getFirstName(), deletedUser.getMiddleName(),
-					deletedUser.getLastName(), deletedUser.getUserType(), deletedUser.getBirthDate(),
-					deletedUser.getAddress(), deletedUser.getCivilStatus(), deletedUser.getGender(),
-					deletedUser.getNationality(), deletedUser.getActiveDeactive(), deletedUser.getImage(),
-					deletedAdmin.getAdminId(), deletedAdmin.getAdminNo());
+					deletedUser.getPassword(), deletedUser.getEmail(), deletedUser.getContactNo(),
+					deletedUser.getFirstName(), deletedUser.getMiddleName(), deletedUser.getLastName(),
+					deletedUser.getUserType(), deletedUser.getBirthDate(), deletedUser.getAddress(),
+					deletedUser.getCivilStatus(), deletedUser.getGender(), deletedUser.getNationality(),
+					deletedUser.getActiveDeactive(), deletedUser.getImage(), deletedAdmin.getAdminId(),
+					deletedAdmin.getAdminNo());
 			return newUserAdmin;
 		}
 
@@ -132,7 +137,7 @@ public class AdminCapabilitiesRepository {
 
 		/*
 		 * This will add the Student's data limited to: user_id, sem, and year_level
-		 * NOTE: NEED TO ADD curriculum_id and academic_year_id 
+		 * NOTE: NEED TO ADD curriculum_id and academic_year_id
 		 */
 		Student insertStudent = dslContext.insertInto(STUDENT).set(STUDENT.USER_ID, insertUser.getUserId())
 				.set(STUDENT.SEM, student.getSem()).set(STUDENT.YEAR_LEVEL, student.getYear_level()).returning()
@@ -146,5 +151,40 @@ public class AdminCapabilitiesRepository {
 				insertUser.getNationality(), insertUser.getActiveDeactive(), insertUser.getImage());
 
 		return value;
+	}
+	
+	// ------------------------FOR Applicants
+	
+	public List<StudentApplicant> selectAllStudentApplicants() {
+		List<StudentApplicant> students = dslContext.selectFrom(STUDENT_APPLICANT).fetchInto(StudentApplicant.class);
+		return students;
+	}
+	
+	public StudentApplicant updateStudentApplicantStats(StudentApplicant studentApplicant) {
+		/*
+		 * This will add the User's data limited to: username, password, first_name,
+		 * middle_name, last_name, birth_date, address, civil_status, gender,
+		 * nationality, active_deactive, image
+		 */
+		StudentApplicant applicant = dslContext.update(STUDENT_APPLICANT)
+									.set(STUDENT_APPLICANT.EMAIL, studentApplicant.getEmail())
+									.set(STUDENT_APPLICANT.CONTACT_NO, studentApplicant.getContactNo())
+									.set(STUDENT_APPLICANT.FIRST_NAME, studentApplicant.getFirstName())
+									.set(STUDENT_APPLICANT.MIDDLE_NAME, studentApplicant.getMiddleName())
+									.set(STUDENT_APPLICANT.LAST_NAME, studentApplicant.getLastName())
+									.set(STUDENT_APPLICANT.BIRTH_DATE, studentApplicant.getBirthDate())
+									.set(STUDENT_APPLICANT.ADDRESS, studentApplicant.getAddress())
+									.set(STUDENT_APPLICANT.CIVIL_STATUS, studentApplicant.getCivilStatus())
+									.set(STUDENT_APPLICANT.GENDER, studentApplicant.getGender())
+									.set(STUDENT_APPLICANT.NATIONALITY, studentApplicant.getNationality())
+									.set(STUDENT_APPLICANT.DATE_APPLIED, studentApplicant.getDateApplied())
+									.set(STUDENT_APPLICANT.DATE_ACCEPTED, studentApplicant.getDateAccepted())
+									.set(STUDENT_APPLICANT.STATUS, studentApplicant.getStatus())
+									.set(STUDENT_APPLICANT.STUDENT_TYPE, studentApplicant.getStudentType())
+									.where(STUDENT_APPLICANT.STUDENT_APPLICANT_ID.eq(studentApplicant.getStudentApplicantId()))
+									.returning()
+									.fetchOne()
+									.into(StudentApplicant.class);
+		return applicant;
 	}
 }

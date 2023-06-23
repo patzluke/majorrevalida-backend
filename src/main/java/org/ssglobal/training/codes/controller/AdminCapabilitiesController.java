@@ -25,6 +25,7 @@ public class AdminCapabilitiesController {
 	@Autowired
 	private AdminCapabilitiesService service;
 
+	// -------- For Admin 
 	@PostMapping(value = "/insert/admin", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<UserAndAdmin> createUser(@RequestBody UserAndAdmin userAndAdmin) {
 		System.out.println(userAndAdmin);
@@ -111,4 +112,5 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+
 }
