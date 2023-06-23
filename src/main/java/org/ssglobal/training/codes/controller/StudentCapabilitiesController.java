@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.StudentCapabilitiesService;
+import org.ssglobal.training.codes.tables.pojos.Grades;
 
 @RestController
 @RequestMapping(value = "/api/student")
 public class StudentCapabilitiesController {
-
 
 	@Autowired
 	private StudentCapabilitiesService service;
@@ -37,9 +37,10 @@ public class StudentCapabilitiesController {
 
 	@PutMapping(value = "/update", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<UserAndStudent> updateStudent(@RequestBody UserAndStudent student) {
+	public ResponseEntity<UserAndStudent> updateStudentProfile(@RequestBody UserAndStudent student,
+			@PathVariable("studentId") Integer studentId) {
 		try {
-			UserAndStudent updatedStudent = service.updateStudent(student);
+			UserAndStudent updatedStudent = service.updateStudentProfile(student, studentId);
 			if (updatedStudent != null) {
 				return ResponseEntity.ok(updatedStudent);
 			}
@@ -49,5 +50,19 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
-}	
+
+	@GetMapping(value = "/view/grades/{studentId}")
+	public ResponseEntity<Grades> viewStudentGrades(@PathVariable("studentId") Integer studentId) {
+		try {
+			Grades studentGrades = service.viewStudentGrade(studentId);
+			if (studentGrades != null) {
+				return ResponseEntity.ok(studentGrades);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+
+}
