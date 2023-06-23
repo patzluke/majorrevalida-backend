@@ -27,7 +27,7 @@ public class AuthenticateController {
 	public ResponseEntity<List<Object>> authenticate(@RequestBody Map<String, String> payload) {
 		String username = payload.get("username");
 		String password = payload.get("password");
-		Object authenticatedUser = service.searchUserByUsernameAndPassword(username, password);
+		Users authenticatedUser = service.searchUserByUsernameAndPassword(username, password);
 		if (authenticatedUser != null) {
 			List<Object> usertoken = new ArrayList<>();
 //			String token = userService

@@ -132,6 +132,7 @@ public class AdminCapabilitiesRepository {
 
 		/*
 		 * This will add the Student's data limited to: user_id, sem, and year_level
+		 * NOTE: NEED TO ADD curriculum_id and academic_year_id 
 		 */
 		Student insertStudent = dslContext.insertInto(STUDENT).set(STUDENT.USER_ID, insertUser.getUserId())
 				.set(STUDENT.SEM, student.getSem()).set(STUDENT.YEAR_LEVEL, student.getYear_level()).returning()

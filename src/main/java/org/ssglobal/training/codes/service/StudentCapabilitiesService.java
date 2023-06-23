@@ -4,5 +4,7 @@ import org.ssglobal.training.codes.model.UserAndStudent;
 
 public interface StudentCapabilitiesService {
 
+	UserAndStudent viewStudentProfile(Integer studentId);
+
 	UserAndStudent updateStudent(UserAndStudent student, Integer studentId);
 }
