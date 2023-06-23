@@ -81,6 +81,7 @@ drop table if exists parent cascade;
 create table parent(
     parent_id serial primary key,
     user_id int,
+    parent_no int default nextval('parent_sequence') not null unique,
     foreign key(user_id) references users(user_id) on delete cascade
 ); 
 

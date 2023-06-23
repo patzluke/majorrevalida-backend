@@ -32,5 +32,4 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
 }	

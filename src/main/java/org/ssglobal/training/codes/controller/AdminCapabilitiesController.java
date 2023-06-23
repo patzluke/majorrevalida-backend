@@ -25,7 +25,7 @@ public class AdminCapabilitiesController {
 	@Autowired
 	private AdminCapabilitiesService service;
 
-	@PostMapping(value = "/insert", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+	@PostMapping(value = "/insert/admin", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<UserAndAdmin> createUser(@RequestBody UserAndAdmin userAndAdmin) {
 		System.out.println(userAndAdmin);
 		try {
@@ -40,7 +40,7 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 	
-	@PutMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+	@PutMapping(value = "/update/admin", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<UserAndAdmin> updateAdminUser(@RequestBody UserAndAdmin userAndAdmin) {
 		System.out.println(userAndAdmin);
 		try {
@@ -55,7 +55,7 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 	
-	@DeleteMapping(value = "/delete/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	@DeleteMapping(value = "/delete/admin/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<UserAndAdmin> deleteAdminUser(@PathVariable(name = "userId") Integer userId) {
 		try {
 			UserAndAdmin updatedAdmin = service.deleteAdminUser(userId);
@@ -69,11 +69,10 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 	
-	@GetMapping(value = "/get", produces = {MediaType.APPLICATION_JSON_VALUE})
+	@GetMapping(value = "/get/admin", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<UserAndAdmin>> selectAllAdmin() {
 		try {
 			List<UserAndAdmin> updatedAdmin = service.selectAllAdmin();
-			System.out.println(updatedAdmin + " hey");
 			if (!updatedAdmin.isEmpty()) {
 				return ResponseEntity.ok(updatedAdmin);
 			}
@@ -84,7 +83,7 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 	
-	@GetMapping(value = "/get/{adminNo}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	@GetMapping(value = "/get/admin/{adminNo}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<UserAndAdmin> selectAdmin(@PathVariable(name = "adminNo") Integer adminNo) {
 		try {
 			UserAndAdmin updatedAdmin = service.selectAdmin(adminNo);
