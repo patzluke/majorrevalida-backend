@@ -17,6 +17,7 @@ import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.Users;
 
 @Service
 public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
@@ -24,6 +25,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Autowired
 	private AdminCapabilitiesRepository repository;
 
+	@Override
+	public List<Users> selectAllUsers() {
+		return repository.selectAllUsers();
+	}
+	
 	// ------------------------FOR ADMIN
 	@Override
 	public List<UserAndAdmin> selectAllAdmin() {
@@ -37,25 +43,21 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	
 	@Override
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) throws DuplicateKeyException, Exception {
-		selectAllAdmin().forEach(admin -> {
-			if (admin.getEmail().equals(userAdmin.getEmail())) {
+		selectAllUsers().forEach(user -> {
+			if (user.getEmail().equals(userAdmin.getEmail())) {
 				throw new DuplicateKeyException("email already exists");
-			}
-			if (admin.getContactNo().equals(userAdmin.getContactNo())) {
-				throw new DuplicateKeyException("contactNo already exists");
 			}
 		});
 		return repository.insertAdminUser(userAdmin);
 	}
 
 	@Override
-	public UserAndAdmin updateAdminUser(UserAndAdmin userAdmin) {
-		selectAllAdmin().forEach(admin -> {
-			if (admin.getEmail().equals(userAdmin.getEmail())) {
-				throw new DuplicateKeyException("email already exists");
-			}
-			if (admin.getContactNo().equals(userAdmin.getContactNo())) {
-				throw new DuplicateKeyException("contactNo already exists");
+	public UserAndAdmin updateAdminUser(UserAndAdmin userAdmin) throws DuplicateKeyException, Exception {
+		selectAllUsers().forEach(user -> {
+			if (!user.getUserId().equals(userAdmin.getUserId())) {
+				if (user.getEmail().equals(userAdmin.getEmail())) {
+					throw new DuplicateKeyException("email already exists");
+				}
 			}
 		});
 		return repository.updateAdminUser(userAdmin);
@@ -79,13 +81,10 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public UserAndStudent insertStudent(UserAndStudent student) {
-		selectAllStudent().forEach(innerStudent -> {
-			if (innerStudent.getEmail().equals(student.getEmail())) {
+	public UserAndStudent insertStudent(UserAndStudent student) throws DuplicateKeyException, Exception {
+		selectAllUsers().forEach(user -> {
+			if (user.getEmail().equals(student.getEmail())) {
 				throw new DuplicateKeyException("email already exists");
-			}
-			if (innerStudent.getContactNo().equals(student.getContactNo())) {
-				throw new DuplicateKeyException("contactNo already exists");
 			}
 		});
 		return repository.insertStudent(student);
@@ -93,12 +92,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	
 	@Override
 	public UserAndStudent updateStudent(UserAndStudent student) {
-		selectAllStudent().forEach(innerStudent -> {
-			if (innerStudent.getEmail().equals(student.getEmail())) {
-				throw new DuplicateKeyException("email already exists");
-			}
-			if (innerStudent.getContactNo().equals(student.getContactNo())) {
-				throw new DuplicateKeyException("contactNo already exists");
+		selectAllUsers().forEach(user -> {
+			if (!user.getUserId().equals(student.getUserId())) {
+				if (user.getEmail().equals(student.getEmail())) {
+					throw new DuplicateKeyException("email already exists");
+				}
 			}
 		});
 		return repository.updateStudent(student);
@@ -121,26 +119,22 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public UserAndProfessor insertProfessor(UserAndProfessor userAndProfessor) {
-		selectAllStudent().forEach(professor -> {
-			if (professor.getEmail().equals(userAndProfessor.getEmail())) {
+	public UserAndProfessor insertProfessor(UserAndProfessor userAndProfessor) throws DuplicateKeyException, Exception {
+		selectAllUsers().forEach(user -> {
+			if (user.getEmail().equals(userAndProfessor.getEmail())) {
 				throw new DuplicateKeyException("email already exists");
-			}
-			if (professor.getContactNo().equals(userAndProfessor.getContactNo())) {
-				throw new DuplicateKeyException("contactNo already exists");
 			}
 		});
 		return repository.insertProfessor(userAndProfessor);
 	}
 	
 	@Override
-	public UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor) {
-		selectAllStudent().forEach(professor -> {
-			if (professor.getEmail().equals(userAndProfessor.getEmail())) {
-				throw new DuplicateKeyException("email already exists");
-			}
-			if (professor.getContactNo().equals(userAndProfessor.getContactNo())) {
-				throw new DuplicateKeyException("contactNo already exists");
+	public UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor) throws DuplicateKeyException, Exception {
+		selectAllUsers().forEach(user -> {
+			if (!user.getUserId().equals(userAndProfessor.getUserId())) {
+				if (user.getEmail().equals(userAndProfessor.getEmail())) {
+					throw new DuplicateKeyException("email already exists");
+				}
 			}
 		});
 		return repository.updateProfessor(userAndProfessor);

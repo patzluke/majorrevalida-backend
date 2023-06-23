@@ -87,14 +87,13 @@ public class AdminCapabilitiesController {
 	public ResponseEntity updateAdminUser(@RequestBody UserAndAdmin userAndAdmin) {
 		UserAndAdmin updatedAdmin;
 		try {
-			updatedAdmin = service.insertAdminUser(userAndAdmin);
+			updatedAdmin = service.updateAdminUser(userAndAdmin);
 			if (updatedAdmin != null) {
 				return ResponseEntity.ok(updatedAdmin);
 			}
-		} catch (DuplicateKeyException e1) {
-			return ResponseEntity.badRequest().body(e1.getMessage());
-		} catch (Exception e1) {
-			e1.printStackTrace();
+		} catch (DuplicateKeyException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().body("something went wrong");
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -115,19 +114,23 @@ public class AdminCapabilitiesController {
 	}
 
 	// -------- For Student
+	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/insert/student", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<UserAndStudent> insertStudent(@RequestBody UserAndStudent student) {
+	public ResponseEntity insertStudent(@RequestBody UserAndStudent student) {
+		UserAndStudent addedStudent;
 		try {
-			UserAndStudent addedStudent = service.insertStudent(student);
+			addedStudent = service.insertStudent(student);
 			if (addedStudent != null) {
 				return ResponseEntity.ok(addedStudent);
 			}
-		} catch (Exception e) {
-			System.out.println("%s".formatted(e));
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		} catch (DuplicateKeyException e1) {
+			return ResponseEntity.badRequest().body(e1.getMessage());
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			return ResponseEntity.badRequest().body("something went wrong");
 		}
-		return ResponseEntity.badRequest().build();
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 
 	@GetMapping(value = "/get/studentapplicant")
@@ -159,32 +162,41 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/insert/professor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<UserAndProfessor> insertProfessor(@RequestBody UserAndProfessor userAndProfessor) {
+	public ResponseEntity insertProfessor(@RequestBody UserAndProfessor userAndProfessor) {
+		UserAndProfessor addedProfessor;
 		try {
-			UserAndProfessor addedProfessor = service.insertProfessor(userAndProfessor);
+			addedProfessor = service.insertProfessor(userAndProfessor);
 			if (addedProfessor != null) {
 				return ResponseEntity.ok(addedProfessor);
 			}
+		} catch (DuplicateKeyException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body("something went wrong");
 		}
-		return ResponseEntity.badRequest().build();
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 
 	
+	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/professor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<UserAndProfessor> updateProfessor(@RequestBody UserAndProfessor userAndProfessor) {
+	public ResponseEntity updateProfessor(@RequestBody UserAndProfessor userAndProfessor) {
+		UserAndProfessor updatedProfessor;
 		try {
-			UserAndProfessor updatedProfessor = service.updateProfessor(userAndProfessor);
+			updatedProfessor = service.updateProfessor(userAndProfessor);
 			if (updatedProfessor != null) {
 				return ResponseEntity.ok(updatedProfessor);
 			}
+		} catch (DuplicateKeyException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		} catch (Exception e) {
-			System.out.println("%s".formatted(e));
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body("something went wrong");
 		}
-		return ResponseEntity.badRequest().build();
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
 	// -------- For Academic Year

@@ -13,8 +13,11 @@ import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.Users;
 
 public interface AdminCapabilitiesService {
+	
+	List<Users> selectAllUsers();
 	
 	// ------------------------FOR ADMIN
 	List<UserAndAdmin> selectAllAdmin();

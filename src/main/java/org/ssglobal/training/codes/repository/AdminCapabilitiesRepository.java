@@ -40,6 +40,11 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
 
+	
+	public List<Users> selectAllUsers() {
+		return dslContext.selectFrom(USERS).fetchInto(Users.class);
+	}
+	
 	// ------------------------FOR ADMIN
 	public List<UserAndAdmin> selectAllAdmin() {
 		return dslContext
@@ -89,7 +94,8 @@ public class AdminCapabilitiesRepository {
 
 	public UserAndAdmin updateAdminUser(UserAndAdmin userAdmin) {
 		Users updatedUser = dslContext.update(USERS).set(USERS.USERNAME, userAdmin.getUsername())
-				.set(USERS.PASSWORD, userAdmin.getPassword()).set(USERS.FIRST_NAME, userAdmin.getFirstName())
+				.set(USERS.PASSWORD, userAdmin.getPassword()).set(USERS.EMAIL, userAdmin.getEmail())
+				.set(USERS.CONTACT_NO, userAdmin.getContactNo()).set(USERS.FIRST_NAME, userAdmin.getFirstName())
 				.set(USERS.MIDDLE_NAME, userAdmin.getMiddleName()).set(USERS.LAST_NAME, userAdmin.getLastName())
 				.set(USERS.USER_TYPE, userAdmin.getUserType()).set(USERS.BIRTH_DATE, userAdmin.getBirthDate())
 				.set(USERS.ADDRESS, userAdmin.getAddress()).set(USERS.CIVIL_STATUS, userAdmin.getCivilStatus())
