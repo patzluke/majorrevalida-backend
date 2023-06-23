@@ -4,6 +4,11 @@ import java.util.List;
 
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndStudent;
+import org.ssglobal.training.codes.tables.pojos.AcademicYear;
+import org.ssglobal.training.codes.tables.pojos.Course;
+import org.ssglobal.training.codes.tables.pojos.Curriculum;
+import org.ssglobal.training.codes.tables.pojos.Major;
+import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 
 public interface AdminCapabilitiesService {
@@ -19,6 +24,16 @@ public interface AdminCapabilitiesService {
 	UserAndAdmin selectAdmin(Integer adminNo);
 
 	UserAndStudent insertStudent(UserAndStudent student);
-	
+
+	AcademicYear addAcademicYear(AcademicYear academicYear);
+
+	Program addProgram(Program program);
+
+	Course addCourse(Course course);
+
+	Major addMajor(Major major);
+
+	Curriculum addCurriculum(Curriculum curriculum);
+
 	List<StudentApplicant> selectAllStudentApplicants();
 }

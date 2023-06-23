@@ -3,63 +3,64 @@ package org.ssglobal.training.codes.model;
 import java.time.LocalDate;
 
 public class UserAndStudent {
-	private Integer sem;
-	private Integer year_level;
+	// This is the attributes for user
 	private String username;
 	private String password;
-	private String first_name;
-	private String middle_name;
-	private String last_name;
-	private String user_type;
-	private LocalDate birth_date;
+	private String email;
+	private String contactNo;
+	private String firstName;
+	private String middleName;
+	private String lastName;
+	private String userType;
+	private LocalDate birthDate;
 	private String address;
-	private String civil_status;
+	private String civilStatus;
 	private String gender;
 	private String nationality;
-	private Boolean active_deactive;
+	private Boolean activeDeactive;
 	private String image;
+
+	// This is the attributes for student
+	private Integer userId;
+	private Integer curriculumCode;
+	private Integer parentNo;
+	private Integer sem;
+	private Integer yearLevel;
+	private Integer academicYearId;
 
 	public UserAndStudent() {
 	}
 
-	public UserAndStudent(Integer sem, Integer year_level, String username, String password, String first_name,
-			String middle_name, String last_name, String user_type, LocalDate birth_date, String address,
-			String civil_status, String gender, String nationality, Boolean active_deactive, String image) {
-		this.sem = sem;
-		this.year_level = year_level;
-		this.username = username;
-		this.password = password;
-		this.first_name = first_name;
-		this.middle_name = middle_name;
-		this.last_name = last_name;
-		this.user_type = user_type;
-		this.birth_date = birth_date;
-		this.address = address;
-		this.civil_status = civil_status;
-		this.gender = gender;
-		this.nationality = nationality;
-		this.active_deactive = active_deactive;
-		this.image = image;
-	}
-
-	public Integer getSem() {
-		return sem;
-	}
-
-	public void setSem(Integer sem) {
-		this.sem = sem;
-	}
-
-	public Integer getYear_level() {
-		return year_level;
-	}
-
-	public void setYear_level(Integer year_level) {
-		this.year_level = year_level;
-	}
-
 	public String getUsername() {
 		return username;
+	}
+
+	public UserAndStudent(String username, String password, String email, String contactNo, String firstName,
+			String middleName, String lastName, String userType, LocalDate birthDate, String address,
+			String civilStatus, String gender, String nationality, Boolean activeDeactive, String image, Integer userId,
+			Integer curriculumCode, Integer parentNo, Integer sem, Integer yearLevel, Integer academicYearId) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.contactNo = contactNo;
+		this.firstName = firstName;
+		this.middleName = middleName;
+		this.lastName = lastName;
+		this.userType = userType;
+		this.birthDate = birthDate;
+		this.address = address;
+		this.civilStatus = civilStatus;
+		this.gender = gender;
+		this.nationality = nationality;
+		this.activeDeactive = activeDeactive;
+		this.image = image;
+		this.userId = userId;
+		this.curriculumCode = curriculumCode;
+		this.parentNo = parentNo;
+		this.sem = sem;
+		this.yearLevel = yearLevel;
+		this.academicYearId = academicYearId;
 	}
 
 	public void setUsername(String username) {
@@ -74,44 +75,60 @@ public class UserAndStudent {
 		this.password = password;
 	}
 
-	public String getFirst_name() {
-		return first_name;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setFirst_name(String first_name) {
-		this.first_name = first_name;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public String getMiddle_name() {
-		return middle_name;
+	public String getContactNo() {
+		return contactNo;
 	}
 
-	public void setMiddle_name(String middle_name) {
-		this.middle_name = middle_name;
+	public void setContactNo(String contactNo) {
+		this.contactNo = contactNo;
 	}
 
-	public String getLast_name() {
-		return last_name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setLast_name(String last_name) {
-		this.last_name = last_name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getUser_type() {
-		return user_type;
+	public String getMiddleName() {
+		return middleName;
 	}
 
-	public void setUser_type(String user_type) {
-		this.user_type = user_type;
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
 	}
 
-	public LocalDate getBirth_date() {
-		return birth_date;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setBirth_date(LocalDate birth_date) {
-		this.birth_date = birth_date;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+
+	public LocalDate getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(LocalDate birthDate) {
+		this.birthDate = birthDate;
 	}
 
 	public String getAddress() {
@@ -122,12 +139,12 @@ public class UserAndStudent {
 		this.address = address;
 	}
 
-	public String getCivil_status() {
-		return civil_status;
+	public String getCivilStatus() {
+		return civilStatus;
 	}
 
-	public void setCivil_status(String civil_status) {
-		this.civil_status = civil_status;
+	public void setCivilStatus(String civilStatus) {
+		this.civilStatus = civilStatus;
 	}
 
 	public String getGender() {
@@ -146,12 +163,12 @@ public class UserAndStudent {
 		this.nationality = nationality;
 	}
 
-	public Boolean getActive_deactive() {
-		return active_deactive;
+	public Boolean getActiveDeactive() {
+		return activeDeactive;
 	}
 
-	public void setActive_deactive(Boolean active_deactive) {
-		this.active_deactive = active_deactive;
+	public void setActiveDeactive(Boolean activeDeactive) {
+		this.activeDeactive = activeDeactive;
 	}
 
 	public String getImage() {
@@ -162,13 +179,63 @@ public class UserAndStudent {
 		this.image = image;
 	}
 
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public Integer getCurriculumCode() {
+		return curriculumCode;
+	}
+
+	public void setCurriculumCode(Integer curriculumCode) {
+		this.curriculumCode = curriculumCode;
+	}
+
+	public Integer getParentNo() {
+		return parentNo;
+	}
+
+	public void setParentNo(Integer parentNo) {
+		this.parentNo = parentNo;
+	}
+
+	public Integer getSem() {
+		return sem;
+	}
+
+	public void setSem(Integer sem) {
+		this.sem = sem;
+	}
+
+	public Integer getYearLevel() {
+		return yearLevel;
+	}
+
+	public void setYearLevel(Integer yearLevel) {
+		this.yearLevel = yearLevel;
+	}
+
+	public Integer getAcademicYearId() {
+		return academicYearId;
+	}
+
+	public void setAcademicYearId(Integer academicYearId) {
+		this.academicYearId = academicYearId;
+	}
+
 	@Override
 	public String toString() {
-		return "UserAndStudent [sem=%i, year_level=%i, username=%s, password=%s, "
-				+ "first_name=%s, middle_name=%s, last_name=%s, user_type=%s, birth_date=%s, address=%s, "
-				+ "civil_status=%s, gender=%s, nationality=%s, active_deactive=%s, image=%s]".formatted(sem, year_level,
-						username, password, first_name, middle_name, last_name, user_type, birth_date, address,
-						civil_status, gender, nationality, active_deactive, image);
+		return "UserAndStudent [username=" + username + ", password=" + password + ", email=" + email + ", contactNo="
+				+ contactNo + ", firstName=" + firstName + ", middleName=" + middleName + ", lastName=" + lastName
+				+ ", userType=" + userType + ", birthDate=" + birthDate + ", address=" + address + ", civilStatus="
+				+ civilStatus + ", gender=" + gender + ", nationality=" + nationality + ", activeDeactive="
+				+ activeDeactive + ", image=" + image + ", userId=" + userId + ", curriculumCode=" + curriculumCode
+				+ ", parentNo=" + parentNo + ", sem=" + sem + ", yearLevel=" + yearLevel + ", academicYearId="
+				+ academicYearId + "]";
 	}
 
 }
