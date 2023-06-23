@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndStudent;
+import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 
 public interface AdminCapabilitiesService {
 
@@ -18,4 +19,6 @@ public interface AdminCapabilitiesService {
 	UserAndAdmin selectAdmin(Integer adminNo);
 
 	UserAndStudent insertStudent(UserAndStudent student);
+	
+	List<StudentApplicant> selectAllStudentApplicants();
 }

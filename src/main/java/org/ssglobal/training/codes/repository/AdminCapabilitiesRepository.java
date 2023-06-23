@@ -1,12 +1,15 @@
 package org.ssglobal.training.codes.repository;
 
 import java.util.List;
+
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndStudent;
+import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Admin;
+import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.Users;
@@ -21,6 +24,11 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Admin ADMIN = org.ssglobal.training.codes.tables.Admin.ADMIN;
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
 	private final org.ssglobal.training.codes.tables.StudentApplicant STUDENT_APPLICANT = org.ssglobal.training.codes.tables.StudentApplicant.STUDENT_APPLICANT;
+	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
+	private final org.ssglobal.training.codes.tables.Program PROGRAM = org.ssglobal.training.codes.tables.Program.PROGRAM;
+	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
+	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
+	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
 
 	// ------------------------FOR ADMIN
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) {
@@ -152,9 +160,9 @@ public class AdminCapabilitiesRepository {
 
 		return value;
 	}
-	
+
 	// ------------------------FOR Applicants
-	
+
 	public List<StudentApplicant> selectAllStudentApplicants() {
 		List<StudentApplicant> students = dslContext.selectFrom(STUDENT_APPLICANT).fetchInto(StudentApplicant.class);
 		return students;
@@ -187,4 +195,31 @@ public class AdminCapabilitiesRepository {
 									.into(StudentApplicant.class);
 		return applicant;
 	}
+
+	// -------------------------- FOR ACADEMIC YEAR
+	public AcademicYear addAcademicYear(AcademicYear academicYear) {
+		/*
+		 * The academic data added is limited to: academic_year and status
+		 */
+		AcademicYear addedAcademicYear = dslContext.insertInto(ACADEMIC_YEAR)
+				.set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
+				.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus()).returning().fetchOne().into(AcademicYear.class);
+		return addedAcademicYear;
+	}
+
+	// -------------------------- FOR PROGRAM
+	public Program addProgram(Program program) {
+		/*
+		 * The program data added is limited to: program_code and program_title
+		 */
+		Program addedProgram = dslContext.insertInto(PROGRAM).set(PROGRAM.PROGRAM_CODE, program.getProgramCode())
+				.set(PROGRAM.PROGRAM_TITLE, program.getProgramTitle()).returning().fetchOne().into(Program.class);
+
+		return addedProgram;
+	}
+
+	// -------------------------- FOR COURSE
+	// -------------------------- FOR MAJOR
+	// -------------------------- FOR CURRICULUM
+
 }

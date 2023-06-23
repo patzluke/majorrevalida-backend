@@ -8,6 +8,7 @@ import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.repository.AdminCapabilitiesRepository;
 import org.ssglobal.training.codes.service.AdminCapabilitiesService;
+import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 
 @Service
 public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
@@ -43,5 +44,10 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public UserAndAdmin selectAdmin(Integer adminNo) {
 		return repository.selectAdmin(adminNo);
+	}
+
+	@Override
+	public List<StudentApplicant> selectAllStudentApplicants() {
+		return repository.selectAllStudentApplicants();
 	}
 }
