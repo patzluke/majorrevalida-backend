@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndStudent;
+import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Admin;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.Users;
@@ -19,7 +20,12 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 	private final org.ssglobal.training.codes.tables.Admin ADMIN = org.ssglobal.training.codes.tables.Admin.ADMIN;
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
-
+	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
+	private final org.ssglobal.training.codes.tables.Program PROGRAM = org.ssglobal.training.codes.tables.Program.PROGRAM;
+	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
+	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
+	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
+	
 	// ------------------------FOR ADMIN
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) {
 		Users insertedUser = dslContext.insertInto(USERS).set(USERS.USERNAME, userAdmin.getUsername())
@@ -132,7 +138,7 @@ public class AdminCapabilitiesRepository {
 
 		/*
 		 * This will add the Student's data limited to: user_id, sem, and year_level
-		 * NOTE: NEED TO ADD curriculum_id and academic_year_id 
+		 * NOTE: NEED TO ADD curriculum_id and academic_year_id
 		 */
 		Student insertStudent = dslContext.insertInto(STUDENT).set(STUDENT.USER_ID, insertUser.getUserId())
 				.set(STUDENT.SEM, student.getSem()).set(STUDENT.YEAR_LEVEL, student.getYear_level()).returning()
@@ -147,4 +153,22 @@ public class AdminCapabilitiesRepository {
 
 		return value;
 	}
+
+	// -------------------------- FOR ACADEMIC YEAR
+	public AcademicYear addAcademicYear(AcademicYear academicYear) {
+		/*
+		 * The academic data added is limited to: academic_year and status
+		 */
+		AcademicYear addedAcademicYear = dslContext.insertInto(ACADEMIC_YEAR)
+				.set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
+				.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus()).returning().fetchOne().into(AcademicYear.class);
+		return addedAcademicYear;
+	}
+	
+	// -------------------------- FOR PROGRAM 
+	// -------------------------- FOR COURSE 
+	// -------------------------- FOR MAJOR 
+	// -------------------------- FOR CURRICULUM 
+	
+
 }
