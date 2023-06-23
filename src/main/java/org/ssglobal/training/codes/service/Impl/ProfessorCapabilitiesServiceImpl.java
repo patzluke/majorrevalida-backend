@@ -18,11 +18,6 @@ public class ProfessorCapabilitiesServiceImpl implements ProfessorCapabilitiesSe
 	}
 
 	@Override
-	public UserAndProfessor insertProfessor(UserAndProfessor userAndProfessor) {
-		return repository.insertProfessor(userAndProfessor);
-	}
-
-	@Override
 	public UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor) {
 		return repository.updateProfessor(userAndProfessor);
 	}

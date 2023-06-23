@@ -18,8 +18,8 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	}
 
 	@Override
-	public UserAndStudent updateStudent(UserAndStudent student, Integer studentId) {
-		return repository.updateStudent(student, studentId);
+	public UserAndStudent updateStudent(UserAndStudent student) {
+		return repository.updateStudent(student);
 	}
 
 }

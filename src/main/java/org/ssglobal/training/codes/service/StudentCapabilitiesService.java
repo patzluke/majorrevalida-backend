@@ -6,5 +6,5 @@ public interface StudentCapabilitiesService {
 
 	UserAndStudent viewStudentProfile(Integer studentId);
 
-	UserAndStudent updateStudent(UserAndStudent student, Integer studentId);
+	UserAndStudent updateStudent(UserAndStudent student);
 }

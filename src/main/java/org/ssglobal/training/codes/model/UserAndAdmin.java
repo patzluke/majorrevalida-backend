@@ -237,10 +237,13 @@ public class UserAndAdmin {
 
 	@Override
 	public String toString() {
-		return "UserAndAdmin [userId=" + userId + ", username=" + username + ", password=" + password + ", firstName="
-				+ firstName + ", middleName=" + middleName + ", lastName=" + lastName + ", userType=" + userType
-				+ ", birthDate=" + birthDate + ", address=" + address + ", civilStatus=" + civilStatus + ", gender="
-				+ gender + ", nationality=" + nationality + ", activeDeactive=" + activeDeactive + ", image=" + image
-				+ ", adminId=" + adminId + ", adminNo=" + adminNo + "]";
+		return "UserAndAdmin [userId=" + userId + ", username=" + username + ", password=" + password + ", email="
+				+ email + ", contactNo=" + contactNo + ", firstName=" + firstName + ", middleName=" + middleName
+				+ ", lastName=" + lastName + ", userType=" + userType + ", birthDate=" + birthDate + ", address="
+				+ address + ", civilStatus=" + civilStatus + ", gender=" + gender + ", nationality=" + nationality
+				+ ", activeDeactive=" + activeDeactive + ", image=" + image + ", adminId=" + adminId + ", adminNo="
+				+ adminNo + "]";
 	}
+
+	
 }

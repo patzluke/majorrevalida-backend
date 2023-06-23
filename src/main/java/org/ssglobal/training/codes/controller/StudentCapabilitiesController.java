@@ -35,12 +35,11 @@ public class StudentCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
-	@PutMapping(value = "/update/{studentId}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+	@PutMapping(value = "/update", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<UserAndStudent> updateStudent(@RequestBody UserAndStudent student,
-			@PathVariable("studentId") Integer studentId) {
+	public ResponseEntity<UserAndStudent> updateStudent(@RequestBody UserAndStudent student) {
 		try {
-			UserAndStudent updatedStudent = service.updateStudent(student, studentId);
+			UserAndStudent updatedStudent = service.updateStudent(student);
 			if (updatedStudent != null) {
 				return ResponseEntity.ok(updatedStudent);
 			}

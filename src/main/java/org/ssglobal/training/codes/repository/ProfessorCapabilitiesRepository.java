@@ -26,36 +26,6 @@ public class ProfessorCapabilitiesRepository {
 				.where(PROFESSOR.PROFESSOR_NO.eq(professorNo)).fetchOneInto(UserAndProfessor.class);
 	}
 
-	public UserAndProfessor insertProfessor(UserAndProfessor userAndProfessor) {
-		Users insertedUser = dslContext.insertInto(USERS).set(USERS.USERNAME, userAndProfessor.getUsername())
-				.set(USERS.PASSWORD, userAndProfessor.getPassword()).set(USERS.EMAIL, userAndProfessor.getEmail())
-				.set(USERS.CONTACT_NO, userAndProfessor.getContactNo()).set(USERS.FIRST_NAME, userAndProfessor.getFirstName())
-				.set(USERS.MIDDLE_NAME, userAndProfessor.getMiddleName()).set(USERS.LAST_NAME, userAndProfessor.getLastName())
-				.set(USERS.USER_TYPE, userAndProfessor.getUserType()).set(USERS.BIRTH_DATE, userAndProfessor.getBirthDate())
-				.set(USERS.ADDRESS, userAndProfessor.getAddress()).set(USERS.CIVIL_STATUS, userAndProfessor.getCivilStatus())
-				.set(USERS.GENDER, userAndProfessor.getGender()).set(USERS.NATIONALITY, userAndProfessor.getNationality())
-				.set(USERS.ACTIVE_DEACTIVE, userAndProfessor.getActiveDeactive()).set(USERS.IMAGE, userAndProfessor.getImage())
-				.returning().fetchOne().into(Users.class);
-		
-		Professor insertedProfessor = dslContext.insertInto(PROFESSOR)
-												.set(PROFESSOR.USER_ID, insertedUser.getUserId())
-												.set(PROFESSOR.WORK, userAndProfessor.getWork())
-												.returning()
-												.fetchOne().into(Professor.class);
-
-		if (insertedUser != null && insertedProfessor != null) {
-			UserAndProfessor newuserAndProfessor = new UserAndProfessor(insertedUser.getUserId(), insertedUser.getUsername(),
-					insertedUser.getPassword(), insertedUser.getEmail(), insertedUser.getContactNo(),
-					insertedUser.getFirstName(), insertedUser.getMiddleName(), insertedUser.getLastName(),
-					insertedUser.getUserType(), insertedUser.getBirthDate(), insertedUser.getAddress(),
-					insertedUser.getCivilStatus(), insertedUser.getGender(), insertedUser.getNationality(),
-					insertedUser.getActiveDeactive(), insertedUser.getImage(), insertedProfessor.getProfessorId(),
-					insertedProfessor.getProfessorNo(), insertedProfessor.getWork());
-			return newuserAndProfessor;
-		}
-		return null;
-	}
-
 	public UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor) {
 		Users updatedUser = dslContext.update(USERS).set(USERS.USERNAME, userAndProfessor.getUsername())
 				.set(USERS.PASSWORD, userAndProfessor.getPassword()).set(USERS.EMAIL, userAndProfessor.getEmail())
