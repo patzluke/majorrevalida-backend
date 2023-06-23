@@ -1,5 +1,20 @@
 package org.ssglobal.training.codes.service.Impl;
 
-public class StudentCapabilitiesServiceImpl {
-	
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.ssglobal.training.codes.model.UserAndStudent;
+import org.ssglobal.training.codes.repository.StudentCapabilitiesRepository;
+import org.ssglobal.training.codes.service.StudentCapabilitiesService;
+
+@Service
+public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesService {
+
+	@Autowired
+	private StudentCapabilitiesRepository repository;
+
+	@Override
+	public UserAndStudent updateStudent(UserAndStudent student, Integer studentId) {
+		return repository.updateStudent(student, studentId);
+	}
+
 }

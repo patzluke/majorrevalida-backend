@@ -22,10 +22,9 @@ public class UserAndStudent {
 	public UserAndStudent() {
 	}
 
-	public UserAndStudent(Integer sem, Integer year_level, String username, String password,
-			String first_name, String middle_name, String last_name, String user_type, LocalDate birth_date,
-			String address, String civil_status, String gender, String nationality, Boolean active_deactive,
-			String image) {
+	public UserAndStudent(Integer sem, Integer year_level, String username, String password, String first_name,
+			String middle_name, String last_name, String user_type, LocalDate birth_date, String address,
+			String civil_status, String gender, String nationality, Boolean active_deactive, String image) {
 		this.sem = sem;
 		this.year_level = year_level;
 		this.username = username;
@@ -167,9 +166,9 @@ public class UserAndStudent {
 	public String toString() {
 		return "UserAndStudent [sem=%i, year_level=%i, username=%s, password=%s, "
 				+ "first_name=%s, middle_name=%s, last_name=%s, user_type=%s, birth_date=%s, address=%s, "
-				+ "civil_status=%s, gender=%s, nationality=%s, active_deactive=%s, image=%s]".formatted(sem,
-						year_level, username, password, first_name, middle_name, last_name, user_type, birth_date,
-						address, civil_status, gender, nationality, active_deactive, image);
+				+ "civil_status=%s, gender=%s, nationality=%s, active_deactive=%s, image=%s]".formatted(sem, year_level,
+						username, password, first_name, middle_name, last_name, user_type, birth_date, address,
+						civil_status, gender, nationality, active_deactive, image);
 	}
 
 }
