@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.AdminCapabilitiesService;
+import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 
 @RestController
 @RequestMapping(value = "/api/admin")
@@ -113,4 +114,17 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
+	@GetMapping(value = "/get/studentapplicant")
+	public ResponseEntity<List<StudentApplicant>> selectAllStudentApplicants() {
+		try {
+			List<StudentApplicant> studentProfile = service.selectAllStudentApplicants();
+			if (studentProfile != null) {
+				return ResponseEntity.ok(studentProfile);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
 }

@@ -1,5 +1,7 @@
 package org.ssglobal.training.codes.controller;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,6 +30,7 @@ public class StudentApplicantCapabilitiesController {
 	@PostMapping(value = "/insert", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<StudentApplicant> createUser(@RequestBody StudentApplicant studentApplicant) {
 		try {
+			studentApplicant.setDateApplied(LocalDateTime.now());
 			StudentApplicant addedApplicant = service.insertStudentApplicant(studentApplicant);
 			if (addedApplicant != null) {
 				return ResponseEntity.ok(addedApplicant);
