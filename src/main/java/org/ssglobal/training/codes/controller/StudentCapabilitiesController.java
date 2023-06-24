@@ -10,9 +10,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.ssglobal.training.codes.model.StudentCourseData;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.StudentCapabilitiesService;
+import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Grades;
+import org.ssglobal.training.codes.tables.pojos.Major;
+import org.ssglobal.training.codes.tables.pojos.Program;
+import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 
 @RestController
 @RequestMapping(value = "/api/student")
@@ -35,7 +40,7 @@ public class StudentCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
-	@PutMapping(value = "/update", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+	@PutMapping(value = "/update/{studentId}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserAndStudent> updateStudentProfile(@RequestBody UserAndStudent student,
 			@PathVariable("studentId") Integer studentId) {
@@ -57,6 +62,79 @@ public class StudentCapabilitiesController {
 			Grades studentGrades = service.viewStudentGrade(studentId);
 			if (studentGrades != null) {
 				return ResponseEntity.ok(studentGrades);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+
+	@GetMapping(value = "/view/course/{studentId}")
+	public ResponseEntity<StudentCourseData> viewStudentCourse(@PathVariable("studentId") Integer studentNo) {
+		try {
+			StudentCourseData studentCourse = service.viewCourse(studentNo);
+			if (studentCourse != null) {
+				return ResponseEntity.ok(studentCourse);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+
+	@PutMapping(value = "/edit/major", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Major> editMajor(@RequestBody Major editedMajor) {
+		try {
+			Major updatedMajor = service.editMajor(editedMajor);
+			if (updatedMajor != null) {
+				return ResponseEntity.ok(updatedMajor);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+
+	@PutMapping(value = "/edit/major", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Course> editCourse(@RequestBody Course editedMajor) {
+		try {
+			Course updatedCourse = service.editCourse(editedMajor);
+			if (updatedCourse != null) {
+				return ResponseEntity.ok(updatedCourse);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+
+	@PutMapping(value = "/edit/program", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Program> editMajor(@RequestBody Program editedProgram) {
+		try {
+			Program updatedProgram = service.editProgram(editedProgram);
+			if (updatedProgram != null) {
+				return ResponseEntity.ok(updatedProgram);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+
+	@GetMapping(value = "/view/attendance/{studentId}")
+	public ResponseEntity<StudentAttendance> viewStudentAttendance(@PathVariable("studentId") Integer studentNo) {
+		try {
+			StudentAttendance studentAttendance = service.viewStudentAttendance(studentNo);
+			if (studentAttendance != null) {
+				return ResponseEntity.ok(studentAttendance);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
