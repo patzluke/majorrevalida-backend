@@ -286,7 +286,9 @@ insert into major(course_code, major_title) values(3001, 'Network and Security')
 insert into major(course_code, major_title) values(3001, 'Automation');
 
 --insert into Curriculum table
-insert into major(curriculum_code, curriculum_name) values(3001, 'Application Development');
+insert into curriculum(curriculum_code, curriculum_name) values(4001, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN WEB AND MOBILE APPLICATION');
+insert into curriculum(curriculum_code, curriculum_name) values(4002, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY');
+insert into curriculum(curriculum_code, curriculum_name) values(4003, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY');
 
 ----insert into admin_user table
 --insert into admin_user(username, password, first_name, last_name, admin_type) values('pastrero', '123456', 'patrick', 'astrero', 'Admin');
