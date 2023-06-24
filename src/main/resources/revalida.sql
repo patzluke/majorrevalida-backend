@@ -178,7 +178,7 @@ alter table subject alter column subject_code set default nextval('subject_seque
 drop table if exists major_subject cascade;
 create table major_subject (
     major_subject_id serial,
-    subject_code int primary key,
+    subject_code int,
     curriculum_code int,
     pre_requisites int,
     year_level int,
@@ -248,7 +248,8 @@ create table professor_load (
     room_id int,
     dept_code int,
     day varchar(10),
-    time_of_day time,
+    start_time time,
+    end_time time,
     foreign key(professor_no) references professor(professor_no) on delete cascade,
     foreign key(section_id) references section(section_id) on delete cascade,
     foreign key(room_id) references room(room_id) on delete cascade,
@@ -313,69 +314,190 @@ insert into curriculum(curriculum_code, curriculum_name) values(4002, 'BACHELOR 
 insert into curriculum(curriculum_code, curriculum_name) values(4003, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY');
 
 --insert into major and minor subject table
-	--for information technology major in web and mobile major subjects (first year 1st sem)
+	--for information technology major in web and mobile major subjects (first year 1ST SEM)
 	--major subjs
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('ICS 2601', 'Introduction to Computing', 3, 'true');
-	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem) 
-	values(9001, 9000, 1, 1);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9001, 9000, 4001, 1, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('ICS 2602', 'Computer Programming I (Fundamentals of Programming - Imperative)', 3, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9002, 9000, 4001, 1, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('ICS 2604', 'Values Education', 2, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9003, 9000, 4001, 1, 1);
+	
 	--minor subjs
-	insert into minor_subject(abbrevation, subject_title, units, pre_requisites, active_deactive, year_level, sem) 
-	values('ART_APP', 'Art Appreciation', 3, 10000, 'true', 1, 1);
-	insert into minor_subject(abbrevation, subject_title, units, pre_requisites, active_deactive, year_level, sem) 
-	values('MATH_MW', 'Mathematics in the Modern World', 3, 10000, 'true', 1, 1);
-	insert into minor_subject(abbrevation, subject_title, units, pre_requisites, active_deactive, year_level, sem) 
-	values('PATH-FIT', 'Physical Activities Towards Health and Fitness Sports', 2, 10000, 'true', 1, 1);
-	insert into minor_subject(abbrevation, subject_title, units, pre_requisites, active_deactive, year_level, sem) 
-	values('STS', 'Science, Technology and Society', 3, 10000, 'true', 1, 1);
-	insert into minor_subject(abbrevation, subject_title, units, pre_requisites, active_deactive, year_level, sem) 
-	values('THY 1', 'Christian Vision of the Human Person', 3, 10000, 'true', 1, 1);
-	insert into minor_subject(abbrevation, subject_title, units, pre_requisites, active_deactive, year_level, sem) 
-	values('UND_SELF', 'Understanding the Self', 3, 10000, 'true', 1, 1);
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('ART_APP', 'Art Appreciation', 3, 'true');
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9004, 9000, 1, 1);
 	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('MATH_MW', 'Mathematics in the Modern World', 3, 'true');
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9005, 9000, 1, 1);
 	
-----insert into Room table
---insert into room(room_no) values(101);insert into room(room_no) values(102);insert into room(room_no) values(103);insert into room(room_no) values(104);insert into room(room_no) values(105);
---insert into room(room_no) values(201);insert into room(room_no) values(202);insert into room(room_no) values(203);insert into room(room_no) values(204);insert into room(room_no) values(205);
---insert into room(room_no) values(301);insert into room(room_no) values(302);insert into room(room_no) values(303);insert into room(room_no) values(304);insert into room(room_no) values(305);
---
-----insert into Section table
---insert into section(section_name) values('1-ITA');insert into section(section_name) values('1-ITB');insert into section(section_name) values('1-ITC');insert into section(section_name) values('1-ITD');
---insert into section(section_name) values('2-ITA');insert into section(section_name) values('2-ITB');insert into section(section_name) values('2-ITC');insert into section(section_name) values('2-ITD');
---insert into section(section_name) values('3-ITA');insert into section(section_name) values('3-ITB');insert into section(section_name) values('3-ITC');insert into section(section_name) values('3-ITD');
---insert into section(section_name) values('4-ITA');insert into section(section_name) values('4-ITB');insert into section(section_name) values('4-ITC');insert into section(section_name) values('4-ITD');
---
---
-----insert into users and admin table
---insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
---values('pastrero', '123456', 'patzluke@gmail.com', '9055261296', 'Patrick', 'Artuz', 'Astrero', 'Admin', '1999-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'patrick.jpeg');
---
---insert into admin(user_id) values(1);
---
---insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
---values('nikaastrero', '123456', 'nikaastrero@gmail.com', '9055261295', 'Nika', 'Artuz', 'Astrero', 'Admin', '2013-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'nika.jpeg');
---
---insert into admin(user_id) values(2);
---
-----insert into users and Parent table
---insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
---values('maribelastrero', '123456', 'maribelastrero@gmail.com', '9188192726', 'Maribel', 'Astros', 'Artuz', 'Parent', '1975-07-08', 'Vista Verde, Cainta', 'Married', 'Female', 'Filipino', 'true', 'maribel.jpeg');
---
---insert into parent(user_id) values(3);
---
---insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
---values('norbinastrero', '123456', 'norbinastrero@gmail.com', '9055261278', 'Norbin', 'Fernando', 'Astrero', 'Parent', '1975-07-25', 'Vista Verde, Cainta', 'Married', 'Male', 'Filipino', 'true', 'norbin.jpeg');
---
---insert into parent(user_id) values(4);
---
-----insert into users and Professor table
---insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
---values('norman', '123456', 'norman@gmail.com', '9188192721', 'Norman', 'Astros', 'Fernando', 'Professor', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'norman.jpeg');
---
---insert into professor(user_id, work) values(5, 'Teacher');
---
---insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
---values('estrella', '123456', 'estrella@gmail.com', '9055261278', 'Estrella', 'Fernando', 'Astros', 'Professor', '1975-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'estrella.jpeg');
---
---insert into professor(user_id, work) values(6, 'Teacher');
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('PATH-FIT', 'Physical Activities Towards Health and Fitness Sports', 2, 'true');
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9006, 9000, 1, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('STS', 'Science, Technology and Society', 3, 'true');
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9007, 9000, 1, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('THY 1', 'Christian Vision of the Human Person', 3, 'true');
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9008, 9000, 1, 1);
+	
+	--for information technology major in web and mobile major subjects (first year 2ND SEM)
+	--major subjs
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('ICS 2606', 	'Computer Programming II (Intermediate Programming - Object-Oriented)', 4, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9009, 9002, 4001, 1, 2);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('IT 2621', 'Information Technology Fundamentals', 3, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9010, 9004, 4001, 1, 2);
+
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('IT 2622', 'Human-Computer Interaction', 3, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9011, 9004, 4001, 1, 2);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('ICS 2603', 'Discrete Structures', 3, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9012, 9004, 4001, 1, 2);
+	
+	--minor subjs
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('PATH-FIT', 'Physical Activities Towards Health and Fitness in Dance', 2, 'true');
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9013, 9006, 1, 2);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('PURPCOM', 'Purposive Communication', 3, 'true');
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9014, 9006, 1, 2);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('THY 2', 'Christian Vision of Marriage and Family', 3, 'true');
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9015, 9006, 1, 2);
+	
+	--for information technology major in web and mobile major subjects (SECOND year 1ST SEM)
+	--major subjs
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('ICS 2605', 'Data Structures and Algorithms', 4, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9016, 9014, 4001, 2, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('ICS 2607', 'Information Management', 4, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9017, 9000, 4001, 2, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('ICS 2608', 'Applications Development and Emerging Technologies 1 (Web-Front-End)', 3, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9018, 9009, 4001, 2, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('ICS 26014', 'Data Communications and Networking I', 3, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9019, 9010, 4001, 2, 1);
+	
+	--minor subjs
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('PATH-FIT', 'Fitness Exercises for Specific Sports', 2, 'true');
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9020, 9000, 2, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('THY 3', 'Christian Vision of the Church in Society', 3, 'true');
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9021, 9016, 2, 1);
+	
+	--for information technology major in web and mobile major subjects (SECOND year 2ND SEM)
+	--major subjs
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('ICS 2609', 'Applications Development and Emerging Technologies 2 (Enterprise Back-end)', 3, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9022, 9019, 4001, 2, 2);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('IT 2623', 'Computer Architecture, Organization, and Logic', 3, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9023, 9010, 4001, 2, 2);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('IT 2624', 'Data Communications and Networking II', 3, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9024, 9020, 4001, 2, 2);
+	
+	--minor subjs
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('PATH-FIT', 'Human Enhancement', 2, 'true');
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9025, 9000, 2, 2);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('READ_PH', 'Readings in Philippine History', 3, 'true');
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9026, 9000, 2, 2);
+	
+--insert into Room table
+insert into room(room_no) values(101);insert into room(room_no) values(102);insert into room(room_no) values(103);insert into room(room_no) values(104);insert into room(room_no) values(105);
+insert into room(room_no) values(201);insert into room(room_no) values(202);insert into room(room_no) values(203);insert into room(room_no) values(204);insert into room(room_no) values(205);
+insert into room(room_no) values(301);insert into room(room_no) values(302);insert into room(room_no) values(303);insert into room(room_no) values(304);insert into room(room_no) values(305);
+
+--insert into Section table
+insert into section(section_name) values('1-ITA');insert into section(section_name) values('1-ITB');insert into section(section_name) values('1-ITC');insert into section(section_name) values('1-ITD');
+insert into section(section_name) values('2-ITA');insert into section(section_name) values('2-ITB');insert into section(section_name) values('2-ITC');insert into section(section_name) values('2-ITD');
+insert into section(section_name) values('3-ITA');insert into section(section_name) values('3-ITB');insert into section(section_name) values('3-ITC');insert into section(section_name) values('3-ITD');
+insert into section(section_name) values('4-ITA');insert into section(section_name) values('4-ITB');insert into section(section_name) values('4-ITC');insert into section(section_name) values('4-ITD');
+
+
+--insert into users and admin table
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+values('pastrero', '123456', 'patzluke@gmail.com', '9055261296', 'Patrick', 'Artuz', 'Astrero', 'Admin', '1999-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'patrick.jpeg');
+
+insert into admin(user_id) values(1);
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+values('nikaastrero', '123456', 'nikaastrero@gmail.com', '9055261295', 'Nika', 'Artuz', 'Astrero', 'Admin', '2013-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'nika.jpeg');
+
+insert into admin(user_id) values(2);
+
+--insert into users and Parent table
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+values('maribelastrero', '123456', 'maribelastrero@gmail.com', '9188192726', 'Maribel', 'Astros', 'Artuz', 'Parent', '1975-07-08', 'Vista Verde, Cainta', 'Married', 'Female', 'Filipino', 'true', 'maribel.jpeg');
+
+insert into parent(user_id) values(3);
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+values('norbinastrero', '123456', 'norbinastrero@gmail.com', '9055261278', 'Norbin', 'Fernando', 'Astrero', 'Parent', '1975-07-25', 'Vista Verde, Cainta', 'Married', 'Male', 'Filipino', 'true', 'norbin.jpeg');
+
+insert into parent(user_id) values(4);
+
+--insert into users and Professor table
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+values('norman', '123456', 'norman@gmail.com', '9188192721', 'Norman', 'Astros', 'Fernando', 'Professor', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'norman.jpeg');
+
+insert into professor(user_id, work) values(5, 'Teacher');
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+values('estrella', '123456', 'estrella@gmail.com', '9055261278', 'Estrella', 'Fernando', 'Astros', 'Professor', '1975-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'estrella.jpeg');
+
+insert into professor(user_id, work) values(6, 'Teacher');
 
