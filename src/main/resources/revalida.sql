@@ -3,6 +3,71 @@ create database majorrevalida;
 
 \c majorrevalida
 
+drop sequence if exists program_sequence;
+create sequence program_sequence as int increment by 1 start with 1001;
+
+drop table if exists program cascade;
+create table program (
+    program_id serial,
+    program_code int default nextval('program_sequence') not null primary key,
+    program_title varchar(50)
+); 
+
+drop sequence if exists department_sequence;
+create sequence department_sequence as int increment by 1 start with 2001;
+
+drop table if exists department cascade;
+create table department (
+    dept_id serial,
+    dept_code int default nextval('department_sequence') not null primary key,
+    dept_name varchar(50)
+); 
+
+drop sequence if exists course_sequence;
+create sequence course_sequence as int increment by 1 start with 3001;
+
+drop table if exists course cascade;
+create table course (
+    course_id serial,
+    course_code int default nextval('course_sequence') not null primary key,
+    program_code int,
+    dept_code int,    
+    course_title varchar(50),
+    foreign key(program_code) references program(program_code) on delete cascade,
+    foreign key(dept_code) references department(dept_code) on delete cascade
+);
+
+drop sequence if exists major_sequence;
+create sequence major_sequence as int increment by 1 start with 4001;
+
+drop table if exists major cascade;
+create table major (
+    major_id serial,
+    major_code int default nextval('major_sequence') not null primary key,
+    course_code int,
+    major_title varchar(50),
+    foreign key(course_code) references course(course_code) on delete cascade
+); 
+
+drop sequence if exists curriculum_sequence;
+create sequence curriculum_sequence as int increment by 1 start with 5001;
+
+drop table if exists curriculum cascade;
+create table curriculum (
+    curriculum_id serial,
+    curriculum_code int default nextval('curriculum_sequence') not null primary key,
+    major_code int,
+    curriculum_name varchar(50),
+    foreign key(major_code) references major(major_code) on delete cascade
+); 
+
+drop table if exists academic_year cascade;
+create table academic_year (
+    academic_year_id serial primary key,
+    academic_year varchar(50),
+   	status varchar(20)
+); 
+
 drop table if exists student_applicant cascade;
 create table student_applicant (
     student_applicant_id serial primary key,
@@ -20,59 +85,6 @@ create table student_applicant (
     date_accepted timestamp,
     status varchar(30),
     student_type varchar(30)
-); 
-
-drop sequence if exists program_sequence;
-create sequence program_sequence as int increment by 1 start with 1001;
-
-drop table if exists program cascade;
-create table program (
-    program_id serial,
-    program_code int default nextval('program_sequence') not null primary key,
-    program_title varchar(50)
-); 
-
-drop sequence if exists course_sequence;
-create sequence course_sequence as int increment by 1 start with 2001;
-
-drop table if exists course cascade;
-create table course (
-    course_id serial,
-    program_code int,
-    course_code int default nextval('course_sequence') not null primary key,
-    course_title varchar(50),
-    foreign key(program_code) references program(program_code) on delete cascade
-);
-
-drop sequence if exists major_sequence;
-create sequence major_sequence as int increment by 1 start with 3001;
-
-drop table if exists major cascade;
-create table major (
-    major_id serial,
-    course_code int,
-    major_code int default nextval('major_sequence') not null primary key,
-    major_title varchar(50),
-    foreign key(course_code) references course(course_code) on delete cascade
-); 
-
-drop sequence if exists curriculum_sequence;
-create sequence curriculum_sequence as int increment by 1 start with 4001;
-
-drop table if exists curriculum cascade;
-create table curriculum (
-    curriculum_id serial,
-    major_code int,
-    curriculum_code int default nextval('curriculum_sequence') not null primary key,
-    curriculum_name varchar(50),
-    foreign key(major_code) references major(major_code) on delete cascade
-); 
-
-drop table if exists academic_year cascade;
-create table academic_year (
-    academic_year_id serial primary key,
-    academic_year varchar(50),
-   	status varchar(20)
 ); 
 
 drop table if exists users cascade;
@@ -96,7 +108,7 @@ create table users (
 ); 
 
 drop sequence if exists parent_sequence;
-create sequence parent_sequence as int increment by 1 start with 5001;
+create sequence parent_sequence as int increment by 1 start with 6001;
 
 drop table if exists parent cascade;
 create table parent(
@@ -112,12 +124,10 @@ create sequence student_sequence as int increment by 1 start with 77001;
 drop table if exists student cascade;
 create table student (
     student_id serial,
-    user_id int,
     student_no int default nextval('student_sequence') not null primary key,
-    curriculum_code int,
+    user_id int,
     parent_no int,
-    sem int,
-    year_level int,
+    curriculum_code int,
     academic_year_id int,
     foreign key(user_id) references users(user_id) on delete cascade,
     foreign key(parent_no) references parent(parent_no) on delete cascade,
@@ -126,7 +136,7 @@ create table student (
 ); 
 
 drop sequence if exists admin_sequence;
-create sequence admin_sequence as int increment by 1 start with 6001;
+create sequence admin_sequence as int increment by 1 start with 7001;
 
 drop table if exists admin cascade;
 create table admin (
@@ -137,7 +147,7 @@ create table admin (
 ); 
 
 drop sequence if exists professor_sequence;
-create sequence professor_sequence as int increment by 1 start with 7001;
+create sequence professor_sequence as int increment by 1 start with 8001;
 
 drop table if exists professor cascade;
 create table professor (
@@ -149,7 +159,7 @@ create table professor (
 ); 
 
 drop sequence if exists subject_sequence;
-create sequence subject_sequence as int increment by 1 start with 1001;
+create sequence subject_sequence as int increment by 1 start with 9001;
 
 drop table if exists subject cascade;
 create table subject (
@@ -157,9 +167,13 @@ create table subject (
     subject_code int default nextval('subject_sequence') not null primary key,
     subject_title varchar(50),
     units float,
-    pre_requisites varchar(70),
-    active_deactive boolean
+    pre_requisites int,
+    active_deactive boolean,
+    year_level int,
+    sem int
 );
+
+ALTER TABLE subject ADD CONSTRAINT fk_pre_requisites FOREIGN KEY (pre_requisites) REFERENCES subject(subject_code);
 
 drop table if exists t_subject_detail_history cascade;
 create table t_subject_detail_history (
@@ -177,9 +191,9 @@ create table grades (
     grade_id serial primary key,
     student_no int,
     subject_detail_his_id int,
-    prelim float,
-    finals float,
-    grade float,
+    prelim_grade float,
+    finals_grade float,
+    total_grade float,
     comment text,
     date_inserted timestamp,
     date_modified timestamp,
@@ -208,23 +222,72 @@ create table professor_load (
     professor_no int,
     subject_code int,
     section_id int,
+    room_id int,
+    dept_code int,
+    day varchar(10),
+    time_of_day time,
     foreign key(professor_no) references professor(professor_no) on delete cascade,
     foreign key(subject_code) references subject(subject_code) on delete cascade,
-    foreign key(section_id) references section(section_id) on delete cascade
+    foreign key(section_id) references section(section_id) on delete cascade,
+    foreign key(room_id) references room(room_id) on delete cascade,
+    foreign key(dept_code) references department(dept_code) on delete cascade    
 ); 
 
 drop table if exists student_enrollment cascade;
 create table student_enrollment (
     enrollment_id serial primary key,
     student_no int,
-    load_id int,
+    academic_year_id int,
+    sem int,
+    start_date date,
+    end_date date,
     foreign key(student_no) references student(student_no) on delete cascade,
-    foreign key(load_id) references professor_load(load_id) on delete cascade
+    foreign key(academic_year_id) references academic_year(academic_year_id) on delete cascade    
 ); 
 
-----insert into program table
---insert into program(program_title, major) values('BS IT', 'Application Development');
---
+drop table if exists schedule cascade;
+create table schedule (
+    schedule_id serial primary key,
+    student_no int,
+    load_id int,
+    foreign key(student_no) references student(student_no) on delete cascade,
+    foreign key(load_id) references professor_load(load_id) on delete cascade    
+); 
+
+drop table if exists student_attendance cascade;
+create table student_attendance (
+    student_attendance_id serial primary key,
+    student_no int,
+    load_id int,
+    attendance_date date,
+    status varchar(20) default 'N/A',
+    foreign key(student_no) references student(student_no) on delete cascade,
+    foreign key(load_id) references professor_load(load_id) on delete cascade    
+); 
+
+--insert into program table
+insert into program(program_title) values('Bachelor Of Science');
+insert into program(program_title) values('Bachelor Of Arts');
+
+--insert into Department table
+insert into department(dept_name) values('Department of Information And Computing Sciences');
+insert into department(dept_name) values('Department of Engineering');
+
+--insert into Course table
+insert into course(program_code, dept_code, course_title) values(1001, 2001, 'Information Technology');
+insert into course(program_code, dept_code, course_title) values(1001, 2001, 'Information Systems');
+insert into course(program_code, dept_code, course_title) values(1001, 2001, 'Information Computer Science');
+insert into course(program_code, dept_code, course_title) values(1001, 2002, 'Civil Engineering');
+insert into course(program_code, dept_code, course_title) values(1001, 2002, 'Computer Engineering');
+
+--insert into Major table
+insert into major(course_code, major_title) values(3001, 'Application Development');
+insert into major(course_code, major_title) values(3001, 'Network and Security');
+insert into major(course_code, major_title) values(3001, 'Automation');
+
+--insert into Curriculum table
+insert into major(curriculum_code, curriculum_name) values(3001, 'Application Development');
+
 ----insert into admin_user table
 --insert into admin_user(username, password, first_name, last_name, admin_type) values('pastrero', '123456', 'patrick', 'astrero', 'Admin');
 --
@@ -233,5 +296,5 @@ create table student_enrollment (
 --
 ----insert into professor table
 --insert into professor(professor_name, password, work, gender, status, birth_date, active_deactive) values('pastrero', '123456', 'data structure prof', 'male', 'employed', '2001-07-25', 't');
---
+
 
