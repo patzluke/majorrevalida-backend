@@ -3,10 +3,7 @@ package org.ssglobal.training.codes.repository;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.ssglobal.training.codes.model.UserAndStudent;
-import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
-import org.ssglobal.training.codes.tables.pojos.Users;
 
 @Repository
 public class StudentApplicantCapabilitiesRepository {
