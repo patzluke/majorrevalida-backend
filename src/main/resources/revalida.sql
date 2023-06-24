@@ -156,24 +156,48 @@ create table professor (
     professor_no int default nextval('professor_sequence') not null primary key,
     work varchar(50),
     foreign key(user_id) references users(user_id) on delete cascade
-); 
-
-drop sequence if exists subject_sequence;
-create sequence subject_sequence as int increment by 1 start with 9001;
+);
 
 drop table if exists subject cascade;
 create table subject (
     subject_id serial,
-    subject_code int default nextval('subject_sequence') not null primary key,
-    subject_title varchar(50),
+    subject_code int primary key,
+	abbrevation varchar(50),
+    subject_title varchar(100),
     units float,
-    pre_requisites int,
-    active_deactive boolean,
-    year_level int,
-    sem int
+    active_deactive boolean
 );
 
-ALTER TABLE subject ADD CONSTRAINT fk_pre_requisites FOREIGN KEY (pre_requisites) REFERENCES subject(subject_code);
+insert into subject(subject_code, abbrevation, subject_title, units, active_deactive) 
+values(9000, 'N/A', 'None', 0.0, false);
+
+drop sequence if exists subject_sequence;
+create sequence subject_sequence as int increment by 1 start with 9001;
+alter table subject alter column subject_code set default nextval('subject_sequence');
+
+drop table if exists major_subject cascade;
+create table major_subject (
+    major_subject_id serial,
+    subject_code int primary key,
+    curriculum_code int,
+    pre_requisites int,
+    year_level int,
+    sem int,
+    foreign key(subject_code) references subject(subject_code) on delete cascade,
+    foreign key(pre_requisites) references subject(subject_code) on delete cascade,
+    foreign key(curriculum_code) references curriculum(curriculum_code) on delete cascade
+);
+
+drop table if exists minor_subject cascade;
+create table minor_subject (
+    minor_subject_id serial,
+    subject_code int primary key,
+    pre_requisites int,
+    year_level int,
+    sem int,
+    foreign key(subject_code) references subject(subject_code) on delete cascade,
+    foreign key(pre_requisites) references subject(subject_code) on delete cascade
+);
 
 drop table if exists t_subject_detail_history cascade;
 create table t_subject_detail_history (
@@ -182,7 +206,6 @@ create table t_subject_detail_history (
     subject_code int,
     academic_year_id int,
     foreign key(professor_no) references professor(professor_no) on delete cascade,
-    foreign key(subject_code) references subject(subject_code) on delete cascade,
     foreign key(academic_year_id) references academic_year(academic_year_id) on delete cascade
 ); 
 
@@ -227,7 +250,6 @@ create table professor_load (
     day varchar(10),
     time_of_day time,
     foreign key(professor_no) references professor(professor_no) on delete cascade,
-    foreign key(subject_code) references subject(subject_code) on delete cascade,
     foreign key(section_id) references section(section_id) on delete cascade,
     foreign key(room_id) references room(room_id) on delete cascade,
     foreign key(dept_code) references department(dept_code) on delete cascade    
@@ -290,13 +312,70 @@ insert into curriculum(curriculum_code, curriculum_name) values(4001, 'BACHELOR 
 insert into curriculum(curriculum_code, curriculum_name) values(4002, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY');
 insert into curriculum(curriculum_code, curriculum_name) values(4003, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY');
 
-----insert into admin_user table
---insert into admin_user(username, password, first_name, last_name, admin_type) values('pastrero', '123456', 'patrick', 'astrero', 'Admin');
+--insert into major and minor subject table
+	--for information technology major in web and mobile major subjects (first year 1st sem)
+	--major subjs
+	insert into subject(abbrevation, subject_title, units, active_deactive) 
+	values('ICS 2601', 'Introduction to Computing', 3, 'true');
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem) 
+	values(9001, 9000, 1, 1);
+	--minor subjs
+	insert into minor_subject(abbrevation, subject_title, units, pre_requisites, active_deactive, year_level, sem) 
+	values('ART_APP', 'Art Appreciation', 3, 10000, 'true', 1, 1);
+	insert into minor_subject(abbrevation, subject_title, units, pre_requisites, active_deactive, year_level, sem) 
+	values('MATH_MW', 'Mathematics in the Modern World', 3, 10000, 'true', 1, 1);
+	insert into minor_subject(abbrevation, subject_title, units, pre_requisites, active_deactive, year_level, sem) 
+	values('PATH-FIT', 'Physical Activities Towards Health and Fitness Sports', 2, 10000, 'true', 1, 1);
+	insert into minor_subject(abbrevation, subject_title, units, pre_requisites, active_deactive, year_level, sem) 
+	values('STS', 'Science, Technology and Society', 3, 10000, 'true', 1, 1);
+	insert into minor_subject(abbrevation, subject_title, units, pre_requisites, active_deactive, year_level, sem) 
+	values('THY 1', 'Christian Vision of the Human Person', 3, 10000, 'true', 1, 1);
+	insert into minor_subject(abbrevation, subject_title, units, pre_requisites, active_deactive, year_level, sem) 
+	values('UND_SELF', 'Understanding the Self', 3, 10000, 'true', 1, 1);
+	
+	
+----insert into Room table
+--insert into room(room_no) values(101);insert into room(room_no) values(102);insert into room(room_no) values(103);insert into room(room_no) values(104);insert into room(room_no) values(105);
+--insert into room(room_no) values(201);insert into room(room_no) values(202);insert into room(room_no) values(203);insert into room(room_no) values(204);insert into room(room_no) values(205);
+--insert into room(room_no) values(301);insert into room(room_no) values(302);insert into room(room_no) values(303);insert into room(room_no) values(304);insert into room(room_no) values(305);
 --
-----insert into subject table
---insert into subject(subject_title, units, pre_requisites, active_deactive) values('Data Structures', 3, 'Math in the Modern World', 't');
+----insert into Section table
+--insert into section(section_name) values('1-ITA');insert into section(section_name) values('1-ITB');insert into section(section_name) values('1-ITC');insert into section(section_name) values('1-ITD');
+--insert into section(section_name) values('2-ITA');insert into section(section_name) values('2-ITB');insert into section(section_name) values('2-ITC');insert into section(section_name) values('2-ITD');
+--insert into section(section_name) values('3-ITA');insert into section(section_name) values('3-ITB');insert into section(section_name) values('3-ITC');insert into section(section_name) values('3-ITD');
+--insert into section(section_name) values('4-ITA');insert into section(section_name) values('4-ITB');insert into section(section_name) values('4-ITC');insert into section(section_name) values('4-ITD');
 --
-----insert into professor table
---insert into professor(professor_name, password, work, gender, status, birth_date, active_deactive) values('pastrero', '123456', 'data structure prof', 'male', 'employed', '2001-07-25', 't');
-
+--
+----insert into users and admin table
+--insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+--values('pastrero', '123456', 'patzluke@gmail.com', '9055261296', 'Patrick', 'Artuz', 'Astrero', 'Admin', '1999-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'patrick.jpeg');
+--
+--insert into admin(user_id) values(1);
+--
+--insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+--values('nikaastrero', '123456', 'nikaastrero@gmail.com', '9055261295', 'Nika', 'Artuz', 'Astrero', 'Admin', '2013-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'nika.jpeg');
+--
+--insert into admin(user_id) values(2);
+--
+----insert into users and Parent table
+--insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+--values('maribelastrero', '123456', 'maribelastrero@gmail.com', '9188192726', 'Maribel', 'Astros', 'Artuz', 'Parent', '1975-07-08', 'Vista Verde, Cainta', 'Married', 'Female', 'Filipino', 'true', 'maribel.jpeg');
+--
+--insert into parent(user_id) values(3);
+--
+--insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+--values('norbinastrero', '123456', 'norbinastrero@gmail.com', '9055261278', 'Norbin', 'Fernando', 'Astrero', 'Parent', '1975-07-25', 'Vista Verde, Cainta', 'Married', 'Male', 'Filipino', 'true', 'norbin.jpeg');
+--
+--insert into parent(user_id) values(4);
+--
+----insert into users and Professor table
+--insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+--values('norman', '123456', 'norman@gmail.com', '9188192721', 'Norman', 'Astros', 'Fernando', 'Professor', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'norman.jpeg');
+--
+--insert into professor(user_id, work) values(5, 'Teacher');
+--
+--insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+--values('estrella', '123456', 'estrella@gmail.com', '9055261278', 'Estrella', 'Fernando', 'Astros', 'Professor', '1975-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'estrella.jpeg');
+--
+--insert into professor(user_id, work) values(6, 'Teacher');
 
