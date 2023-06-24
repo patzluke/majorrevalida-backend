@@ -57,7 +57,7 @@ create table curriculum (
     curriculum_id serial,
     curriculum_code int default nextval('curriculum_sequence') not null primary key,
     major_code int,
-    curriculum_name varchar(50),
+    curriculum_name varchar(150),
     foreign key(major_code) references major(major_code) on delete cascade
 ); 
 
