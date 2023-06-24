@@ -22,28 +22,21 @@ public class UserAndStudent {
 	private String image;
 
 	// This is the attributes for student
-    private Integer studentId;
-    private Integer studentNo;
-    private Integer curriculumCode;
-    private Integer parentNo;
-    private Integer sem;
-    private Integer yearLevel;
-    private Integer academicYearId;
+	private Integer studentNo;
+	private Integer studentUserId;
+	private Integer parentNo;
+	private Integer curriculumCode;
+	private Integer academicYearId;
 
 	public UserAndStudent() {
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public UserAndStudent(Integer userId, String username, String password, String email, String contactNo, String firstName,
-			String middleName, String lastName, String userType, LocalDate birthDate, String address,
+	public UserAndStudent(Integer userId, String username, String password, String email, String contactNo,
+			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
 			String civilStatus, String gender, String nationality, Boolean activeDeactive, String image,
-			
-			Integer studentId, Integer studentNo, Integer curriculumCode, Integer parentNo, Integer sem,
-			Integer yearLevel, Integer academicYearId) {
-		super();
+			Integer studentNo, Integer studentUserId, Integer parentNo, Integer curriculumCode,
+			Integer academicYearId) {
+		this.userId = userId;
 		this.username = username;
 		this.password = password;
 		this.email = email;
@@ -59,13 +52,10 @@ public class UserAndStudent {
 		this.nationality = nationality;
 		this.activeDeactive = activeDeactive;
 		this.image = image;
-		this.userId = userId;
-		this.studentId = studentId;
-        this.studentNo = studentNo;
-		this.curriculumCode = curriculumCode;
+		this.studentNo = studentNo;
+		this.studentUserId = studentUserId;
 		this.parentNo = parentNo;
-		this.sem = sem;
-		this.yearLevel = yearLevel;
+		this.curriculumCode = curriculumCode;
 		this.academicYearId = academicYearId;
 	}
 
@@ -75,6 +65,14 @@ public class UserAndStudent {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
@@ -189,14 +187,6 @@ public class UserAndStudent {
 		this.image = image;
 	}
 
-	public Integer getStudentId() {
-		return studentId;
-	}
-
-	public void setStudentId(Integer studentId) {
-		this.studentId = studentId;
-	}
-
 	public Integer getStudentNo() {
 		return studentNo;
 	}
@@ -205,12 +195,12 @@ public class UserAndStudent {
 		this.studentNo = studentNo;
 	}
 
-	public Integer getCurriculumCode() {
-		return curriculumCode;
+	public Integer getStudentUserId() {
+		return studentUserId;
 	}
 
-	public void setCurriculumCode(Integer curriculumCode) {
-		this.curriculumCode = curriculumCode;
+	public void setStudentUserId(Integer studentUserId) {
+		this.studentUserId = studentUserId;
 	}
 
 	public Integer getParentNo() {
@@ -221,20 +211,12 @@ public class UserAndStudent {
 		this.parentNo = parentNo;
 	}
 
-	public Integer getSem() {
-		return sem;
+	public Integer getCurriculumCode() {
+		return curriculumCode;
 	}
 
-	public void setSem(Integer sem) {
-		this.sem = sem;
-	}
-
-	public Integer getYearLevel() {
-		return yearLevel;
-	}
-
-	public void setYearLevel(Integer yearLevel) {
-		this.yearLevel = yearLevel;
+	public void setCurriculumCode(Integer curriculumCode) {
+		this.curriculumCode = curriculumCode;
 	}
 
 	public Integer getAcademicYearId() {
@@ -245,18 +227,15 @@ public class UserAndStudent {
 		this.academicYearId = academicYearId;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
 	@Override
 	public String toString() {
 		return "UserAndStudent [userId=" + userId + ", username=" + username + ", password=" + password + ", email="
 				+ email + ", contactNo=" + contactNo + ", firstName=" + firstName + ", middleName=" + middleName
 				+ ", lastName=" + lastName + ", userType=" + userType + ", birthDate=" + birthDate + ", address="
 				+ address + ", civilStatus=" + civilStatus + ", gender=" + gender + ", nationality=" + nationality
-				+ ", activeDeactive=" + activeDeactive + ", image=" + image + ", studentId=" + studentId
-				+ ", studentNo=" + studentNo + ", curriculumCode=" + curriculumCode + ", parentNo=" + parentNo
-				+ ", sem=" + sem + ", yearLevel=" + yearLevel + ", academicYearId=" + academicYearId + "]";
+				+ ", activeDeactive=" + activeDeactive + ", image=" + image + ", studentNo=" + studentNo
+				+ ", studentUserId=" + studentUserId + ", parentNo=" + parentNo + ", curriculumCode=" + curriculumCode
+				+ ", academicYearId=" + academicYearId + "]";
 	}
+
 }
