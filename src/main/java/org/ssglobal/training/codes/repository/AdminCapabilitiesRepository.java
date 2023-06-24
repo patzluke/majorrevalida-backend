@@ -17,6 +17,7 @@ import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Parent;
 import org.ssglobal.training.codes.tables.pojos.Professor;
+import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
@@ -32,6 +33,7 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Admin ADMIN = org.ssglobal.training.codes.tables.Admin.ADMIN;
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
 	private final org.ssglobal.training.codes.tables.Professor PROFESSOR = org.ssglobal.training.codes.tables.Professor.PROFESSOR;
+	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
 	private final org.ssglobal.training.codes.tables.Parent PARENT = org.ssglobal.training.codes.tables.Parent.PARENT;
 	private final org.ssglobal.training.codes.tables.StudentApplicant STUDENT_APPLICANT = org.ssglobal.training.codes.tables.StudentApplicant.STUDENT_APPLICANT;
 	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
@@ -258,7 +260,7 @@ public class AdminCapabilitiesRepository {
 				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
 						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
 						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_DEACTIVE, USERS.IMAGE,
-						PROFESSOR.PROFESSOR_NO, PROFESSOR.WORK)
+						PROFESSOR.PROFESSOR_ID, PROFESSOR.PROFESSOR_NO, PROFESSOR.WORK)
 				.from(USERS).innerJoin(PROFESSOR).on(USERS.USER_ID.eq(PROFESSOR.USER_ID))
 				.fetchInto(UserAndProfessor.class);
 	}
@@ -268,7 +270,7 @@ public class AdminCapabilitiesRepository {
 				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
 						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
 						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_DEACTIVE, USERS.IMAGE,
-						PROFESSOR.PROFESSOR_NO, PROFESSOR.WORK)
+						PROFESSOR.PROFESSOR_ID, PROFESSOR.PROFESSOR_NO, PROFESSOR.WORK)
 				.from(USERS).innerJoin(PROFESSOR).on(USERS.USER_ID.eq(PROFESSOR.USER_ID))
 				.where(PROFESSOR.PROFESSOR_NO.eq(professorNo)).fetchOneInto(UserAndProfessor.class);
 	}
@@ -360,6 +362,60 @@ public class AdminCapabilitiesRepository {
 		}
 		return null;
 	}
+	
+	// ------------------------FOR PROFESSOR LOAD
+	public List<ProfessorLoad> selectAllProfessorsLoad() {
+		return dslContext.selectFrom(PROFESSOR_LOAD)
+						 .fetchInto(ProfessorLoad.class);
+	}
+	
+	public List<ProfessorLoad> selectProfessorLoad(Integer professorNo) {
+		return dslContext.selectFrom(PROFESSOR_LOAD)
+						 .where(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo))
+						 .fetchInto(ProfessorLoad.class);
+	}
+	
+	public ProfessorLoad insertProfessorLoad(ProfessorLoad professorLoad) {
+		ProfessorLoad insertedProfessorLoad = dslContext.insertInto(PROFESSOR_LOAD)
+				.set(PROFESSOR_LOAD.PROFESSOR_NO, professorLoad.getProfessorNo())
+				.set(PROFESSOR_LOAD.SUBJECT_CODE, professorLoad.getSubjectCode())
+				.set(PROFESSOR_LOAD.SECTION_ID, professorLoad.getSectionId())
+				.set(PROFESSOR_LOAD.ROOM_ID, professorLoad.getRoomId())
+				.set(PROFESSOR_LOAD.DEPT_CODE, professorLoad.getDeptCode())
+				.set(PROFESSOR_LOAD.DAY, professorLoad.getDay())
+				.set(PROFESSOR_LOAD.START_TIME, professorLoad.getStartTime())
+				.set(PROFESSOR_LOAD.END_TIME, professorLoad.getEndTime())
+				.returning().fetchOne().into(ProfessorLoad.class);
+	
+		return insertedProfessorLoad;
+	}
+	
+	public ProfessorLoad updateProfessorLoad(ProfessorLoad professorLoad) {
+		ProfessorLoad insertedProfessorLoad = dslContext.update(PROFESSOR_LOAD)
+				.set(PROFESSOR_LOAD.PROFESSOR_NO, professorLoad.getProfessorNo())
+				.set(PROFESSOR_LOAD.SUBJECT_CODE, professorLoad.getSubjectCode())
+				.set(PROFESSOR_LOAD.SECTION_ID, professorLoad.getSectionId())
+				.set(PROFESSOR_LOAD.ROOM_ID, professorLoad.getRoomId())
+				.set(PROFESSOR_LOAD.DEPT_CODE, professorLoad.getDeptCode())
+				.set(PROFESSOR_LOAD.DAY, professorLoad.getDay())
+				.set(PROFESSOR_LOAD.START_TIME, professorLoad.getStartTime())
+				.set(PROFESSOR_LOAD.END_TIME, professorLoad.getEndTime())
+				.where(PROFESSOR_LOAD.LOAD_ID.eq(professorLoad.getLoadId()))
+				.returning().fetchOne().into(ProfessorLoad.class);
+	
+		return insertedProfessorLoad;
+	}
+	
+	public ProfessorLoad deleteProfessorLoad(ProfessorLoad professorLoad) {
+		return dslContext.deleteFrom(PROFESSOR_LOAD)
+						 .where(PROFESSOR_LOAD.LOAD_ID.eq(professorLoad.getLoadId())
+						 .and(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorLoad.getProfessorNo()))
+						 )
+						 .returning()
+						 .fetchOne()
+						 .into(ProfessorLoad.class);
+	}
+
 
 	// ------------------------FOR Parent
 	public List<UserAndParent> selectAllParent() {

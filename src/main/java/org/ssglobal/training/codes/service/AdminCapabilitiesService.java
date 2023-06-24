@@ -11,6 +11,7 @@ import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Major;
+import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.Users;
@@ -39,6 +40,13 @@ public interface AdminCapabilitiesService {
 	UserAndProfessor insertProfessor(UserAndProfessor userAndProfessor) throws DuplicateKeyException, Exception;
 	UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor) throws DuplicateKeyException, Exception;
 	UserAndProfessor deactivateProfessor(Integer userId);
+	
+	// ------------------------FOR Professor Load
+	List<ProfessorLoad> selectAllProfessorsLoad();
+	List<ProfessorLoad> selectProfessorLoad(Integer professorNo);
+	ProfessorLoad insertProfessorLoad(ProfessorLoad professorLoad);
+	ProfessorLoad updateProfessorLoad(ProfessorLoad professorLoad);
+	ProfessorLoad deleteProfessorLoad(ProfessorLoad professorLoad);
 	
 	// ------------------------FOR Parent
 	List<UserAndParent> selectAllParent();

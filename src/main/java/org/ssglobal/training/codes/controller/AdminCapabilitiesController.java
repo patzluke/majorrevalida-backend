@@ -1,5 +1,6 @@
 package org.ssglobal.training.codes.controller;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Major;
+import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 
@@ -148,6 +150,21 @@ public class AdminCapabilitiesController {
 	}
 	
 	// -------- For Professor
+	@GetMapping(value = "/get/professor", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<UserAndProfessor>> selectAllProfessor() {
+		System.out.println(LocalTime.now());
+		try {
+			List<UserAndProfessor> updatedAdmin = service.selectAllProfessor();
+			if (!updatedAdmin.isEmpty()) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
 	@GetMapping(value = "/get/professor/{professorNo}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<UserAndProfessor> selectProfessor(@PathVariable(name = "professorNo") Integer professorNo) {
 		try {
@@ -198,6 +215,91 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+	
+	// -------- For Professor Load
+	@GetMapping(value = "/get/professorload", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<ProfessorLoad>> selectAllProfessorsLoad() {
+		System.out.println(LocalTime.now());
+		try {
+			List<ProfessorLoad> selectedProfessorsLoad = service.selectAllProfessorsLoad();
+			if (!selectedProfessorsLoad.isEmpty()) {
+				return ResponseEntity.ok(selectedProfessorsLoad);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@GetMapping(value = "/get/professorload/{professorNo}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<List<ProfessorLoad>> selectProfessorLoad(@PathVariable(name = "professorNo") Integer professorNo) {
+		try {
+			List<ProfessorLoad> selectedProfessorLoad = service.selectProfessorLoad(professorNo);
+			if (selectedProfessorLoad != null) {
+				return ResponseEntity.ok(selectedProfessorLoad);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PostMapping(value = "/insert/professorload", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity insertProfessorLoad(@RequestBody ProfessorLoad professorLoad) {
+		ProfessorLoad addedProfessorLoad;
+		try {
+			addedProfessorLoad = service.insertProfessorLoad(professorLoad);
+			if (addedProfessorLoad != null) {
+				return ResponseEntity.ok(addedProfessorLoad);
+			}
+		} catch (DuplicateKeyException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body("something went wrong");
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update/professorload", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity updateProfessorLoad(@RequestBody ProfessorLoad professorLoad) {
+		ProfessorLoad updatedProfessorLoad;
+		try {
+			updatedProfessorLoad = service.updateProfessorLoad(professorLoad);
+			if (updatedProfessorLoad != null) {
+				return ResponseEntity.ok(updatedProfessorLoad);
+			}
+		} catch (DuplicateKeyException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body("something went wrong");
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@DeleteMapping(value = "/delete/professorload", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity deleteProfessorLoad(@RequestBody ProfessorLoad professorLoad) {
+		ProfessorLoad deletedProfessorLoad;
+		try {
+			deletedProfessorLoad = service.deleteProfessorLoad(professorLoad);
+			if (deletedProfessorLoad != null) {
+				return ResponseEntity.ok(deletedProfessorLoad);
+			}
+		} catch (DuplicateKeyException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body("something went wrong");
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 	
 	// -------- For Academic Year
 	@PostMapping(value = "/insert/academic-year", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {

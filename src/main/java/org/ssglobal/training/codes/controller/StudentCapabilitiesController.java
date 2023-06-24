@@ -99,7 +99,7 @@ public class StudentCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
-	@PutMapping(value = "/edit/major", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+	@PutMapping(value = "/edit/course", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Course> editCourse(@RequestBody Course editedMajor) {
 		try {

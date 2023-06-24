@@ -15,6 +15,7 @@ import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Major;
+import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.Users;
@@ -143,6 +144,32 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public UserAndProfessor deactivateProfessor(Integer userId) {
 		return repository.deactivateProfessor(userId);
+	}
+	
+	// ------------------------FOR Professor
+	@Override
+	public List<ProfessorLoad> selectAllProfessorsLoad() {
+		return repository.selectAllProfessorsLoad();
+	}
+	
+	@Override
+	public List<ProfessorLoad> selectProfessorLoad(Integer professorNo) {
+		return repository.selectProfessorLoad(professorNo);
+	}
+	
+	@Override
+	public ProfessorLoad insertProfessorLoad(ProfessorLoad professorLoad) {
+		return repository.insertProfessorLoad(professorLoad);
+	}
+	
+	@Override
+	public ProfessorLoad updateProfessorLoad(ProfessorLoad professorLoad) {
+		return repository.updateProfessorLoad(professorLoad);
+	}
+	
+	@Override
+	public ProfessorLoad deleteProfessorLoad(ProfessorLoad professorLoad) {
+		return repository.deleteProfessorLoad(professorLoad);
 	}
 	
 	// ------------------------FOR Parent

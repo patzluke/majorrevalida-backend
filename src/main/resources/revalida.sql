@@ -501,3 +501,9 @@ values('estrella', '123456', 'estrella@gmail.com', '9055261278', 'Estrella', 'Fe
 
 insert into professor(user_id, work) values(6, 'Teacher');
 
+--insert into Professor Load table
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
+values(8002, 9001, 1, 1, 2001, 'M', '08:00', '11:00');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
+values(8002, 9001, 1, 1, 2001, 'T', '08:00', '11:00');
+
