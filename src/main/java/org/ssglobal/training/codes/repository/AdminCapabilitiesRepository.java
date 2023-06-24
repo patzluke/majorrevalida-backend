@@ -484,8 +484,9 @@ public class AdminCapabilitiesRepository {
 		/*
 		 * The program data added is limited to: department_name
 		 */
-		return dslContext.update(DEPARTMENT).set(DEPARTMENT.DEPT_NAME, updatedDepartment.getDeptName()).returning()
-				.fetchOne().into(Department.class);
+		return dslContext.update(DEPARTMENT).set(DEPARTMENT.DEPT_NAME, updatedDepartment.getDeptName())
+				.where(DEPARTMENT.DEPT_CODE.eq(updatedDepartment.getDeptCode())).returning().fetchOne()
+				.into(Department.class);
 	}
 
 	// -------------------------- FOR PROGRAM
