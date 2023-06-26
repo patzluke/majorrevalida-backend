@@ -1,8 +1,12 @@
 package org.ssglobal.training.codes.repository;
 
+import java.util.List;
+
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.ssglobal.training.codes.tables.pojos.Course;
+import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 
 @Repository
@@ -12,6 +16,8 @@ public class StudentApplicantCapabilitiesRepository {
 	private DSLContext dslContext;
 
 	private final org.ssglobal.training.codes.tables.StudentApplicant STUDENT_APPLICANT = org.ssglobal.training.codes.tables.StudentApplicant.STUDENT_APPLICANT;
+	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
+	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
 
 	public StudentApplicant insertStudentApplicant(StudentApplicant studentApplicant) {
 		StudentApplicant applicant = dslContext.insertInto(STUDENT_APPLICANT)
@@ -34,5 +40,14 @@ public class StudentApplicantCapabilitiesRepository {
 									.into(StudentApplicant.class);
 		return applicant;
 	}
-
+	
+	public List<Course> selectAllCourses() {
+		return dslContext.selectFrom(COURSE).fetchInto(Course.class);
+	}
+	
+	public List<Major> selectCourseMajors(Integer courseCode) {
+		return dslContext.selectFrom(MAJOR)
+						 .where(MAJOR.COURSE_CODE.eq(courseCode))
+						 .fetchInto(Major.class);
+	}
 }

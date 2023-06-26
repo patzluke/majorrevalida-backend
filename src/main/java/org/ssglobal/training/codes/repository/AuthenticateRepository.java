@@ -1,11 +1,10 @@
 package org.ssglobal.training.codes.repository;
 
+import java.util.Map;
+
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.ssglobal.training.codes.model.UserAndAdmin;
-import org.ssglobal.training.codes.model.UserAndParent;
-import org.ssglobal.training.codes.model.UserAndStudent;
 
 @Repository
 public class AuthenticateRepository {
@@ -14,26 +13,55 @@ public class AuthenticateRepository {
 	private final org.ssglobal.training.codes.tables.Admin ADMIN = org.ssglobal.training.codes.tables.Admin.ADMIN;
 	private final org.ssglobal.training.codes.tables.Parent PARENT = org.ssglobal.training.codes.tables.Parent.PARENT;
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
+	private final org.ssglobal.training.codes.tables.UserTokens USERTOKENS = org.ssglobal.training.codes.tables.UserTokens.USER_TOKENS;
 
 	
 	@Autowired
 	private DSLContext dslContext;
 		
-	public Object searchUserByUsernameAndPassword(String username, String password) {		  
-		UserAndAdmin adminUser = dslContext.select(USERS.USER_ID, USERS.USERNAME, USERS.USER_TYPE, USERS.ACTIVE_DEACTIVE, USERS.IMAGE, ADMIN.ADMIN_NO)
+	public Map<String, Object> searchUserByUsernameAndPassword(String username) {		  
+		Map<String, Object> adminUser = dslContext.select(USERS.USER_ID.as("userId"), USERS.USERNAME, USERS.PASSWORD, USERS.USER_TYPE.as("userType"), USERS.ACTIVE_DEACTIVE.as("activeDeactive"), USERS.IMAGE, ADMIN.ADMIN_NO.as("adminNo"))
 				  .from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID))
-				  .where(USERS.USERNAME.eq(username).and(USERS.PASSWORD.eq(password)))
-				  .fetchOneInto(UserAndAdmin.class);
+				  .where(USERS.USERNAME.eq(username))
+				  .fetchOneMap();
 		
-		UserAndParent parentUser = dslContext.select(USERS.USER_ID, USERS.USERNAME, USERS.USER_TYPE, USERS.ACTIVE_DEACTIVE, USERS.IMAGE, PARENT.PARENT_NO)
+		Map<String, Object> parentUser = dslContext.select(USERS.USER_ID.as("userId"), USERS.USERNAME, USERS.PASSWORD, USERS.USER_TYPE.as("userType"), USERS.ACTIVE_DEACTIVE.as("activeDeactive"), USERS.IMAGE, PARENT.PARENT_NO.as("parentNo"))
 				  .from(USERS).innerJoin(PARENT).on(USERS.USER_ID.eq(PARENT.USER_ID))
-				  .where(USERS.USERNAME.eq(username).and(USERS.PASSWORD.eq(password)))
-				  .fetchOneInto(UserAndParent.class);
+				  .where(USERS.USERNAME.eq(username))
+				  .fetchOneMap();
 		
-		UserAndStudent studentUser = dslContext.select(USERS.USER_ID, USERS.USERNAME, USERS.USER_TYPE, USERS.ACTIVE_DEACTIVE, USERS.IMAGE, STUDENT.STUDENT_NO)
+		Map<String, Object> studentUser = dslContext.select(USERS.USER_ID.as("userId"), USERS.USERNAME, USERS.PASSWORD, USERS.USER_TYPE.as("userType"), USERS.ACTIVE_DEACTIVE.as("activeDeactive"), USERS.IMAGE, STUDENT.STUDENT_NO.as("studentNo"))
 				  .from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID))
-				  .where(USERS.USERNAME.eq(username).and(USERS.PASSWORD.eq(password)))
-				  .fetchOneInto(UserAndStudent.class);
+				  .where(USERS.USERNAME.eq(username))
+				  .fetchOneMap();
 		return adminUser != null ? adminUser : parentUser != null ? parentUser : studentUser != null ? studentUser : null;
+	}
+	
+	public boolean createToken(Integer employeeId, String token) {
+		return dslContext.insertInto(USERTOKENS)
+						 .set(USERTOKENS.USER_ID, employeeId)
+						 .set(USERTOKENS.TOKEN, token)
+						 .execute() == 1 ? true : false;
+	}
+	
+	public boolean updateUserToken(Integer employeeId, String token) {
+		return dslContext.update(USERTOKENS)
+				 .set(USERTOKENS.TOKEN, token)
+				 .where(USERTOKENS.USER_ID.eq(employeeId))
+				 .execute() == 1 ? true : false;
+	}
+	
+	public boolean deleteUserToken(Integer userId) {
+		return dslContext.deleteFrom(USERTOKENS)
+						 .where(USERTOKENS.USER_ID.eq(userId))
+						 .execute() == 1 ? true : false;
+	}
+
+	public boolean isUserTokenIdExists(Integer userId) {
+		return dslContext.fetchExists(USERTOKENS, USERTOKENS.USER_ID.eq(userId));
+	}
+
+	public boolean isUserTokenExists(String token) {
+		return dslContext.fetchExists(USERTOKENS, USERTOKENS.TOKEN.eq(token));
 	}
 }

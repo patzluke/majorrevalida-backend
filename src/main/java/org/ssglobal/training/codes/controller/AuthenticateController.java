@@ -26,15 +26,22 @@ public class AuthenticateController {
 	public ResponseEntity<List<Object>> authenticate(@RequestBody Map<String, String> payload) {
 		String username = payload.get("username");
 		String password = payload.get("password");
-		Object authenticatedUser = service.searchUserByUsernameAndPassword(username, password);
+		Map<String, Object> authenticatedUser = service.searchUserByUsernameAndPassword(username, password);
 		if (authenticatedUser != null) {
 			List<Object> usertoken = new ArrayList<>();
-//			String token = userService
-//					.generateToken(Integer.valueOf(authenticatedUser.get("employeeId").toString()), 
-//												   authenticatedUser.get("username").toString(), 
-//												   authenticatedUser.get("userType").toString());
-//			usertoken.add(token);
-			System.out.println(authenticatedUser);
+			Integer userNo = authenticatedUser.get("adminNo") != null ? Integer.valueOf(authenticatedUser.get("adminNo").toString())
+							 : authenticatedUser.get("parentNo") != null ? Integer.valueOf(authenticatedUser.get("parentNo").toString())
+							 : authenticatedUser.get("studentNo") != null ? Integer.valueOf(authenticatedUser.get("studentNo").toString())
+							 : null;
+			
+			String token = service
+					.generateToken(Integer.valueOf(authenticatedUser.get("userId").toString()),
+								   				   userNo,
+												   authenticatedUser.get("username").toString(), 
+												   authenticatedUser.get("userType").toString(),
+												   Boolean.valueOf(authenticatedUser.get("activeDeactive").toString())
+								  );
+			usertoken.add(token);
 			return new ResponseEntity<>(usertoken, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);

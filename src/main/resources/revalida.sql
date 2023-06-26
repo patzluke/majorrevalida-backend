@@ -90,8 +90,8 @@ create table student_applicant (
 drop table if exists users cascade;
 create table users (
 	user_id serial primary key,
-    username varchar(50),
-    password varchar(50),
+    username varchar(100) unique,
+    password varchar(150),
  	email varchar(50) unique,
     contact_no varchar(50),
     first_name varchar(70),
@@ -106,6 +106,13 @@ create table users (
     active_deactive boolean,
     image varchar(50)
 ); 
+
+drop table if exists user_tokens;
+create table user_tokens (
+	user_id int,
+	token varchar(250),
+	foreign key(user_id) references users(user_id) on delete cascade
+);
 
 drop sequence if exists parent_sequence;
 create sequence parent_sequence as int increment by 1 start with 6001;
@@ -493,17 +500,36 @@ insert into parent(user_id) values(4);
 --insert into users and Professor table
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
 values('norman', '123456', 'norman@gmail.com', '9188192721', 'Norman', 'Astros', 'Fernando', 'Professor', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'norman.jpeg');
-
 insert into professor(user_id, work) values(5, 'Teacher');
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
 values('estrella', '123456', 'estrella@gmail.com', '9055261278', 'Estrella', 'Fernando', 'Astros', 'Professor', '1975-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'estrella.jpeg');
-
 insert into professor(user_id, work) values(6, 'Teacher');
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+values('lopez', '123456', 'lopez@gmail.com', '9055261278', 'lopez', 'Abigail', 'chuchu', 'Professor', '1975-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'lopez.jpeg');
+insert into professor(user_id, work) values(7, 'Teacher');
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
+values('jackson', '123456', 'jackson@gmail.com', '9055261278', 'Jackson', 'Normal', 'Astros', 'Professor', '1975-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'jackson.jpeg');
+insert into professor(user_id, work) values(8, 'Teacher');
 
 --insert into Professor Load table
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
-values(8002, 9001, 1, 1, 2001, 'M', '08:00', '11:00');
+values(8001, 9001, 1, 1, 2001, 'M', '08:00', '11:00');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
-values(8002, 9001, 1, 1, 2001, 'T', '08:00', '11:00');
+values(8001, 9002, 1, 1, 2001, 'M', '11:00', '14:00');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
+values(8002, 9003, 1, 1, 2001, 'M', '16:00', '18:00');
 
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
+values(8002, 9004, 1, 1, 2001, 'T', '08:00', '11:00');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
+values(8003, 9005, 1, 1, 2001, 'T', '11:00', '14:00');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
+values(8003, 9006, 1, 1, 2001, 'T', '16:00', '18:00');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
+values(8004, 9007, 1, 1, 2001, 'W', '08:00', '11:00');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
+values(8004, 9008, 1, 1, 2001, 'W', '11:00', '14:00');

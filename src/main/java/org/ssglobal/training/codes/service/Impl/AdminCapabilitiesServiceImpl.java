@@ -3,7 +3,10 @@ package org.ssglobal.training.codes.service.Impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndParent;
@@ -25,6 +28,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 
 	@Autowired
 	private AdminCapabilitiesRepository repository;
+	
+	@Bean
+	public PasswordEncoder encoder() {
+	    return new BCryptPasswordEncoder();
+	}
 
 	@Override
 	public List<Users> selectAllUsers() {
@@ -45,10 +53,14 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) throws DuplicateKeyException, Exception {
 		selectAllUsers().forEach(user -> {
+			if (user.getUsername().equals(userAdmin.getUsername())) {
+				throw new DuplicateKeyException("username already exists");
+			}
 			if (user.getEmail().equals(userAdmin.getEmail())) {
 				throw new DuplicateKeyException("email already exists");
 			}
 		});
+		userAdmin.setPassword(encoder().encode(userAdmin.getContactNo().concat(userAdmin.getUsername())));
 		return repository.insertAdminUser(userAdmin);
 	}
 
@@ -56,6 +68,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public UserAndAdmin updateAdminUser(UserAndAdmin userAdmin) throws DuplicateKeyException, Exception {
 		selectAllUsers().forEach(user -> {
 			if (!user.getUserId().equals(userAdmin.getUserId())) {
+				if (user.getUsername().equals(userAdmin.getUsername())) {
+					throw new DuplicateKeyException("username already exists");
+				}
 				if (user.getEmail().equals(userAdmin.getEmail())) {
 					throw new DuplicateKeyException("email already exists");
 				}
@@ -84,10 +99,14 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public UserAndStudent insertStudent(UserAndStudent student) throws DuplicateKeyException, Exception {
 		selectAllUsers().forEach(user -> {
+			if (user.getUsername().equals(student.getUsername())) {
+				throw new DuplicateKeyException("username already exists");
+			}
 			if (user.getEmail().equals(student.getEmail())) {
 				throw new DuplicateKeyException("email already exists");
 			}
 		});
+		student.setPassword(encoder().encode(student.getContactNo().concat(student.getUsername())));
 		return repository.insertStudent(student);
 	}
 	
@@ -95,6 +114,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public UserAndStudent updateStudent(UserAndStudent student) {
 		selectAllUsers().forEach(user -> {
 			if (!user.getUserId().equals(student.getUserId())) {
+				if (user.getUsername().equals(student.getUsername())) {
+					throw new DuplicateKeyException("username already exists");
+				}
 				if (user.getEmail().equals(student.getEmail())) {
 					throw new DuplicateKeyException("email already exists");
 				}
@@ -122,10 +144,14 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public UserAndProfessor insertProfessor(UserAndProfessor userAndProfessor) throws DuplicateKeyException, Exception {
 		selectAllUsers().forEach(user -> {
+			if (user.getUsername().equals(userAndProfessor.getUsername())) {
+				throw new DuplicateKeyException("username already exists");
+			}
 			if (user.getEmail().equals(userAndProfessor.getEmail())) {
 				throw new DuplicateKeyException("email already exists");
 			}
 		});
+		userAndProfessor.setPassword(encoder().encode(userAndProfessor.getContactNo().concat(userAndProfessor.getUsername())));
 		return repository.insertProfessor(userAndProfessor);
 	}
 	
@@ -133,6 +159,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor) throws DuplicateKeyException, Exception {
 		selectAllUsers().forEach(user -> {
 			if (!user.getUserId().equals(userAndProfessor.getUserId())) {
+				if (user.getUsername().equals(userAndProfessor.getUsername())) {
+					throw new DuplicateKeyException("username already exists");
+				}
 				if (user.getEmail().equals(userAndProfessor.getEmail())) {
 					throw new DuplicateKeyException("email already exists");
 				}
@@ -185,12 +214,14 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	
 	@Override
 	public UserAndParent updateParentInfo(UserAndParent parent) {
-		selectAllParent().forEach(innerParent -> {
-			if (innerParent.getEmail().equals(parent.getEmail())) {
-				throw new DuplicateKeyException("email already exists");
-			}
-			if (innerParent.getContactNo().equals(parent.getContactNo())) {
-				throw new DuplicateKeyException("contactNo already exists");
+		selectAllUsers().forEach(user -> {
+			if (!user.getUserId().equals(parent.getUserId())) {
+				if (user.getUsername().equals(parent.getUsername())) {
+					throw new DuplicateKeyException("username already exists");
+				}
+				if (user.getEmail().equals(parent.getEmail())) {
+					throw new DuplicateKeyException("email already exists");
+				}
 			}
 		});
 		return repository.updateParentInfo(parent);
