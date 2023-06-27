@@ -56,20 +56,6 @@ public class StudentCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
-	@GetMapping(value = "/view/grades/{studentId}")
-	public ResponseEntity<Grades> viewStudentGrades(@PathVariable("studentId") Integer studentId) {
-		try {
-			Grades studentGrades = service.viewStudentGrade(studentId);
-			if (studentGrades != null) {
-				return ResponseEntity.ok(studentGrades);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.badRequest().build();
-	}
-
 	@GetMapping(value = "/view/course/{studentId}")
 	public ResponseEntity<StudentCourseData> viewStudentCourse(@PathVariable("studentId") Integer studentNo) {
 		try {
@@ -135,6 +121,20 @@ public class StudentCapabilitiesController {
 			StudentAttendance studentAttendance = service.viewStudentAttendance(studentNo);
 			if (studentAttendance != null) {
 				return ResponseEntity.ok(studentAttendance);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+
+	@GetMapping(value = "/view/grades/{studentId}")
+	public ResponseEntity<Grades> viewStudentGrades(@PathVariable("studentId") Integer studentId) {
+		try {
+			Grades studentGrades = service.viewStudentGrade(studentId);
+			if (studentGrades != null) {
+				return ResponseEntity.ok(studentGrades);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
