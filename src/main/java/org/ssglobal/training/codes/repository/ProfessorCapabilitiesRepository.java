@@ -1,10 +1,14 @@
 package org.ssglobal.training.codes.repository;
 
+import java.util.List;
+import java.util.Map;
+
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndProfessor;
 import org.ssglobal.training.codes.tables.pojos.Professor;
+import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
 @Repository
@@ -15,7 +19,11 @@ public class ProfessorCapabilitiesRepository {
 
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 	private final org.ssglobal.training.codes.tables.Professor PROFESSOR = org.ssglobal.training.codes.tables.Professor.PROFESSOR;
-
+	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
+	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
+	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
+	private final org.ssglobal.training.codes.tables.StudentAttendance STUDENT_ATTENDANCE = org.ssglobal.training.codes.tables.StudentAttendance.STUDENT_ATTENDANCE;
+	
 	public UserAndProfessor selectProfessor(Integer professorNo) {
 		return dslContext
 				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
@@ -55,6 +63,25 @@ public class ProfessorCapabilitiesRepository {
 			return newuserAndProfessor;
 		}
 		return null;
+	}
+	
+//	Select All loads in ProfessorLoad table
+	public List<ProfessorLoad> selectAllLoad(Integer professorNo) {
+		return dslContext.selectFrom(PROFESSOR_LOAD).where(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo)).fetchInto(ProfessorLoad.class);
+	}
+
+//	Select All loads in ProfessorLoad with inner join of it's subject table
+	public List<Map<String, Object>> selectAllLoads(Integer professorNo) {
+		return dslContext.select(PROFESSOR_LOAD.LOAD_ID, PROFESSOR_LOAD.PROFESSOR_NO, PROFESSOR_LOAD.SUBJECT_CODE, PROFESSOR_LOAD.SECTION_ID, PROFESSOR_LOAD.ROOM_ID, PROFESSOR_LOAD.DEPT_CODE, PROFESSOR_LOAD.DAY,
+				PROFESSOR_LOAD.START_TIME, PROFESSOR_LOAD.END_TIME, SUBJECT.SUBJECT_CODE, SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE, SUBJECT.UNITS, SUBJECT.ACTIVE_DEACTIVE)
+				.from(PROFESSOR_LOAD).innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).where(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo)).fetchMaps();
+	}
+	
+//	List of Students Attendance in that particular Professor's Load
+	public List<Map<String, Object>> selectAllAttendance(Integer loadId) {
+		return dslContext.select(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID, STUDENT_ATTENDANCE.STUDENT_NO, STUDENT_ATTENDANCE.LOAD_ID, STUDENT_ATTENDANCE.ATTENDANCE_DATE, STUDENT_ATTENDANCE.STATUS)
+				.from(STUDENT_ATTENDANCE).innerJoin(STUDENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.where(STUDENT_ATTENDANCE.LOAD_ID.eq(loadId)).fetchMaps();
 	}
 
 }

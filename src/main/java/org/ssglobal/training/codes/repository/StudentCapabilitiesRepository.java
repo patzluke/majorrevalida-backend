@@ -84,11 +84,6 @@ public class StudentCapabilitiesRepository {
 
 	}
 
-	public Grades viewStudentGrade(Integer studentNo) {
-		// Get the grade where the studentId equal to the Grade's table student_no
-		return dslContext.selectFrom(GRADES).where(GRADES.STUDENT_NO.eq(studentNo)).fetchOneInto(Grades.class);
-	}
-
 	public StudentCourseData viewCourse(Integer studentNo) {
 		// get the student's data
 		Student student = dslContext.selectFrom(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo))
@@ -155,6 +150,11 @@ public class StudentCapabilitiesRepository {
 		// get all the student attendance data
 		return dslContext.selectFrom(STUDENT_ATTENDANCE).where(STUDENT_ATTENDANCE.STUDENT_NO.eq(studentNo))
 				.fetchOneInto(StudentAttendance.class);
+	}
+
+	public Grades viewStudentGrade(Integer studentNo) {
+		// Get the grade where the studentId equal to the Grade's table student_no
+		return dslContext.selectFrom(GRADES).where(GRADES.STUDENT_NO.eq(studentNo)).fetchOneInto(Grades.class);
 	}
 
 }
