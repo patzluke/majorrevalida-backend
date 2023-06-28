@@ -123,6 +123,20 @@ public class AdminCapabilitiesController {
 	}
 
 	// -------- For Student
+	@GetMapping(value = "/get/student")
+	public ResponseEntity<List<UserAndStudent>> selectAllStudent() {
+		try {
+			List<UserAndStudent> studentProfile = service.selectAllStudent();
+			if (studentProfile != null) {
+				return ResponseEntity.ok(studentProfile);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/insert/student", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
@@ -142,6 +156,7 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 
+	// -------- For Student Applicants
 	@GetMapping(value = "/get/studentapplicant")
 	public ResponseEntity<List<StudentApplicant>> selectAllStudentApplicants() {
 		try {
@@ -154,6 +169,20 @@ public class AdminCapabilitiesController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.badRequest().build();
+	}
+	
+	@PutMapping(value = "/update/studentapplicant", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<StudentApplicant> changeProfessorAccountStatus(@RequestBody StudentApplicant studentApplicant) {
+		try {
+			StudentApplicant updatedAdmin = service.updateStudentApplicantStatus(studentApplicant);
+			if (updatedAdmin != null) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
 	// -------- For Professor
@@ -356,6 +385,20 @@ public class AdminCapabilitiesController {
 	}
 
 	// -------- For Course
+	@GetMapping(value = "/get/course/dept/program", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectAllCourses() {
+		try {
+			List<Map<String, Object>> updatedAdmin = service.selectAllCourses();
+			if (!updatedAdmin.isEmpty()) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 	@PostMapping(value = "/insert/course", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Course> insertCourse(@RequestBody Course course) {
@@ -388,6 +431,20 @@ public class AdminCapabilitiesController {
 	}
 
 	// -------- For Curriculum
+	@GetMapping(value = "/get/curriculum/major", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectCourseMajors() {
+		try {
+			List<Map<String, Object>> selectedCourseMajor = service.selectAllCurriculum();
+			if (!selectedCourseMajor.isEmpty()) {
+				return ResponseEntity.ok(selectedCourseMajor);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 	@PostMapping(value = "/insert/curriculum", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Curriculum> insertCurriculum(@RequestBody Curriculum curriculum) {
@@ -402,5 +459,19 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-
+	
+	// -------- FOR INNER JOIN OF Curriculum, Major, Course, Department and Program;
+	@GetMapping(value = "/get/curriculum/major/course/dept/program", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram() {
+		try {
+			List<Map<String, Object>> updatedAdmin = service.selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram();
+			if (!updatedAdmin.isEmpty()) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
 }

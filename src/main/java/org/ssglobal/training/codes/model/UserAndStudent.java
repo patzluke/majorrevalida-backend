@@ -22,8 +22,8 @@ public class UserAndStudent {
 	private String image;
 
 	// This is the attributes for student
+	private Integer studentId;
 	private Integer studentNo;
-	private Integer studentUserId;
 	private Integer parentNo;
 	private Integer curriculumCode;
 	private Integer academicYearId;
@@ -34,7 +34,7 @@ public class UserAndStudent {
 	public UserAndStudent(Integer userId, String username, String password, String email, String contactNo,
 			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
 			String civilStatus, String gender, String nationality, Boolean activeDeactive, String image,
-			Integer studentNo, Integer studentUserId, Integer parentNo, Integer curriculumCode,
+			Integer studentId, Integer studentNo, Integer parentNo, Integer curriculumCode,
 			Integer academicYearId) {
 		this.userId = userId;
 		this.username = username;
@@ -52,8 +52,8 @@ public class UserAndStudent {
 		this.nationality = nationality;
 		this.activeDeactive = activeDeactive;
 		this.image = image;
+		this.studentId = studentId;
 		this.studentNo = studentNo;
-		this.studentUserId = studentUserId;
 		this.parentNo = parentNo;
 		this.curriculumCode = curriculumCode;
 		this.academicYearId = academicYearId;
@@ -191,16 +191,16 @@ public class UserAndStudent {
 		return studentNo;
 	}
 
+	public Integer getStudentId() {
+		return studentId;
+	}
+
+	public void setStudentId(Integer studentId) {
+		this.studentId = studentId;
+	}
+	
 	public void setStudentNo(Integer studentNo) {
 		this.studentNo = studentNo;
-	}
-
-	public Integer getStudentUserId() {
-		return studentUserId;
-	}
-
-	public void setStudentUserId(Integer studentUserId) {
-		this.studentUserId = studentUserId;
 	}
 
 	public Integer getParentNo() {
@@ -233,9 +233,8 @@ public class UserAndStudent {
 				+ email + ", contactNo=" + contactNo + ", firstName=" + firstName + ", middleName=" + middleName
 				+ ", lastName=" + lastName + ", userType=" + userType + ", birthDate=" + birthDate + ", address="
 				+ address + ", civilStatus=" + civilStatus + ", gender=" + gender + ", nationality=" + nationality
-				+ ", activeDeactive=" + activeDeactive + ", image=" + image + ", studentNo=" + studentNo
-				+ ", studentUserId=" + studentUserId + ", parentNo=" + parentNo + ", curriculumCode=" + curriculumCode
+				+ ", activeDeactive=" + activeDeactive + ", image=" + image + ", studentId=" + studentId
+				+ ", studentNo=" + studentNo + ", parentNo=" + parentNo + ", curriculumCode=" + curriculumCode
 				+ ", academicYearId=" + academicYearId + "]";
 	}
-
 }

@@ -320,6 +320,9 @@ create table student_attendance (
     foreign key(load_id) references professor_load(load_id) on delete cascade    
 ); 
 
+--insert into academic_year table
+insert into academic_year(academic_year, status) values('2023-2024', 'On-going');
+
 --insert into program table
 insert into program(program_title) values('Bachelor Of Science');
 insert into program(program_title) values('Bachelor Of Arts');
@@ -341,9 +344,9 @@ insert into major(course_code, major_title) values(3001, 'Network and Security')
 insert into major(course_code, major_title) values(3001, 'Automation');
 
 --insert into Curriculum table
-insert into curriculum(curriculum_code, curriculum_name) values(4001, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN WEB AND MOBILE APPLICATION');
-insert into curriculum(curriculum_code, curriculum_name) values(4002, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY');
-insert into curriculum(curriculum_code, curriculum_name) values(4003, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY');
+insert into curriculum(major_code, curriculum_name) values(4001, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN WEB AND MOBILE APPLICATION');
+insert into curriculum(major_code, curriculum_name) values(4002, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY');
+insert into curriculum(major_code, curriculum_name) values(4003, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY');
 
 --insert into major and minor subject table
 	--for information technology major in web and mobile major subjects (first year 1ST SEM)
@@ -351,17 +354,17 @@ insert into curriculum(curriculum_code, curriculum_name) values(4003, 'BACHELOR 
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('ICS 2601', 'Introduction to Computing', 3, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9001, 9000, 4001, 1, 1);
+	values(9001, 9000, 5001, 1, 1);
 	
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('ICS 2602', 'Computer Programming I (Fundamentals of Programming - Imperative)', 3, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9002, 9000, 4001, 1, 1);
+	values(9002, 9000, 5001, 1, 1);
 	
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('ICS 2604', 'Values Education', 2, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9003, 9000, 4001, 1, 1);
+	values(9003, 9000, 5001, 1, 1);
 	
 	--minor subjs
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
@@ -394,22 +397,22 @@ insert into curriculum(curriculum_code, curriculum_name) values(4003, 'BACHELOR 
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('ICS 2606', 	'Computer Programming II (Intermediate Programming - Object-Oriented)', 4, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9009, 9002, 4001, 1, 2);
+	values(9009, 9002, 5001, 1, 2);
 	
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('IT 2621', 'Information Technology Fundamentals', 3, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9010, 9004, 4001, 1, 2);
+	values(9010, 9004, 5001, 1, 2);
 
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('IT 2622', 'Human-Computer Interaction', 3, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9011, 9004, 4001, 1, 2);
+	values(9011, 9004, 5001, 1, 2);
 	
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('ICS 2603', 'Discrete Structures', 3, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9012, 9004, 4001, 1, 2);
+	values(9012, 9004, 5001, 1, 2);
 	
 	--minor subjs
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
@@ -432,22 +435,22 @@ insert into curriculum(curriculum_code, curriculum_name) values(4003, 'BACHELOR 
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('ICS 2605', 'Data Structures and Algorithms', 4, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9016, 9014, 4001, 2, 1);
+	values(9016, 9014, 5001, 2, 1);
 	
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('ICS 2607', 'Information Management', 4, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9017, 9000, 4001, 2, 1);
+	values(9017, 9000, 5001, 2, 1);
 	
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('ICS 2608', 'Applications Development and Emerging Technologies 1 (Web-Front-End)', 3, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9018, 9009, 4001, 2, 1);
+	values(9018, 9009, 5001, 2, 1);
 	
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('ICS 26014', 'Data Communications and Networking I', 3, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9019, 9010, 4001, 2, 1);
+	values(9019, 9010, 5001, 2, 1);
 	
 	--minor subjs
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
@@ -465,17 +468,17 @@ insert into curriculum(curriculum_code, curriculum_name) values(4003, 'BACHELOR 
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('ICS 2609', 'Applications Development and Emerging Technologies 2 (Enterprise Back-end)', 3, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9022, 9019, 4001, 2, 2);
+	values(9022, 9019, 5001, 2, 2);
 	
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('IT 2623', 'Computer Architecture, Organization, and Logic', 3, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9023, 9010, 4001, 2, 2);
+	values(9023, 9010, 5001, 2, 2);
 	
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
 	values('IT 2624', 'Data Communications and Networking II', 3, 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9024, 9020, 4001, 2, 2);
+	values(9024, 9020, 5001, 2, 2);
 	
 	--minor subjs
 	insert into subject(abbrevation, subject_title, units, active_deactive) 
@@ -558,3 +561,9 @@ insert into professor_load(professor_no, subject_code, section_id, room_id, dept
 values(8004, 9007, 1, 1, 2001, 'W', '08:00', '11:00');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
 values(8004, 9008, 1, 1, 2001, 'W', '11:00', '14:00');
+
+select cu.curriculum_code, cu.curriculum_name, m.major_code, m.major_title, co.course_code, co.course_title, d.dept_code, d.dept_name, p.program_code, p.program_title from curriculum cu 
+inner join major m on cu.major_code = m.major_code
+inner join course co on m.course_code = co.course_code
+inner join department d on co.dept_code = d.dept_code
+inner join program p on co.program_code = p.program_code;

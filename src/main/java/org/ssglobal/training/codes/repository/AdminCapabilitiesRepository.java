@@ -1,6 +1,7 @@
 package org.ssglobal.training.codes.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,11 +161,11 @@ public class AdminCapabilitiesRepository {
 		 * curriculumCode, and academicYearId
 		 */
 		return dslContext
-				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.FIRST_NAME, USERS.MIDDLE_NAME,
+				.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME, USERS.MIDDLE_NAME,
 						USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS, USERS.CIVIL_STATUS,
-						USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_DEACTIVE, USERS.IMAGE, STUDENT.USER_ID,
-						STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE, STUDENT.ACADEMIC_YEAR_ID)
-				.from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID)).fetchInto(UserAndStudent.class);
+						USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_DEACTIVE, USERS.IMAGE, STUDENT.STUDENT_ID,
+						STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE, STUDENT.ACADEMIC_YEAR_ID)
+				.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).fetchInto(UserAndStudent.class);
 	}
 
 	public UserAndStudent selectStudent(Integer studentNo) {
@@ -209,7 +210,7 @@ public class AdminCapabilitiesRepository {
 				insertUser.getMiddleName(), insertUser.getLastName(), insertUser.getUserType(),
 				insertUser.getBirthDate(), insertUser.getAddress(), insertUser.getCivilStatus(), insertUser.getGender(),
 				insertUser.getNationality(), insertUser.getActiveDeactive(), insertUser.getImage(),
-				insertStudent.getStudentNo(), insertStudent.getUserId(), insertStudent.getParentNo(),
+				insertStudent.getStudentId(), insertStudent.getStudentNo(), insertStudent.getParentNo(),
 				insertStudent.getCurriculumCode(), insertStudent.getAcademicYearId());
 
 		return information;
@@ -232,13 +233,12 @@ public class AdminCapabilitiesRepository {
 				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId()).returning().fetchOne().into(Student.class);
 
 		UserAndStudent information = new UserAndStudent(updatedUser.getUserId(), updatedUser.getUsername(),
-				updatedUser.getPassword(), updatedUser.getEmail(), updatedUser.getContactNo(),
-				updatedUser.getFirstName(), updatedUser.getMiddleName(), updatedUser.getLastName(),
-				updatedUser.getUserType(), updatedUser.getBirthDate(), updatedUser.getAddress(),
-				updatedUser.getCivilStatus(), updatedUser.getGender(), updatedUser.getNationality(),
-				updatedUser.getActiveDeactive(), updatedUser.getImage(), updatedStudent.getStudentNo(),
-				updatedStudent.getUserId(), updatedStudent.getParentNo(), updatedStudent.getCurriculumCode(),
-				updatedStudent.getAcademicYearId());
+				updatedUser.getPassword(), updatedUser.getEmail(), updatedUser.getContactNo(), updatedUser.getFirstName(),
+				updatedUser.getMiddleName(), updatedUser.getLastName(), updatedUser.getUserType(),
+				updatedUser.getBirthDate(), updatedUser.getAddress(), updatedUser.getCivilStatus(), updatedUser.getGender(),
+				updatedUser.getNationality(), updatedUser.getActiveDeactive(), updatedUser.getImage(),
+				updatedStudent.getStudentId(), updatedStudent.getStudentNo(), updatedStudent.getParentNo(),
+				updatedStudent.getCurriculumCode(), updatedStudent.getAcademicYearId());
 		return information;
 
 	}
@@ -565,6 +565,16 @@ public class AdminCapabilitiesRepository {
 	}
 
 	// -------------------------- FOR COURSE
+	public List<Map<String, Object>> selectAllCourses() {
+		List<Map<String, Object>> query = dslContext.select(COURSE.COURSE_ID.as("courseId"), COURSE.COURSE_CODE.as("courseCode"), COURSE.COURSE_TITLE.as("courseTitle"), DEPARTMENT.DEPT_CODE.as("deptCode"), 
+										  					DEPARTMENT.DEPT_NAME.as("deptName"), PROGRAM.PROGRAM_CODE.as("programCode"), PROGRAM.PROGRAM_TITLE.as("programTitle"))
+						  .from(COURSE)
+						  .innerJoin(DEPARTMENT).on(COURSE.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+						  .innerJoin(PROGRAM).on(COURSE.PROGRAM_CODE.eq(PROGRAM.PROGRAM_CODE))
+						  .fetchMaps();
+		return !query.isEmpty() ? query : null;
+	}
+	
 	public Course addCourse(Course course) {
 		/*
 		 * The program data added is limited to: program_code and course_title
@@ -606,6 +616,16 @@ public class AdminCapabilitiesRepository {
 	}
 
 	// -------------------------- FOR CURRICULUM
+	public List<Map<String, Object>> selectAllCurriculum() {
+		List<Map<String, Object>> query = dslContext.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriclumCode"), CURRICULUM.CURRICULUM_NAME.as("curriclumName"), 
+															MAJOR.MAJOR_CODE.as("majorCode"), MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_CODE.as("courseCode"))
+						  .from(CURRICULUM)
+						  .innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+						  .innerJoin(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+						  .fetchMaps();
+		return !query.isEmpty() ? query : null;
+	}
+	
 	public Curriculum addCurriculum(Curriculum curriculum) {
 		/*
 		 * The program data added is limited to: major_code and curriculum_name
@@ -627,5 +647,17 @@ public class AdminCapabilitiesRepository {
 				.into(Curriculum.class);
 		return editCurriculum;
 	}
-
+	
+	// -------------------------- FOR INNER JOIN OF Curriculum, Major, Course, Department and Program;
+	public List<Map<String, Object>> selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram() {
+		List<Map<String, Object>> query = dslContext.select(CURRICULUM.CURRICULUM_CODE.as("curriclumCode"), CURRICULUM.CURRICULUM_NAME.as("curriclumName"), MAJOR.MAJOR_CODE.as("majorCode"), MAJOR.MAJOR_TITLE.as("majorTitle"), 
+						  COURSE.COURSE_CODE.as("courseCode"), COURSE.COURSE_TITLE.as("courseTitle"), DEPARTMENT.DEPT_CODE.as("deptCode"), DEPARTMENT.DEPT_NAME.as("deptName"),
+						  PROGRAM.PROGRAM_CODE.as("programCode"), PROGRAM.PROGRAM_TITLE.as("programTitle")).from(CURRICULUM)
+						  .innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+						  .innerJoin(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+						  .innerJoin(DEPARTMENT).on(COURSE.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+						  .innerJoin(PROGRAM).on(COURSE.PROGRAM_CODE.eq(PROGRAM.PROGRAM_CODE))
+						  .fetchMaps();
+		return !query.isEmpty() ? query : null;
+	}
 }

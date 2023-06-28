@@ -1,6 +1,7 @@
 package org.ssglobal.training.codes.service.Impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -272,6 +273,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 
 	// ------------------------FOR course
 	@Override
+	public List<Map<String, Object>> selectAllCourses() {
+		return repository.selectAllCourses();
+	}
+	
+	@Override
 	public Course addCourse(Course course) {
 		return repository.addCourse(course);
 	}
@@ -294,6 +300,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 
 	// ------------------------FOR Curriculum
 	@Override
+	public List<Map<String, Object>> selectAllCurriculum() {
+		return repository.selectAllCurriculum();
+	}
+	
+	@Override
 	public Curriculum addCurriculum(Curriculum curriculum) {
 		return repository.addCurriculum(curriculum);
 	}
@@ -301,5 +312,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public Curriculum editCurriculum(Curriculum curriculum) {
 		return repository.editCurriculum(curriculum);
+	}
+	
+	// ------------------------FOR INNER JOIN OF Curriculum, Major, Course, Department and Program;
+	@Override
+	public List<Map<String, Object>> selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram() {
+		return repository.selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram();
 	}
 }

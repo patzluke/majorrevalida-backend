@@ -1,6 +1,7 @@
 package org.ssglobal.training.codes.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.ssglobal.training.codes.model.UserAndAdmin;
@@ -68,6 +69,7 @@ public interface AdminCapabilitiesService {
 	Program editProgram(Program program);
 	
 	// ------------------------FOR Course
+	List<Map<String, Object>> selectAllCourses();
 	Course addCourse(Course course);
 	Course editCourse(Course course);
 	
@@ -76,6 +78,10 @@ public interface AdminCapabilitiesService {
 	Major editMajor(Major major);
 	
 	// ------------------------FOR Curriculum
+	List<Map<String, Object>> selectAllCurriculum();
 	Curriculum addCurriculum(Curriculum curriculum);
 	Curriculum editCurriculum(Curriculum curriculum);
+	
+	// ------------------------FOR INNER JOIN OF Curriculum, Major, Course, Department and Program;
+	List<Map<String, Object>> selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram();
 }
