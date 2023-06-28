@@ -71,20 +71,45 @@ create table academic_year (
 drop table if exists student_applicant cascade;
 create table student_applicant (
     student_applicant_id serial primary key,
-    email varchar(50) unique,
-    contact_no varchar(50),
+    student_type varchar(20),
+    selected_course_code int,
+    selected_major_code int,
+    year_level int,
+    school_year int,
     first_name varchar(70),
     middle_name varchar(70),
     last_name varchar(70),
-    birth_date date,
-    address text,
-    civil_status varchar(20),
+    suffix_name varchar(70),
     gender varchar(15),
-    nationality varchar(30),
+    civil_status varchar(20),
+    citizenship varchar(50),
+    birth_date date,
+    birth_place varchar(50),
+    religion varchar(80),
+    address text,
+    telephone_no varchar(15),
+    mobile_no varchar(15),
+    email varchar(80) unique,
+    
+    father_first_name varchar(70),
+    father_middle_name varchar(70),
+    father_last_name varchar(70),
+    father_suffix_name varchar(70),
+    father_mobile_no varchar(15),
+    father_email varchar(80),
+    father_occupation varchar(80),
+    
+   	mother_first_name varchar(70),
+    mother_middle_name varchar(70),
+    mother_last_name varchar(70),
+    mother_suffix_name varchar(70),
+    mother_mobile_no varchar(15),
+    mother_email varchar(80),
+    mother_occupation varchar(80),
+    
     date_applied timestamp,
     date_accepted timestamp,
-    status varchar(30),
-    student_type varchar(30)
+    acceptance_status varchar(30) default 'Not yet Accepted'
 ); 
 
 drop table if exists users cascade;

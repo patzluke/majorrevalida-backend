@@ -39,6 +39,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 		return repository.selectAllUsers();
 	}
 	
+	@Override
+	public boolean changePassword(String password, String username) {
+		return repository.changePassword(encoder().encode(password), username);
+	}
+	
 	// ------------------------FOR ADMIN
 	@Override
 	public List<UserAndAdmin> selectAllAdmin() {
@@ -171,8 +176,8 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public UserAndProfessor deactivateProfessor(Integer userId) {
-		return repository.deactivateProfessor(userId);
+	public UserAndProfessor changeProfessorAccountStatus(Integer userId, Boolean status) {
+		return repository.changeProfessorAccountStatus(userId, status);
 	}
 	
 	// ------------------------FOR Professor

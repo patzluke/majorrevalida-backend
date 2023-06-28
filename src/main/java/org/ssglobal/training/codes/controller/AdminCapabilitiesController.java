@@ -2,6 +2,7 @@ package org.ssglobal.training.codes.controller;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -34,6 +35,12 @@ public class AdminCapabilitiesController {
 
 	@Autowired
 	private AdminCapabilitiesService service;
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update/password", consumes = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity changePassword(@RequestBody Map<String, String> payload) {
+		return service.changePassword(payload.get("password"), payload.get("username")) ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
+	}
 
 	// -------- For Admin
 	@GetMapping(value = "/get/admin", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -214,6 +221,21 @@ public class AdminCapabilitiesController {
 			return ResponseEntity.badRequest().body("something went wrong");
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@PutMapping(value = "/deactivate/professor", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<UserAndProfessor> changeProfessorAccountStatus(@RequestBody Map<String, Object> payload) {
+		try {
+			UserAndProfessor updatedAdmin = service.changeProfessorAccountStatus(Integer.valueOf(payload.get("userId").toString()), 
+																				 Boolean.valueOf(payload.get("status").toString()));
+			if (updatedAdmin != null) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
 	}
 	
 	// -------- For Professor Load

@@ -19,6 +19,7 @@ import org.ssglobal.training.codes.tables.pojos.Users;
 public interface AdminCapabilitiesService {
 	
 	List<Users> selectAllUsers();
+	boolean changePassword(String password, String username);
 	
 	// ------------------------FOR ADMIN
 	List<UserAndAdmin> selectAllAdmin();
@@ -39,7 +40,7 @@ public interface AdminCapabilitiesService {
 	UserAndProfessor selectProfessor(Integer professorNo);
 	UserAndProfessor insertProfessor(UserAndProfessor userAndProfessor) throws DuplicateKeyException, Exception;
 	UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor) throws DuplicateKeyException, Exception;
-	UserAndProfessor deactivateProfessor(Integer userId);
+	UserAndProfessor changeProfessorAccountStatus(Integer userId, Boolean status);
 	
 	// ------------------------FOR Professor Load
 	List<ProfessorLoad> selectAllProfessorsLoad();
