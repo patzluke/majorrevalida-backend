@@ -300,7 +300,7 @@ create table student_enrollment (
     foreign key(academic_year_id) references academic_year(academic_year_id) on delete cascade    
 ); 
 
-drop table if exists schedule cascade;
+drop table if exists student_schedule cascade;
 create table schedule (
     schedule_id serial primary key,
     student_no int,

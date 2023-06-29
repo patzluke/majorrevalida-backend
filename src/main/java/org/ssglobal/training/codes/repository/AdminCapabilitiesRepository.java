@@ -39,10 +39,15 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.StudentApplicant STUDENT_APPLICANT = org.ssglobal.training.codes.tables.StudentApplicant.STUDENT_APPLICANT;
 	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
 	private final org.ssglobal.training.codes.tables.Program PROGRAM = org.ssglobal.training.codes.tables.Program.PROGRAM;
+	private final org.ssglobal.training.codes.tables.Department DEPARTMENT = org.ssglobal.training.codes.tables.Department.DEPARTMENT;
 	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
-	private final org.ssglobal.training.codes.tables.Department DEPARTMENT = org.ssglobal.training.codes.tables.Department.DEPARTMENT;
+	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
+	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
+	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
+
+	
 	// ------------------------FOR ALL
 	public List<Users> selectAllUsers() {
 		return dslContext.selectFrom(USERS).fetchInto(Users.class);
@@ -375,15 +380,33 @@ public class AdminCapabilitiesRepository {
 	}
 	
 	// ------------------------FOR PROFESSOR LOAD
-	public List<ProfessorLoad> selectAllProfessorsLoad() {
-		return dslContext.selectFrom(PROFESSOR_LOAD)
-						 .fetchInto(ProfessorLoad.class);
+	public List<Map<String, Object>> selectAllProfessorsLoad() {
+		return dslContext.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"), PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), 
+								 SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
+								 ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"), DEPARTMENT.DEPT_NAME.as("deptName"),
+								 PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"))
+						 .from(PROFESSOR_LOAD)
+						 .innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
+						 .innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+						 .innerJoin(SECTION).on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID))
+						 .innerJoin(ROOM).on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID))
+						 .innerJoin(DEPARTMENT).on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+						 .fetchMaps();
 	}
 	
-	public List<ProfessorLoad> selectProfessorLoad(Integer professorNo) {
-		return dslContext.selectFrom(PROFESSOR_LOAD)
-						 .where(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo))
-						 .fetchInto(ProfessorLoad.class);
+	public List<Map<String, Object>> selectProfessorLoad(Integer professorNo) {
+		return dslContext.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"), PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), 
+				 SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
+				 ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"), DEPARTMENT.DEPT_NAME.as("deptName"),
+				 PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"))
+		 .from(PROFESSOR_LOAD)
+		 .innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
+		 .innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+		 .innerJoin(SECTION).on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID))
+		 .innerJoin(ROOM).on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID))
+		 .innerJoin(DEPARTMENT).on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+		 .where(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo))
+		 .fetchMaps();
 	}
 	
 	public ProfessorLoad insertProfessorLoad(ProfessorLoad professorLoad) {

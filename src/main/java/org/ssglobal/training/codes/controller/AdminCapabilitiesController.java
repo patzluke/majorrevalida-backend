@@ -172,7 +172,7 @@ public class AdminCapabilitiesController {
 	}
 	
 	@PutMapping(value = "/update/studentapplicant", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<StudentApplicant> changeProfessorAccountStatus(@RequestBody StudentApplicant studentApplicant) {
+	public ResponseEntity<StudentApplicant> updateStudentApplicantStatus(@RequestBody StudentApplicant studentApplicant) {
 		try {
 			StudentApplicant updatedAdmin = service.updateStudentApplicantStatus(studentApplicant);
 			if (updatedAdmin != null) {
@@ -269,10 +269,10 @@ public class AdminCapabilitiesController {
 	
 	// -------- For Professor Load
 	@GetMapping(value = "/get/professorload", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<ProfessorLoad>> selectAllProfessorsLoad() {
+	public ResponseEntity<List<Map<String, Object>>> selectAllProfessorsLoad() {
 		System.out.println(LocalTime.now());
 		try {
-			List<ProfessorLoad> selectedProfessorsLoad = service.selectAllProfessorsLoad();
+			List<Map<String, Object>> selectedProfessorsLoad = service.selectAllProfessorsLoad();
 			if (!selectedProfessorsLoad.isEmpty()) {
 				return ResponseEntity.ok(selectedProfessorsLoad);
 			}
@@ -284,9 +284,9 @@ public class AdminCapabilitiesController {
 	}
 	
 	@GetMapping(value = "/get/professorload/{professorNo}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<List<ProfessorLoad>> selectProfessorLoad(@PathVariable(name = "professorNo") Integer professorNo) {
+	public ResponseEntity<List<Map<String, Object>>> selectProfessorLoad(@PathVariable(name = "professorNo") Integer professorNo) {
 		try {
-			List<ProfessorLoad> selectedProfessorLoad = service.selectProfessorLoad(professorNo);
+			List<Map<String, Object>> selectedProfessorLoad = service.selectProfessorLoad(professorNo);
 			if (selectedProfessorLoad != null) {
 				return ResponseEntity.ok(selectedProfessorLoad);
 			}
