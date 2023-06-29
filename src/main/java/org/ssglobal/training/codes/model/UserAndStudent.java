@@ -27,8 +27,42 @@ public class UserAndStudent {
 	private Integer parentNo;
 	private Integer curriculumCode;
 	private Integer academicYearId;
+	
+	private String courseTitle;
+	private String majorTitle;
 
 	public UserAndStudent() {
+	}
+
+	public UserAndStudent(Integer userId, String username, String password, String email, String contactNo,
+			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
+			String civilStatus, String gender, String nationality, Boolean activeDeactive, String image,
+			Integer studentId, Integer studentNo, Integer parentNo, Integer curriculumCode, Integer academicYearId,
+			String courseTitle, String majorTitle) {
+		super();
+		this.userId = userId;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.contactNo = contactNo;
+		this.firstName = firstName;
+		this.middleName = middleName;
+		this.lastName = lastName;
+		this.userType = userType;
+		this.birthDate = birthDate;
+		this.address = address;
+		this.civilStatus = civilStatus;
+		this.gender = gender;
+		this.nationality = nationality;
+		this.activeDeactive = activeDeactive;
+		this.image = image;
+		this.studentId = studentId;
+		this.studentNo = studentNo;
+		this.parentNo = parentNo;
+		this.curriculumCode = curriculumCode;
+		this.academicYearId = academicYearId;
+		this.courseTitle = courseTitle;
+		this.majorTitle = majorTitle;
 	}
 
 	public UserAndStudent(Integer userId, String username, String password, String email, String contactNo,
@@ -226,6 +260,22 @@ public class UserAndStudent {
 	public void setAcademicYearId(Integer academicYearId) {
 		this.academicYearId = academicYearId;
 	}
+	
+	public String getCourseTitle() {
+		return courseTitle;
+	}
+
+	public void setCourseTitle(String courseTitle) {
+		this.courseTitle = courseTitle;
+	}
+
+	public String getMajorTitle() {
+		return majorTitle;
+	}
+
+	public void setMajorTitle(String majorTitle) {
+		this.majorTitle = majorTitle;
+	}
 
 	@Override
 	public String toString() {
@@ -235,6 +285,7 @@ public class UserAndStudent {
 				+ address + ", civilStatus=" + civilStatus + ", gender=" + gender + ", nationality=" + nationality
 				+ ", activeDeactive=" + activeDeactive + ", image=" + image + ", studentId=" + studentId
 				+ ", studentNo=" + studentNo + ", parentNo=" + parentNo + ", curriculumCode=" + curriculumCode
-				+ ", academicYearId=" + academicYearId + "]";
+				+ ", academicYearId=" + academicYearId + ", courseTitle=" + courseTitle + ", majorTitle=" + majorTitle
+				+ "]";
 	}
 }
