@@ -43,6 +43,8 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
+	private final org.ssglobal.training.codes.tables.Department DEPARTMENT = org.ssglobal.training.codes.tables.Department.DEPARTMENT;
+	
 	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
 	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
 	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
@@ -170,7 +172,7 @@ public class AdminCapabilitiesRepository {
 						USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS, USERS.CIVIL_STATUS,
 						USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_DEACTIVE, USERS.IMAGE, STUDENT.STUDENT_ID,
 						STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE, STUDENT.ACADEMIC_YEAR_ID,
-						COURSE.COURSE_TITLE, MAJOR.MAJOR_TITLE)
+						COURSE.COURSE_TITLE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
 				.from(USERS)
 				.innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID))
 				.innerJoin(CURRICULUM).on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE))
@@ -213,7 +215,9 @@ public class AdminCapabilitiesRepository {
 
 		Student insertStudent = dslContext.insertInto(STUDENT).set(STUDENT.USER_ID, insertUser.getUserId())
 				.set(STUDENT.PARENT_NO, student.getParentNo()).set(STUDENT.CURRICULUM_CODE, student.getCurriculumCode())
-				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId()).returning().fetchOne().into(Student.class);
+				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId())
+				.set(STUDENT.YEAR_LEVEL, student.getYearLevel())
+				.returning().fetchOne().into(Student.class);
 
 		// Return all the information of the student
 		UserAndStudent information = new UserAndStudent(insertUser.getUserId(), insertUser.getUsername(),
