@@ -331,8 +331,9 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor) {
-		Users updatedUser = dslContext.update(USERS).set(USERS.USERNAME, userAndProfessor.getUsername())
-				.set(USERS.PASSWORD, userAndProfessor.getPassword()).set(USERS.EMAIL, userAndProfessor.getEmail())
+		Users updatedUser = dslContext.update(USERS)
+				.set(USERS.USERNAME, userAndProfessor.getUsername())
+				.set(USERS.EMAIL, userAndProfessor.getEmail())
 				.set(USERS.CONTACT_NO, userAndProfessor.getContactNo())
 				.set(USERS.FIRST_NAME, userAndProfessor.getFirstName())
 				.set(USERS.MIDDLE_NAME, userAndProfessor.getMiddleName())
@@ -343,7 +344,6 @@ public class AdminCapabilitiesRepository {
 				.set(USERS.CIVIL_STATUS, userAndProfessor.getCivilStatus())
 				.set(USERS.GENDER, userAndProfessor.getGender())
 				.set(USERS.NATIONALITY, userAndProfessor.getNationality())
-				.set(USERS.ACTIVE_DEACTIVE, userAndProfessor.getActiveDeactive())
 				.set(USERS.IMAGE, userAndProfessor.getImage()).where(USERS.USER_ID.eq(userAndProfessor.getUserId()))
 				.returning().fetchOne().into(Users.class);
 
@@ -574,6 +574,10 @@ public class AdminCapabilitiesRepository {
 	}
 
 	// -------------------------- FOR PROGRAM
+	public List<Program> selectAllProgram() {
+		return dslContext.selectFrom(PROGRAM).fetchInto(Program.class);
+	}
+	
 	public Program addProgram(Program program) {
 		/*
 		 * The program data added is limited to: program_title
@@ -592,6 +596,11 @@ public class AdminCapabilitiesRepository {
 				.where(PROGRAM.PROGRAM_CODE.eq(program.getProgramCode())).returning().fetchOne().into(Program.class);
 		return editProgram;
 	}
+	
+	// -------------------------- FOR DEPARTMENT
+	public List<Department> selectAllDepartment() {
+		return dslContext.selectFrom(DEPARTMENT).fetchInto(Department.class);
+	}
 
 	// -------------------------- FOR COURSE
 	public List<Map<String, Object>> selectAllCourses() {
@@ -604,24 +613,43 @@ public class AdminCapabilitiesRepository {
 		return !query.isEmpty() ? query : null;
 	}
 	
-	public Course addCourse(Course course) {
-		/*
-		 * The program data added is limited to: program_code and course_title
-		 */
-		Course editCourse = dslContext.insertInto(COURSE).set(COURSE.PROGRAM_CODE, course.getProgramCode())
-				.set(COURSE.COURSE_TITLE, course.getCourseTitle()).returning().fetchOne().into(Course.class);
-
-		return editCourse;
+	public Map<String, Object> addCourse(Course course) {
+		Course addedCourse = dslContext.insertInto(COURSE)
+									  .set(COURSE.PROGRAM_CODE, course.getProgramCode())
+									  .set(COURSE.DEPT_CODE, course.getDeptCode())									  
+									  .set(COURSE.COURSE_TITLE, course.getCourseTitle())
+									  .returning()
+									  .fetchOne()
+									  .into(Course.class);
+		Map<String, Object> query = dslContext.select(COURSE.COURSE_ID.as("courseId"), COURSE.COURSE_CODE.as("courseCode"), COURSE.COURSE_TITLE.as("courseTitle"), DEPARTMENT.DEPT_CODE.as("deptCode"), 
+								DEPARTMENT.DEPT_NAME.as("deptName"), PROGRAM.PROGRAM_CODE.as("programCode"), PROGRAM.PROGRAM_TITLE.as("programTitle"))
+								.from(COURSE)
+								.innerJoin(DEPARTMENT).on(COURSE.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+								.innerJoin(PROGRAM).on(COURSE.PROGRAM_CODE.eq(PROGRAM.PROGRAM_CODE))
+								.where(COURSE.COURSE_CODE.eq(addedCourse.getCourseCode()))
+								.fetchOneMap();
+		
+		return query;
 	}
-
-	public Course editCourse(Course course) {
-		/*
-		 * The program data added is limited to: program_code and course_title
-		 */
-		Course editCourse = dslContext.update(COURSE).set(COURSE.PROGRAM_CODE, course.getProgramCode())
-				.set(COURSE.COURSE_TITLE, course.getCourseTitle()).where(COURSE.COURSE_CODE.eq(course.getCourseCode()))
-				.returning().fetchOne().into(Course.class);
-		return editCourse;
+	
+	public Map<String, Object> editCourse(Course course) {
+		Course editedCourse = dslContext.update(COURSE)
+									  .set(COURSE.PROGRAM_CODE, course.getProgramCode())
+									  .set(COURSE.DEPT_CODE, course.getDeptCode())									  
+									  .set(COURSE.COURSE_TITLE, course.getCourseTitle())
+									  .where(COURSE.COURSE_CODE.eq(course.getCourseCode()))
+									  .returning()
+									  .fetchOne()
+									  .into(Course.class);
+		
+		Map<String, Object> query = dslContext.select(COURSE.COURSE_ID.as("courseId"), COURSE.COURSE_CODE.as("courseCode"), COURSE.COURSE_TITLE.as("courseTitle"), DEPARTMENT.DEPT_CODE.as("deptCode"), 
+								DEPARTMENT.DEPT_NAME.as("deptName"), PROGRAM.PROGRAM_CODE.as("programCode"), PROGRAM.PROGRAM_TITLE.as("programTitle"))
+								.from(COURSE)
+								.innerJoin(DEPARTMENT).on(COURSE.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+								.innerJoin(PROGRAM).on(COURSE.PROGRAM_CODE.eq(PROGRAM.PROGRAM_CODE))
+								.where(COURSE.COURSE_CODE.eq(editedCourse.getCourseCode()))
+								.fetchOneMap();
+		return query;
 	}
 
 	// -------------------------- FOR MAJOR

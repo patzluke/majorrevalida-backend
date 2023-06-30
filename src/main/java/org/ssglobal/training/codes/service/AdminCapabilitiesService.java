@@ -11,6 +11,7 @@ import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
+import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
@@ -65,13 +66,17 @@ public interface AdminCapabilitiesService {
 	AcademicYear updateAcademicYearStatus(AcademicYear academicYear);
 	
 	// ------------------------FOR Program
+	List<Program> selectAllProgram();
 	Program addProgram(Program program);
 	Program editProgram(Program program);
 	
 	// ------------------------FOR Course
 	List<Map<String, Object>> selectAllCourses();
-	Course addCourse(Course course);
-	Course editCourse(Course course);
+	Map<String, Object> addCourse(Course course);
+	Map<String, Object> editCourse(Course course);
+	
+	// ------------------------FOR Department
+	List<Department> selectAllDepartment();
 	
 	// ------------------------FOR Major
 	Major addMajor(Major major);

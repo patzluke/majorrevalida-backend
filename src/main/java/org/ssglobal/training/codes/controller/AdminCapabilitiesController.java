@@ -24,6 +24,7 @@ import org.ssglobal.training.codes.service.AdminCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
+import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
@@ -369,6 +370,20 @@ public class AdminCapabilitiesController {
 	}
 
 	// -------- For Program
+	@GetMapping(value = "/get/program", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Program>> selectAllProgram() {
+		try {
+			List<Program> updatedAdmin = service.selectAllProgram();
+			if (!updatedAdmin.isEmpty()) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 	@PostMapping(value = "/insert/program", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Program> insertProgram(@RequestBody Program program) {
@@ -401,19 +416,50 @@ public class AdminCapabilitiesController {
 	
 	@PostMapping(value = "/insert/course", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Course> insertCourse(@RequestBody Course course) {
+	public ResponseEntity<Map<String, Object>> insertCourse(@RequestBody Course course) {
 		try {
-			Course addedCourse = service.addCourse(course);
+			Map<String, Object> addedCourse = service.addCourse(course);
 			if (addedCourse != null) {
 				return ResponseEntity.ok(addedCourse);
 			}
 		} catch (Exception e) {
-			System.out.println("%s".formatted(e));
+			System.out.println("HEY");
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@PutMapping(value = "/update/course", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Map<String, Object>> editCourse(@RequestBody Course course) {
+		try {
+			Map<String, Object> addedCourse = service.editCourse(course);
+			if (addedCourse != null) {
+				return ResponseEntity.ok(addedCourse);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.badRequest().build();
 	}
 
+	// -------- For Department
+	@GetMapping(value = "/get/department", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Department>> selectAllDepartment() {
+		try {
+			List<Department> departments = service.selectAllDepartment();
+			if (!departments.isEmpty()) {
+				return ResponseEntity.ok(departments);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 	// -------- For Major
 	@PostMapping(value = "/insert/major", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })

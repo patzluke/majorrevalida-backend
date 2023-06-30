@@ -19,6 +19,7 @@ import org.ssglobal.training.codes.service.AdminCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
+import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
@@ -266,6 +267,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 
 	// ------------------------FOR program
 	@Override
+	public List<Program> selectAllProgram() {
+		return repository.selectAllProgram();
+	}
+	
+	@Override
 	public Program addProgram(Program program) {
 		return repository.addProgram(program);
 	}
@@ -282,14 +288,21 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public Course addCourse(Course course) {
+	public Map<String, Object> addCourse(Course course) {
 		return repository.addCourse(course);
 	}
 	
 	@Override
-	public Course editCourse(Course course) {
+	public Map<String, Object> editCourse(Course course) {
 		return repository.editCourse(course);
 	}
+	
+	// ------------------------FOR Department
+	@Override
+	public List<Department> selectAllDepartment() {
+		return repository.selectAllDepartment();
+	}
+
 
 	// ------------------------FOR Major
 	@Override
