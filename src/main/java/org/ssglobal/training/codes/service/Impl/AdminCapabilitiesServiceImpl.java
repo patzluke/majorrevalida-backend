@@ -1,5 +1,6 @@
 package org.ssglobal.training.codes.service.Impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -183,12 +184,12 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	
 	// ------------------------FOR Professor
 	@Override
-	public List<ProfessorLoad> selectAllProfessorsLoad() {
+	public List<Map<String, Object>> selectAllProfessorsLoad() {
 		return repository.selectAllProfessorsLoad();
 	}
 	
 	@Override
-	public List<ProfessorLoad> selectProfessorLoad(Integer professorNo) {
+	public List<Map<String, Object>> selectProfessorLoad(Integer professorNo) {
 		return repository.selectProfessorLoad(professorNo);
 	}
 	
@@ -246,6 +247,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	
 	@Override
 	public StudentApplicant updateStudentApplicantStatus(StudentApplicant studentApplicant) {
+		if (studentApplicant.getAcceptanceStatus().equalsIgnoreCase("Accepted")) {
+			studentApplicant.setDateAccepted(LocalDateTime.now());
+		}
 		return repository.updateStudentApplicantStatus(studentApplicant);
 	}
 	

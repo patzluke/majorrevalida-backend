@@ -44,8 +44,8 @@ public interface AdminCapabilitiesService {
 	UserAndProfessor changeProfessorAccountStatus(Integer userId, Boolean status);
 	
 	// ------------------------FOR Professor Load
-	List<ProfessorLoad> selectAllProfessorsLoad();
-	List<ProfessorLoad> selectProfessorLoad(Integer professorNo);
+	List<Map<String, Object>> selectAllProfessorsLoad();
+	List<Map<String, Object>> selectProfessorLoad(Integer professorNo);
 	ProfessorLoad insertProfessorLoad(ProfessorLoad professorLoad);
 	ProfessorLoad updateProfessorLoad(ProfessorLoad professorLoad);
 	ProfessorLoad deleteProfessorLoad(ProfessorLoad professorLoad);
