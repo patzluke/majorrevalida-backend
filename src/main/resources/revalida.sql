@@ -161,6 +161,7 @@ create table student (
     parent_no int,
     curriculum_code int,
     academic_year_id int,
+    year_level int,
     foreign key(user_id) references users(user_id) on delete cascade,
     foreign key(parent_no) references parent(parent_no) on delete cascade,
     foreign key(curriculum_code) references curriculum(curriculum_code) on delete cascade,

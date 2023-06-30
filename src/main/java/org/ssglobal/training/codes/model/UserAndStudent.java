@@ -28,6 +28,7 @@ public class UserAndStudent {
 	private Integer curriculumCode;
 	private Integer academicYearId;
 	
+	private Integer yearLevel;
 	private String courseTitle;
 	private String majorTitle;
 
@@ -38,7 +39,7 @@ public class UserAndStudent {
 			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
 			String civilStatus, String gender, String nationality, Boolean activeDeactive, String image,
 			Integer studentId, Integer studentNo, Integer parentNo, Integer curriculumCode, Integer academicYearId,
-			String courseTitle, String majorTitle) {
+			Integer yearLevel, String courseTitle, String majorTitle) {
 		super();
 		this.userId = userId;
 		this.username = username;
@@ -61,9 +62,12 @@ public class UserAndStudent {
 		this.parentNo = parentNo;
 		this.curriculumCode = curriculumCode;
 		this.academicYearId = academicYearId;
+		this.yearLevel = yearLevel;
 		this.courseTitle = courseTitle;
 		this.majorTitle = majorTitle;
 	}
+
+
 
 	public UserAndStudent(Integer userId, String username, String password, String email, String contactNo,
 			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
@@ -277,6 +281,15 @@ public class UserAndStudent {
 		this.majorTitle = majorTitle;
 	}
 
+	public Integer getYearLevel() {
+		return yearLevel;
+	}
+
+	public void setYearLevel(Integer yearLevel) {
+		this.yearLevel = yearLevel;
+	}
+
+	
 	@Override
 	public String toString() {
 		return "UserAndStudent [userId=" + userId + ", username=" + username + ", password=" + password + ", email="
@@ -285,7 +298,7 @@ public class UserAndStudent {
 				+ address + ", civilStatus=" + civilStatus + ", gender=" + gender + ", nationality=" + nationality
 				+ ", activeDeactive=" + activeDeactive + ", image=" + image + ", studentId=" + studentId
 				+ ", studentNo=" + studentNo + ", parentNo=" + parentNo + ", curriculumCode=" + curriculumCode
-				+ ", academicYearId=" + academicYearId + ", courseTitle=" + courseTitle + ", majorTitle=" + majorTitle
-				+ "]";
+				+ ", academicYearId=" + academicYearId + ", yearLevel=" + yearLevel + ", courseTitle=" + courseTitle
+				+ ", majorTitle=" + majorTitle + "]";
 	}
 }
