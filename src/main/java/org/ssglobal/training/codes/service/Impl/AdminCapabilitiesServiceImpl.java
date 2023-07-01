@@ -86,10 +86,15 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 		});
 		return repository.updateAdminUser(userAdmin);
 	}
+	
+	@Override
+	public UserAndAdmin changeAdminAccountStatus(Integer userId, Boolean status) {
+		return repository.changeAdminAccountStatus(userId, status);
+	}
 
 	@Override
-	public UserAndAdmin deactivateAdminUser(Integer userAdminId) {
-		return repository.deactivateAdminUser(userAdminId);
+	public UserAndAdmin deleteAdminUser(Integer userAdminId) {
+		return repository.deleteAdminUser(userAdminId);
 	}
 	
 
@@ -134,8 +139,13 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public UserAndStudent deactivateStudent(Integer userId) {
-		return repository.deactivateStudent(userId);
+	public UserAndStudent changeStudentAccountStatus(Integer userId, Boolean status) {
+		return repository.changeStudentAccountStatus(userId, status);
+	}
+	
+	@Override
+	public UserAndStudent deleteStudent(Integer userId) {
+		return repository.deleteStudent(userId);
 	}
 
 	// ------------------------FOR Professor
@@ -181,6 +191,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public UserAndProfessor changeProfessorAccountStatus(Integer userId, Boolean status) {
 		return repository.changeProfessorAccountStatus(userId, status);
+	}
+	
+	@Override
+	public UserAndProfessor deleteProfessor(Integer userId) {
+		return repository.deleteProfessor(userId);
 	}
 	
 	// ------------------------FOR Professor
@@ -236,8 +251,13 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public UserAndParent deactivateParent(Integer userId) {
-		return repository.deactivateParent(userId);
+	public UserAndParent changeParentAccountStatus(Integer userId, Boolean status) {
+		return repository.changeParentAccountStatus(userId, status);
+	}
+	
+	@Override
+	public UserAndParent deleteParent(Integer userId) {
+		return repository.deleteParent(userId);
 	}
 	
 	// ------------------------FOR Student_Applicants

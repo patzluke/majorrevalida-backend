@@ -128,7 +128,8 @@ create table users (
     civil_status varchar(20),
     gender varchar(15),
     nationality varchar(30),
-    active_deactive boolean,
+    active_status boolean,
+    active_deactive boolean, --soft delete
     image varchar(50)
 ); 
 
@@ -505,43 +506,64 @@ insert into section(section_name) values('4-ITA');insert into section(section_na
 
 
 --insert into users and admin table
-insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
-values('pastrero', '123456', 'patzluke@gmail.com', '9055261296', 'Patrick', 'Artuz', 'Astrero', 'Admin', '1999-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'patrick.jpeg');
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('pastrero', '123456', 'patzluke@gmail.com', '9055261296', 'Patrick', 'Artuz', 'Astrero', 'Admin', '1999-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'patrick.jpeg');
 
 insert into admin(user_id) values(1);
 
-insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
-values('nikaastrero', '123456', 'nikaastrero@gmail.com', '9055261295', 'Nika', 'Artuz', 'Astrero', 'Admin', '2013-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'nika.jpeg');
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('nikaastrero', '123456', 'nikaastrero@gmail.com', '9055261295', 'Nika', 'Artuz', 'Astrero', 'Admin', '2013-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'true', 'nika.jpeg');
 
 insert into admin(user_id) values(2);
 
 --insert into users and Parent table
-insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
-values('maribelastrero', '123456', 'maribelastrero@gmail.com', '9188192726', 'Maribel', 'Astros', 'Artuz', 'Parent', '1975-07-08', 'Vista Verde, Cainta', 'Married', 'Female', 'Filipino', 'true', 'maribel.jpeg');
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('maribelastrero', '123456', 'maribelastrero@gmail.com', '9188192726', 'Maribel', 'Astros', 'Artuz', 'Parent', '1975-07-08', 'Vista Verde, Cainta', 'Married', 'Female', 'Filipino', 'true', 'true', 'maribel.jpeg');
 
 insert into parent(user_id) values(3);
 
-insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
-values('norbinastrero', '123456', 'norbinastrero@gmail.com', '9055261278', 'Norbin', 'Fernando', 'Astrero', 'Parent', '1975-07-25', 'Vista Verde, Cainta', 'Married', 'Male', 'Filipino', 'true', 'norbin.jpeg');
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('norbinastrero', '123456', 'norbinastrero@gmail.com', '9055261278', 'Norbin', 'Fernando', 'Astrero', 'Parent', '1975-07-25', 'Vista Verde, Cainta', 'Married', 'Male', 'Filipino', 'true', 'true', 'norbin.jpeg');
 
 insert into parent(user_id) values(4);
 
 --insert into users and Professor table
-insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
-values('norman', '123456', 'norman@gmail.com', '9188192721', 'Norman', 'Astros', 'Fernando', 'Professor', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'norman.jpeg');
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('norman', '123456', 'norman@gmail.com', '9188192721', 'Norman', 'Astros', 'Fernando', 'Professor', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'norman.jpeg');
 insert into professor(user_id, work) values(5, 'Teacher');
 
-insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
-values('estrella', '123456', 'estrella@gmail.com', '9055261278', 'Estrella', 'Fernando', 'Astros', 'Professor', '1975-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'estrella.jpeg');
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('estrella', '123456', 'estrella@gmail.com', '9055261278', 'Estrella', 'Fernando', 'Astros', 'Professor', '1975-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'true', 'estrella.jpeg');
 insert into professor(user_id, work) values(6, 'Teacher');
 
-insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
-values('lopez', '123456', 'lopez@gmail.com', '9055261278', 'lopez', 'Abigail', 'chuchu', 'Professor', '1975-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'lopez.jpeg');
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('lopez', '123456', 'lopez@gmail.com', '9055261278', 'lopez', 'Abigail', 'chuchu', 'Professor', '1975-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'true', 'lopez.jpeg');
 insert into professor(user_id, work) values(7, 'Teacher');
 
-insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_deactive, image) 
-values('jackson', '123456', 'jackson@gmail.com', '9055261278', 'Jackson', 'Normal', 'Astros', 'Professor', '1975-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'jackson.jpeg');
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('jackson', '123456', 'jackson@gmail.com', '9055261278', 'Jackson', 'Normal', 'Astros', 'Professor', '1975-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'true', 'jackson.jpeg');
 insert into professor(user_id, work) values(8, 'Teacher');
+
+--insert into users and Student table
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('cachuela', '123456', 'Cachuela@gmail.com', '9188192721', 'Cachuela', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'Cachuela.jpeg');
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(9, 5001, 1, 1);
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('george', '123456', 'george@gmail.com', '9188192721', 'George', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'george.jpeg');
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(10, 5001, 1, 1);
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('steven', '123456', 'steven@gmail.com', '9188192721', 'Steven', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'steven.jpeg');
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(11, 5001, 1, 1);
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('zephania', '123456', 'zephania@gmail.com', '9188192721', 'Zephania', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'zephania.jpeg');
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(12, 5001, 1, 1);
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('eoin', '123456', 'eoin@gmail.com', '9188192721', 'Eoin', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'eoin.jpeg');
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(13, 5001, 1, 1);
 
 --insert into Professor Load table
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 

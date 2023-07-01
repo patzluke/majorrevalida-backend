@@ -136,8 +136,28 @@ public class AdminCapabilitiesRepository {
 
 		return null;
 	}
+	
+	public UserAndAdmin changeAdminAccountStatus(Integer userId, Boolean status) {
+		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, status)
+				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
 
-	public UserAndAdmin deactivateAdminUser(Integer userId) {
+		Admin deactivatedAdmin = dslContext.selectFrom(ADMIN)
+				.where(ADMIN.USER_ID.eq(deactivatedUser.getUserId())).fetchOne().into(Admin.class);
+
+		if (deactivatedUser != null && deactivatedAdmin != null) {
+			UserAndAdmin deactivatedUserAdmin = new UserAndAdmin(deactivatedUser.getUserId(),
+					deactivatedUser.getUsername(), deactivatedUser.getPassword(), deactivatedUser.getEmail(),
+					deactivatedUser.getContactNo(), deactivatedUser.getFirstName(), deactivatedUser.getMiddleName(),
+					deactivatedUser.getLastName(), deactivatedUser.getUserType(), deactivatedUser.getBirthDate(),
+					deactivatedUser.getAddress(), deactivatedUser.getCivilStatus(), deactivatedUser.getGender(),
+					deactivatedUser.getNationality(), deactivatedUser.getActiveDeactive(), deactivatedUser.getImage(),
+					deactivatedAdmin.getAdminId(), deactivatedAdmin.getAdminNo());
+			return deactivatedUserAdmin;
+		}
+		return null;
+	}
+
+	public UserAndAdmin deleteAdminUser(Integer userId) {
 		Users deletedUser = dslContext.update(USERS).set(USERS.ACTIVE_DEACTIVE, false).where(USERS.USER_ID.eq(userId))
 				.returning().fetchOne().into(Users.class);
 
@@ -254,14 +274,34 @@ public class AdminCapabilitiesRepository {
 				updatedStudent.getStudentId(), updatedStudent.getStudentNo(), updatedStudent.getParentNo(),
 				updatedStudent.getCurriculumCode(), updatedStudent.getAcademicYearId());
 		return information;
+	}
+	
+	public UserAndStudent changeStudentAccountStatus(Integer userId, Boolean status) {
+		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, status)
+				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
 
+		Student deactivatedStudent = dslContext.selectFrom(STUDENT)
+				.where(STUDENT.USER_ID.eq(deactivatedUser.getUserId())).fetchOne().into(Student.class);
+
+		if (deactivatedUser != null && deactivatedStudent != null) {
+			UserAndStudent information = new UserAndStudent(deactivatedUser.getUserId(), deactivatedUser.getUsername(),
+					deactivatedUser.getPassword(), deactivatedUser.getEmail(), deactivatedUser.getContactNo(),
+					deactivatedUser.getFirstName(), deactivatedUser.getMiddleName(), deactivatedUser.getLastName(),
+					deactivatedUser.getUserType(), deactivatedUser.getBirthDate(), deactivatedUser.getAddress(),
+					deactivatedUser.getCivilStatus(), deactivatedUser.getGender(), deactivatedUser.getNationality(),
+					deactivatedUser.getActiveDeactive(), deactivatedUser.getImage(), deactivatedStudent.getStudentNo(),
+					deactivatedStudent.getUserId(), deactivatedStudent.getParentNo(),
+					deactivatedStudent.getCurriculumCode(), deactivatedStudent.getAcademicYearId());
+			return information;
+		}
+		return null;
 	}
 
-	public UserAndStudent deactivateStudent(Integer userId) {
+	public UserAndStudent deleteStudent(Integer userId) {
 		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_DEACTIVE, false)
 				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
 
-		Student deactivatedStudent = dslContext.selectFrom(PROFESSOR)
+		Student deactivatedStudent = dslContext.selectFrom(STUDENT)
 				.where(STUDENT.USER_ID.eq(deactivatedUser.getUserId())).fetchOne().into(Student.class);
 
 		if (deactivatedUser != null && deactivatedStudent != null) {
@@ -368,7 +408,7 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndProfessor changeProfessorAccountStatus(Integer userId, Boolean status) {
-		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_DEACTIVE, status)
+		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, status)
 				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
 
 		Professor deactivatedProfessor = dslContext.selectFrom(PROFESSOR)
@@ -384,6 +424,27 @@ public class AdminCapabilitiesRepository {
 					deactivatedProfessor.getProfessorId(), deactivatedProfessor.getProfessorNo(),
 					deactivatedProfessor.getWork());
 			return deactivatedUserProfessor;
+		}
+		return null;
+	}
+	
+	public UserAndProfessor deleteProfessor(Integer userId) {
+		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_DEACTIVE, false)
+				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
+
+		Professor deletedProfessor = dslContext.selectFrom(PROFESSOR)
+				.where(PROFESSOR.USER_ID.eq(deactivatedUser.getUserId())).fetchOne().into(Professor.class);
+
+		if (deactivatedUser != null && deletedProfessor != null) {
+			UserAndProfessor information = new UserAndProfessor(deactivatedUser.getUserId(),
+					deactivatedUser.getUsername(), deactivatedUser.getPassword(), deactivatedUser.getEmail(),
+					deactivatedUser.getContactNo(), deactivatedUser.getFirstName(), deactivatedUser.getMiddleName(),
+					deactivatedUser.getLastName(), deactivatedUser.getUserType(), deactivatedUser.getBirthDate(),
+					deactivatedUser.getAddress(), deactivatedUser.getCivilStatus(), deactivatedUser.getGender(),
+					deactivatedUser.getNationality(), deactivatedUser.getActiveDeactive(), deactivatedUser.getImage(),
+					deletedProfessor.getProfessorId(), deletedProfessor.getProfessorNo(),
+					deletedProfessor.getWork());
+			return information;
 		}
 		return null;
 	}
@@ -499,8 +560,27 @@ public class AdminCapabilitiesRepository {
 		}
 		return null;
 	}
+	
+	public UserAndParent changeParentAccountStatus(Integer userId, Boolean status) {
+		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, status)
+				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
 
-	public UserAndParent deactivateParent(Integer userId) {
+		Parent deactivatedParent = dslContext.selectFrom(PARENT)
+				.where(PARENT.USER_ID.eq(deactivatedUser.getUserId())).fetchOne().into(Parent.class);
+
+		if (deactivatedUser != null && deactivatedParent != null) {
+			UserAndParent deactivatedUserParent = new UserAndParent(deactivatedUser.getUserId(),
+					deactivatedUser.getUsername(), deactivatedUser.getPassword(), deactivatedUser.getFirstName(),
+					deactivatedUser.getMiddleName(), deactivatedUser.getLastName(), deactivatedUser.getUserType(),
+					deactivatedUser.getBirthDate(), deactivatedUser.getAddress(), deactivatedUser.getCivilStatus(),
+					deactivatedUser.getGender(), deactivatedUser.getNationality(), deactivatedUser.getActiveDeactive(),
+					deactivatedUser.getImage(), deactivatedParent.getParentId());
+			return deactivatedUserParent;
+		}
+		return null;
+	}
+
+	public UserAndParent deleteParent(Integer userId) {
 		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_DEACTIVE, false)
 				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
 
