@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.UserAndAdmin;
+import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndProfessor;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.AdminCapabilitiesService;
@@ -108,11 +109,26 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+	
+	@PutMapping(value = "/deactivate/admin", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<UserAndAdmin> changeAdminAccountStatus(@RequestBody Map<String, Object> payload) {
+		try {
+			UserAndAdmin updatedAdmin = service.changeAdminAccountStatus(Integer.valueOf(payload.get("userId").toString()), 
+																		 Boolean.valueOf(payload.get("status").toString()));
+			if (updatedAdmin != null) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
 
 	@DeleteMapping(value = "/delete/admin/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserAndAdmin> deleteAdminUser(@PathVariable(name = "userId") Integer userId) {
 		try {
-			UserAndAdmin updatedAdmin = service.deactivateAdminUser(userId);
+			UserAndAdmin updatedAdmin = service.deleteAdminUser(userId);
 			if (updatedAdmin != null) {
 				return ResponseEntity.ok(updatedAdmin);
 			}
@@ -155,6 +171,55 @@ public class AdminCapabilitiesController {
 			return ResponseEntity.badRequest().body("something went wrong");
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update/student", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity updateStudent(@RequestBody UserAndStudent userAndStudent) {
+		UserAndStudent updatedAdmin;
+		try {
+			updatedAdmin = service.updateStudent(userAndStudent);
+			if (updatedAdmin != null) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (DuplicateKeyException e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body("something went wrong");
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@PutMapping(value = "/deactivate/student", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<UserAndStudent> changeStudentAccountStatus(@RequestBody Map<String, Object> payload) {
+		try {
+			UserAndStudent updatedStudent = service.changeStudentAccountStatus(Integer.valueOf(payload.get("userId").toString()), 
+																		 Boolean.valueOf(payload.get("status").toString()));
+			if (updatedStudent != null) {
+				return ResponseEntity.ok(updatedStudent);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+
+	@DeleteMapping(value = "/delete/student/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<UserAndStudent> deleteStudent(@PathVariable(name = "userId") Integer userId) {
+		try {
+			UserAndStudent deletedStudent = service.deleteStudent(userId);
+			if (deletedStudent != null) {
+				return ResponseEntity.ok(deletedStudent);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
 	}
 
 	// -------- For Student Applicants
@@ -256,10 +321,25 @@ public class AdminCapabilitiesController {
 	@PutMapping(value = "/deactivate/professor", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserAndProfessor> changeProfessorAccountStatus(@RequestBody Map<String, Object> payload) {
 		try {
-			UserAndProfessor updatedAdmin = service.changeProfessorAccountStatus(Integer.valueOf(payload.get("userId").toString()), 
+			UserAndProfessor updatedProfessor = service.changeProfessorAccountStatus(Integer.valueOf(payload.get("userId").toString()), 
 																				 Boolean.valueOf(payload.get("status").toString()));
-			if (updatedAdmin != null) {
-				return ResponseEntity.ok(updatedAdmin);
+			if (updatedProfessor != null) {
+				System.out.println(payload);
+				return ResponseEntity.ok(updatedProfessor);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@DeleteMapping(value = "/delete/professor/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<UserAndProfessor> deleteProfessor(@PathVariable(name = "userId") Integer userId) {
+		try {
+			UserAndProfessor deletedProfessor = service.deleteProfessor(userId);
+			if (deletedProfessor != null) {
+				return ResponseEntity.ok(deletedProfessor);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -352,6 +432,69 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
+	
+	// -------- For Parent
+		@GetMapping(value = "/get/parent", produces = { MediaType.APPLICATION_JSON_VALUE })
+		public ResponseEntity<List<UserAndParent>> selectAllParent() {
+			System.out.println(LocalTime.now());
+			try {
+				List<UserAndParent> parents = service.selectAllParent();
+				if (!parents.isEmpty()) {
+					return ResponseEntity.ok(parents);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			}
+			return ResponseEntity.badRequest().build();
+		}
+		
+		@SuppressWarnings("rawtypes")
+		@PutMapping(value = "/update/parent", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+		public ResponseEntity updateProfessor(@RequestBody UserAndParent userAndParent) {
+			UserAndParent updatedProfessor;
+			try {
+				updatedProfessor = service.updateParentInfo(userAndParent);
+				if (updatedProfessor != null) {
+					return ResponseEntity.ok(updatedProfessor);
+				}
+			} catch (DuplicateKeyException e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.badRequest().body("something went wrong");
+			}
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		
+		@PutMapping(value = "/deactivate/parent", produces = { MediaType.APPLICATION_JSON_VALUE })
+		public ResponseEntity<UserAndParent> changeParentAccountStatus(@RequestBody Map<String, Object> payload) {
+			try {
+				UserAndParent updatedProfessor = service.changeParentAccountStatus(Integer.valueOf(payload.get("userId").toString()), 
+																					 Boolean.valueOf(payload.get("status").toString()));
+				if (updatedProfessor != null) {
+					return ResponseEntity.ok(updatedProfessor);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			}
+			return ResponseEntity.badRequest().build();
+		}
+		
+		@DeleteMapping(value = "/delete/parent/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+		public ResponseEntity<UserAndParent> deleteParent(@PathVariable(name = "userId") Integer userId) {
+			try {
+				UserAndParent deletedProfessor = service.deleteParent(userId);
+				if (deletedProfessor != null) {
+					return ResponseEntity.ok(deletedProfessor);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			}
+			return ResponseEntity.badRequest().build();
+		}
 	
 	// -------- For Academic Year
 	@PostMapping(value = "/insert/academic-year", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {

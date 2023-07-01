@@ -28,14 +28,16 @@ public interface AdminCapabilitiesService {
 	UserAndAdmin selectAdmin(Integer adminNo);
 	UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) throws DuplicateKeyException, Exception;
 	UserAndAdmin updateAdminUser(UserAndAdmin userAdmin) throws DuplicateKeyException, Exception;
-	UserAndAdmin deactivateAdminUser(Integer userAdminId);
+	UserAndAdmin changeAdminAccountStatus(Integer userId, Boolean status);
+	UserAndAdmin deleteAdminUser(Integer userAdminId);
 	
 	// ------------------------FOR Student
 	List<UserAndStudent> selectAllStudent();
 	UserAndStudent selectStudent(Integer studentNo);
 	UserAndStudent insertStudent(UserAndStudent student) throws DuplicateKeyException, Exception;
 	UserAndStudent updateStudent(UserAndStudent student) throws DuplicateKeyException, Exception;
-	UserAndStudent deactivateStudent(Integer userId);
+	UserAndStudent changeStudentAccountStatus(Integer userId, Boolean status);
+	UserAndStudent deleteStudent(Integer userId);
 	
 	// ------------------------FOR Professor
 	List<UserAndProfessor> selectAllProfessor();
@@ -43,6 +45,7 @@ public interface AdminCapabilitiesService {
 	UserAndProfessor insertProfessor(UserAndProfessor userAndProfessor) throws DuplicateKeyException, Exception;
 	UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor) throws DuplicateKeyException, Exception;
 	UserAndProfessor changeProfessorAccountStatus(Integer userId, Boolean status);
+	UserAndProfessor deleteProfessor(Integer userId);
 	
 	// ------------------------FOR Professor Load
 	List<Map<String, Object>> selectAllProfessorsLoad();
@@ -55,7 +58,8 @@ public interface AdminCapabilitiesService {
 	List<UserAndParent> selectAllParent();
 	UserAndParent selectParent(Integer parentNo);
 	UserAndParent updateParentInfo(UserAndParent parent) throws DuplicateKeyException, Exception;
-	UserAndParent deactivateParent(Integer userId);
+	UserAndParent changeParentAccountStatus(Integer userId, Boolean status);
+	UserAndParent deleteParent(Integer userId);
 	
 	// ------------------------FOR Student_applicants
 	List<StudentApplicant> selectAllStudentApplicants();

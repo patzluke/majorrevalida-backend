@@ -53,13 +53,14 @@ public class ProfessorCapabilitiesRepository {
 											.fetchOne().into(Professor.class);
 
 		if (updatedUser != null && updatedProfessor != null) {
-			UserAndProfessor newuserAndProfessor = new UserAndProfessor(updatedUser.getUserId(), updatedUser.getUsername(),
-					updatedUser.getPassword(), updatedUser.getEmail(), updatedUser.getContactNo(),
-					updatedUser.getFirstName(), updatedUser.getMiddleName(), updatedUser.getLastName(),
-					updatedUser.getUserType(), updatedUser.getBirthDate(), updatedUser.getAddress(),
-					updatedUser.getCivilStatus(), updatedUser.getGender(), updatedUser.getNationality(),
-					updatedUser.getActiveDeactive(), updatedUser.getImage(), updatedProfessor.getProfessorId(),
-					updatedProfessor.getProfessorNo(), updatedProfessor.getWork());
+			UserAndProfessor newuserAndProfessor = new UserAndProfessor(updatedUser.getUserId(),
+					updatedUser.getUsername(), updatedUser.getPassword(), updatedUser.getEmail(),
+					updatedUser.getContactNo(), updatedUser.getFirstName(), updatedUser.getMiddleName(),
+					updatedUser.getLastName(), updatedUser.getUserType(), updatedUser.getBirthDate(),
+					updatedUser.getAddress(), updatedUser.getCivilStatus(), updatedUser.getGender(),
+					updatedUser.getNationality(), updatedUser.getActiveStatus(), updatedUser.getActiveDeactive(),
+					updatedUser.getImage(), updatedProfessor.getProfessorId(), updatedProfessor.getProfessorNo(),
+					updatedProfessor.getWork());
 			return newuserAndProfessor;
 		}
 		return null;

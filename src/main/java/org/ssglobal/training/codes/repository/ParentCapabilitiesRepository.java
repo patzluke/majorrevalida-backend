@@ -44,8 +44,8 @@ public class ParentCapabilitiesRepository {
 					updatedUser.getPassword(), updatedUser.getFirstName(), updatedUser.getMiddleName(),
 					updatedUser.getLastName(), updatedUser.getUserType(), updatedUser.getBirthDate(),
 					updatedUser.getAddress(), updatedUser.getCivilStatus(), updatedUser.getGender(),
-					updatedUser.getNationality(), updatedUser.getActiveDeactive(), updatedUser.getImage(),
-					parent.getParentId());
+					updatedUser.getNationality(), updatedUser.getActiveStatus(), updatedUser.getActiveDeactive(),
+					updatedUser.getImage(), parent.getParentId());
 			return newParentInfo;
 
 		}

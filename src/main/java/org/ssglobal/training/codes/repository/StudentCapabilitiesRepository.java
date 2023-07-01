@@ -44,8 +44,9 @@ public class StudentCapabilitiesRepository {
 				userData.getPassword(), userData.getEmail(), userData.getContactNo(), userData.getFirstName(),
 				userData.getMiddleName(), userData.getLastName(), userData.getUserType(), userData.getBirthDate(),
 				userData.getAddress(), userData.getCivilStatus(), userData.getGender(), userData.getNationality(),
-				userData.getActiveDeactive(), userData.getImage(), studentData.getStudentNo(), studentData.getUserId(),
-				studentData.getParentNo(), studentData.getCurriculumCode(), studentData.getAcademicYearId());
+				userData.getActiveStatus(), userData.getActiveDeactive(), userData.getImage(),
+				studentData.getStudentNo(), studentData.getUserId(), studentData.getParentNo(),
+				studentData.getCurriculumCode(), studentData.getAcademicYearId());
 
 		return information;
 
@@ -77,9 +78,9 @@ public class StudentCapabilitiesRepository {
 				updatedUser.getFirstName(), updatedUser.getMiddleName(), updatedUser.getLastName(),
 				updatedUser.getUserType(), updatedUser.getBirthDate(), updatedUser.getAddress(),
 				updatedUser.getCivilStatus(), updatedUser.getGender(), updatedUser.getNationality(),
-				updatedUser.getActiveDeactive(), updatedUser.getImage(), updatedStudent.getStudentNo(),
-				updatedStudent.getUserId(), updatedStudent.getParentNo(), updatedStudent.getCurriculumCode(),
-				updatedStudent.getAcademicYearId());
+				updatedUser.getActiveStatus(), updatedUser.getActiveDeactive(), updatedUser.getImage(),
+				updatedStudent.getStudentNo(), updatedStudent.getUserId(), updatedStudent.getParentNo(),
+				updatedStudent.getCurriculumCode(), updatedStudent.getAcademicYearId());
 		return information;
 
 	}

@@ -20,17 +20,17 @@ public class AuthenticateRepository {
 	private DSLContext dslContext;
 		
 	public Map<String, Object> searchUserByUsernameAndPassword(String username) {		  
-		Map<String, Object> adminUser = dslContext.select(USERS.USER_ID.as("userId"), USERS.USERNAME, USERS.PASSWORD, USERS.USER_TYPE.as("userType"), USERS.ACTIVE_DEACTIVE.as("activeDeactive"), USERS.IMAGE, ADMIN.ADMIN_NO.as("adminNo"))
+		Map<String, Object> adminUser = dslContext.select(USERS.USER_ID.as("userId"), USERS.USERNAME, USERS.PASSWORD, USERS.USER_TYPE.as("userType"), USERS.ACTIVE_STATUS.as("activeStatus"), USERS.IMAGE, ADMIN.ADMIN_NO.as("adminNo"))
 				  .from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID))
 				  .where(USERS.USERNAME.eq(username))
 				  .fetchOneMap();
 		
-		Map<String, Object> parentUser = dslContext.select(USERS.USER_ID.as("userId"), USERS.USERNAME, USERS.PASSWORD, USERS.USER_TYPE.as("userType"), USERS.ACTIVE_DEACTIVE.as("activeDeactive"), USERS.IMAGE, PARENT.PARENT_NO.as("parentNo"))
+		Map<String, Object> parentUser = dslContext.select(USERS.USER_ID.as("userId"), USERS.USERNAME, USERS.PASSWORD, USERS.USER_TYPE.as("userType"), USERS.ACTIVE_STATUS.as("activeStatus"), USERS.IMAGE, PARENT.PARENT_NO.as("parentNo"))
 				  .from(USERS).innerJoin(PARENT).on(USERS.USER_ID.eq(PARENT.USER_ID))
 				  .where(USERS.USERNAME.eq(username))
 				  .fetchOneMap();
 		
-		Map<String, Object> studentUser = dslContext.select(USERS.USER_ID.as("userId"), USERS.USERNAME, USERS.PASSWORD, USERS.USER_TYPE.as("userType"), USERS.ACTIVE_DEACTIVE.as("activeDeactive"), USERS.IMAGE, STUDENT.STUDENT_NO.as("studentNo"))
+		Map<String, Object> studentUser = dslContext.select(USERS.USER_ID.as("userId"), USERS.USERNAME, USERS.PASSWORD, USERS.USER_TYPE.as("userType"), USERS.ACTIVE_STATUS.as("activeStatus"), USERS.IMAGE, STUDENT.STUDENT_NO.as("studentNo"))
 				  .from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID))
 				  .where(USERS.USERNAME.eq(username))
 				  .fetchOneMap();
