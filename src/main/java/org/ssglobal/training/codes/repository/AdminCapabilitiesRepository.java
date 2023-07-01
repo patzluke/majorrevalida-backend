@@ -677,8 +677,14 @@ public class AdminCapabilitiesRepository {
 
 	// -------------------------- FOR CURRICULUM
 	public List<Map<String, Object>> selectAllCurriculum() {
-		List<Map<String, Object>> query = dslContext.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriclumCode"), CURRICULUM.CURRICULUM_NAME.as("curriclumName"), 
-															MAJOR.MAJOR_CODE.as("majorCode"), MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_CODE.as("courseCode"))
+		List<Map<String, Object>> query = dslContext.select(
+				CURRICULUM.CURRICULUM_ID.as("curriculumId"), 
+				CURRICULUM.CURRICULUM_CODE.as("curriclumCode"), 
+				CURRICULUM.CURRICULUM_NAME.as("curriclumName"), 
+				MAJOR.MAJOR_CODE.as("majorCode"), 
+				MAJOR.MAJOR_TITLE.as("majorTitle"), 
+				COURSE.COURSE_CODE.as("courseCode"),
+				COURSE.COURSE_TITLE.as("courseTitle"))
 						  .from(CURRICULUM)
 						  .innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
 						  .innerJoin(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
