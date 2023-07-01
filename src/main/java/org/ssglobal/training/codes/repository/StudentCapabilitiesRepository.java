@@ -46,7 +46,7 @@ public class StudentCapabilitiesRepository {
 				userData.getAddress(), userData.getCivilStatus(), userData.getGender(), userData.getNationality(),
 				userData.getActiveStatus(), userData.getActiveDeactive(), userData.getImage(),
 				studentData.getStudentNo(), studentData.getUserId(), studentData.getParentNo(),
-				studentData.getCurriculumCode(), studentData.getAcademicYearId());
+				studentData.getCurriculumCode(), studentData.getYearLevel(), studentData.getAcademicYearId());
 
 		return information;
 
@@ -80,7 +80,7 @@ public class StudentCapabilitiesRepository {
 				updatedUser.getCivilStatus(), updatedUser.getGender(), updatedUser.getNationality(),
 				updatedUser.getActiveStatus(), updatedUser.getActiveDeactive(), updatedUser.getImage(),
 				updatedStudent.getStudentNo(), updatedStudent.getUserId(), updatedStudent.getParentNo(),
-				updatedStudent.getCurriculumCode(), updatedStudent.getAcademicYearId());
+				updatedStudent.getCurriculumCode(), updatedStudent.getYearLevel(), updatedStudent.getAcademicYearId());
 		return information;
 
 	}
