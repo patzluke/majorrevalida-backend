@@ -18,6 +18,7 @@ public class UserAndAdmin {
 	private String civilStatus;
 	private String gender;
 	private String nationality;
+	private Boolean activeStatus;
 	private Boolean activeDeactive;
 	private String image;
 
@@ -43,6 +44,7 @@ public class UserAndAdmin {
 		this.civilStatus = value.civilStatus;
 		this.gender = value.gender;
 		this.nationality = value.nationality;
+		this.activeStatus = value.activeStatus;
 		this.activeDeactive = value.activeDeactive;
 		this.image = value.image;
 
@@ -53,7 +55,7 @@ public class UserAndAdmin {
 
 	public UserAndAdmin(Integer userId, String username, String password, String email, String contactNo,
 			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
-			String civilStatus, String gender, String nationality, Boolean activeDeactive, String image,
+			String civilStatus, String gender, String nationality, Boolean activeStatus, Boolean activeDeactive, String image,
 
 			Integer adminId, Integer adminNo) {
 		this.userId = userId;
@@ -70,6 +72,7 @@ public class UserAndAdmin {
 		this.civilStatus = civilStatus;
 		this.gender = gender;
 		this.nationality = nationality;
+		this.activeStatus = activeStatus;
 		this.activeDeactive = activeDeactive;
 		this.image = image;
 		this.adminId = adminId;
@@ -77,30 +80,27 @@ public class UserAndAdmin {
 	}
 
 	public Integer getUserId() {
-		return this.userId;
+		return userId;
 	}
 
-	public UserAndAdmin setUserId(Integer userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
-		return this;
 	}
 
 	public String getUsername() {
-		return this.username;
+		return username;
 	}
 
-	public UserAndAdmin setUsername(String username) {
+	public void setUsername(String username) {
 		this.username = username;
-		return this;
 	}
 
 	public String getPassword() {
-		return this.password;
+		return password;
 	}
 
-	public UserAndAdmin setPassword(String password) {
+	public void setPassword(String password) {
 		this.password = password;
-		return this;
 	}
 
 	public String getEmail() {
@@ -120,30 +120,27 @@ public class UserAndAdmin {
 	}
 
 	public String getFirstName() {
-		return this.firstName;
+		return firstName;
 	}
 
-	public UserAndAdmin setFirstName(String firstName) {
+	public void setFirstName(String firstName) {
 		this.firstName = firstName;
-		return this;
 	}
 
 	public String getMiddleName() {
-		return this.middleName;
+		return middleName;
 	}
 
-	public UserAndAdmin setMiddleName(String middleName) {
+	public void setMiddleName(String middleName) {
 		this.middleName = middleName;
-		return this;
 	}
 
 	public String getLastName() {
-		return this.lastName;
+		return lastName;
 	}
 
-	public UserAndAdmin setLastName(String lastName) {
+	public void setLastName(String lastName) {
 		this.lastName = lastName;
-		return this;
 	}
 
 	public String getUserType() {
@@ -155,84 +152,83 @@ public class UserAndAdmin {
 	}
 
 	public LocalDate getBirthDate() {
-		return this.birthDate;
+		return birthDate;
 	}
 
-	public UserAndAdmin setBirthDate(LocalDate birthDate) {
+	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
-		return this;
 	}
 
 	public String getAddress() {
-		return this.address;
+		return address;
 	}
 
-	public UserAndAdmin setAddress(String address) {
+	public void setAddress(String address) {
 		this.address = address;
-		return this;
 	}
 
 	public String getCivilStatus() {
-		return this.civilStatus;
+		return civilStatus;
 	}
 
-	public UserAndAdmin setCivilStatus(String civilStatus) {
+	public void setCivilStatus(String civilStatus) {
 		this.civilStatus = civilStatus;
-		return this;
 	}
 
 	public String getGender() {
-		return this.gender;
+		return gender;
 	}
 
-	public UserAndAdmin setGender(String gender) {
+	public void setGender(String gender) {
 		this.gender = gender;
-		return this;
 	}
 
 	public String getNationality() {
-		return this.nationality;
+		return nationality;
 	}
 
-	public UserAndAdmin setNationality(String nationality) {
+	public void setNationality(String nationality) {
 		this.nationality = nationality;
-		return this;
+	}
+
+	public Boolean getActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(Boolean activeStatus) {
+		this.activeStatus = activeStatus;
 	}
 
 	public Boolean getActiveDeactive() {
-		return this.activeDeactive;
+		return activeDeactive;
 	}
 
-	public UserAndAdmin setActiveDeactive(Boolean activeDeactive) {
+	public void setActiveDeactive(Boolean activeDeactive) {
 		this.activeDeactive = activeDeactive;
-		return this;
 	}
 
 	public String getImage() {
-		return this.image;
+		return image;
 	}
 
-	public UserAndAdmin setImage(String image) {
+	public void setImage(String image) {
 		this.image = image;
-		return this;
 	}
 
 	public Integer getAdminId() {
-		return this.adminId;
+		return adminId;
 	}
 
-	public UserAndAdmin setAdminId(Integer adminId) {
+	public void setAdminId(Integer adminId) {
 		this.adminId = adminId;
-		return this;
 	}
 
 	public Integer getAdminNo() {
-		return this.adminNo;
+		return adminNo;
 	}
 
-	public UserAndAdmin setAdminNo(Integer adminNo) {
+	public void setAdminNo(Integer adminNo) {
 		this.adminNo = adminNo;
-		return this;
 	}
 
 	@Override
@@ -241,9 +237,7 @@ public class UserAndAdmin {
 				+ email + ", contactNo=" + contactNo + ", firstName=" + firstName + ", middleName=" + middleName
 				+ ", lastName=" + lastName + ", userType=" + userType + ", birthDate=" + birthDate + ", address="
 				+ address + ", civilStatus=" + civilStatus + ", gender=" + gender + ", nationality=" + nationality
-				+ ", activeDeactive=" + activeDeactive + ", image=" + image + ", adminId=" + adminId + ", adminNo="
-				+ adminNo + "]";
+				+ ", activeStatus=" + activeStatus + ", activeDeactive=" + activeDeactive + ", image=" + image
+				+ ", adminId=" + adminId + ", adminNo=" + adminNo + "]";
 	}
-
-	
 }

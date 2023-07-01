@@ -18,6 +18,7 @@ public class UserAndProfessor {
     private String    civilStatus;
     private String    gender;
     private String    nationality;
+    private Boolean   activeStatus;
     private Boolean   activeDeactive;
     private String    image;
 
@@ -43,6 +44,7 @@ public class UserAndProfessor {
         this.civilStatus = value.civilStatus;
         this.gender = value.gender;
         this.nationality = value.nationality;
+        this.activeStatus = value.activeStatus;
         this.activeDeactive = value.activeDeactive;
         this.image = value.image;
         
@@ -54,7 +56,7 @@ public class UserAndProfessor {
 
 	public UserAndProfessor(Integer userId, String username, String password, String email, String contactNo,
 			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
-			String civilStatus, String gender, String nationality, Boolean activeDeactive, String image,
+			String civilStatus, String gender, String nationality, Boolean activeStatus, Boolean activeDeactive, String image,
 			
 			Integer professorId, Integer professorNo, String work) {
 		this.userId = userId;
@@ -71,6 +73,7 @@ public class UserAndProfessor {
         this.civilStatus = civilStatus;
         this.gender = gender;
         this.nationality = nationality;
+        this.activeStatus = activeStatus;
         this.activeDeactive = activeDeactive;
         this.image = image;
         
@@ -191,6 +194,14 @@ public class UserAndProfessor {
 		this.nationality = nationality;
 	}
 
+	public Boolean getActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(Boolean activeStatus) {
+		this.activeStatus = activeStatus;
+	}
+
 	public Boolean getActiveDeactive() {
 		return activeDeactive;
 	}
@@ -229,5 +240,15 @@ public class UserAndProfessor {
 
 	public void setWork(String work) {
 		this.work = work;
+	}
+
+	@Override
+	public String toString() {
+		return "UserAndProfessor [userId=" + userId + ", username=" + username + ", password=" + password + ", email="
+				+ email + ", contactNo=" + contactNo + ", firstName=" + firstName + ", middleName=" + middleName
+				+ ", lastName=" + lastName + ", userType=" + userType + ", birthDate=" + birthDate + ", address="
+				+ address + ", civilStatus=" + civilStatus + ", gender=" + gender + ", nationality=" + nationality
+				+ ", activeStatus=" + activeStatus + ", activeDeactive=" + activeDeactive + ", image=" + image
+				+ ", professorId=" + professorId + ", professorNo=" + professorNo + ", work=" + work + "]";
 	}
 }

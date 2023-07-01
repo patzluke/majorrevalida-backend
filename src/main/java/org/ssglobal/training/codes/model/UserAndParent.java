@@ -18,6 +18,7 @@ public class UserAndParent {
 	private String civilStatus;
 	private String gender;
 	private String nationality;
+	private Boolean activeStatus;
 	private Boolean activeDeactive;
 	private String image;
     
@@ -27,7 +28,7 @@ public class UserAndParent {
 
 	public UserAndParent(Integer userId, String username, String password, String firstName, String middleName,
 			String lastName, String userType, LocalDate birthDate, String address, String civilStatus, String gender,
-			String nationality, Boolean activeDeactive, String image, Integer parentId) {
+			String nationality, Boolean activeStatus, Boolean activeDeactive, String image, Integer parentId) {
 		super();
 		this.userId = userId;
 		this.username = username;
@@ -41,6 +42,7 @@ public class UserAndParent {
 		this.civilStatus = civilStatus;
 		this.gender = gender;
 		this.nationality = nationality;
+		this.activeStatus = activeStatus;
 		this.activeDeactive = activeDeactive;
 		this.image = image;
 		this.parentId = parentId;
@@ -61,6 +63,7 @@ public class UserAndParent {
 		this.civilStatus = value.civilStatus;
 		this.gender = value.gender;
 		this.nationality = value.nationality;
+		this.activeStatus = value.activeStatus;
 		this.activeDeactive = value.activeDeactive;
 		this.image = value.image;
         
@@ -179,6 +182,14 @@ public class UserAndParent {
 		this.nationality = nationality;
 	}
 
+	public Boolean getActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(Boolean activeStatus) {
+		this.activeStatus = activeStatus;
+	}
+
 	public Boolean getActiveDeactive() {
 		return activeDeactive;
 	}
@@ -205,11 +216,11 @@ public class UserAndParent {
 
 	@Override
 	public String toString() {
-		return "UserAndParent [userId=" + userId + ", username=" + username + ", password=" + password + ", firstName="
-				+ firstName + ", middleName=" + middleName + ", lastName=" + lastName + ", userType=" + userType
-				+ ", birthDate=" + birthDate + ", address=" + address + ", civilStatus=" + civilStatus + ", gender="
-				+ gender + ", nationality=" + nationality + ", activeDeactive=" + activeDeactive + ", image=" + image
+		return "UserAndParent [userId=" + userId + ", username=" + username + ", password=" + password + ", email="
+				+ email + ", contactNo=" + contactNo + ", firstName=" + firstName + ", middleName=" + middleName
+				+ ", lastName=" + lastName + ", userType=" + userType + ", birthDate=" + birthDate + ", address="
+				+ address + ", civilStatus=" + civilStatus + ", gender=" + gender + ", nationality=" + nationality
+				+ ", activeStatus=" + activeStatus + ", activeDeactive=" + activeDeactive + ", image=" + image
 				+ ", parentId=" + parentId + "]";
-	}
-    
+	}    
 }

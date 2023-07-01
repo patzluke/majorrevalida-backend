@@ -184,8 +184,10 @@ public class AdminCapabilitiesController {
 				return ResponseEntity.ok(updatedAdmin);
 			}
 		} catch (DuplicateKeyException e) {
+			e.printStackTrace();
 			return ResponseEntity.badRequest().body(e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.badRequest().body("something went wrong");
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -322,6 +324,7 @@ public class AdminCapabilitiesController {
 			UserAndProfessor updatedProfessor = service.changeProfessorAccountStatus(Integer.valueOf(payload.get("userId").toString()), 
 																				 Boolean.valueOf(payload.get("status").toString()));
 			if (updatedProfessor != null) {
+				System.out.println(payload);
 				return ResponseEntity.ok(updatedProfessor);
 			}
 		} catch (Exception e) {

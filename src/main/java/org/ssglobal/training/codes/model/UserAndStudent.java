@@ -18,6 +18,7 @@ public class UserAndStudent {
 	private String civilStatus;
 	private String gender;
 	private String nationality;
+	private Boolean activeStatus;
 	private Boolean activeDeactive;
 	private String image;
 
@@ -37,7 +38,7 @@ public class UserAndStudent {
 
 	public UserAndStudent(Integer userId, String username, String password, String email, String contactNo,
 			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
-			String civilStatus, String gender, String nationality, Boolean activeDeactive, String image,
+			String civilStatus, String gender, String nationality, Boolean activeStatus, Boolean activeDeactive, String image,
 			Integer studentId, Integer studentNo, Integer parentNo, Integer curriculumCode, Integer academicYearId,
 			Integer yearLevel, String courseTitle, String majorTitle) {
 		super();
@@ -55,6 +56,7 @@ public class UserAndStudent {
 		this.civilStatus = civilStatus;
 		this.gender = gender;
 		this.nationality = nationality;
+		this.activeStatus = activeStatus;
 		this.activeDeactive = activeDeactive;
 		this.image = image;
 		this.studentId = studentId;
@@ -71,7 +73,7 @@ public class UserAndStudent {
 
 	public UserAndStudent(Integer userId, String username, String password, String email, String contactNo,
 			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
-			String civilStatus, String gender, String nationality, Boolean activeDeactive, String image,
+			String civilStatus, String gender, String nationality, Boolean activeStatus, Boolean activeDeactive, String image,
 			Integer studentId, Integer studentNo, Integer parentNo, Integer curriculumCode,
 			Integer academicYearId) {
 		this.userId = userId;
@@ -88,6 +90,7 @@ public class UserAndStudent {
 		this.civilStatus = civilStatus;
 		this.gender = gender;
 		this.nationality = nationality;
+		this.activeStatus = activeStatus;
 		this.activeDeactive = activeDeactive;
 		this.image = image;
 		this.studentId = studentId;
@@ -209,6 +212,14 @@ public class UserAndStudent {
 		this.nationality = nationality;
 	}
 
+	public Boolean getActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(Boolean activeStatus) {
+		this.activeStatus = activeStatus;
+	}
+
 	public Boolean getActiveDeactive() {
 		return activeDeactive;
 	}
@@ -225,10 +236,6 @@ public class UserAndStudent {
 		this.image = image;
 	}
 
-	public Integer getStudentNo() {
-		return studentNo;
-	}
-
 	public Integer getStudentId() {
 		return studentId;
 	}
@@ -236,7 +243,11 @@ public class UserAndStudent {
 	public void setStudentId(Integer studentId) {
 		this.studentId = studentId;
 	}
-	
+
+	public Integer getStudentNo() {
+		return studentNo;
+	}
+
 	public void setStudentNo(Integer studentNo) {
 		this.studentNo = studentNo;
 	}
@@ -264,7 +275,15 @@ public class UserAndStudent {
 	public void setAcademicYearId(Integer academicYearId) {
 		this.academicYearId = academicYearId;
 	}
-	
+
+	public Integer getYearLevel() {
+		return yearLevel;
+	}
+
+	public void setYearLevel(Integer yearLevel) {
+		this.yearLevel = yearLevel;
+	}
+
 	public String getCourseTitle() {
 		return courseTitle;
 	}
@@ -281,24 +300,15 @@ public class UserAndStudent {
 		this.majorTitle = majorTitle;
 	}
 
-	public Integer getYearLevel() {
-		return yearLevel;
-	}
-
-	public void setYearLevel(Integer yearLevel) {
-		this.yearLevel = yearLevel;
-	}
-
-	
 	@Override
 	public String toString() {
 		return "UserAndStudent [userId=" + userId + ", username=" + username + ", password=" + password + ", email="
 				+ email + ", contactNo=" + contactNo + ", firstName=" + firstName + ", middleName=" + middleName
 				+ ", lastName=" + lastName + ", userType=" + userType + ", birthDate=" + birthDate + ", address="
 				+ address + ", civilStatus=" + civilStatus + ", gender=" + gender + ", nationality=" + nationality
-				+ ", activeDeactive=" + activeDeactive + ", image=" + image + ", studentId=" + studentId
-				+ ", studentNo=" + studentNo + ", parentNo=" + parentNo + ", curriculumCode=" + curriculumCode
-				+ ", academicYearId=" + academicYearId + ", yearLevel=" + yearLevel + ", courseTitle=" + courseTitle
-				+ ", majorTitle=" + majorTitle + "]";
+				+ ", activeStatus=" + activeStatus + ", activeDeactive=" + activeDeactive + ", image=" + image
+				+ ", studentId=" + studentId + ", studentNo=" + studentNo + ", parentNo=" + parentNo
+				+ ", curriculumCode=" + curriculumCode + ", academicYearId=" + academicYearId + ", yearLevel="
+				+ yearLevel + ", courseTitle=" + courseTitle + ", majorTitle=" + majorTitle + "]";
 	}
 }
