@@ -148,7 +148,7 @@ public class AdminCapabilitiesController {
 				return ResponseEntity.ok(studentProfile);
 			}
 		} catch (Exception e) {
-			System.out.println("%s".formatted(e));
+			e.printStackTrace();
 			return ResponseEntity.badRequest().build();
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -604,6 +604,20 @@ public class AdminCapabilitiesController {
 	}
 	
 	// -------- For Major
+	@GetMapping(value = "/get/major", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Major>> selectAllMajor() {
+		try {
+			List<Major> departments = service.selectAllMajor();
+			if (!departments.isEmpty()) {
+				return ResponseEntity.ok(departments);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 	@PostMapping(value = "/insert/major", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Major> insertMajor(@RequestBody Major major) {

@@ -83,6 +83,7 @@ public interface AdminCapabilitiesService {
 	List<Department> selectAllDepartment();
 	
 	// ------------------------FOR Major
+	List<Major> selectAllMajor();
 	Major addMajor(Major major);
 	Major editMajor(Major major);
 	

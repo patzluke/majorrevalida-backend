@@ -326,6 +326,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 
 	// ------------------------FOR Major
 	@Override
+	public List<Major> selectAllMajor() {
+		return repository.selectAllMajor();
+	}
+	
+	@Override
 	public Major addMajor(Major major) {
 		return repository.addMajor(major);
 	}

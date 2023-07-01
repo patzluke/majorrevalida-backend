@@ -189,7 +189,8 @@ public class AdminCapabilitiesRepository {
 						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
 						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
 						USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
-						STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_TITLE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
+						CURRICULUM.CURRICULUM_NAME, STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE,
+						MAJOR.MAJOR_CODE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
 				.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
 				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
 				.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
@@ -240,7 +241,7 @@ public class AdminCapabilitiesRepository {
 				insertUser.getBirthDate(), insertUser.getAddress(), insertUser.getCivilStatus(), insertUser.getGender(),
 				insertUser.getNationality(), insertUser.getActiveStatus(), insertUser.getActiveDeactive(),
 				insertUser.getImage(), insertStudent.getStudentId(), insertStudent.getStudentNo(),
-				insertStudent.getParentNo(), insertStudent.getCurriculumCode(), insertStudent.getAcademicYearId());
+				insertStudent.getParentNo(), insertStudent.getCurriculumCode(), insertStudent.getYearLevel(), insertStudent.getAcademicYearId());
 
 		return information;
 
@@ -254,24 +255,25 @@ public class AdminCapabilitiesRepository {
 				.set(USERS.USER_TYPE, student.getUserType()).set(USERS.BIRTH_DATE, student.getBirthDate())
 				.set(USERS.ADDRESS, student.getAddress()).set(USERS.CIVIL_STATUS, student.getCivilStatus())
 				.set(USERS.GENDER, student.getGender()).set(USERS.NATIONALITY, student.getNationality())
-				.set(USERS.ACTIVE_DEACTIVE, student.getActiveDeactive()).set(USERS.IMAGE, student.getImage())
-				.where(USERS.USER_ID.eq(student.getUserId()))
+				.set(USERS.IMAGE, student.getImage()).where(USERS.USER_ID.eq(student.getUserId()))
 				.returning().fetchOne().into(Users.class);
-		System.out.println(student + " hey");
+		
 		Student updatedStudent = dslContext.update(STUDENT).set(STUDENT.PARENT_NO, student.getParentNo())
 				.set(STUDENT.CURRICULUM_CODE, student.getCurriculumCode())
 				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId())
+				.set(STUDENT.YEAR_LEVEL, student.getYearLevel())
 				.where(STUDENT.STUDENT_NO.eq(student.getStudentNo()))
 				.returning().fetchOne().into(Student.class);
-
-		UserAndStudent information = new UserAndStudent(updatedUser.getUserId(), updatedUser.getUsername(),
-				updatedUser.getPassword(), updatedUser.getEmail(), updatedUser.getContactNo(),
-				updatedUser.getFirstName(), updatedUser.getMiddleName(), updatedUser.getLastName(),
-				updatedUser.getUserType(), updatedUser.getBirthDate(), updatedUser.getAddress(),
-				updatedUser.getCivilStatus(), updatedUser.getGender(), updatedUser.getNationality(),
-				updatedUser.getActiveStatus(), updatedUser.getActiveDeactive(), updatedUser.getImage(),
-				updatedStudent.getStudentId(), updatedStudent.getStudentNo(), updatedStudent.getParentNo(),
-				updatedStudent.getCurriculumCode(), updatedStudent.getAcademicYearId());
+		
+		UserAndStudent information = dslContext.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
+						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
+						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
+						USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
+						CURRICULUM.CURRICULUM_NAME, STUDENT.ACADEMIC_YEAR_ID, STUDENT.YEAR_LEVEL)
+				.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
+				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE))
+				.where(STUDENT.STUDENT_NO.eq(updatedStudent.getStudentNo())).fetchOneInto(UserAndStudent.class);
+		
 		return information;
 	}
 
@@ -290,7 +292,7 @@ public class AdminCapabilitiesRepository {
 					deactivatedUser.getCivilStatus(), deactivatedUser.getGender(), deactivatedUser.getNationality(),
 					deactivatedUser.getActiveStatus(), deactivatedUser.getActiveDeactive(), deactivatedUser.getImage(),
 					deactivatedStudent.getStudentNo(), deactivatedStudent.getUserId(), deactivatedStudent.getParentNo(),
-					deactivatedStudent.getCurriculumCode(), deactivatedStudent.getAcademicYearId());
+					deactivatedStudent.getCurriculumCode(), deactivatedStudent.getYearLevel(), deactivatedStudent.getAcademicYearId());
 			return information;
 		}
 		return null;
@@ -311,7 +313,7 @@ public class AdminCapabilitiesRepository {
 					deactivatedUser.getCivilStatus(), deactivatedUser.getGender(), deactivatedUser.getNationality(),
 					deactivatedUser.getActiveStatus(), deactivatedUser.getActiveDeactive(), deactivatedUser.getImage(),
 					deactivatedStudent.getStudentNo(), deactivatedStudent.getUserId(), deactivatedStudent.getParentNo(),
-					deactivatedStudent.getCurriculumCode(), deactivatedStudent.getAcademicYearId());
+					deactivatedStudent.getCurriculumCode(), deactivatedStudent.getYearLevel(), deactivatedStudent.getAcademicYearId());
 			return information;
 		}
 		return null;
@@ -726,6 +728,10 @@ public class AdminCapabilitiesRepository {
 	}
 
 	// -------------------------- FOR MAJOR
+	public List<Major> selectAllMajor() {
+		return dslContext.selectFrom(MAJOR).fetchInto(Major.class);
+	}
+	
 	public Major addMajor(Major major) {
 		/*
 		 * The program data added is limited to: course_code and major_title
@@ -747,18 +753,13 @@ public class AdminCapabilitiesRepository {
 
 	// -------------------------- FOR CURRICULUM
 	public List<Map<String, Object>> selectAllCurriculum() {
-		List<Map<String, Object>> query = dslContext.select(
-				CURRICULUM.CURRICULUM_ID.as("curriculumId"), 
-				CURRICULUM.CURRICULUM_CODE.as("curriclumCode"), 
-				CURRICULUM.CURRICULUM_NAME.as("curriclumName"), 
-				MAJOR.MAJOR_CODE.as("majorCode"), 
-				MAJOR.MAJOR_TITLE.as("majorTitle"), 
-				COURSE.COURSE_CODE.as("courseCode"),
-				COURSE.COURSE_TITLE.as("courseTitle"))
-						  .from(CURRICULUM)
-						  .innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
-						  .innerJoin(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-						  .fetchMaps();
+		List<Map<String, Object>> query = dslContext
+				.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriclumCode"),
+						CURRICULUM.CURRICULUM_NAME.as("curriclumName"), MAJOR.MAJOR_CODE.as("majorCode"),
+						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_CODE.as("courseCode"),
+						COURSE.COURSE_TITLE.as("courseTitle"))
+				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).fetchMaps();
 		return !query.isEmpty() ? query : null;
 	}
 

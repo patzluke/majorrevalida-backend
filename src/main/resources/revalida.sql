@@ -348,7 +348,7 @@ insert into major(course_code, major_title) values(3001, 'Automation');
 --insert into Curriculum table
 insert into curriculum(major_code, curriculum_name) values(4001, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN WEB AND MOBILE APPLICATION');
 insert into curriculum(major_code, curriculum_name) values(4002, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY');
-insert into curriculum(major_code, curriculum_name) values(4003, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY');
+insert into curriculum(major_code, curriculum_name) values(4003, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN AUTOMATION');
 
 --insert into major and minor subject table
 	--for information technology major in web and mobile major subjects (first year 1ST SEM)
@@ -549,22 +549,6 @@ insert into users(username, password, email, contact_no, first_name, middle_name
 values('cachuela', '123456', 'Cachuela@gmail.com', '9188192721', 'Cachuela', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'Cachuela.jpeg');
 insert into student(user_id, curriculum_code, academic_year_id, year_level) values(9, 5001, 1, 1);
 
-insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
-values('george', '123456', 'george@gmail.com', '9188192721', 'George', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'george.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(10, 5001, 1, 1);
-
-insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
-values('steven', '123456', 'steven@gmail.com', '9188192721', 'Steven', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'steven.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(11, 5001, 1, 1);
-
-insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
-values('zephania', '123456', 'zephania@gmail.com', '9188192721', 'Zephania', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'zephania.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(12, 5001, 1, 1);
-
-insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
-values('eoin', '123456', 'eoin@gmail.com', '9188192721', 'Eoin', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'eoin.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(13, 5001, 1, 1);
-
 --insert into Professor Load table
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
 values(8001, 9001, 1, 1, 2001, 'M', '08:00', '11:00');
@@ -584,6 +568,23 @@ insert into professor_load(professor_no, subject_code, section_id, room_id, dept
 values(8004, 9007, 1, 1, 2001, 'W', '08:00', '11:00');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
 values(8004, 9008, 1, 1, 2001, 'W', '11:00', '14:00');
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('george', '123456', 'george@gmail.com', '9188192721', 'George', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'george.jpeg');
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(10, 5001, 1, 1);
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('steven', '123456', 'steven@gmail.com', '9188192721', 'Steven', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'steven.jpeg');
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(11, 5001, 1, 1);
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('zephania', '123456', 'zephania@gmail.com', '9188192721', 'Zephania', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'zephania.jpeg');
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(12, 5001, 1, 1);
+
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('eoin', '123456', 'eoin@gmail.com', '9188192721', 'Eoin', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'eoin.jpeg');
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(13, 5001, 1, 1);
+
 
 select cu.curriculum_code, cu.curriculum_name, m.major_code, m.major_title, co.course_code, co.course_title, d.dept_code, d.dept_name, p.program_code, p.program_title from curriculum cu 
 inner join major m on cu.major_code = m.major_code

@@ -27,6 +27,7 @@ public class UserAndStudent {
 	private Integer studentNo;
 	private Integer parentNo;
 	private Integer curriculumCode;
+	private String curriculumName;
 	private Integer academicYearId;
 	
 	private Integer yearLevel;
@@ -39,42 +40,7 @@ public class UserAndStudent {
 	public UserAndStudent(Integer userId, String username, String password, String email, String contactNo,
 			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
 			String civilStatus, String gender, String nationality, Boolean activeStatus, Boolean activeDeactive, String image,
-			Integer studentId, Integer studentNo, Integer parentNo, Integer curriculumCode, Integer academicYearId,
-			Integer yearLevel, String courseTitle, String majorTitle) {
-		super();
-		this.userId = userId;
-		this.username = username;
-		this.password = password;
-		this.email = email;
-		this.contactNo = contactNo;
-		this.firstName = firstName;
-		this.middleName = middleName;
-		this.lastName = lastName;
-		this.userType = userType;
-		this.birthDate = birthDate;
-		this.address = address;
-		this.civilStatus = civilStatus;
-		this.gender = gender;
-		this.nationality = nationality;
-		this.activeStatus = activeStatus;
-		this.activeDeactive = activeDeactive;
-		this.image = image;
-		this.studentId = studentId;
-		this.studentNo = studentNo;
-		this.parentNo = parentNo;
-		this.curriculumCode = curriculumCode;
-		this.academicYearId = academicYearId;
-		this.yearLevel = yearLevel;
-		this.courseTitle = courseTitle;
-		this.majorTitle = majorTitle;
-	}
-
-
-
-	public UserAndStudent(Integer userId, String username, String password, String email, String contactNo,
-			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
-			String civilStatus, String gender, String nationality, Boolean activeStatus, Boolean activeDeactive, String image,
-			Integer studentId, Integer studentNo, Integer parentNo, Integer curriculumCode,
+			Integer studentId, Integer studentNo, Integer parentNo, Integer curriculumCode, Integer yearLevel,
 			Integer academicYearId) {
 		this.userId = userId;
 		this.username = username;
@@ -97,6 +63,7 @@ public class UserAndStudent {
 		this.studentNo = studentNo;
 		this.parentNo = parentNo;
 		this.curriculumCode = curriculumCode;
+		this.yearLevel = yearLevel;
 		this.academicYearId = academicYearId;
 	}
 
@@ -268,6 +235,14 @@ public class UserAndStudent {
 		this.curriculumCode = curriculumCode;
 	}
 
+	public String getCurriculumName() {
+		return curriculumName;
+	}
+
+	public void setCurriculumName(String curriculumName) {
+		this.curriculumName = curriculumName;
+	}
+
 	public Integer getAcademicYearId() {
 		return academicYearId;
 	}
@@ -308,7 +283,8 @@ public class UserAndStudent {
 				+ address + ", civilStatus=" + civilStatus + ", gender=" + gender + ", nationality=" + nationality
 				+ ", activeStatus=" + activeStatus + ", activeDeactive=" + activeDeactive + ", image=" + image
 				+ ", studentId=" + studentId + ", studentNo=" + studentNo + ", parentNo=" + parentNo
-				+ ", curriculumCode=" + curriculumCode + ", academicYearId=" + academicYearId + ", yearLevel="
-				+ yearLevel + ", courseTitle=" + courseTitle + ", majorTitle=" + majorTitle + "]";
+				+ ", curriculumCode=" + curriculumCode + ", curriculumName=" + curriculumName + ", academicYearId="
+				+ academicYearId + ", yearLevel=" + yearLevel + ", courseTitle=" + courseTitle + ", majorTitle="
+				+ majorTitle + "]";
 	}
 }
