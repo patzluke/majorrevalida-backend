@@ -94,4 +94,7 @@ public interface AdminCapabilitiesService {
 	
 	// ------------------------FOR INNER JOIN OF Curriculum, Major, Course, Department and Program;
 	List<Map<String, Object>> selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram();
+	
+	//-------------------------FOR THE SUBJECTS
+	List<Map<String, Object>> selectAllMinorSubjects();
 }

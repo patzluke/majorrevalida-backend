@@ -361,4 +361,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<Map<String, Object>> selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram() {
 		return repository.selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram();
 	}
+
+	@Override
+	public List<Map<String, Object>> selectAllMinorSubjects() {
+		return repository.selectAllMinorSubjects();
+	}
 }

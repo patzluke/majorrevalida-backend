@@ -677,4 +677,19 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+	
+	//---------FOR THE SUBJECTS
+	@GetMapping(value = "/get/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectAllMinorSubjects() {
+		try {
+			List<Map<String, Object>> updatedAdmin = service.selectAllMinorSubjects();
+			if (!updatedAdmin.isEmpty()) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
 }
