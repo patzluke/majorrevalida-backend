@@ -31,9 +31,11 @@ public class UserAndStudent {
 	private Integer academicYearId;
 	
 	private Integer yearLevel;
+	private Integer courseCode;
 	private String courseTitle;
+	private Integer majorCode;
 	private String majorTitle;
-
+	
 	public UserAndStudent() {
 	}
 
@@ -259,12 +261,28 @@ public class UserAndStudent {
 		this.yearLevel = yearLevel;
 	}
 
+	public Integer getCourseCode() {
+		return courseCode;
+	}
+
+	public void setCourseCode(Integer courseCode) {
+		this.courseCode = courseCode;
+	}
+
 	public String getCourseTitle() {
 		return courseTitle;
 	}
 
 	public void setCourseTitle(String courseTitle) {
 		this.courseTitle = courseTitle;
+	}
+
+	public Integer getMajorCode() {
+		return majorCode;
+	}
+
+	public void setMajorCode(Integer majorCode) {
+		this.majorCode = majorCode;
 	}
 
 	public String getMajorTitle() {
@@ -284,7 +302,7 @@ public class UserAndStudent {
 				+ ", activeStatus=" + activeStatus + ", activeDeactive=" + activeDeactive + ", image=" + image
 				+ ", studentId=" + studentId + ", studentNo=" + studentNo + ", parentNo=" + parentNo
 				+ ", curriculumCode=" + curriculumCode + ", curriculumName=" + curriculumName + ", academicYearId="
-				+ academicYearId + ", yearLevel=" + yearLevel + ", courseTitle=" + courseTitle + ", majorTitle="
-				+ majorTitle + "]";
+				+ academicYearId + ", yearLevel=" + yearLevel + ", courseCode=" + courseCode + ", courseTitle="
+				+ courseTitle + ", majorCode=" + majorCode + ", majorTitle=" + majorTitle + "]";
 	}
 }
