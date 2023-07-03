@@ -52,11 +52,6 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<UserAndAdmin> selectAllAdmin() {
 		return repository.selectAllAdmin();
 	}
-
-	@Override
-	public UserAndAdmin selectAdmin(Integer adminNo) {
-		return repository.selectAdmin(adminNo);
-	}
 	
 	@Override
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) throws DuplicateKeyException, Exception {
@@ -105,11 +100,6 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public UserAndStudent selectStudent(Integer studentNo) {
-		return repository.selectStudent(studentNo);
-	}
-	
-	@Override
 	public UserAndStudent insertStudent(UserAndStudent student) throws DuplicateKeyException, Exception {
 		selectAllUsers().forEach(user -> {
 			if (user.getUsername().equals(student.getUsername())) {
@@ -152,11 +142,6 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public List<UserAndProfessor> selectAllProfessor() {
 		return repository.selectAllProfessor();
-	}
-	
-	@Override
-	public UserAndProfessor selectProfessor(Integer professorNo) {
-		return repository.selectProfessor(professorNo);
 	}
 	
 	@Override
@@ -228,11 +213,6 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public List<UserAndParent> selectAllParent() {
 		return repository.selectAllParent();
-	}
-
-	@Override
-	public UserAndParent selectParent(Integer parentNo) {
-		return repository.selectParent(parentNo);
 	}
 	
 	@Override

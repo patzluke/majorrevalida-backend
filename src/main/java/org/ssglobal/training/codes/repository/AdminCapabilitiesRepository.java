@@ -23,6 +23,7 @@ import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.records.UsersRecord;
 
 @Repository
 public class AdminCapabilitiesRepository {
@@ -69,17 +70,7 @@ public class AdminCapabilitiesRepository {
 						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
 						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
 						USERS.IMAGE, ADMIN.ADMIN_ID, ADMIN.ADMIN_NO)
-				.from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID)).fetchInto(UserAndAdmin.class);
-	}
-
-	public UserAndAdmin selectAdmin(Integer adminNo) {
-		return dslContext
-				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
-						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
-						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
-						USERS.IMAGE, ADMIN.ADMIN_ID, ADMIN.ADMIN_NO)
-				.from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID)).where(ADMIN.ADMIN_NO.eq(adminNo))
-				.fetchOneInto(UserAndAdmin.class);
+				.from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID)).where(USERS.ACTIVE_DEACTIVE.eq(true)).fetchInto(UserAndAdmin.class);
 	}
 
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) {
@@ -156,7 +147,8 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndAdmin deleteAdminUser(Integer userId) {
-		Users deletedUser = dslContext.update(USERS).set(USERS.ACTIVE_DEACTIVE, false).where(USERS.USER_ID.eq(userId))
+		Users deletedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, false).set(USERS.ACTIVE_DEACTIVE, false)
+				.where(USERS.USER_ID.eq(userId))
 				.returning().fetchOne().into(Users.class);
 
 		Admin deletedAdmin = dslContext.selectFrom(ADMIN).where(ADMIN.USER_ID.eq(deletedUser.getUserId())).fetchOne()
@@ -194,18 +186,9 @@ public class AdminCapabilitiesRepository {
 				.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
 				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
 				.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
-				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).fetchInto(UserAndStudent.class);
-	}
-
-	public UserAndStudent selectStudent(Integer studentNo) {
-
-		return dslContext
-				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.FIRST_NAME, USERS.MIDDLE_NAME,
-						USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS, USERS.CIVIL_STATUS,
-						USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_DEACTIVE, USERS.IMAGE, STUDENT.USER_ID,
-						STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE, STUDENT.ACADEMIC_YEAR_ID)
-				.from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID))
-				.where(STUDENT.STUDENT_NO.eq(studentNo)).fetchOneInto(UserAndStudent.class);
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+				.where(USERS.ACTIVE_DEACTIVE.eq(true))
+				.fetchInto(UserAndStudent.class);
 	}
 
 	public UserAndStudent insertStudent(UserAndStudent student) {
@@ -234,16 +217,24 @@ public class AdminCapabilitiesRepository {
 				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId())
 				.set(STUDENT.YEAR_LEVEL, student.getYearLevel()).returning().fetchOne().into(Student.class);
 
-		// Return all the information of the student
-		UserAndStudent information = new UserAndStudent(insertUser.getUserId(), insertUser.getUsername(),
-				insertUser.getPassword(), insertUser.getEmail(), insertUser.getContactNo(), insertUser.getFirstName(),
-				insertUser.getMiddleName(), insertUser.getLastName(), insertUser.getUserType(),
-				insertUser.getBirthDate(), insertUser.getAddress(), insertUser.getCivilStatus(), insertUser.getGender(),
-				insertUser.getNationality(), insertUser.getActiveStatus(), insertUser.getActiveDeactive(),
-				insertUser.getImage(), insertStudent.getStudentId(), insertStudent.getStudentNo(),
-				insertStudent.getParentNo(), insertStudent.getCurriculumCode(), insertStudent.getYearLevel(), insertStudent.getAcademicYearId());
-
-		return information;
+		if (insertUser != null && insertStudent != null) {
+			UserAndStudent information = dslContext
+					.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
+							USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
+							USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
+							USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
+							CURRICULUM.CURRICULUM_NAME, STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE,
+							MAJOR.MAJOR_CODE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
+					.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
+					.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
+					.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
+					.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+					.where(STUDENT.STUDENT_NO.eq(insertStudent.getStudentNo()))
+					.fetchOneInto(UserAndStudent.class);
+			
+			return information;
+		}
+		return null;
 
 	}
 
@@ -265,21 +256,24 @@ public class AdminCapabilitiesRepository {
 				.where(STUDENT.STUDENT_NO.eq(student.getStudentNo()))
 				.returning().fetchOne().into(Student.class);
 		
-		UserAndStudent information = dslContext
-				.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
-						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
-						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
-						USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
-						CURRICULUM.CURRICULUM_NAME, STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE,
-						MAJOR.MAJOR_CODE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
-				.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
-				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
-				.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
-				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-				.where(STUDENT.STUDENT_NO.eq(updatedStudent.getStudentNo()))
-				.fetchOneInto(UserAndStudent.class);
-		
-		return information;
+		if (updatedUser != null && updatedStudent != null) {
+			UserAndStudent information = dslContext
+					.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
+							USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
+							USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
+							USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
+							CURRICULUM.CURRICULUM_NAME, STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE,
+							MAJOR.MAJOR_CODE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
+					.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
+					.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
+					.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
+					.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+					.where(STUDENT.STUDENT_NO.eq(updatedStudent.getStudentNo()))
+					.fetchOneInto(UserAndStudent.class);
+			
+			return information;
+		}
+		return null;
 	}
 
 	public UserAndStudent changeStudentAccountStatus(Integer userId, Boolean status) {
@@ -304,19 +298,19 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndStudent deleteStudent(Integer userId) {
-		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_DEACTIVE, false)
+		Users deletedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, false).set(USERS.ACTIVE_DEACTIVE, false)
 				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
 
 		Student deactivatedStudent = dslContext.selectFrom(STUDENT)
-				.where(STUDENT.USER_ID.eq(deactivatedUser.getUserId())).fetchOne().into(Student.class);
+				.where(STUDENT.USER_ID.eq(deletedUser.getUserId())).fetchOne().into(Student.class);
 
-		if (deactivatedUser != null && deactivatedStudent != null) {
-			UserAndStudent information = new UserAndStudent(deactivatedUser.getUserId(), deactivatedUser.getUsername(),
-					deactivatedUser.getPassword(), deactivatedUser.getEmail(), deactivatedUser.getContactNo(),
-					deactivatedUser.getFirstName(), deactivatedUser.getMiddleName(), deactivatedUser.getLastName(),
-					deactivatedUser.getUserType(), deactivatedUser.getBirthDate(), deactivatedUser.getAddress(),
-					deactivatedUser.getCivilStatus(), deactivatedUser.getGender(), deactivatedUser.getNationality(),
-					deactivatedUser.getActiveStatus(), deactivatedUser.getActiveDeactive(), deactivatedUser.getImage(),
+		if (deletedUser != null && deactivatedStudent != null) {
+			UserAndStudent information = new UserAndStudent(deletedUser.getUserId(), deletedUser.getUsername(),
+					deletedUser.getPassword(), deletedUser.getEmail(), deletedUser.getContactNo(),
+					deletedUser.getFirstName(), deletedUser.getMiddleName(), deletedUser.getLastName(),
+					deletedUser.getUserType(), deletedUser.getBirthDate(), deletedUser.getAddress(),
+					deletedUser.getCivilStatus(), deletedUser.getGender(), deletedUser.getNationality(),
+					deletedUser.getActiveStatus(), deletedUser.getActiveDeactive(), deletedUser.getImage(),
 					deactivatedStudent.getStudentNo(), deactivatedStudent.getUserId(), deactivatedStudent.getParentNo(),
 					deactivatedStudent.getCurriculumCode(), deactivatedStudent.getYearLevel(), deactivatedStudent.getAcademicYearId());
 			return information;
@@ -333,17 +327,8 @@ public class AdminCapabilitiesRepository {
 						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
 						USERS.IMAGE, PROFESSOR.PROFESSOR_ID, PROFESSOR.PROFESSOR_NO, PROFESSOR.WORK)
 				.from(USERS).innerJoin(PROFESSOR).on(USERS.USER_ID.eq(PROFESSOR.USER_ID))
+				.where(USERS.ACTIVE_DEACTIVE.eq(true))
 				.fetchInto(UserAndProfessor.class);
-	}
-
-	public UserAndProfessor selectProfessor(Integer professorNo) {
-		return dslContext
-				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
-						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
-						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_DEACTIVE, USERS.IMAGE,
-						PROFESSOR.PROFESSOR_ID, PROFESSOR.PROFESSOR_NO, PROFESSOR.WORK)
-				.from(USERS).innerJoin(PROFESSOR).on(USERS.USER_ID.eq(PROFESSOR.USER_ID))
-				.where(PROFESSOR.PROFESSOR_NO.eq(professorNo)).fetchOneInto(UserAndProfessor.class);
 	}
 
 	public UserAndProfessor insertProfessor(UserAndProfessor userAndProfessor) {
@@ -434,7 +419,7 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndProfessor deleteProfessor(Integer userId) {
-		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_DEACTIVE, false)
+		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, false).set(USERS.ACTIVE_DEACTIVE, false)
 				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
 
 		Professor deletedProfessor = dslContext.selectFrom(PROFESSOR)
@@ -530,16 +515,8 @@ public class AdminCapabilitiesRepository {
 				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.FIRST_NAME, USERS.MIDDLE_NAME,
 						USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS, USERS.CIVIL_STATUS,
 						USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_DEACTIVE, USERS.IMAGE, PARENT.PARENT_ID)
-				.from(USERS).innerJoin(PARENT).on(USERS.USER_ID.eq(PARENT.USER_ID)).fetchInto(UserAndParent.class);
-	}
-
-	public UserAndParent selectParent(Integer parentNo) {
-		return dslContext
-				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.FIRST_NAME, USERS.MIDDLE_NAME,
-						USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS, USERS.CIVIL_STATUS,
-						USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_DEACTIVE, USERS.IMAGE, PARENT.PARENT_ID)
-				.from(USERS).innerJoin(PARENT).on(USERS.USER_ID.eq(PARENT.USER_ID)).where(PARENT.PARENT_ID.eq(parentNo))
-				.fetchOneInto(UserAndParent.class);
+				.from(USERS).innerJoin(PARENT).on(USERS.USER_ID.eq(PARENT.USER_ID)).where(USERS.ACTIVE_DEACTIVE.eq(true))
+				.fetchInto(UserAndParent.class);
 	}
 
 	public UserAndParent updateParentInfo(UserAndParent parent) {
@@ -584,7 +561,7 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndParent deleteParent(Integer userId) {
-		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_DEACTIVE, false)
+		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, false).set(USERS.ACTIVE_DEACTIVE, false)
 				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
 
 		Parent deactivatedParent = dslContext.selectFrom(PARENT).where(PARENT.USER_ID.eq(deactivatedUser.getUserId()))

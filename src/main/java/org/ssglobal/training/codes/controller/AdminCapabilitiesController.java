@@ -1,5 +1,6 @@
 package org.ssglobal.training.codes.controller;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -54,20 +55,6 @@ public class AdminCapabilitiesController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.badRequest().build();
-	}
-
-	@GetMapping(value = "/get/admin/{adminNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<UserAndAdmin> selectAdmin(@PathVariable(name = "adminNo") Integer adminNo) {
-		try {
-			UserAndAdmin updatedAdmin = service.selectAdmin(adminNo);
-			if (updatedAdmin != null) {
-				return ResponseEntity.ok(updatedAdmin);
-			}
-		} catch (Exception e) {
-			System.out.println("%s".formatted(e));
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.badRequest().build();
@@ -267,20 +254,6 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 	
-	@GetMapping(value = "/get/professor/{professorNo}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<UserAndProfessor> selectProfessor(@PathVariable(name = "professorNo") Integer professorNo) {
-		try {
-			UserAndProfessor selectedProfessor = service.selectProfessor(professorNo);
-			if (selectedProfessor != null) {
-				return ResponseEntity.ok(selectedProfessor);
-			}
-		} catch (Exception e) {
-			System.out.println("%s".formatted(e));
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.badRequest().build();
-	}
-	
 	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/insert/professor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity insertProfessor(@RequestBody UserAndProfessor userAndProfessor) {
@@ -338,14 +311,16 @@ public class AdminCapabilitiesController {
 	public ResponseEntity<UserAndProfessor> deleteProfessor(@PathVariable(name = "userId") Integer userId) {
 		try {
 			UserAndProfessor deletedProfessor = service.deleteProfessor(userId);
+			System.out.println("outside hey");
 			if (deletedProfessor != null) {
+				System.out.println("hey");
 				return ResponseEntity.ok(deletedProfessor);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			return ResponseEntity.badRequest().build();
 		}
-		return ResponseEntity.badRequest().build();
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
 	// -------- For Professor Load

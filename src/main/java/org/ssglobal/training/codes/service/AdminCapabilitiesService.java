@@ -25,7 +25,6 @@ public interface AdminCapabilitiesService {
 	
 	// ------------------------FOR ADMIN
 	List<UserAndAdmin> selectAllAdmin();
-	UserAndAdmin selectAdmin(Integer adminNo);
 	UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) throws DuplicateKeyException, Exception;
 	UserAndAdmin updateAdminUser(UserAndAdmin userAdmin) throws DuplicateKeyException, Exception;
 	UserAndAdmin changeAdminAccountStatus(Integer userId, Boolean status);
@@ -33,7 +32,6 @@ public interface AdminCapabilitiesService {
 	
 	// ------------------------FOR Student
 	List<UserAndStudent> selectAllStudent();
-	UserAndStudent selectStudent(Integer studentNo);
 	UserAndStudent insertStudent(UserAndStudent student) throws DuplicateKeyException, Exception;
 	UserAndStudent updateStudent(UserAndStudent student) throws DuplicateKeyException, Exception;
 	UserAndStudent changeStudentAccountStatus(Integer userId, Boolean status);
@@ -41,7 +39,6 @@ public interface AdminCapabilitiesService {
 	
 	// ------------------------FOR Professor
 	List<UserAndProfessor> selectAllProfessor();
-	UserAndProfessor selectProfessor(Integer professorNo);
 	UserAndProfessor insertProfessor(UserAndProfessor userAndProfessor) throws DuplicateKeyException, Exception;
 	UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor) throws DuplicateKeyException, Exception;
 	UserAndProfessor changeProfessorAccountStatus(Integer userId, Boolean status);
@@ -56,7 +53,6 @@ public interface AdminCapabilitiesService {
 	
 	// ------------------------FOR Parent
 	List<UserAndParent> selectAllParent();
-	UserAndParent selectParent(Integer parentNo);
 	UserAndParent updateParentInfo(UserAndParent parent) throws DuplicateKeyException, Exception;
 	UserAndParent changeParentAccountStatus(Integer userId, Boolean status);
 	UserAndParent deleteParent(Integer userId);
