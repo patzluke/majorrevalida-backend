@@ -23,7 +23,10 @@ import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
+import org.ssglobal.training.codes.tables.pojos.Room;
+import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
 @Service
@@ -195,18 +198,18 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public ProfessorLoad insertProfessorLoad(ProfessorLoad professorLoad) {
+	public Map<String, Object> insertProfessorLoad(ProfessorLoad professorLoad) {
 		return repository.insertProfessorLoad(professorLoad);
 	}
 	
 	@Override
-	public ProfessorLoad updateProfessorLoad(ProfessorLoad professorLoad) {
+	public Map<String, Object> updateProfessorLoad(ProfessorLoad professorLoad) {
 		return repository.updateProfessorLoad(professorLoad);
 	}
 	
 	@Override
-	public ProfessorLoad deleteProfessorLoad(ProfessorLoad professorLoad) {
-		return repository.deleteProfessorLoad(professorLoad);
+	public Map<String, Object> deleteProfessorLoad(Integer loadId) {
+		return repository.deleteProfessorLoad(loadId);
 	}
 	
 	// ------------------------FOR Parent
@@ -336,9 +339,22 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 		return repository.editCurriculum(curriculum);
 	}
 	
-	// ------------------------FOR INNER JOIN OF Curriculum, Major, Course, Department and Program;
+	// ------------------------FOR Subject
 	@Override
-	public List<Map<String, Object>> selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram() {
-		return repository.selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram();
+	public List<Subject> selectAllSubject() {
+		return repository.selectAllSubject();
 	}
+	
+	// ------------------------FOR Section
+	@Override
+	public List<Section> selectAllSection() {
+		return repository.selectAllSection();
+	}
+	
+	// ------------------------FOR Room
+	@Override
+	public List<Room> selectAllRoom() {
+		return repository.selectAllRoom();
+	}
+	
 }

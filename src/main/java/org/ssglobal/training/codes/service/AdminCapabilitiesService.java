@@ -15,7 +15,10 @@ import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
+import org.ssglobal.training.codes.tables.pojos.Room;
+import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
 public interface AdminCapabilitiesService {
@@ -47,9 +50,9 @@ public interface AdminCapabilitiesService {
 	// ------------------------FOR Professor Load
 	List<Map<String, Object>> selectAllProfessorsLoad();
 	List<Map<String, Object>> selectProfessorLoad(Integer professorNo);
-	ProfessorLoad insertProfessorLoad(ProfessorLoad professorLoad);
-	ProfessorLoad updateProfessorLoad(ProfessorLoad professorLoad);
-	ProfessorLoad deleteProfessorLoad(ProfessorLoad professorLoad);
+	Map<String, Object> insertProfessorLoad(ProfessorLoad professorLoad);
+	Map<String, Object> updateProfessorLoad(ProfessorLoad professorLoad);
+	Map<String, Object> deleteProfessorLoad(Integer loadId);
 	
 	// ------------------------FOR Parent
 	List<UserAndParent> selectAllParent();
@@ -88,6 +91,12 @@ public interface AdminCapabilitiesService {
 	Curriculum addCurriculum(Curriculum curriculum);
 	Curriculum editCurriculum(Curriculum curriculum);
 	
-	// ------------------------FOR INNER JOIN OF Curriculum, Major, Course, Department and Program;
-	List<Map<String, Object>> selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram();
+	// ------------------------FOR Subject	
+	List<Subject> selectAllSubject();
+	
+	// ------------------------FOR Section	
+	List<Section> selectAllSection();
+	
+	// ------------------------FOR Room	
+	List<Room> selectAllRoom();
 }

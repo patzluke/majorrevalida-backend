@@ -284,6 +284,7 @@ create table professor_load (
     day varchar(10),
     start_time time,
     end_time time,
+    active_deactive boolean,
     foreign key(professor_no) references professor(professor_no) on delete cascade,
     foreign key(section_id) references section(section_id) on delete cascade,
     foreign key(room_id) references room(room_id) on delete cascade,
@@ -550,24 +551,24 @@ values('cachuela', '123456', 'Cachuela@gmail.com', '9188192721', 'Cachuela', 'As
 insert into student(user_id, curriculum_code, academic_year_id, year_level) values(9, 5001, 1, 1);
 
 --insert into Professor Load table
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
-values(8001, 9001, 1, 1, 2001, 'M', '08:00', '11:00');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
-values(8001, 9002, 1, 1, 2001, 'M', '11:00', '14:00');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
-values(8002, 9003, 1, 1, 2001, 'M', '16:00', '18:00');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9001, 1, 1, 2001, 'M', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9002, 1, 1, 2001, 'M', '11:00', '14:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9003, 1, 1, 2001, 'M', '16:00', '18:00', 't');
 
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
-values(8002, 9004, 1, 1, 2001, 'T', '08:00', '11:00');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
-values(8003, 9005, 1, 1, 2001, 'T', '11:00', '14:00');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
-values(8003, 9006, 1, 1, 2001, 'T', '16:00', '18:00');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9004, 1, 1, 2001, 'T', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9005, 1, 1, 2001, 'T', '11:00', '14:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9006, 1, 1, 2001, 'T', '16:00', '18:00', 't');
 
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
-values(8004, 9007, 1, 1, 2001, 'W', '08:00', '11:00');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time) 
-values(8004, 9008, 1, 1, 2001, 'W', '11:00', '14:00');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9007, 1, 1, 2001, 'W', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9008, 1, 1, 2001, 'W', '11:00', '14:00', 't');
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('george', '123456', 'george@gmail.com', '9188192721', 'George', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'george.jpeg');

@@ -20,10 +20,12 @@ import org.ssglobal.training.codes.tables.pojos.Parent;
 import org.ssglobal.training.codes.tables.pojos.Professor;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
+import org.ssglobal.training.codes.tables.pojos.Room;
+import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
-import org.ssglobal.training.codes.tables.records.UsersRecord;
 
 @Repository
 public class AdminCapabilitiesRepository {
@@ -447,12 +449,15 @@ public class AdminCapabilitiesRepository {
 						SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
 						ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
 						DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
-						PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"))
+						PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"), 
+						PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
 				.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
 				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
 				.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
 				.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
-				.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE)).fetchMaps();
+				.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+				.where(PROFESSOR_LOAD.ACTIVE_DEACTIVE.eq(true))
+				.fetchMaps();
 	}
 
 	public List<Map<String, Object>> selectProfessorLoad(Integer professorNo) {
@@ -462,7 +467,8 @@ public class AdminCapabilitiesRepository {
 						SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
 						ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
 						DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
-						PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"))
+						PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"), 
+						PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
 				.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
 				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
 				.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
@@ -471,8 +477,8 @@ public class AdminCapabilitiesRepository {
 				.where(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo)).fetchMaps();
 	}
 
-	public ProfessorLoad insertProfessorLoad(ProfessorLoad professorLoad) {
-		ProfessorLoad insertedProfessorLoad = dslContext.insertInto(PROFESSOR_LOAD)
+	public Map<String, Object> insertProfessorLoad(ProfessorLoad professorLoad) {
+		ProfessorLoad insertProfessorLoad = dslContext.insertInto(PROFESSOR_LOAD)
 				.set(PROFESSOR_LOAD.PROFESSOR_NO, professorLoad.getProfessorNo())
 				.set(PROFESSOR_LOAD.SUBJECT_CODE, professorLoad.getSubjectCode())
 				.set(PROFESSOR_LOAD.SECTION_ID, professorLoad.getSectionId())
@@ -482,11 +488,26 @@ public class AdminCapabilitiesRepository {
 				.set(PROFESSOR_LOAD.START_TIME, professorLoad.getStartTime())
 				.set(PROFESSOR_LOAD.END_TIME, professorLoad.getEndTime()).returning().fetchOne()
 				.into(ProfessorLoad.class);
+		
+		Map<String, Object> insertedprofessorLoad = 
+				dslContext.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
+				PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
+				SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
+				ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
+				DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
+				PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"), 
+				PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
+		.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
+		.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
+		.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
+		.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
+		.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+		.where(PROFESSOR_LOAD.LOAD_ID.eq(insertProfessorLoad.getLoadId())).fetchOneMap();
 
-		return insertedProfessorLoad;
+		return insertedprofessorLoad;
 	}
 
-	public ProfessorLoad updateProfessorLoad(ProfessorLoad professorLoad) {
+	public Map<String, Object> updateProfessorLoad(ProfessorLoad professorLoad) {
 		ProfessorLoad insertedProfessorLoad = dslContext.update(PROFESSOR_LOAD)
 				.set(PROFESSOR_LOAD.PROFESSOR_NO, professorLoad.getProfessorNo())
 				.set(PROFESSOR_LOAD.SUBJECT_CODE, professorLoad.getSubjectCode())
@@ -498,15 +519,48 @@ public class AdminCapabilitiesRepository {
 				.set(PROFESSOR_LOAD.END_TIME, professorLoad.getEndTime())
 				.where(PROFESSOR_LOAD.LOAD_ID.eq(professorLoad.getLoadId())).returning().fetchOne()
 				.into(ProfessorLoad.class);
-
-		return insertedProfessorLoad;
+		
+		Map<String, Object> insertedprofessorLoad = 
+				dslContext.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
+				PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
+				SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
+				ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
+				DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
+				PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"), 
+				PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
+		.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
+		.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
+		.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
+		.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
+		.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+		.where(PROFESSOR_LOAD.LOAD_ID.eq(insertedProfessorLoad.getLoadId())).fetchOneMap();
+		
+		return insertedprofessorLoad;
 	}
-
-	public ProfessorLoad deleteProfessorLoad(ProfessorLoad professorLoad) {
-		return dslContext.deleteFrom(PROFESSOR_LOAD)
-				.where(PROFESSOR_LOAD.LOAD_ID.eq(professorLoad.getLoadId())
-						.and(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorLoad.getProfessorNo())))
-				.returning().fetchOne().into(ProfessorLoad.class);
+	
+	public Map<String, Object> deleteProfessorLoad(Integer loadId) {
+		ProfessorLoad deletedLoad = dslContext.update(PROFESSOR_LOAD)
+				.set(PROFESSOR_LOAD.ACTIVE_DEACTIVE, false)
+				.where(PROFESSOR_LOAD.LOAD_ID.eq(loadId))
+				.returning()
+				.fetchOne().into(ProfessorLoad.class);
+		
+		Map<String, Object> deletedprofessorLoad = 
+				dslContext.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
+				PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
+				SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
+				ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
+				DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
+				PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"), 
+				PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
+		.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
+		.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
+		.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
+		.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
+		.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+		.where(PROFESSOR_LOAD.LOAD_ID.eq(deletedLoad.getLoadId())).fetchOneMap();
+		
+		return deletedprofessorLoad;
 	}
 
 	// ------------------------FOR Parent
@@ -766,20 +820,25 @@ public class AdminCapabilitiesRepository {
 				.into(Curriculum.class);
 		return editCurriculum;
 	}
-
-	// -------------------------- FOR INNER JOIN OF Curriculum, Major, Course,
-	// Department and Program;
-	public List<Map<String, Object>> selectAllCurriculumInnerJoinOnMajorAndCourseAndDepartmentAndProgram() {
-		List<Map<String, Object>> query = dslContext
-				.select(CURRICULUM.CURRICULUM_CODE.as("curriclumCode"), CURRICULUM.CURRICULUM_NAME.as("curriclumName"),
-						MAJOR.MAJOR_CODE.as("majorCode"), MAJOR.MAJOR_TITLE.as("majorTitle"),
-						COURSE.COURSE_CODE.as("courseCode"), COURSE.COURSE_TITLE.as("courseTitle"),
-						DEPARTMENT.DEPT_CODE.as("deptCode"), DEPARTMENT.DEPT_NAME.as("deptName"),
-						PROGRAM.PROGRAM_CODE.as("programCode"), PROGRAM.PROGRAM_TITLE.as("programTitle"))
-				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
-				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).innerJoin(DEPARTMENT)
-				.on(COURSE.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE)).innerJoin(PROGRAM)
-				.on(COURSE.PROGRAM_CODE.eq(PROGRAM.PROGRAM_CODE)).fetchMaps();
+	
+	// -------------------------- FOR SUBJECTS
+	public List<Subject> selectAllSubject() {
+		List<Subject> query = dslContext.selectFrom(SUBJECT)
+										.where(SUBJECT.SUBJECT_CODE.greaterThan(9000))
+										.fetchInto(Subject.class);
 		return !query.isEmpty() ? query : null;
 	}
+	
+	// -------------------------- FOR SECTION
+	public List<Section> selectAllSection() {
+		List<Section> query = dslContext.selectFrom(SECTION).fetchInto(Section.class);
+		return !query.isEmpty() ? query : null;
+	}
+	
+	// -------------------------- FOR ROOM
+	public List<Room> selectAllRoom() {
+		List<Room> query = dslContext.selectFrom(ROOM).fetchInto(Room.class);
+		return !query.isEmpty() ? query : null;
+	}
+
 }
