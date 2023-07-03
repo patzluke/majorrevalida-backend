@@ -48,6 +48,7 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
 
 	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
+	private final org.ssglobal.training.codes.tables.MinorSubject MINOR_SUBJECT = org.ssglobal.training.codes.tables.MinorSubject.MINOR_SUBJECT;
 	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
 	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
 
@@ -841,4 +842,17 @@ public class AdminCapabilitiesRepository {
 		return !query.isEmpty() ? query : null;
 	}
 
+	
+	//Get All Minor Subject
+	public List<Map<String, Object>> selectAllMinorSubjects() {
+		List<Map<String, Object>> query = dslContext
+						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+								MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"))
+						.from(SUBJECT)
+						.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+						.fetchMaps();
+		
+		return !query.isEmpty() ? query : null;
+	}
 }

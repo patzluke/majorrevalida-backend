@@ -99,4 +99,7 @@ public interface AdminCapabilitiesService {
 	
 	// ------------------------FOR Room	
 	List<Room> selectAllRoom();
+	
+	//-------------------------FOR THE SUBJECTS
+	List<Map<String, Object>> selectAllMinorSubjects();
 }

@@ -62,6 +62,7 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
+
 	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/insert/admin", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
@@ -276,6 +277,7 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+
 
 	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/professor", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
@@ -689,4 +691,19 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
+	
+	//---------FOR THE SUBJECTS
+	@GetMapping(value = "/get/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectAllMinorSubjects() {
+		try {
+			List<Map<String, Object>> updatedAdmin = service.selectAllMinorSubjects();
+			if (!updatedAdmin.isEmpty()) {
+				return ResponseEntity.ok(updatedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
 }

@@ -357,4 +357,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 		return repository.selectAllRoom();
 	}
 	
+
+	@Override
+	public List<Map<String, Object>> selectAllMinorSubjects() {
+		return repository.selectAllMinorSubjects();
+	}
 }
