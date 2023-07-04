@@ -41,6 +41,7 @@ public class AuthenticateController {
 												   authenticatedUser.get("userType").toString(),
 												   Boolean.valueOf(authenticatedUser.get("activeStatus").toString())
 								  );
+			
 			usertoken.add(token);
 			return new ResponseEntity<>(usertoken, HttpStatus.OK);
 		}

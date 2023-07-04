@@ -61,6 +61,20 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+	
+	@GetMapping(value = "/get/admin/{adminNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<UserAndAdmin> selectAdmin(@PathVariable(name = "adminNo") Integer adminNo) {
+		try {
+			UserAndAdmin selectedAdmin = service.selectAdmin(adminNo);
+			if (selectedAdmin != null) {
+				return ResponseEntity.ok(selectedAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
 
 
 	@SuppressWarnings("rawtypes")
@@ -95,6 +109,7 @@ public class AdminCapabilitiesController {
 		} catch (DuplicateKeyException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.badRequest().body("something went wrong");
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -319,9 +334,7 @@ public class AdminCapabilitiesController {
 	public ResponseEntity<UserAndProfessor> deleteProfessor(@PathVariable(name = "userId") Integer userId) {
 		try {
 			UserAndProfessor deletedProfessor = service.deleteProfessor(userId);
-			System.out.println("outside hey");
 			if (deletedProfessor != null) {
-				System.out.println("hey");
 				return ResponseEntity.ok(deletedProfessor);
 			}
 		} catch (Exception e) {
@@ -549,7 +562,6 @@ public class AdminCapabilitiesController {
 				return ResponseEntity.ok(addedCourse);
 			}
 		} catch (Exception e) {
-			System.out.println("HEY");
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
