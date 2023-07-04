@@ -46,6 +46,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
+	public UserAndAdmin selectAdmin(Integer adminNo) {
+		return repository.selectAdmin(adminNo);
+	}
+	
+	@Override
 	public boolean changePassword(String password, String username) {
 		return repository.changePassword(encoder().encode(password), username);
 	}
@@ -82,6 +87,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 				}
 			}
 		});
+		userAdmin.setPassword(encoder().encode(userAdmin.getPassword()));
 		return repository.updateAdminUser(userAdmin);
 	}
 	

@@ -75,6 +75,17 @@ public class AdminCapabilitiesRepository {
 						USERS.IMAGE, ADMIN.ADMIN_ID, ADMIN.ADMIN_NO)
 				.from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID)).where(USERS.ACTIVE_DEACTIVE.eq(true)).fetchInto(UserAndAdmin.class);
 	}
+	
+	public UserAndAdmin selectAdmin(Integer adminNo) {
+		return dslContext
+				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
+						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
+						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
+						USERS.IMAGE, ADMIN.ADMIN_ID, ADMIN.ADMIN_NO)
+				.from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID))
+				.where(USERS.ACTIVE_DEACTIVE.eq(true).and(ADMIN.ADMIN_NO.eq(adminNo)))
+				.fetchOneInto(UserAndAdmin.class);
+	}
 
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) {
 		Users insertedUser = dslContext.insertInto(USERS).set(USERS.USERNAME, userAdmin.getUsername())
@@ -111,8 +122,11 @@ public class AdminCapabilitiesRepository {
 				.set(USERS.USER_TYPE, userAdmin.getUserType()).set(USERS.BIRTH_DATE, userAdmin.getBirthDate())
 				.set(USERS.ADDRESS, userAdmin.getAddress()).set(USERS.CIVIL_STATUS, userAdmin.getCivilStatus())
 				.set(USERS.GENDER, userAdmin.getGender()).set(USERS.NATIONALITY, userAdmin.getNationality())
-				.set(USERS.ACTIVE_DEACTIVE, userAdmin.getActiveDeactive()).set(USERS.IMAGE, userAdmin.getImage())
-				.where(USERS.USER_ID.eq(userAdmin.getUserId())).returning().fetchOne().into(Users.class);
+				.set(USERS.IMAGE, userAdmin.getImage()).where(USERS.USER_ID.eq(userAdmin.getUserId()))
+				.returning().fetchOne().into(Users.class);
+		
+		Admin updatedAdmin = dslContext.selectFrom(ADMIN).where(ADMIN.USER_ID.eq(updatedUser.getUserId()))
+				.fetchOne().into(Admin.class);
 
 		if (updatedUser != null) {
 			UserAndAdmin newUserAdmin = new UserAndAdmin(updatedUser.getUserId(), updatedUser.getUsername(),
@@ -121,7 +135,8 @@ public class AdminCapabilitiesRepository {
 					updatedUser.getUserType(), updatedUser.getBirthDate(), updatedUser.getAddress(),
 					updatedUser.getCivilStatus(), updatedUser.getGender(), updatedUser.getNationality(),
 					updatedUser.getActiveStatus(), updatedUser.getActiveDeactive(), updatedUser.getImage(),
-					userAdmin.getAdminId(), userAdmin.getAdminNo());
+					updatedAdmin.getAdminId(), updatedAdmin.getAdminNo());
+			
 			return newUserAdmin;
 		}
 

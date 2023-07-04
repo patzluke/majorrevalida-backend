@@ -28,6 +28,7 @@ public interface AdminCapabilitiesService {
 	
 	// ------------------------FOR ADMIN
 	List<UserAndAdmin> selectAllAdmin();
+	UserAndAdmin selectAdmin(Integer adminNo);
 	UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) throws DuplicateKeyException, Exception;
 	UserAndAdmin updateAdminUser(UserAndAdmin userAdmin) throws DuplicateKeyException, Exception;
 	UserAndAdmin changeAdminAccountStatus(Integer userId, Boolean status);
