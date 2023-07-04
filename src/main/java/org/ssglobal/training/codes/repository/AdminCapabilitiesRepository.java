@@ -128,7 +128,7 @@ public class AdminCapabilitiesRepository {
 		Admin updatedAdmin = dslContext.selectFrom(ADMIN).where(ADMIN.USER_ID.eq(updatedUser.getUserId()))
 				.fetchOne().into(Admin.class);
 
-		if (updatedUser != null) {
+		if (updatedUser != null && updatedAdmin != null) {
 			UserAndAdmin newUserAdmin = new UserAndAdmin(updatedUser.getUserId(), updatedUser.getUsername(),
 					updatedUser.getPassword(), updatedUser.getEmail(), updatedUser.getContactNo(),
 					updatedUser.getFirstName(), updatedUser.getMiddleName(), updatedUser.getLastName(),
