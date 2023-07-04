@@ -362,4 +362,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<Map<String, Object>> selectAllMinorSubjects() {
 		return repository.selectAllMinorSubjects();
 	}
+
+	@Override
+	public List<Map<String, Object>> selecAllSubjects(Integer curriculumCode) {
+		return repository.selecAllSubjects(curriculumCode);
+	}
 }

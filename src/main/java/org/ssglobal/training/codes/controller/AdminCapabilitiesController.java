@@ -706,4 +706,18 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+	
+	@GetMapping(value = "/get/subjects/{curriculumCode}", produces = { MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsByCurriculum(@PathVariable("curriculumCode") Integer curriculumCode) {
+		try {
+			List<Map<String, Object>> allSubjects = service.selecAllSubjects(curriculumCode);
+			if (!allSubjects.isEmpty()) {
+				return ResponseEntity.ok(allSubjects);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
 }

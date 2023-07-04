@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
+import org.jooq.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndAdmin;
@@ -49,6 +50,7 @@ public class AdminCapabilitiesRepository {
 
 	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
 	private final org.ssglobal.training.codes.tables.MinorSubject MINOR_SUBJECT = org.ssglobal.training.codes.tables.MinorSubject.MINOR_SUBJECT;
+	private final org.ssglobal.training.codes.tables.MajorSubject MAJOR_SUBJECT = org.ssglobal.training.codes.tables.MajorSubject.MAJOR_SUBJECT;
 	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
 	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
 
@@ -853,6 +855,21 @@ public class AdminCapabilitiesRepository {
 						.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
 						.fetchMaps();
 		
+		return !query.isEmpty() ? query : null;
+	}
+	
+	//Get All MAJOR SUBJECTS BY CURRICULUM
+	public List<Map<String, Object>> selecAllSubjects(Integer curriculumCode) {
+		List<Map<String, Object>> query = dslContext.select(
+									SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+									SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+									MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
+									SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"))
+							.from(SUBJECT)
+							.join(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+							.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(curriculumCode))
+							.fetchMaps();
+		System.out.println(query);
 		return !query.isEmpty() ? query : null;
 	}
 }
