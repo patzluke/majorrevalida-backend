@@ -85,9 +85,14 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 				if (user.getEmail().equals(userAdmin.getEmail())) {
 					throw new DuplicateKeyException("email already exists");
 				}
+				
 			}
 		});
-		userAdmin.setPassword(encoder().encode(userAdmin.getPassword()));
+		
+		if (!userAdmin.getPassword().isEmpty()) {
+			userAdmin.setPassword(encoder().encode(userAdmin.getPassword()));
+
+		}
 		return repository.updateAdminUser(userAdmin);
 	}
 	

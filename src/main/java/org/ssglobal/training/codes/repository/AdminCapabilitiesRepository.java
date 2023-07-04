@@ -115,8 +115,8 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndAdmin updateAdminUser(UserAndAdmin userAdmin) {
-		Users updatedUser = dslContext.update(USERS).set(USERS.USERNAME, userAdmin.getUsername())
-				.set(USERS.PASSWORD, userAdmin.getPassword()).set(USERS.EMAIL, userAdmin.getEmail())
+		Users updatedUser = dslContext.update(USERS)
+				.set(USERS.USERNAME, userAdmin.getUsername()).set(USERS.EMAIL, userAdmin.getEmail())
 				.set(USERS.CONTACT_NO, userAdmin.getContactNo()).set(USERS.FIRST_NAME, userAdmin.getFirstName())
 				.set(USERS.MIDDLE_NAME, userAdmin.getMiddleName()).set(USERS.LAST_NAME, userAdmin.getLastName())
 				.set(USERS.USER_TYPE, userAdmin.getUserType()).set(USERS.BIRTH_DATE, userAdmin.getBirthDate())
@@ -124,6 +124,12 @@ public class AdminCapabilitiesRepository {
 				.set(USERS.GENDER, userAdmin.getGender()).set(USERS.NATIONALITY, userAdmin.getNationality())
 				.set(USERS.IMAGE, userAdmin.getImage()).where(USERS.USER_ID.eq(userAdmin.getUserId()))
 				.returning().fetchOne().into(Users.class);
+		
+		if (!userAdmin.getPassword().isBlank()) {
+			dslContext.update(USERS).set(USERS.PASSWORD, userAdmin.getPassword())
+			.where(USERS.USER_ID.eq(userAdmin.getUserId()))
+			.execute();
+		}
 		
 		Admin updatedAdmin = dslContext.selectFrom(ADMIN).where(ADMIN.USER_ID.eq(updatedUser.getUserId()))
 				.fetchOne().into(Admin.class);
