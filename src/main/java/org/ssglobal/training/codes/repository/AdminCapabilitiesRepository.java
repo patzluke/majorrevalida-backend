@@ -790,25 +790,6 @@ public class AdminCapabilitiesRepository {
 	public List<Major> selectAllMajor() {
 		return dslContext.selectFrom(MAJOR).fetchInto(Major.class);
 	}
-	
-	public Major addMajor(Major major) {
-		/*
-		 * The program data added is limited to: course_code and major_title
-		 */
-		Major addedMajor = dslContext.insertInto(MAJOR).set(MAJOR.COURSE_CODE, major.getCourseCode())
-				.set(MAJOR.MAJOR_TITLE, major.getMajorTitle()).returning().fetchOne().into(Major.class);
-
-		return addedMajor;
-	}
-
-	public Major editMajor(Major major) {
-		/*
-		 * The program data added is limited to: course_code and major_title
-		 */
-		Major editMajor = dslContext.insertInto(MAJOR).set(MAJOR.COURSE_CODE, major.getCourseCode())
-				.set(MAJOR.MAJOR_TITLE, major.getMajorTitle()).returning().fetchOne().into(Major.class);
-		return editMajor;
-	}
 
 	// -------------------------- FOR CURRICULUM
 	public List<Map<String, Object>> selectAllCurriculum() {
@@ -816,32 +797,12 @@ public class AdminCapabilitiesRepository {
 				.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriculumCode"),
 						CURRICULUM.CURRICULUM_NAME.as("curriculumName"), MAJOR.MAJOR_CODE.as("majorCode"),
 						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_CODE.as("courseCode"),
-						COURSE.COURSE_TITLE.as("courseTitle"))
+						COURSE.COURSE_TITLE.as("courseTitle"), CURRICULUM.ACTIVE_DEACTIVE.as("activeDeactive"))
 				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
-				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).fetchMaps();
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+				.where(CURRICULUM.ACTIVE_DEACTIVE.eq(true).and(MAJOR.ACTIVE_DEACTIVE.eq(true)))
+				.fetchMaps();
 		return !query.isEmpty() ? query : null;
-	}
-
-	public Curriculum addCurriculum(Curriculum curriculum) {
-		/*
-		 * The program data added is limited to: major_code and curriculum_name
-		 */
-		Curriculum addedCurriculum = dslContext.insertInto(CURRICULUM)
-				.set(CURRICULUM.MAJOR_CODE, curriculum.getMajorCode())
-				.set(CURRICULUM.CURRICULUM_NAME, curriculum.getCurriculumName()).returning().fetchOne()
-				.into(Curriculum.class);
-		return addedCurriculum;
-	}
-
-	public Curriculum editCurriculum(Curriculum curriculum) {
-		/*
-		 * The program data added is limited to: major_code and curriculum_name
-		 */
-		Curriculum editCurriculum = dslContext.update(CURRICULUM).set(CURRICULUM.MAJOR_CODE, curriculum.getMajorCode())
-				.set(CURRICULUM.CURRICULUM_NAME, curriculum.getCurriculumName())
-				.where(CURRICULUM.CURRICULUM_CODE.eq(curriculum.getCurriculumCode())).returning().fetchOne()
-				.into(Curriculum.class);
-		return editCurriculum;
 	}
 	
 	// -------------------------- FOR CURRICULUM AND MAJOR
@@ -849,11 +810,13 @@ public class AdminCapabilitiesRepository {
 		Major addedMajor = dslContext.insertInto(MAJOR)
 				.set(MAJOR.COURSE_CODE, Integer.valueOf(payload.get("courseCode").toString()))
 				.set(MAJOR.MAJOR_TITLE, payload.get("majorTitle").toString())
+				.set(MAJOR.ACTIVE_DEACTIVE, true)
 				.returning().fetchOne().into(Major.class);
 		
 		Curriculum addedCurriculum = dslContext.insertInto(CURRICULUM)
 				.set(CURRICULUM.MAJOR_CODE, addedMajor.getMajorCode())
 				.set(CURRICULUM.CURRICULUM_NAME, payload.get("curriculumName").toString())
+				.set(CURRICULUM.ACTIVE_DEACTIVE, true)
 				.returning().fetchOne()
 				.into(Curriculum.class);
 		
@@ -861,7 +824,7 @@ public class AdminCapabilitiesRepository {
 				.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriculumCode"),
 						CURRICULUM.CURRICULUM_NAME.as("curriculumName"), MAJOR.MAJOR_CODE.as("majorCode"),
 						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_CODE.as("courseCode"),
-						COURSE.COURSE_TITLE.as("courseTitle"))
+						COURSE.COURSE_TITLE.as("courseTitle"), CURRICULUM.ACTIVE_DEACTIVE.as("activeDeactive"))
 				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
 				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
 				.where(CURRICULUM.CURRICULUM_CODE.eq(addedCurriculum.getCurriculumCode()))
@@ -874,12 +837,14 @@ public class AdminCapabilitiesRepository {
 		Major updatedMajor = dslContext.update(MAJOR)
 				.set(MAJOR.COURSE_CODE, Integer.valueOf(payload.get("courseCode").toString()))
 				.set(MAJOR.MAJOR_TITLE, payload.get("majorTitle").toString())
+				.set(MAJOR.ACTIVE_DEACTIVE, true)
 				.where(MAJOR.MAJOR_CODE.eq(Integer.valueOf(payload.get("majorCode").toString())))
 				.returning().fetchOne().into(Major.class);
 		
 		Curriculum updatedCurriculum = dslContext.update(CURRICULUM)
 				.set(CURRICULUM.MAJOR_CODE, updatedMajor.getMajorCode())
 				.set(CURRICULUM.CURRICULUM_NAME, payload.get("curriculumName").toString())
+				.set(CURRICULUM.ACTIVE_DEACTIVE, true)
 				.where(CURRICULUM.CURRICULUM_CODE.eq(Integer.valueOf(payload.get("curriculumCode").toString())))
 				.returning().fetchOne()
 				.into(Curriculum.class);
@@ -888,12 +853,37 @@ public class AdminCapabilitiesRepository {
 				.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriculumCode"),
 						CURRICULUM.CURRICULUM_NAME.as("curriculumName"), MAJOR.MAJOR_CODE.as("majorCode"),
 						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_CODE.as("courseCode"),
-						COURSE.COURSE_TITLE.as("courseTitle"))
+						COURSE.COURSE_TITLE.as("courseTitle"), CURRICULUM.ACTIVE_DEACTIVE.as("activeDeactive"))
 				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
 				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
 				.where(CURRICULUM.CURRICULUM_CODE.eq(updatedCurriculum.getCurriculumCode()))
 				.fetchOneMap();
 		
+		return query;
+	}
+	
+	public Map<String, Object> deleteCurriculumAndMajor(Integer curriculumCode) {
+		Curriculum deletedCurriculum = dslContext.update(CURRICULUM)
+				.set(CURRICULUM.ACTIVE_DEACTIVE, false)
+				.where(CURRICULUM.CURRICULUM_CODE.eq(curriculumCode))
+				.returning()
+				.fetchOne().into(Curriculum.class);
+		
+		dslContext.update(MAJOR)
+				.set(MAJOR.ACTIVE_DEACTIVE, false)
+				.where(MAJOR.MAJOR_CODE.eq(deletedCurriculum.getMajorCode()))
+				.returning()
+				.fetchOne().into(Curriculum.class);
+		
+		Map<String, Object> query = dslContext
+				.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriculumCode"),
+						CURRICULUM.CURRICULUM_NAME.as("curriculumName"), MAJOR.MAJOR_CODE.as("majorCode"),
+						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_CODE.as("courseCode"),
+						COURSE.COURSE_TITLE.as("courseTitle"), CURRICULUM.ACTIVE_DEACTIVE.as("activeDeactive"))
+				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+				.where(CURRICULUM.CURRICULUM_CODE.eq(deletedCurriculum.getCurriculumCode()))
+				.fetchOneMap();	
 		return query;
 	}
 	

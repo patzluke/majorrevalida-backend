@@ -46,6 +46,7 @@ create table major (
     major_code int default nextval('major_sequence') not null primary key,
     course_code int,
     major_title varchar(50),
+    active_deactive boolean,
     foreign key(course_code) references course(course_code) on delete cascade
 ); 
 
@@ -58,6 +59,7 @@ create table curriculum (
     curriculum_code int default nextval('curriculum_sequence') not null primary key,
     major_code int,
     curriculum_name varchar(150),
+    active_deactive boolean,
     foreign key(major_code) references major(major_code) on delete cascade
 ); 
 
@@ -342,14 +344,14 @@ insert into course(program_code, dept_code, course_title) values(1001, 2002, 'Ci
 insert into course(program_code, dept_code, course_title) values(1001, 2002, 'Computer Engineering');
 
 --insert into Major table
-insert into major(course_code, major_title) values(3001, 'Application Development');
-insert into major(course_code, major_title) values(3001, 'Network and Security');
-insert into major(course_code, major_title) values(3001, 'Automation');
+insert into major(course_code, major_title, active_deactive) values(3001, 'Application Development', 't');
+insert into major(course_code, major_title, active_deactive) values(3001, 'Network and Security', 't');
+insert into major(course_code, major_title, active_deactive) values(3001, 'Automation', 't');
 
 --insert into Curriculum table
-insert into curriculum(major_code, curriculum_name) values(4001, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN WEB AND MOBILE APPLICATION');
-insert into curriculum(major_code, curriculum_name) values(4002, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY');
-insert into curriculum(major_code, curriculum_name) values(4003, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN AUTOMATION');
+insert into curriculum(major_code, curriculum_name, active_deactive) values(4001, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN WEB AND MOBILE APPLICATION', 't');
+insert into curriculum(major_code, curriculum_name, active_deactive) values(4002, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN NETWORK AND SECURITY', 't');
+insert into curriculum(major_code, curriculum_name, active_deactive) values(4003, 'BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY SPECIALIZED IN AUTOMATION', 't');
 
 --insert into major and minor subject table
 	--for information technology major in web and mobile major subjects (first year 1ST SEM)

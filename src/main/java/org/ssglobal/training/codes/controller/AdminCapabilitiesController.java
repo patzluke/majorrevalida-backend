@@ -23,7 +23,6 @@ import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.AdminCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
-import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
@@ -612,21 +611,6 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 
-	@PostMapping(value = "/insert/major", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
-			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Major> insertMajor(@RequestBody Major major) {
-		try {
-			Major addedMajor = service.addMajor(major);
-			if (addedMajor != null) {
-				return ResponseEntity.ok(addedMajor);
-			}
-		} catch (Exception e) {
-			System.out.println("%s".formatted(e));
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.badRequest().build();
-	}
-
 	// -------- For Curriculum
 	@GetMapping(value = "/get/curriculum/major", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<Map<String, Object>>> selectCourseMajors() {
@@ -640,21 +624,6 @@ public class AdminCapabilitiesController {
 			return ResponseEntity.badRequest().build();
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	}
-
-	@PostMapping(value = "/insert/curriculum", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
-			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Curriculum> insertCurriculum(@RequestBody Curriculum curriculum) {
-		try {
-			Curriculum addedCurriculum = service.addCurriculum(curriculum);
-			if (addedCurriculum != null) {
-				return ResponseEntity.ok(addedCurriculum);
-			}
-		} catch (Exception e) {
-			System.out.println("%s".formatted(e));
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.badRequest().build();
 	}
 	
 	// -------- For Curriculum And Major
@@ -681,6 +650,20 @@ public class AdminCapabilitiesController {
 			Map<String, Object> updatedCurriculum = service.editCurriculumAndMajor(payload);
 			if (updatedCurriculum != null) {
 				return ResponseEntity.ok(updatedCurriculum);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@DeleteMapping(value = "/delete/curriculum/major/{curriculumCode}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Map<String, Object>> deleteCurriculumAndMajor(@PathVariable(name = "curriculumCode") Integer curriculumCode) {
+		try {
+			Map<String, Object> updatedAdmin = service.deleteCurriculumAndMajor(curriculumCode);
+			if (!updatedAdmin.isEmpty()) {
+				return ResponseEntity.ok(updatedAdmin);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -18,7 +18,6 @@ import org.ssglobal.training.codes.repository.AdminCapabilitiesRepository;
 import org.ssglobal.training.codes.service.AdminCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
-import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
@@ -323,31 +322,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<Major> selectAllMajor() {
 		return repository.selectAllMajor();
 	}
-	
-	@Override
-	public Major addMajor(Major major) {
-		return repository.addMajor(major);
-	}
-	
-	@Override
-	public Major editMajor(Major major) {
-		return repository.editMajor(major);
-	}
 
 	// ------------------------FOR Curriculum
 	@Override
 	public List<Map<String, Object>> selectAllCurriculum() {
 		return repository.selectAllCurriculum();
-	}
-	
-	@Override
-	public Curriculum addCurriculum(Curriculum curriculum) {
-		return repository.addCurriculum(curriculum);
-	}
-	
-	@Override
-	public Curriculum editCurriculum(Curriculum curriculum) {
-		return repository.editCurriculum(curriculum);
 	}
 	
 	// ------------------------FOR Curriculum And Major
@@ -359,6 +338,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public Map<String, Object> editCurriculumAndMajor(Map<String, Object> payload) {
 		return repository.editCurriculumAndMajor(payload);
+	}
+	
+	@Override
+	public Map<String, Object> deleteCurriculumAndMajor(Integer curriculumCode) {
+		return repository.deleteCurriculumAndMajor(curriculumCode);
 	}
 	
 	// ------------------------FOR Subject

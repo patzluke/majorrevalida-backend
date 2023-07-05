@@ -10,7 +10,6 @@ import org.ssglobal.training.codes.model.UserAndProfessor;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
-import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
@@ -84,17 +83,14 @@ public interface AdminCapabilitiesService {
 	
 	// ------------------------FOR Major
 	List<Major> selectAllMajor();
-	Major addMajor(Major major);
-	Major editMajor(Major major);
 	
 	// ------------------------FOR Curriculum
 	List<Map<String, Object>> selectAllCurriculum();
-	Curriculum addCurriculum(Curriculum curriculum);
-	Curriculum editCurriculum(Curriculum curriculum);
 	
 	// ------------------------FOR Curriculum And Major
 	Map<String, Object> addCurriculumAndMajor(Map<String, Object> payload);
 	Map<String, Object> editCurriculumAndMajor(Map<String, Object> payload);
+	Map<String, Object> deleteCurriculumAndMajor(Integer curriculumCode);
 	
 	// ------------------------FOR Subject	
 	List<Subject> selectAllSubject();

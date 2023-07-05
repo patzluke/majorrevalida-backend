@@ -21,7 +21,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private MyJwtTokenValidator myJwtTokenValidator;
-
 	
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
