@@ -350,6 +350,17 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 		return repository.editCurriculum(curriculum);
 	}
 	
+	// ------------------------FOR Curriculum And Major
+	@Override
+	public Map<String, Object> addCurriculumAndMajor(Map<String, Object> payload) {
+		return repository.addCurriculumAndMajor(payload);
+	}
+	
+	@Override
+	public Map<String, Object> editCurriculumAndMajor(Map<String, Object> payload) {
+		return repository.editCurriculumAndMajor(payload);
+	}
+	
 	// ------------------------FOR Subject
 	@Override
 	public List<Subject> selectAllSubject() {

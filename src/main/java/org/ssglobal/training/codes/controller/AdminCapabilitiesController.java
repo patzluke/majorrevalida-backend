@@ -320,7 +320,6 @@ public class AdminCapabilitiesController {
 					Integer.valueOf(payload.get("userId").toString()),
 					Boolean.valueOf(payload.get("status").toString()));
 			if (updatedProfessor != null) {
-				System.out.println(payload);
 				return ResponseEntity.ok(updatedProfessor);
 			}
 		} catch (Exception e) {
@@ -657,6 +656,38 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+	
+	// -------- For Curriculum And Major
+	@PostMapping(value = "/insert/curriculum/major", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Map<String, Object>> addCurriculumAndMajor(@RequestBody Map<String, Object> payload) {
+		try {
+			Map<String, Object> addedCurriculum = service.addCurriculumAndMajor(payload);
+			if (addedCurriculum != null) {
+				return ResponseEntity.ok(addedCurriculum);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@PutMapping(value = "/update/curriculum/major", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Map<String, Object>> editCurriculumAndMajor(@RequestBody Map<String, Object> payload) {
+		System.out.println(payload);
+		try {
+			Map<String, Object> updatedCurriculum = service.editCurriculumAndMajor(payload);
+			if (updatedCurriculum != null) {
+				return ResponseEntity.ok(updatedCurriculum);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
 
 	// -------- For Subject
 	@GetMapping(value = "/get/subject", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -728,8 +759,8 @@ public class AdminCapabilitiesController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		return ResponseEntity.notFound().build();
 	}
 }

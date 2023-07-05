@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
-import org.jooq.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndAdmin;
@@ -814,8 +813,8 @@ public class AdminCapabilitiesRepository {
 	// -------------------------- FOR CURRICULUM
 	public List<Map<String, Object>> selectAllCurriculum() {
 		List<Map<String, Object>> query = dslContext
-				.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriclumCode"),
-						CURRICULUM.CURRICULUM_NAME.as("curriclumName"), MAJOR.MAJOR_CODE.as("majorCode"),
+				.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriculumCode"),
+						CURRICULUM.CURRICULUM_NAME.as("curriculumName"), MAJOR.MAJOR_CODE.as("majorCode"),
 						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_CODE.as("courseCode"),
 						COURSE.COURSE_TITLE.as("courseTitle"))
 				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
@@ -843,6 +842,59 @@ public class AdminCapabilitiesRepository {
 				.where(CURRICULUM.CURRICULUM_CODE.eq(curriculum.getCurriculumCode())).returning().fetchOne()
 				.into(Curriculum.class);
 		return editCurriculum;
+	}
+	
+	// -------------------------- FOR CURRICULUM AND MAJOR
+	public Map<String, Object> addCurriculumAndMajor(Map<String, Object> payload) {
+		Major addedMajor = dslContext.insertInto(MAJOR)
+				.set(MAJOR.COURSE_CODE, Integer.valueOf(payload.get("courseCode").toString()))
+				.set(MAJOR.MAJOR_TITLE, payload.get("majorTitle").toString())
+				.returning().fetchOne().into(Major.class);
+		
+		Curriculum addedCurriculum = dslContext.insertInto(CURRICULUM)
+				.set(CURRICULUM.MAJOR_CODE, addedMajor.getMajorCode())
+				.set(CURRICULUM.CURRICULUM_NAME, payload.get("curriculumName").toString())
+				.returning().fetchOne()
+				.into(Curriculum.class);
+		
+		Map<String, Object> query = dslContext
+				.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriculumCode"),
+						CURRICULUM.CURRICULUM_NAME.as("curriculumName"), MAJOR.MAJOR_CODE.as("majorCode"),
+						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_CODE.as("courseCode"),
+						COURSE.COURSE_TITLE.as("courseTitle"))
+				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+				.where(CURRICULUM.CURRICULUM_CODE.eq(addedCurriculum.getCurriculumCode()))
+				.fetchOneMap();
+		
+		return query;
+	}
+	
+	public Map<String, Object> editCurriculumAndMajor(Map<String, Object> payload) {
+		Major updatedMajor = dslContext.update(MAJOR)
+				.set(MAJOR.COURSE_CODE, Integer.valueOf(payload.get("courseCode").toString()))
+				.set(MAJOR.MAJOR_TITLE, payload.get("majorTitle").toString())
+				.where(MAJOR.MAJOR_CODE.eq(Integer.valueOf(payload.get("majorCode").toString())))
+				.returning().fetchOne().into(Major.class);
+		
+		Curriculum updatedCurriculum = dslContext.update(CURRICULUM)
+				.set(CURRICULUM.MAJOR_CODE, updatedMajor.getMajorCode())
+				.set(CURRICULUM.CURRICULUM_NAME, payload.get("curriculumName").toString())
+				.where(CURRICULUM.CURRICULUM_CODE.eq(Integer.valueOf(payload.get("curriculumCode").toString())))
+				.returning().fetchOne()
+				.into(Curriculum.class);
+		
+		Map<String, Object> query = dslContext
+				.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriculumCode"),
+						CURRICULUM.CURRICULUM_NAME.as("curriculumName"), MAJOR.MAJOR_CODE.as("majorCode"),
+						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_CODE.as("courseCode"),
+						COURSE.COURSE_TITLE.as("courseTitle"))
+				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+				.where(CURRICULUM.CURRICULUM_CODE.eq(updatedCurriculum.getCurriculumCode()))
+				.fetchOneMap();
+		
+		return query;
 	}
 	
 	// -------------------------- FOR SUBJECTS
@@ -892,7 +944,6 @@ public class AdminCapabilitiesRepository {
 							.join(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
 							.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(curriculumCode))
 							.fetchMaps();
-		System.out.println(query);
-		return !query.isEmpty() ? query : null;
+		return query;
 	}
 }

@@ -92,6 +92,10 @@ public interface AdminCapabilitiesService {
 	Curriculum addCurriculum(Curriculum curriculum);
 	Curriculum editCurriculum(Curriculum curriculum);
 	
+	// ------------------------FOR Curriculum And Major
+	Map<String, Object> addCurriculumAndMajor(Map<String, Object> payload);
+	Map<String, Object> editCurriculumAndMajor(Map<String, Object> payload);
+	
 	// ------------------------FOR Subject	
 	List<Subject> selectAllSubject();
 	
