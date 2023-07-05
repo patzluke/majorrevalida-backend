@@ -885,6 +885,8 @@ public class AdminCapabilitiesRepository {
 									SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
 									SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
 									MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
+									MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+									MAJOR_SUBJECT.SEM.as("sem"),
 									SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"))
 							.from(SUBJECT)
 							.join(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
