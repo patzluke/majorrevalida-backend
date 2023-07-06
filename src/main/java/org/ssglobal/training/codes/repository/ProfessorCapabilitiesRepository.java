@@ -24,27 +24,37 @@ public class ProfessorCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
 	private final org.ssglobal.training.codes.tables.StudentAttendance STUDENT_ATTENDANCE = org.ssglobal.training.codes.tables.StudentAttendance.STUDENT_ATTENDANCE;
 	
+	public List<Users> selectAllUsers() {
+		return dslContext.selectFrom(USERS).fetchInto(Users.class);
+	}
+	
 	public UserAndProfessor selectProfessor(Integer professorNo) {
 		return dslContext
 				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
 						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
-						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_DEACTIVE, USERS.IMAGE,
-						PROFESSOR.PROFESSOR_NO, PROFESSOR.WORK)
+						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE, 
+						USERS.IMAGE, PROFESSOR.PROFESSOR_ID, PROFESSOR.PROFESSOR_NO, PROFESSOR.WORK)
 				.from(USERS).innerJoin(PROFESSOR).on(USERS.USER_ID.eq(PROFESSOR.USER_ID))
-				.where(PROFESSOR.PROFESSOR_NO.eq(professorNo)).fetchOneInto(UserAndProfessor.class);
+				.where(USERS.ACTIVE_DEACTIVE.eq(true).and(PROFESSOR.PROFESSOR_NO.eq(professorNo)))
+				.fetchOneInto(UserAndProfessor.class);
 	}
 
 	public UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor) {
-		Users updatedUser = dslContext.update(USERS).set(USERS.USERNAME, userAndProfessor.getUsername())
-				.set(USERS.PASSWORD, userAndProfessor.getPassword()).set(USERS.EMAIL, userAndProfessor.getEmail())
+		Users updatedUser = dslContext.update(USERS)
+				.set(USERS.USERNAME, userAndProfessor.getUsername()).set(USERS.EMAIL, userAndProfessor.getEmail())
 				.set(USERS.CONTACT_NO, userAndProfessor.getContactNo()).set(USERS.FIRST_NAME, userAndProfessor.getFirstName())
 				.set(USERS.MIDDLE_NAME, userAndProfessor.getMiddleName()).set(USERS.LAST_NAME, userAndProfessor.getLastName())
 				.set(USERS.USER_TYPE, userAndProfessor.getUserType()).set(USERS.BIRTH_DATE, userAndProfessor.getBirthDate())
 				.set(USERS.ADDRESS, userAndProfessor.getAddress()).set(USERS.CIVIL_STATUS, userAndProfessor.getCivilStatus())
 				.set(USERS.GENDER, userAndProfessor.getGender()).set(USERS.NATIONALITY, userAndProfessor.getNationality())
-				.set(USERS.ACTIVE_DEACTIVE, userAndProfessor.getActiveDeactive()).set(USERS.IMAGE, userAndProfessor.getImage())
-				.where(USERS.USER_ID.eq(userAndProfessor.getUserId()))
+				.set(USERS.IMAGE, userAndProfessor.getImage()).where(USERS.USER_ID.eq(userAndProfessor.getUserId()))
 				.returning().fetchOne().into(Users.class);
+		
+		if (!userAndProfessor.getPassword().isBlank()) {
+			dslContext.update(USERS).set(USERS.PASSWORD, userAndProfessor.getPassword())
+			.where(USERS.USER_ID.eq(userAndProfessor.getUserId()))
+			.execute();
+		}
 		
 		Professor updatedProfessor = dslContext.update(PROFESSOR)
 											.set(PROFESSOR.WORK, userAndProfessor.getWork())

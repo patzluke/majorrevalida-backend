@@ -5,9 +5,11 @@ import java.util.Map;
 
 import org.ssglobal.training.codes.model.UserAndProfessor;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
+import org.ssglobal.training.codes.tables.pojos.Users;
 
 public interface ProfessorCapabilitiesService {
 
+	public List<Users> selectAllUsers();
 	UserAndProfessor selectProfessor(Integer professorNo);
 	UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor);
 	List<ProfessorLoad> selectAllLoad(Integer professorNo);

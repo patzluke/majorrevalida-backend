@@ -28,9 +28,9 @@ public class AuthenticateController {
 		String password = payload.get("password");
 		Map<String, Object> authenticatedUser = service.searchUserByUsernameAndPassword(username, password);
 		if (authenticatedUser != null) {
-			System.out.println("hey");
 			List<Object> usertoken = new ArrayList<>();
 			Integer userNo = authenticatedUser.get("adminNo") != null ? Integer.valueOf(authenticatedUser.get("adminNo").toString())
+							 : authenticatedUser.get("professorNo") != null ? Integer.valueOf(authenticatedUser.get("professorNo").toString())
 							 : authenticatedUser.get("parentNo") != null ? Integer.valueOf(authenticatedUser.get("parentNo").toString())
 							 : authenticatedUser.get("studentNo") != null ? Integer.valueOf(authenticatedUser.get("studentNo").toString())
 							 : null;

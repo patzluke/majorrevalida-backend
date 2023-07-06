@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,18 +39,21 @@ public class ProfessorCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<UserAndProfessor> updateProfessor(@RequestBody UserAndProfessor userAndProfessor) {
+	public ResponseEntity updateProfessor(@RequestBody UserAndProfessor userAndProfessor) {
 		try {
 			UserAndProfessor updatedProfessor = service.updateProfessor(userAndProfessor);
 			if (updatedProfessor != null) {
 				return ResponseEntity.ok(updatedProfessor);
 			}
+		} catch (DuplicateKeyException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		} catch (Exception e) {
 			System.out.println("%s".formatted(e));
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			return ResponseEntity.badRequest().body("something went wrong");
 		}
-		return ResponseEntity.badRequest().build();
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
 	@GetMapping(value = "/get/loads/{professorNo}")
