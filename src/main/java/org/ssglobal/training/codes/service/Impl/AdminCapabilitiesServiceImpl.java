@@ -370,7 +370,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 
 	@Override
-	public List<Map<String, Object>> selecAllSubjects(Integer curriculumCode) {
-		return repository.selecAllSubjects(curriculumCode);
+	public List<Map<String, Object>> selecAllMajorSubjects() {
+		return repository.selecAllMajorSubjects();
 	}
 }

@@ -922,7 +922,7 @@ public class AdminCapabilitiesRepository {
 	}
 	
 	//Get All MAJOR SUBJECTS BY CURRICULUM
-	public List<Map<String, Object>> selecAllSubjects(Integer curriculumCode) {
+	public List<Map<String, Object>> selecAllMajorSubjects() {
 		List<Map<String, Object>> query = dslContext.select(
 									SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
 									SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
@@ -932,7 +932,6 @@ public class AdminCapabilitiesRepository {
 									SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"))
 							.from(SUBJECT)
 							.join(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
-							.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(curriculumCode))
 							.fetchMaps();
 		return query;
 	}

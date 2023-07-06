@@ -103,5 +103,5 @@ public interface AdminCapabilitiesService {
 	
 	//-------------------------FOR THE SUBJECTS
 	List<Map<String, Object>> selectAllMinorSubjects();
-	List<Map<String, Object>> selecAllSubjects(Integer curriculumCode);
+	List<Map<String, Object>> selecAllMajorSubjects();
 }

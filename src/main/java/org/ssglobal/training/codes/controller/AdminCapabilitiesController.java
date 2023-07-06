@@ -718,7 +718,7 @@ public class AdminCapabilitiesController {
 	}
 
 	
-	//---------FOR THE SUBJECTS
+	//---------FOR THE MINOR SUBJECTS
 	@GetMapping(value = "/get/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<Map<String, Object>>> selectAllMinorSubjects() {
 		try {
@@ -733,17 +733,18 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
-	@GetMapping(value = "/get/subjects/{curriculumCode}", produces = { MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsByCurriculum(@PathVariable("curriculumCode") Integer curriculumCode) {
+	//---------FOR THE MAJOR SUBJECTS
+	@GetMapping(value = "/get/subjects/major", produces = { MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsByCurriculum() {
 		try {
-			List<Map<String, Object>> allSubjects = service.selecAllSubjects(curriculumCode);
+			List<Map<String, Object>> allSubjects = service.selecAllMajorSubjects();
 			if (!allSubjects.isEmpty()) {
 				return ResponseEntity.ok(allSubjects);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 }
