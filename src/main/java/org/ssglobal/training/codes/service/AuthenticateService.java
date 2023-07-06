@@ -10,7 +10,7 @@ public interface AuthenticateService {
 	boolean updateUserToken(Integer employeeId, String token);
 	boolean deleteUserToken(Integer userId);
 	boolean isUserTokenIdExists(Integer userId);
-	boolean isUserTokenExists(String token);
+	boolean isUserTokenExists(Integer userId, String token);
 	
 	String generateToken(Integer userId, Integer userNo, String username, String userType, Boolean isActive);
 }

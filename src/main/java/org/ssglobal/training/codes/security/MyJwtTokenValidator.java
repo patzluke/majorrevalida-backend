@@ -32,6 +32,12 @@ public class MyJwtTokenValidator extends OncePerRequestFilter {
 	
 	@Autowired
 	private final AuthenticateRepository userTokenRepository;
+	
+	@Autowired
+	private HttpServletRequest httpServletRequest;
+	
+	@Autowired
+	private HttpServletResponse httpServletResponse;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -45,20 +51,19 @@ public class MyJwtTokenValidator extends OncePerRequestFilter {
 			if (!validateToken(token)) {
 				response.sendError(HttpStatus.UNAUTHORIZED.value(), "not ok");
 			}
-		
 			filterChain.doFilter(request, response);
 		} catch (NullPointerException e) {
 			e.printStackTrace();
-			response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.sendError(HttpStatus.UNAUTHORIZED.value(), "not ok");
 		} catch (Exception e) {
 			e.printStackTrace();
-			response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 	}
 	
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		return request.getRequestURI().matches("/api/.*");
+		return request.getRequestURI().matches("/api/authenticate") ||
+			   request.getRequestURI().matches("/api/admin/update/password");	
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -71,8 +76,7 @@ public class MyJwtTokenValidator extends OncePerRequestFilter {
 			
 			Date tokenExpiresAt = new Date(Long.parseLong(result.get("exp").toString()) * 1000L);
 			int userId = Integer.parseInt(result.get("userId").toString());
-			
-			if (new Date().getTime() < tokenExpiresAt.getTime() && userTokenRepository.isUserTokenExists(token)) {
+			if (new Date().getTime() < tokenExpiresAt.getTime() && userTokenRepository.isUserTokenExists(userId, token)) {
 				return true;
 			} else if (new Date().getTime() > tokenExpiresAt.getTime()){
 				userTokenRepository.deleteUserToken(userId);
@@ -86,6 +90,101 @@ public class MyJwtTokenValidator extends OncePerRequestFilter {
 		} catch (Exception e) {
 			log.debug("MyJwtTokenValidator Line 67 exception: %s".formatted(e.getMessage()));
 		}
+		return false;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean validateAdminUser() throws IOException {
+		if (httpServletRequest.getRequestURI().equals("/api/admin/update/password")) {
+			return true;
+		}
+		try {
+			String authorizationHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+			String token = authorizationHeader.substring("Bearer".length()).trim();
+			String[] chunks = token.split("\\.");
+			Decoder decoder = Base64.getUrlDecoder();			
+			String payload = new String(decoder.decode(chunks[1]));
+			HashMap<String,Object> result = new ObjectMapper().readValue(payload, HashMap.class);
+			if (result.get("userType").equals("Admin")) {
+				return true;
+			}
+		} catch (NullPointerException e) {
+			httpServletResponse.sendError(HttpStatus.FORBIDDEN.value(), "not ok");
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}		
+		return false;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean validateProfessorUser() throws IOException {
+		try {
+			String authorizationHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+			String token = authorizationHeader.substring("Bearer".length()).trim();
+			String[] chunks = token.split("\\.");
+			Decoder decoder = Base64.getUrlDecoder();			
+			String payload = new String(decoder.decode(chunks[1]));
+			HashMap<String,Object> result = new ObjectMapper().readValue(payload, HashMap.class);
+			if (result.get("userType").equals("Professor")) {
+				return true;
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}			
+		return false;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean validateStudentUser() throws ServletException, IOException {
+		try {
+			String authorizationHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+			String token = authorizationHeader.substring("Bearer".length()).trim();
+			String[] chunks = token.split("\\.");
+			Decoder decoder = Base64.getUrlDecoder();			
+			String payload = new String(decoder.decode(chunks[1]));
+			HashMap<String,Object> result = new ObjectMapper().readValue(payload, HashMap.class);
+			if (result.get("userType").equals("Student")) {
+				return true;
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}		
+		return false;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean validateParentUser() throws IOException {
+		try {
+			String authorizationHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+			String token = authorizationHeader.substring("Bearer".length()).trim();
+			String[] chunks = token.split("\\.");
+			Decoder decoder = Base64.getUrlDecoder();			
+			String payload = new String(decoder.decode(chunks[1]));
+			HashMap<String,Object> result = new ObjectMapper().readValue(payload, HashMap.class);
+			if (result.get("userType").equals("Parent")) {
+				return true;
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}		
 		return false;
 	}
 }

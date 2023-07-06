@@ -43,9 +43,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		    .and()
 		    .csrf()
 		    .disable()
-			.addFilterBefore(myJwtTokenValidator, BasicAuthenticationFilter.class)
+            .addFilterBefore(myJwtTokenValidator, BasicAuthenticationFilter.class)
             .authorizeRequests()
-            .anyRequest()
-            .permitAll();
+            .antMatchers("/api/authenticate").permitAll()
+            .antMatchers("/api/admin/**").access("@myJwtTokenValidator.validateAdminUser()")
+            .antMatchers("/api/professor/**").access("@myJwtTokenValidator.validateProfessorUser()")
+            .antMatchers("/api/student/**").access("@myJwtTokenValidator.validateStudentUser()")
+            .antMatchers("/api/parent/**").access("@myJwtTokenValidator.validateParentUser()");           
     }
 }

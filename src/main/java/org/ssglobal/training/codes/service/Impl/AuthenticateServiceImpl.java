@@ -56,8 +56,8 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	}
 
 	@Override
-	public boolean isUserTokenExists(String token) {
-		return repository.isUserTokenExists(token);
+	public boolean isUserTokenExists(Integer userId, String token) {
+		return repository.isUserTokenExists(userId, token);
 	}
 	
 	@Override

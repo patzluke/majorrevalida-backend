@@ -21,7 +21,6 @@ import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 @RequestMapping(value = "/api/professor")
 public class ProfessorCapabilitiesController {
 
-
 	@Autowired
 	private ProfessorCapabilitiesService service;
 	

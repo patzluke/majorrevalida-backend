@@ -28,6 +28,7 @@ public class AuthenticateController {
 		String password = payload.get("password");
 		Map<String, Object> authenticatedUser = service.searchUserByUsernameAndPassword(username, password);
 		if (authenticatedUser != null) {
+			System.out.println("hey");
 			List<Object> usertoken = new ArrayList<>();
 			Integer userNo = authenticatedUser.get("adminNo") != null ? Integer.valueOf(authenticatedUser.get("adminNo").toString())
 							 : authenticatedUser.get("parentNo") != null ? Integer.valueOf(authenticatedUser.get("parentNo").toString())
@@ -45,6 +46,7 @@ public class AuthenticateController {
 			usertoken.add(token);
 			return new ResponseEntity<>(usertoken, HttpStatus.OK);
 		}
+		System.out.println("hey");
 		return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 	}
 }
