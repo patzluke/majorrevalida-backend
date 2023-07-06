@@ -53,10 +53,10 @@ public class MyJwtTokenValidator extends OncePerRequestFilter {
 			}
 			filterChain.doFilter(request, response);
 		} catch (NullPointerException e) {
-			e.printStackTrace();
 			response.sendError(HttpStatus.UNAUTHORIZED.value(), "not ok");
 		} catch (Exception e) {
 			e.printStackTrace();
+			response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "not ok");
 		}
 	}
 	
