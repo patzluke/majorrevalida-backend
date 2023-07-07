@@ -23,7 +23,10 @@ public class ProfessorCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
 	private final org.ssglobal.training.codes.tables.StudentAttendance STUDENT_ATTENDANCE = org.ssglobal.training.codes.tables.StudentAttendance.STUDENT_ATTENDANCE;
-	
+	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
+	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
+	private final org.ssglobal.training.codes.tables.Department DEPARTMENT = org.ssglobal.training.codes.tables.Department.DEPARTMENT;
+
 	public List<Users> selectAllUsers() {
 		return dslContext.selectFrom(USERS).fetchInto(Users.class);
 	}
@@ -83,9 +86,41 @@ public class ProfessorCapabilitiesRepository {
 
 //	Select All loads in ProfessorLoad with inner join of it's subject table
 	public List<Map<String, Object>> selectAllLoads(Integer professorNo) {
-		return dslContext.select(PROFESSOR_LOAD.LOAD_ID, PROFESSOR_LOAD.PROFESSOR_NO, PROFESSOR_LOAD.SUBJECT_CODE, PROFESSOR_LOAD.SECTION_ID, PROFESSOR_LOAD.ROOM_ID, PROFESSOR_LOAD.DEPT_CODE, PROFESSOR_LOAD.DAY,
-				PROFESSOR_LOAD.START_TIME, PROFESSOR_LOAD.END_TIME, SUBJECT.SUBJECT_CODE, SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE, SUBJECT.UNITS, SUBJECT.ACTIVE_DEACTIVE)
-				.from(PROFESSOR_LOAD).innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).where(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo)).fetchMaps();
+		return dslContext
+		.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
+				SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+				SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
+				ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
+				DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
+				PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"), 
+				PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
+		.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
+		.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
+		.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
+		.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
+		.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+		.where(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo))
+		.fetchMaps();
+	}
+	
+	public List<Map<String, Object>> selectProfessorLoadByProfessorNoAndSubjectCodeAndSection(Integer professorNo, Integer subjectCode, String sectionName) {
+		return dslContext
+		.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
+				SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+				SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
+				ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
+				DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
+				PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"), 
+				PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
+		.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
+		.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
+		.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
+		.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
+		.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+		.where(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo)
+			   .and(PROFESSOR_LOAD.SUBJECT_CODE.eq(subjectCode)
+			   .and(SECTION.SECTION_NAME.eq(sectionName))))
+		.fetchMaps();
 	}
 	
 //	List of Students Attendance in that particular Professor's Load

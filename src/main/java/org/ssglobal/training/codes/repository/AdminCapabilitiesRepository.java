@@ -281,6 +281,7 @@ public class AdminCapabilitiesRepository {
 				.where(STUDENT.STUDENT_NO.eq(student.getStudentNo()))
 				.returning().fetchOne().into(Student.class);
 		
+		
 		if (updatedUser != null && updatedStudent != null) {
 			UserAndStudent information = dslContext
 					.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
@@ -309,14 +310,20 @@ public class AdminCapabilitiesRepository {
 				.where(STUDENT.USER_ID.eq(deactivatedUser.getUserId())).fetchOne().into(Student.class);
 
 		if (deactivatedUser != null && deactivatedStudent != null) {
-			UserAndStudent information = new UserAndStudent(deactivatedUser.getUserId(), deactivatedUser.getUsername(),
-					deactivatedUser.getPassword(), deactivatedUser.getEmail(), deactivatedUser.getContactNo(),
-					deactivatedUser.getFirstName(), deactivatedUser.getMiddleName(), deactivatedUser.getLastName(),
-					deactivatedUser.getUserType(), deactivatedUser.getBirthDate(), deactivatedUser.getAddress(),
-					deactivatedUser.getCivilStatus(), deactivatedUser.getGender(), deactivatedUser.getNationality(),
-					deactivatedUser.getActiveStatus(), deactivatedUser.getActiveDeactive(), deactivatedUser.getImage(),
-					deactivatedStudent.getStudentNo(), deactivatedStudent.getUserId(), deactivatedStudent.getParentNo(),
-					deactivatedStudent.getCurriculumCode(), deactivatedStudent.getYearLevel(), deactivatedStudent.getAcademicYearId());
+			UserAndStudent information = dslContext
+					.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
+							USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
+							USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
+							USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
+							CURRICULUM.CURRICULUM_NAME, STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE,
+							MAJOR.MAJOR_CODE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
+					.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
+					.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
+					.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
+					.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+					.where(STUDENT.STUDENT_NO.eq(deactivatedStudent.getStudentNo()))
+					.fetchOneInto(UserAndStudent.class);
+			
 			return information;
 		}
 		return null;

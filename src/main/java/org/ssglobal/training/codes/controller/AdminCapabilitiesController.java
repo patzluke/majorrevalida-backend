@@ -204,6 +204,7 @@ public class AdminCapabilitiesController {
 			UserAndStudent updatedStudent = service.changeStudentAccountStatus(
 					Integer.valueOf(payload.get("userId").toString()),
 					Boolean.valueOf(payload.get("status").toString()));
+			System.out.println(updatedStudent.getActiveStatus());
 			if (updatedStudent != null) {
 				return ResponseEntity.ok(updatedStudent);
 			}

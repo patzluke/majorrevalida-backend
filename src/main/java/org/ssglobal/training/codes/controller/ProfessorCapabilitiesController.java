@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.UserAndProfessor;
 import org.ssglobal.training.codes.service.ProfessorCapabilitiesService;
@@ -57,10 +58,11 @@ public class ProfessorCapabilitiesController {
 	}
 	
 	@GetMapping(value = "/get/loads/{professorNo}")
-	public ResponseEntity<List<ProfessorLoad>> selecAllLoad(Integer professorNo) {
+	public ResponseEntity<List<ProfessorLoad>> selecAllLoad(@PathVariable(name = "professorNo") Integer professorNo) {
 		try {
 			List<ProfessorLoad> selectedLoads = service.selectAllLoad(professorNo);
-			if (selectedLoads != null) {
+			System.out.println(selectedLoads);
+			if (!selectedLoads.isEmpty()) {
 				return ResponseEntity.ok(selectedLoads);
 			}
 		} catch (Exception e) {
@@ -71,9 +73,25 @@ public class ProfessorCapabilitiesController {
 	}
 	
 	@GetMapping(value = "/get/loads/subject/{professorNo}")
-	public ResponseEntity<List<Map<String, Object>>> selecAllLoads(Integer professorNo) {
+	public ResponseEntity<List<Map<String, Object>>> selecAllLoads(@PathVariable(name = "professorNo") Integer professorNo) {
 		try {
 			List<Map<String, Object>> selectedLoads = service.selectAllLoads(professorNo);
+			if (selectedLoads != null) {
+				return ResponseEntity.ok(selectedLoads);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@GetMapping(value = "/get/section/subject/{professorNo}")
+	public ResponseEntity<List<Map<String, Object>>> selectProfessorLoadByProfessorNoAndSubjectCodeAndSection(@RequestParam(name = "professorNo") Integer professorNo,
+																											  @RequestParam(name = "subjectCode") Integer subjectCode,
+																											  @RequestParam(name = "sectionName") String sectionName) {
+		try {
+			List<Map<String, Object>> selectedLoads = service.selectProfessorLoadByProfessorNoAndSubjectCodeAndSection(professorNo, subjectCode, sectionName);
 			if (selectedLoads != null) {
 				return ResponseEntity.ok(selectedLoads);
 			}

@@ -63,4 +63,10 @@ public class ProfessorCapabilitiesServiceImpl implements ProfessorCapabilitiesSe
 	public List<Map<String, Object>> selectAllLoads(Integer professorNo) {
 		return repository.selectAllLoads(professorNo);
 	}
+	
+	@Override
+	public List<Map<String, Object>> selectProfessorLoadByProfessorNoAndSubjectCodeAndSection(Integer professorNo,
+			Integer subjectCode, String sectionName) {
+		return selectProfessorLoadByProfessorNoAndSubjectCodeAndSection(professorNo, subjectCode, sectionName);
+	}
 }

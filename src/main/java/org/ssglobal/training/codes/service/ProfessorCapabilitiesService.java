@@ -14,4 +14,5 @@ public interface ProfessorCapabilitiesService {
 	UserAndProfessor updateProfessor(UserAndProfessor userAndProfessor);
 	List<ProfessorLoad> selectAllLoad(Integer professorNo);
 	List<Map<String, Object>> selectAllLoads(Integer professorNo);
+	List<Map<String, Object>> selectProfessorLoadByProfessorNoAndSubjectCodeAndSection(Integer professorNo, Integer subjectCode, String sectionName);
 }
