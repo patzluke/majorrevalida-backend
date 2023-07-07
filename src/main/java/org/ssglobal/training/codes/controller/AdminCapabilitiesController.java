@@ -734,6 +734,22 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
+	@PutMapping(value = "/deactive/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Map<String, Object>> deactivelMinorSubjects(@RequestBody Map<String, Object> payload) {
+		try {
+			Map<String, Object> updatedMinorSubject = service.changeMinorSubjectStatus(
+					Integer.valueOf(payload.get("subjectCode").toString()),
+					Boolean.valueOf(payload.get("activeStatus").toString()));
+			if (!updatedMinorSubject.isEmpty()) {
+				return ResponseEntity.ok(updatedMinorSubject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 	//---------FOR THE MAJOR SUBJECTS
 	@GetMapping(value = "/get/subjects/major", produces = { MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsByCurriculum() {
