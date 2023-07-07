@@ -39,15 +39,11 @@ public class UserAndStudent {
 	public UserAndStudent() {
 	}
 
-	
-
 	public UserAndStudent(Integer userId, String username, String password, String email, String contactNo,
 			String firstName, String middleName, String lastName, String userType, LocalDate birthDate, String address,
-			String civilStatus, String gender, String nationality, Boolean activeStatus, Boolean activeDeactive,
-			String image, Integer studentId, Integer studentNo, Integer parentNo, Integer curriculumCode,
-			String curriculumName, Integer academicYearId, Integer yearLevel, Integer courseCode, String courseTitle,
-			Integer majorCode, String majorTitle) {
-		super();
+			String civilStatus, String gender, String nationality, Boolean activeStatus, Boolean activeDeactive, String image,
+			Integer studentId, Integer studentNo, Integer parentNo, Integer curriculumCode, Integer yearLevel,
+			Integer academicYearId) {
 		this.userId = userId;
 		this.username = username;
 		this.password = password;
@@ -69,16 +65,9 @@ public class UserAndStudent {
 		this.studentNo = studentNo;
 		this.parentNo = parentNo;
 		this.curriculumCode = curriculumCode;
-		this.curriculumName = curriculumName;
-		this.academicYearId = academicYearId;
 		this.yearLevel = yearLevel;
-		this.courseCode = courseCode;
-		this.courseTitle = courseTitle;
-		this.majorCode = majorCode;
-		this.majorTitle = majorTitle;
+		this.academicYearId = academicYearId;
 	}
-
-
 
 	public Integer getUserId() {
 		return userId;
