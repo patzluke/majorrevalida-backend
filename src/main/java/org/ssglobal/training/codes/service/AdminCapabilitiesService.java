@@ -103,5 +103,6 @@ public interface AdminCapabilitiesService {
 	
 	//-------------------------FOR THE SUBJECTS
 	List<Map<String, Object>> selectAllMinorSubjects();
+	Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus);
 	List<Map<String, Object>> selecAllMajorSubjects();
 }

@@ -373,4 +373,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<Map<String, Object>> selecAllMajorSubjects() {
 		return repository.selecAllMajorSubjects();
 	}
+
+	@Override
+	public Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
+		return repository.changeMinorSubjectStatus(subjectCode, activeStatus);
+	}
 }

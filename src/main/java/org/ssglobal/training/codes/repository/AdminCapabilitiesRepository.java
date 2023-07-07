@@ -913,12 +913,30 @@ public class AdminCapabilitiesRepository {
 		List<Map<String, Object>> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-								MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"))
+								MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"), 
+								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
 						.from(SUBJECT)
 						.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
 						.fetchMaps();
 		
 		return !query.isEmpty() ? query : null;
+	}
+	
+	public Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
+		Subject update = dslContext.update(SUBJECT).set(SUBJECT.ACTIVE_STATUS, activeStatus)
+										.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).returning().fetchOne().into(Subject.class);	
+		if (update != null) {
+			Map<String, Object> query = dslContext
+					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+							MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"), 
+							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
+					.from(SUBJECT)
+					.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+					.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).fetchOneMap();
+			return !query.isEmpty() ? query : null;
+		}
+		return null;
 	}
 	
 	//Get All MAJOR SUBJECTS BY CURRICULUM
@@ -929,7 +947,8 @@ public class AdminCapabilitiesRepository {
 									MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
 									MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
 									MAJOR_SUBJECT.SEM.as("sem"),
-									SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"))
+									SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+									SUBJECT.ACTIVE_STATUS.as("activeStatus"))
 							.from(SUBJECT)
 							.join(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
 							.fetchMaps();
