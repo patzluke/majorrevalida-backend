@@ -101,8 +101,9 @@ public interface AdminCapabilitiesService {
 	// ------------------------FOR Room	
 	List<Room> selectAllRoom();
 	
-	//-------------------------FOR THE SUBJECTS
+	//-------------------------FOR THE MINOR SUBJECTS
 	List<Map<String, Object>> selectAllMinorSubjects();
-	Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus);
 	List<Map<String, Object>> selecAllMajorSubjects();
+	Map<String, Object> editMinorSubject(Map<String, Object> payload);
+	Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus);
 }

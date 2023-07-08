@@ -364,6 +364,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 
+	// ------------------------FOR Minor Subjects
 	@Override
 	public List<Map<String, Object>> selectAllMinorSubjects() {
 		return repository.selectAllMinorSubjects();
@@ -372,6 +373,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public List<Map<String, Object>> selecAllMajorSubjects() {
 		return repository.selecAllMajorSubjects();
+	}
+	
+	@Override
+	public Map<String, Object> editMinorSubject(Map<String, Object> payload) {
+		return repository.editMinorSubject(payload);
 	}
 
 	@Override

@@ -733,6 +733,20 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
+	@PutMapping(value = "/update/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Map<String, Object>> editMinorSubject(@RequestBody Map<String, Object> payload) {
+		try {
+			Map<String, Object> updatedMinorSubject = service.editMinorSubject(payload);
+			if (!updatedMinorSubject.isEmpty()) {
+				return ResponseEntity.ok(updatedMinorSubject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 	@PutMapping(value = "/deactive/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Map<String, Object>> deactivelMinorSubjects(@RequestBody Map<String, Object> payload) {
 		try {

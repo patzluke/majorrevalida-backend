@@ -16,6 +16,7 @@ import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
+import org.ssglobal.training.codes.tables.pojos.MinorSubject;
 import org.ssglobal.training.codes.tables.pojos.Parent;
 import org.ssglobal.training.codes.tables.pojos.Professor;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
@@ -516,7 +517,9 @@ public class AdminCapabilitiesRepository {
 				.set(PROFESSOR_LOAD.DEPT_CODE, professorLoad.getDeptCode())
 				.set(PROFESSOR_LOAD.DAY, professorLoad.getDay())
 				.set(PROFESSOR_LOAD.START_TIME, professorLoad.getStartTime())
-				.set(PROFESSOR_LOAD.END_TIME, professorLoad.getEndTime()).returning().fetchOne()
+				.set(PROFESSOR_LOAD.END_TIME, professorLoad.getEndTime())
+				.set(PROFESSOR_LOAD.ACTIVE_DEACTIVE, professorLoad.getActiveDeactive())
+				.returning().fetchOne()
 				.into(ProfessorLoad.class);
 		
 		Map<String, Object> insertedprofessorLoad = 
@@ -547,7 +550,9 @@ public class AdminCapabilitiesRepository {
 				.set(PROFESSOR_LOAD.DAY, professorLoad.getDay())
 				.set(PROFESSOR_LOAD.START_TIME, professorLoad.getStartTime())
 				.set(PROFESSOR_LOAD.END_TIME, professorLoad.getEndTime())
-				.where(PROFESSOR_LOAD.LOAD_ID.eq(professorLoad.getLoadId())).returning().fetchOne()
+				.set(PROFESSOR_LOAD.ACTIVE_DEACTIVE, professorLoad.getActiveDeactive())
+				.where(PROFESSOR_LOAD.LOAD_ID.eq(professorLoad.getLoadId()))
+				.returning().fetchOne()
 				.into(ProfessorLoad.class);
 		
 		Map<String, Object> insertedprofessorLoad = 
@@ -918,15 +923,45 @@ public class AdminCapabilitiesRepository {
 	//Get All Minor Subject
 	public List<Map<String, Object>> selectAllMinorSubjects() {
 		List<Map<String, Object>> query = dslContext
-						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
-								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-								MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"), 
-								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
+				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
+						MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
 						.from(SUBJECT)
 						.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
 						.fetchMaps();
 		
 		return !query.isEmpty() ? query : null;
+	}
+	
+	public Map<String, Object> editMinorSubject(Map<String, Object> payload) {
+		Subject updatedSubject = dslContext.update(SUBJECT)
+				.set(SUBJECT.ABBREVATION, payload.get("abbrevation").toString())
+				.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
+				.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+				.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
+				.returning().fetchOne().into(Subject.class);
+		
+		dslContext.update(MINOR_SUBJECT)
+				.set(MINOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
+				.set(MINOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
+				.set(MINOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
+				.where(MINOR_SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode()))
+				.returning().fetchOne().into(MinorSubject.class);
+		
+
+		Map<String, Object> query = dslContext
+				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
+						MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
+						.from(SUBJECT)
+						.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+						.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode()))
+						.fetchOneMap();
+		return query;
 	}
 	
 	public Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
