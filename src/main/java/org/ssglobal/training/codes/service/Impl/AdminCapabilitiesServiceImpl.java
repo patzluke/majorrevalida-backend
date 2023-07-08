@@ -384,4 +384,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
 		return repository.changeMinorSubjectStatus(subjectCode, activeStatus);
 	}
+
+	@Override
+	public Map<String, Object> inserMinorSubject(Map<String, Object> payload) {
+		return repository.inserMinorSubject(payload);
+	}
 }

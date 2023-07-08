@@ -763,6 +763,20 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
+	@PostMapping(value = "/add/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Map<String, Object>> inserMinorSubject(@RequestBody Map<String, Object> payload) {
+		try {
+			Map<String, Object> newMinorSubject = service.inserMinorSubject(payload);
+			if (!newMinorSubject.isEmpty()) {
+				return ResponseEntity.ok(newMinorSubject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 	//---------FOR THE MAJOR SUBJECTS
 	@GetMapping(value = "/get/subjects/major", produces = { MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsByCurriculum() {

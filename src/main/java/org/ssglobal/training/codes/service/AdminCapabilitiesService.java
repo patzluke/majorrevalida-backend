@@ -106,4 +106,5 @@ public interface AdminCapabilitiesService {
 	List<Map<String, Object>> selecAllMajorSubjects();
 	Map<String, Object> editMinorSubject(Map<String, Object> payload);
 	Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus);
+	Map<String, Object> inserMinorSubject(Map<String, Object> payload);
 }

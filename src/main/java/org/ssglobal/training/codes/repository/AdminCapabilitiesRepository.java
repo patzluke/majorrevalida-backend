@@ -935,6 +935,34 @@ public class AdminCapabilitiesRepository {
 		return !query.isEmpty() ? query : null;
 	}
 	
+	public Map<String, Object> inserMinorSubject(Map<String, Object> payload) {
+		Subject subjectQuery = dslContext.insertInto(SUBJECT)
+										.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
+										.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
+										.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+										.set(SUBJECT.ACTIVE_STATUS, Boolean.valueOf(payload.get("activeStatus").toString()))
+										.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString()))
+										.returning().fetchOne().into(Subject.class);
+		MinorSubject minorQuery = dslContext.insertInto(MINOR_SUBJECT)
+											.set(MINOR_SUBJECT.SUBJECT_CODE, subjectQuery.getSubjectCode())
+											.set(MINOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
+											.set(MINOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
+											.set(MINOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
+											.returning().fetchOne().into(MinorSubject.class);
+		Map<String, Object> query = dslContext
+				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
+						MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
+						.from(SUBJECT)
+						.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+						.where(SUBJECT.SUBJECT_CODE.eq(minorQuery.getSubjectCode()))
+						.fetchOneMap();
+		
+		return !query.isEmpty() ? query : null;
+	}
+	
 	public Map<String, Object> editMinorSubject(Map<String, Object> payload) {
 		Subject updatedSubject = dslContext.update(SUBJECT)
 				.set(SUBJECT.ABBREVATION, payload.get("abbrevation").toString())
