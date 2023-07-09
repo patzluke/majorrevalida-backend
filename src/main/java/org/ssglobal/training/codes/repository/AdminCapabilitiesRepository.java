@@ -551,7 +551,6 @@ public class AdminCapabilitiesRepository {
 				.set(PROFESSOR_LOAD.DAY, professorLoad.getDay())
 				.set(PROFESSOR_LOAD.START_TIME, professorLoad.getStartTime())
 				.set(PROFESSOR_LOAD.END_TIME, professorLoad.getEndTime())
-				.set(PROFESSOR_LOAD.ACTIVE_DEACTIVE, professorLoad.getActiveDeactive())
 				.where(PROFESSOR_LOAD.LOAD_ID.eq(professorLoad.getLoadId()))
 				.returning().fetchOne()
 				.into(ProfessorLoad.class);
