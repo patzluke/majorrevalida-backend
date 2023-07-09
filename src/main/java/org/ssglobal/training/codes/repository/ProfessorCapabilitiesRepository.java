@@ -7,6 +7,7 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndProfessor;
+import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.Professor;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Users;
@@ -22,6 +23,7 @@ public class ProfessorCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
 	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
+	private final org.ssglobal.training.codes.tables.StudentEnrollment STUDENT_ENROLLMENT = org.ssglobal.training.codes.tables.StudentEnrollment.STUDENT_ENROLLMENT;
 	private final org.ssglobal.training.codes.tables.StudentAttendance STUDENT_ATTENDANCE = org.ssglobal.training.codes.tables.StudentAttendance.STUDENT_ATTENDANCE;
 	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
 	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
@@ -128,6 +130,22 @@ public class ProfessorCapabilitiesRepository {
 		return dslContext.select(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID, STUDENT_ATTENDANCE.STUDENT_NO, STUDENT_ATTENDANCE.LOAD_ID, STUDENT_ATTENDANCE.ATTENDANCE_DATE, STUDENT_ATTENDANCE.STATUS)
 				.from(STUDENT_ATTENDANCE).innerJoin(STUDENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT.STUDENT_NO))
 				.where(STUDENT_ATTENDANCE.LOAD_ID.eq(loadId)).fetchMaps();
+	}
+	
+//	List of students that is enrolled in professor's load subject
+	public List<UserAndStudent> selectAllStudentsBySectionId(String sectionName) {
+		return dslContext
+				.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
+						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
+						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
+						USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
+						STUDENT.YEAR_LEVEL)
+				.from(USERS)
+				.innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID))
+				.innerJoin(STUDENT_ENROLLMENT).on(STUDENT.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
+				.innerJoin(SECTION).on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID))
+				.where(SECTION.SECTION_NAME.equalIgnoreCase(sectionName))
+				.fetchInto(UserAndStudent.class);
 	}
 
 }
