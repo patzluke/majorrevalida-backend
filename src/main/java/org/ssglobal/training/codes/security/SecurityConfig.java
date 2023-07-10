@@ -46,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilterBefore(myJwtTokenValidator, BasicAuthenticationFilter.class)
             .authorizeRequests()
             .antMatchers("/api/authenticate").permitAll()
+            .antMatchers("/api/studentapplicant/**").permitAll()
             .antMatchers("/api/admin/**").access("@myJwtTokenValidator.validateAdminUser()")
             .antMatchers("/api/professor/**").access("@myJwtTokenValidator.validateProfessorUser()")
             .antMatchers("/api/student/**").access("@myJwtTokenValidator.validateStudentUser()")

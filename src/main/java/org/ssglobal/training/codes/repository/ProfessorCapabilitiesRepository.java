@@ -1,5 +1,6 @@
 package org.ssglobal.training.codes.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.ssglobal.training.codes.model.UserAndProfessor;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.Professor;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
+import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
 @Repository
@@ -148,4 +150,53 @@ public class ProfessorCapabilitiesRepository {
 				.fetchInto(UserAndStudent.class);
 	}
 
+//	List of students attendance
+	public List<Map<String, Object>> selectStudentAttendanceByAndSubjectAndSectionAndProfessorNoAndDate(
+			String subjectTitle, String sectionName, Integer professorNo, String date) {
+		
+		return dslContext.select(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID.as("studentAttendanceId"), USERS.LAST_NAME.as("lastName"), 
+								 USERS.FIRST_NAME.as("firstName"), STUDENT_ATTENDANCE.STATUS, STUDENT_ATTENDANCE.ATTENDANCE_DATE.as("attendanceDate"))
+						 .from(STUDENT_ATTENDANCE)
+						 .innerJoin(STUDENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+						 .innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
+						 .innerJoin(PROFESSOR_LOAD).on(STUDENT_ATTENDANCE.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID))
+						 .innerJoin(SECTION).on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID))
+						 .innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))			 
+						 .where(SUBJECT.SUBJECT_TITLE.eq(subjectTitle)
+						 .and(SECTION.SECTION_NAME.eq(sectionName))
+						 .and(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo))
+						 .and(STUDENT_ATTENDANCE.ATTENDANCE_DATE.eq(LocalDate.parse(date))))
+						 .fetchMaps();
+	}
+	
+	public Map<String, Object> updateStudentAttendance(
+			String subjectTitle, String sectionName, Integer professorNo, String date, String status, Integer studentAttendanceId) {
+		
+		StudentAttendance updatedStudentAttendance = dslContext.update(STUDENT_ATTENDANCE)
+				  .set(STUDENT_ATTENDANCE.STATUS, status)
+				  .where(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID.eq(studentAttendanceId))
+				  .returning()
+				  .fetchOne()
+				  .into(StudentAttendance.class);
+		
+		return dslContext.select(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID.as("studentAttendanceId"), USERS.LAST_NAME.as("lastName"), 
+								 USERS.FIRST_NAME.as("firstName"), STUDENT_ATTENDANCE.STATUS)
+						 .from(STUDENT_ATTENDANCE)
+						 .innerJoin(STUDENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+						 .innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
+						 .innerJoin(PROFESSOR_LOAD).on(STUDENT_ATTENDANCE.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID))
+						 .innerJoin(SECTION).on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID))
+						 .innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))			 
+						 .where(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID.eq(updatedStudentAttendance.getStudentAttendanceId()))
+						 .fetchOneMap();
+	}
+	
+//	List of students attendance
+	public List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct() {
+		return dslContext.selectDistinct(STUDENT_ATTENDANCE.ATTENDANCE_DATE)
+						 .from(STUDENT_ATTENDANCE)
+						 .orderBy(STUDENT_ATTENDANCE.ATTENDANCE_DATE)
+						 .fetchInto(StudentAttendance.class);
+	}
+	
 }

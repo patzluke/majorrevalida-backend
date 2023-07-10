@@ -19,6 +19,7 @@ import org.ssglobal.training.codes.model.UserAndProfessor;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.ProfessorCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
+import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 
 @RestController
 @RequestMapping(value = "/api/professor")
@@ -62,7 +63,6 @@ public class ProfessorCapabilitiesController {
 	public ResponseEntity<List<ProfessorLoad>> selecAllLoad(@PathVariable(name = "professorNo") Integer professorNo) {
 		try {
 			List<ProfessorLoad> selectedLoads = service.selectAllLoad(professorNo);
-			System.out.println(selectedLoads);
 			if (!selectedLoads.isEmpty()) {
 				return ResponseEntity.ok(selectedLoads);
 			}
@@ -104,7 +104,7 @@ public class ProfessorCapabilitiesController {
 	}
 	
 	@GetMapping(value = "/get/student")
-	public ResponseEntity<List<UserAndStudent>> selectAllStudent(@RequestParam(name = "sectionName") String sectionName) {
+	public ResponseEntity<List<UserAndStudent>> selectAllStudentsBySectionId(@RequestParam(name = "sectionName") String sectionName) {
 		try {
 			List<UserAndStudent> students = service.selectAllStudentsBySectionId(sectionName);
 			if (students != null) {
@@ -116,4 +116,57 @@ public class ProfessorCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+	
+	@GetMapping(value = "/get/studentattendance")
+	public ResponseEntity<List<Map<String, Object>>> selectStudentAttendanceByStudentNoAndSubjectAndSectionAndProfessorNo(@RequestParam(name = "subjectTitle") String subjectTitle,
+																			 											@RequestParam(name = "sectionName") String sectionName,
+																			 											@RequestParam(name = "professorNo") Integer professorNo,
+																			 											@RequestParam(name = "date") String date) {
+		try {
+			List<Map<String, Object>> students = 
+					service.selectStudentAttendanceByStudentNoAndSubjectAndSectionAndProfessorNo(subjectTitle, sectionName, professorNo, date);
+			System.out.println(subjectTitle + " " + sectionName + " " + professorNo);
+			if (students != null) {
+				return ResponseEntity.ok(students);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@GetMapping(value = "/get/studentattendance/attendancedate")
+	public ResponseEntity<List<StudentAttendance>> selectStudentAttendanceByAttendanceDateDistinct() {
+		try {
+			List<StudentAttendance> students = service.selectStudentAttendanceByAttendanceDateDistinct();
+			if (students != null) {
+				return ResponseEntity.ok(students);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update/studentattendance", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity updateStudentAttendance(@RequestBody Map<String, Object> payload) {
+		Map<String, Object> updatedStudentAttendance;
+		try {
+			updatedStudentAttendance = service.updateStudentAttendance(payload);
+			if (!updatedStudentAttendance.isEmpty()) {
+				return ResponseEntity.ok(updatedStudentAttendance);
+			}
+		} catch (DuplicateKeyException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body("something went wrong");
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 }	
