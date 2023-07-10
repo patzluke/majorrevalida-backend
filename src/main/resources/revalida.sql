@@ -1470,5 +1470,18 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 
 
 
+select sa.* from student_attendance sa 
+inner join professor_load pl on sa.load_id = pl.load_id
+inner join section sec on pl.section_id = sec.section_id
+inner join subject subj on pl.subject_code = subj.subject_code
+
+where sa.student_no = 77001 and pl.professor_no = 8001 
+and subject_title = 'Introduction to Computing' 
+and sec.section_name = '1-ITA' 
+and sa.student_no = 77002;
+
+
+
+
 
 

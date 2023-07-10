@@ -12,6 +12,7 @@ import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.repository.ProfessorCapabilitiesRepository;
 import org.ssglobal.training.codes.service.ProfessorCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
+import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
 @Service
@@ -74,5 +75,28 @@ public class ProfessorCapabilitiesServiceImpl implements ProfessorCapabilitiesSe
 	@Override
 	public List<UserAndStudent> selectAllStudentsBySectionId(String sectionName) {
 		return repository.selectAllStudentsBySectionId(sectionName);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectStudentAttendanceByStudentNoAndSubjectAndSectionAndProfessorNo(
+			String subjectTitle, String sectionName, Integer professorNo, String date) {
+		return repository.selectStudentAttendanceByAndSubjectAndSectionAndProfessorNoAndDate(subjectTitle, sectionName, professorNo, date);
+	}
+	
+	@Override
+	public Map<String, Object> updateStudentAttendance(Map<String, Object> payload) {
+		String subjectTitle = payload.get("subjectTitle").toString();
+		String sectionName = payload.get("sectionName").toString();
+		Integer professorNo = Integer.valueOf(payload.get("professorNo").toString());
+		String date = payload.get("date").toString();
+		String status = payload.get("status").toString();
+		Integer studentAttendanceId = Integer.valueOf(payload.get("studentAttendanceId").toString());
+
+		return repository.updateStudentAttendance(subjectTitle, sectionName, professorNo, date, status, studentAttendanceId);
+	}
+	
+	@Override
+	public List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct() {
+		return repository.selectStudentAttendanceByAttendanceDateDistinct();
 	}
 }

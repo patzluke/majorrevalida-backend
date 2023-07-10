@@ -6,6 +6,7 @@ import java.util.Map;
 import org.ssglobal.training.codes.model.UserAndProfessor;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
+import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
 public interface ProfessorCapabilitiesService {
@@ -17,4 +18,11 @@ public interface ProfessorCapabilitiesService {
 	List<Map<String, Object>> selectAllLoads(Integer professorNo);
 	List<Map<String, Object>> selectProfessorLoadByProfessorNoAndSubjectCodeAndSection(Integer professorNo, Integer subjectCode, String sectionName);
 	List<UserAndStudent> selectAllStudentsBySectionId(String sectionName);
+	List<Map<String, Object>> selectStudentAttendanceByStudentNoAndSubjectAndSectionAndProfessorNo
+							(String subjectTitle, String sectionName, Integer professorNo, String date);
+	
+	Map<String, Object> updateStudentAttendance(Map<String, Object> payload);
+	
+	List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct();
+	
 }
