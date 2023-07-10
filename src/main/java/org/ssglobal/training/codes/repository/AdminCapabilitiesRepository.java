@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndAdmin;
@@ -16,6 +17,7 @@ import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
+import org.ssglobal.training.codes.tables.pojos.MajorSubject;
 import org.ssglobal.training.codes.tables.pojos.MinorSubject;
 import org.ssglobal.training.codes.tables.pojos.Parent;
 import org.ssglobal.training.codes.tables.pojos.Professor;
@@ -923,7 +925,7 @@ public class AdminCapabilitiesRepository {
 	//Get All Minor Subject
 	public List<Map<String, Object>> selectAllMinorSubjects() {
 		List<Map<String, Object>> query = dslContext
-				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
 						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 						MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
@@ -965,7 +967,7 @@ public class AdminCapabilitiesRepository {
 	
 	public Map<String, Object> editMinorSubject(Map<String, Object> payload) {
 		Subject updatedSubject = dslContext.update(SUBJECT)
-				.set(SUBJECT.ABBREVATION, payload.get("abbrevation").toString())
+				.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 				.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 				.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
 				.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
@@ -1012,16 +1014,106 @@ public class AdminCapabilitiesRepository {
 	//Get All MAJOR SUBJECTS BY CURRICULUM
 	public List<Map<String, Object>> selecAllMajorSubjects() {
 		List<Map<String, Object>> query = dslContext.select(
-									SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
-									SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
 									MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
 									MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
 									MAJOR_SUBJECT.SEM.as("sem"),
+									SUBJECT.SUBJECT_CODE.as("subjectCode"), 
+									SUBJECT.ABBREVATION.as("abbrevation"),
+									SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
 									SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
-									SUBJECT.ACTIVE_STATUS.as("activeStatus"))
+									SUBJECT.ACTIVE_STATUS.as("activeStatus")
+									)
 							.from(SUBJECT)
-							.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+							.join(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+//							.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(5001))
+							.groupBy(
+							        MAJOR_SUBJECT.CURRICULUM_CODE,
+							        MAJOR_SUBJECT.SUBJECT_CODE,
+							        MAJOR_SUBJECT.YEAR_LEVEL,
+							        MAJOR_SUBJECT.SEM,
+							        SUBJECT.SUBJECT_CODE, 
+									SUBJECT.ABBREVATION,
+									SUBJECT.SUBJECT_TITLE, SUBJECT.UNITS,
+									SUBJECT.ACTIVE_DEACTIVE,
+									SUBJECT.ACTIVE_STATUS
+							    )
+							.having(DSL.count(MAJOR_SUBJECT.SUBJECT_CODE).eq(1))
 							.fetchMaps();
 		return query;
 	}
+	
+	public Map<String, Object> changeMajorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
+		Subject update = dslContext.update(SUBJECT).set(SUBJECT.ACTIVE_STATUS, activeStatus)
+										.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).returning().fetchOne().into(Subject.class);	
+		if (update != null) {
+			Map<String, Object> query = dslContext
+					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+							MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
+							MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
+							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
+					.from(SUBJECT)
+					.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+					.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).fetchOneMap();
+			return !query.isEmpty() ? query : null;
+		}
+		return null;
+	}
+	
+	public Map<String, Object> editMajorSubject(Map<String, Object> payload) {
+		Subject updatedSubject = dslContext.update(SUBJECT)
+				.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
+				.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
+				.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+				.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
+				.returning().fetchOne().into(Subject.class);
+		dslContext.update(MAJOR_SUBJECT)
+		.set(MAJOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
+		.set(MAJOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
+		.set(MAJOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
+		.where(MAJOR_SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode()))
+		.returning().fetchOne().into(MajorSubject.class);
+		
+		Map<String, Object> query = dslContext
+				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+						MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
+						MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), 
+						SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
+						.from(SUBJECT)
+						.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+						.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode()))
+						.fetchOneMap();
+		return query;
+	}
+	
+//	public Map<String, Object> editMinorSubject(Map<String, Object> payload) {
+//		Subject updatedSubject = dslContext.update(SUBJECT)
+//				.set(SUBJECT.ABBREVATION, payload.get("abbrevation").toString())
+//				.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
+//				.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+//				.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
+//				.returning().fetchOne().into(Subject.class);
+//		
+//		dslContext.update(MINOR_SUBJECT)
+//				.set(MINOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
+//				.set(MINOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
+//				.set(MINOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
+//				.where(MINOR_SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode()))
+//				.returning().fetchOne().into(MinorSubject.class);
+//		
+//
+//		Map<String, Object> query = dslContext
+//				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+//						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+//						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
+//						MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+//						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
+//						.from(SUBJECT)
+//						.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+//						.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode()))
+//						.fetchOneMap();
+//		return query;
+//	}
 }
