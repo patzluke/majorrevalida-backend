@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.UserAndProfessor;
+import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.ProfessorCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 
@@ -100,5 +101,19 @@ public class ProfessorCapabilitiesController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.badRequest().build();
+	}
+	
+	@GetMapping(value = "/get/student")
+	public ResponseEntity<List<UserAndStudent>> selectAllStudent(@RequestParam(name = "sectionName") String sectionName) {
+		try {
+			List<UserAndStudent> students = service.selectAllStudentsBySectionId(sectionName);
+			if (students != null) {
+				return ResponseEntity.ok(students);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 }	

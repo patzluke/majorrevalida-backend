@@ -39,6 +39,7 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 	private final org.ssglobal.training.codes.tables.Admin ADMIN = org.ssglobal.training.codes.tables.Admin.ADMIN;
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
+
 	private final org.ssglobal.training.codes.tables.Professor PROFESSOR = org.ssglobal.training.codes.tables.Professor.PROFESSOR;
 	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
 	private final org.ssglobal.training.codes.tables.Parent PARENT = org.ssglobal.training.codes.tables.Parent.PARENT;
@@ -552,7 +553,6 @@ public class AdminCapabilitiesRepository {
 				.set(PROFESSOR_LOAD.DAY, professorLoad.getDay())
 				.set(PROFESSOR_LOAD.START_TIME, professorLoad.getStartTime())
 				.set(PROFESSOR_LOAD.END_TIME, professorLoad.getEndTime())
-				.set(PROFESSOR_LOAD.ACTIVE_DEACTIVE, professorLoad.getActiveDeactive())
 				.where(PROFESSOR_LOAD.LOAD_ID.eq(professorLoad.getLoadId()))
 				.returning().fetchOne()
 				.into(ProfessorLoad.class);
