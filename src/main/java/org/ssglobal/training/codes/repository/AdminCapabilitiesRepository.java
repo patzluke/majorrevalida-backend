@@ -925,7 +925,7 @@ public class AdminCapabilitiesRepository {
 	//Get All Minor Subject
 	public List<Map<String, Object>> selectAllMinorSubjects() {
 		List<Map<String, Object>> query = dslContext
-				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
 						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 						MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
@@ -967,7 +967,7 @@ public class AdminCapabilitiesRepository {
 	
 	public Map<String, Object> editMinorSubject(Map<String, Object> payload) {
 		Subject updatedSubject = dslContext.update(SUBJECT)
-				.set(SUBJECT.ABBREVATION, payload.get("abbrevation").toString())
+				.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 				.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 				.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
 				.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
