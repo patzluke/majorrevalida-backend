@@ -1038,8 +1038,6 @@ public class AdminCapabilitiesRepository {
 		return query;
 	}
 
-	// On Progress
-
 	/*
 	 * For 2nd Year and above Get All the student's passed major subject
 	 * 
@@ -1052,14 +1050,90 @@ public class AdminCapabilitiesRepository {
 				.select(STUDENT.CURRICULUM_CODE.as("curriculumCode"), GRADES.REMARKS.as("remarks"),
 						SUBJECT.SUBJECT_TITLE.as("subject_title"), MAJOR_SUBJECT.YEAR_LEVEL.as("year_level"),
 						MAJOR_SUBJECT.SEM.as("sem"))
-				.from(GRADES)
-				.innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
-				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
-				.innerJoin(SUBJECT).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-				.innerJoin(MAJOR_SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-				.where(STUDENT.CURRICULUM_CODE.eq(MAJOR_SUBJECT.CURRICULUM_CODE).and(STUDENT.YEAR_LEVEL.eq(MAJOR_SUBJECT.YEAR_LEVEL)))
-				.groupBy(STUDENT.CURRICULUM_CODE, GRADES.REMARKS,
-						SUBJECT.SUBJECT_TITLE, MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM)
+				.from(GRADES).innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.innerJoin(T_SUBJECT_DETAIL_HISTORY)
+				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
+				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(MAJOR_SUBJECT)
+				.on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(STUDENT.CURRICULUM_CODE.eq(MAJOR_SUBJECT.CURRICULUM_CODE)
+						.and(STUDENT.YEAR_LEVEL.eq(MAJOR_SUBJECT.YEAR_LEVEL)
+								.and(STUDENT.YEAR_LEVEL.ne(1).and(MAJOR_SUBJECT.SEM.ne(1)))))
+				.groupBy(STUDENT.CURRICULUM_CODE, GRADES.REMARKS, SUBJECT.SUBJECT_TITLE, MAJOR_SUBJECT.YEAR_LEVEL,
+						MAJOR_SUBJECT.SEM)
+				.fetchMaps();
+		return student;
+	}
+
+	/*
+	 * For 2nd Year and above Get All the student's passed minor subject
+	 * 
+	 * The data getting from the student using studentNo are the ff:
+	 * Curriculum_Code, Remarks, Subject_Title, Year_Level, Sem
+	 * 
+	 */
+	public List<Map<String, Object>> selectStudentPassedMinorSubject(Integer studentNo) {
+		List<Map<String, Object>> student = dslContext
+				.select(STUDENT.CURRICULUM_CODE.as("curriculumCode"), GRADES.REMARKS.as("remarks"),
+						SUBJECT.SUBJECT_TITLE.as("subject_title"), MINOR_SUBJECT.YEAR_LEVEL.as("year_level"),
+						MINOR_SUBJECT.SEM.as("sem"))
+				.from(GRADES).innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.innerJoin(T_SUBJECT_DETAIL_HISTORY)
+				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
+				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(MINOR_SUBJECT)
+				.on(MINOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(STUDENT.YEAR_LEVEL.eq(MINOR_SUBJECT.YEAR_LEVEL)
+						.and(MINOR_SUBJECT.YEAR_LEVEL.ne(1).and(MINOR_SUBJECT.SEM.ne(1))))
+				.groupBy(STUDENT.CURRICULUM_CODE, GRADES.REMARKS, SUBJECT.SUBJECT_TITLE, MINOR_SUBJECT.YEAR_LEVEL,
+						MINOR_SUBJECT.SEM)
+				.fetchMaps();
+		return student;
+	}
+
+	/*
+	 * For 1st Year Get All the student's major subject
+	 * 
+	 * The data getting from the student using studentNo are the ff:
+	 * Curriculum_Code, Subject_Title, Year_Level, Sem
+	 * 
+	 */
+	public List<Map<String, Object>> selectFreshManStudentMajorSubject(Integer studentNo) {
+		List<Map<String, Object>> student = dslContext
+				.select(STUDENT.CURRICULUM_CODE.as("curriculumCode"), SUBJECT.SUBJECT_TITLE.as("subject_title"),
+						MAJOR_SUBJECT.YEAR_LEVEL.as("year_level"), MAJOR_SUBJECT.SEM.as("sem"))
+				.from(GRADES).innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.innerJoin(T_SUBJECT_DETAIL_HISTORY)
+				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
+				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(MAJOR_SUBJECT)
+				.on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(STUDENT.CURRICULUM_CODE.eq(MAJOR_SUBJECT.CURRICULUM_CODE)
+						.and(STUDENT.YEAR_LEVEL.eq(MAJOR_SUBJECT.YEAR_LEVEL)
+								.and(STUDENT.YEAR_LEVEL.eq(1).and(MAJOR_SUBJECT.SEM.eq(1)))))
+				.groupBy(STUDENT.CURRICULUM_CODE, GRADES.REMARKS, SUBJECT.SUBJECT_TITLE, MAJOR_SUBJECT.YEAR_LEVEL,
+						MAJOR_SUBJECT.SEM)
+				.fetchMaps();
+		return student;
+	}
+
+	/*
+	 * For 1st Year Get All the student's minor subject
+	 * 
+	 * The data getting from the student using studentNo are the ff:
+	 * Curriculum_Code, Subject_Title, Year_Level, Sem
+	 * 
+	 */
+	public List<Map<String, Object>> selectFreshManStudentMinorSubject(Integer studentNo) {
+		List<Map<String, Object>> student = dslContext
+				.select(STUDENT.CURRICULUM_CODE.as("curriculumCode"), SUBJECT.SUBJECT_TITLE.as("subject_title"),
+						MINOR_SUBJECT.YEAR_LEVEL.as("year_level"), MINOR_SUBJECT.SEM.as("sem"))
+				.from(GRADES).innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.innerJoin(T_SUBJECT_DETAIL_HISTORY)
+				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
+				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(MINOR_SUBJECT)
+				.on(MINOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(STUDENT.YEAR_LEVEL.eq(MINOR_SUBJECT.YEAR_LEVEL)
+						.and(MINOR_SUBJECT.YEAR_LEVEL.eq(1).and(MINOR_SUBJECT.SEM.eq(1))))
+				.groupBy(STUDENT.CURRICULUM_CODE, GRADES.REMARKS, SUBJECT.SUBJECT_TITLE, MINOR_SUBJECT.YEAR_LEVEL,
+						MINOR_SUBJECT.SEM)
 				.fetchMaps();
 		return student;
 	}

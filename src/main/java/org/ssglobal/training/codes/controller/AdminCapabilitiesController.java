@@ -812,9 +812,54 @@ public class AdminCapabilitiesController {
 			@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
 			List<Map<String, Object>> passedMajor = service.selectStudentPassedMajorSubject(studentNo);
-			System.out.println(passedMajor);
 			if (!passedMajor.isEmpty()) {
 				return ResponseEntity.ok(passedMajor);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@GetMapping(value = "/get/minorsubject/remarks/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectStudentPassedMinorSubject(
+			@PathVariable(name = "studentNo") Integer studentNo) {
+		try {
+			List<Map<String, Object>> passedMinor = service.selectStudentPassedMinorSubject(studentNo);
+			if (!passedMinor.isEmpty()) {
+				return ResponseEntity.ok(passedMinor);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	
+	@GetMapping(value = "/get/majorsubject/freshman/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectFreshManStudentMajorSubject(
+			@PathVariable(name = "studentNo") Integer studentNo) {
+		try {
+			List<Map<String, Object>> freshmanMajor = service.selectFreshManStudentMajorSubject(studentNo);
+			if (!freshmanMajor.isEmpty()) {
+				return ResponseEntity.ok(freshmanMajor);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@GetMapping(value = "/get/minorsubject/freshman/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectFreshManStudentMinorSubject(
+			@PathVariable(name = "studentNo") Integer studentNo) {
+		try {
+			List<Map<String, Object>> freshmanMinor = service.selectFreshManStudentMinorSubject(studentNo);
+			if (!freshmanMinor.isEmpty()) {
+				return ResponseEntity.ok(freshmanMinor);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

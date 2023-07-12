@@ -399,4 +399,19 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<Map<String, Object>> selectStudentPassedMajorSubject(Integer studentNo) {
 		return repository.selectStudentPassedMajorSubject(studentNo);
 	}
+
+	@Override
+	public List<Map<String, Object>> selectStudentPassedMinorSubject(Integer studentNo) {
+		return repository.selectStudentPassedMinorSubject(studentNo);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectFreshManStudentMajorSubject(Integer studentNo) {
+		return repository.selectFreshManStudentMajorSubject(studentNo);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectFreshManStudentMinorSubject(Integer studentNo) {
+		return repository.selectFreshManStudentMinorSubject(studentNo);
+	}
 }
