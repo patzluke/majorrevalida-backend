@@ -8,7 +8,6 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndProfessor;
-import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.Professor;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
@@ -27,6 +26,8 @@ public class ProfessorCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
 	private final org.ssglobal.training.codes.tables.StudentEnrollment STUDENT_ENROLLMENT = org.ssglobal.training.codes.tables.StudentEnrollment.STUDENT_ENROLLMENT;
 	private final org.ssglobal.training.codes.tables.StudentAttendance STUDENT_ATTENDANCE = org.ssglobal.training.codes.tables.StudentAttendance.STUDENT_ATTENDANCE;
+	private final org.ssglobal.training.codes.tables.TSubjectDetailHistory T_SUBJECT_DETAIL_HISTORY = org.ssglobal.training.codes.tables.TSubjectDetailHistory.T_SUBJECT_DETAIL_HISTORY;
+	private final org.ssglobal.training.codes.tables.Grades GRADES = org.ssglobal.training.codes.tables.Grades.GRADES;
 	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
 	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
 	private final org.ssglobal.training.codes.tables.Department DEPARTMENT = org.ssglobal.training.codes.tables.Department.DEPARTMENT;
@@ -129,25 +130,29 @@ public class ProfessorCapabilitiesRepository {
 	
 //	List of Students Attendance in that particular Professor's Load
 	public List<Map<String, Object>> selectAllAttendance(Integer loadId) {
-		return dslContext.select(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID, STUDENT_ATTENDANCE.STUDENT_NO, STUDENT_ATTENDANCE.LOAD_ID, STUDENT_ATTENDANCE.ATTENDANCE_DATE, STUDENT_ATTENDANCE.STATUS)
+		return dslContext.select(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID, STUDENT_ATTENDANCE.STUDENT_NO, STUDENT_ATTENDANCE.LOAD_ID, 
+								 STUDENT_ATTENDANCE.ATTENDANCE_DATE, STUDENT_ATTENDANCE.STATUS)
 				.from(STUDENT_ATTENDANCE).innerJoin(STUDENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT.STUDENT_NO))
 				.where(STUDENT_ATTENDANCE.LOAD_ID.eq(loadId)).fetchMaps();
 	}
 	
 //	List of students that is enrolled in professor's load subject
-	public List<UserAndStudent> selectAllStudentsBySectionId(String sectionName) {
+	public List<Map<String, Object>> selectAllStudentsBySection() {
 		return dslContext
-				.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
-						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
-						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
-						USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
-						STUDENT.YEAR_LEVEL)
-				.from(USERS)
-				.innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID))
+				.select(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
+						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
+						USERS.LAST_NAME.as("lastName"), USERS.EMAIL, GRADES.PRELIM_GRADE.as("prelimGrade"),
+						GRADES.FINALS_GRADE.as("finalGrade"), GRADES.COMMENT, GRADES.REMARKS,
+						SECTION.SECTION_NAME.as("sectionName"), T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"))
+				.from(GRADES)
+				.innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
 				.innerJoin(STUDENT_ENROLLMENT).on(STUDENT.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
 				.innerJoin(SECTION).on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID))
-				.where(SECTION.SECTION_NAME.equalIgnoreCase(sectionName))
-				.fetchInto(UserAndStudent.class);
+				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
+				.innerJoin(SUBJECT).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.fetchMaps();
 	}
 
 //	List of students attendance
@@ -155,7 +160,8 @@ public class ProfessorCapabilitiesRepository {
 			String subjectTitle, String sectionName, Integer professorNo, String date) {
 		
 		return dslContext.select(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID.as("studentAttendanceId"), USERS.LAST_NAME.as("lastName"), 
-								 USERS.FIRST_NAME.as("firstName"), STUDENT_ATTENDANCE.STATUS, STUDENT_ATTENDANCE.ATTENDANCE_DATE.as("attendanceDate"))
+								 USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"), STUDENT_ATTENDANCE.STATUS, 
+								 STUDENT_ATTENDANCE.ATTENDANCE_DATE.as("attendanceDate"))
 						 .from(STUDENT_ATTENDANCE)
 						 .innerJoin(STUDENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT.STUDENT_NO))
 						 .innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
@@ -166,6 +172,7 @@ public class ProfessorCapabilitiesRepository {
 						 .and(SECTION.SECTION_NAME.eq(sectionName))
 						 .and(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo))
 						 .and(STUDENT_ATTENDANCE.ATTENDANCE_DATE.eq(LocalDate.parse(date))))
+						 .orderBy(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID)
 						 .fetchMaps();
 	}
 	
@@ -180,7 +187,8 @@ public class ProfessorCapabilitiesRepository {
 				  .into(StudentAttendance.class);
 		
 		return dslContext.select(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID.as("studentAttendanceId"), USERS.LAST_NAME.as("lastName"), 
-								 USERS.FIRST_NAME.as("firstName"), STUDENT_ATTENDANCE.STATUS)
+								 USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"), STUDENT_ATTENDANCE.STATUS, 
+								 STUDENT_ATTENDANCE.ATTENDANCE_DATE.as("attendanceDate"))
 						 .from(STUDENT_ATTENDANCE)
 						 .innerJoin(STUDENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT.STUDENT_NO))
 						 .innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.UserAndProfessor;
-import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.ProfessorCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
@@ -102,11 +101,11 @@ public class ProfessorCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	@GetMapping(value = "/get/student")
-	public ResponseEntity<List<UserAndStudent>> selectAllStudentsBySectionId(@RequestParam(name = "sectionName") String sectionName) {
+	public ResponseEntity<List<Map<String, Object>>> selectAllStudentsBySection() {
 		try {
-			List<UserAndStudent> students = service.selectAllStudentsBySectionId(sectionName);
+			List<Map<String, Object>> students = service.selectAllStudentsBySection();
 			if (students != null) {
 				return ResponseEntity.ok(students);
 			}
@@ -125,7 +124,6 @@ public class ProfessorCapabilitiesController {
 		try {
 			List<Map<String, Object>> students = 
 					service.selectStudentAttendanceByStudentNoAndSubjectAndSectionAndProfessorNo(subjectTitle, sectionName, professorNo, date);
-			System.out.println(subjectTitle + " " + sectionName + " " + professorNo);
 			if (students != null) {
 				return ResponseEntity.ok(students);
 			}
