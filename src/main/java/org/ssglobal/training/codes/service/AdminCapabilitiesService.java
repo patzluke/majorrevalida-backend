@@ -114,4 +114,13 @@ public interface AdminCapabilitiesService {
 	
 	//---------------------- FOR THE PASSED MAJOR SUBJECTS
 	public List<Map<String, Object>> selectStudentPassedMajorSubject(Integer studentNo);
+	
+	//---------------------- FOR THE PASSED MINOR SUBJECTS
+	public List<Map<String, Object>> selectStudentPassedMinorSubject(Integer studentNo);
+	
+	//---------------------- FOR THE FRESHMAN MINOR SUBJECTS
+	public List<Map<String, Object>> selectFreshManStudentMajorSubject(Integer studentNo);
+	
+	//---------------------- FOR THE FRESHMAN MINOR SUBJECTS
+	public List<Map<String, Object>> selectFreshManStudentMinorSubject(Integer studentNo);
 }
