@@ -50,7 +50,8 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
-
+	private final org.ssglobal.training.codes.tables.Grades GRADES = org.ssglobal.training.codes.tables.Grades.GRADES;
+	private final org.ssglobal.training.codes.tables.TSubjectDetailHistory T_SUBJECT_DETAIL_HISTORY = org.ssglobal.training.codes.tables.TSubjectDetailHistory.T_SUBJECT_DETAIL_HISTORY;
 	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
 	private final org.ssglobal.training.codes.tables.MinorSubject MINOR_SUBJECT = org.ssglobal.training.codes.tables.MinorSubject.MINOR_SUBJECT;
 	private final org.ssglobal.training.codes.tables.MajorSubject MAJOR_SUBJECT = org.ssglobal.training.codes.tables.MajorSubject.MAJOR_SUBJECT;
@@ -78,9 +79,10 @@ public class AdminCapabilitiesRepository {
 						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
 						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
 						USERS.IMAGE, ADMIN.ADMIN_ID, ADMIN.ADMIN_NO)
-				.from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID)).where(USERS.ACTIVE_DEACTIVE.eq(true)).fetchInto(UserAndAdmin.class);
+				.from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID)).where(USERS.ACTIVE_DEACTIVE.eq(true))
+				.fetchInto(UserAndAdmin.class);
 	}
-	
+
 	public UserAndAdmin selectAdmin(Integer adminNo) {
 		return dslContext
 				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
@@ -88,8 +90,7 @@ public class AdminCapabilitiesRepository {
 						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
 						USERS.IMAGE, ADMIN.ADMIN_ID, ADMIN.ADMIN_NO)
 				.from(USERS).innerJoin(ADMIN).on(USERS.USER_ID.eq(ADMIN.USER_ID))
-				.where(USERS.ACTIVE_DEACTIVE.eq(true).and(ADMIN.ADMIN_NO.eq(adminNo)))
-				.fetchOneInto(UserAndAdmin.class);
+				.where(USERS.ACTIVE_DEACTIVE.eq(true).and(ADMIN.ADMIN_NO.eq(adminNo))).fetchOneInto(UserAndAdmin.class);
 	}
 
 	public UserAndAdmin insertAdminUser(UserAndAdmin userAdmin) {
@@ -120,24 +121,22 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndAdmin updateAdminUser(UserAndAdmin userAdmin) {
-		Users updatedUser = dslContext.update(USERS)
-				.set(USERS.USERNAME, userAdmin.getUsername()).set(USERS.EMAIL, userAdmin.getEmail())
-				.set(USERS.CONTACT_NO, userAdmin.getContactNo()).set(USERS.FIRST_NAME, userAdmin.getFirstName())
-				.set(USERS.MIDDLE_NAME, userAdmin.getMiddleName()).set(USERS.LAST_NAME, userAdmin.getLastName())
-				.set(USERS.USER_TYPE, userAdmin.getUserType()).set(USERS.BIRTH_DATE, userAdmin.getBirthDate())
-				.set(USERS.ADDRESS, userAdmin.getAddress()).set(USERS.CIVIL_STATUS, userAdmin.getCivilStatus())
-				.set(USERS.GENDER, userAdmin.getGender()).set(USERS.NATIONALITY, userAdmin.getNationality())
-				.set(USERS.IMAGE, userAdmin.getImage()).where(USERS.USER_ID.eq(userAdmin.getUserId()))
-				.returning().fetchOne().into(Users.class);
-		
+		Users updatedUser = dslContext.update(USERS).set(USERS.USERNAME, userAdmin.getUsername())
+				.set(USERS.EMAIL, userAdmin.getEmail()).set(USERS.CONTACT_NO, userAdmin.getContactNo())
+				.set(USERS.FIRST_NAME, userAdmin.getFirstName()).set(USERS.MIDDLE_NAME, userAdmin.getMiddleName())
+				.set(USERS.LAST_NAME, userAdmin.getLastName()).set(USERS.USER_TYPE, userAdmin.getUserType())
+				.set(USERS.BIRTH_DATE, userAdmin.getBirthDate()).set(USERS.ADDRESS, userAdmin.getAddress())
+				.set(USERS.CIVIL_STATUS, userAdmin.getCivilStatus()).set(USERS.GENDER, userAdmin.getGender())
+				.set(USERS.NATIONALITY, userAdmin.getNationality()).set(USERS.IMAGE, userAdmin.getImage())
+				.where(USERS.USER_ID.eq(userAdmin.getUserId())).returning().fetchOne().into(Users.class);
+
 		if (!userAdmin.getPassword().isBlank()) {
 			dslContext.update(USERS).set(USERS.PASSWORD, userAdmin.getPassword())
-			.where(USERS.USER_ID.eq(userAdmin.getUserId()))
-			.execute();
+					.where(USERS.USER_ID.eq(userAdmin.getUserId())).execute();
 		}
-		
-		Admin updatedAdmin = dslContext.selectFrom(ADMIN).where(ADMIN.USER_ID.eq(updatedUser.getUserId()))
-				.fetchOne().into(Admin.class);
+
+		Admin updatedAdmin = dslContext.selectFrom(ADMIN).where(ADMIN.USER_ID.eq(updatedUser.getUserId())).fetchOne()
+				.into(Admin.class);
 
 		if (updatedUser != null && updatedAdmin != null) {
 			UserAndAdmin newUserAdmin = new UserAndAdmin(updatedUser.getUserId(), updatedUser.getUsername(),
@@ -147,7 +146,7 @@ public class AdminCapabilitiesRepository {
 					updatedUser.getCivilStatus(), updatedUser.getGender(), updatedUser.getNationality(),
 					updatedUser.getActiveStatus(), updatedUser.getActiveDeactive(), updatedUser.getImage(),
 					updatedAdmin.getAdminId(), updatedAdmin.getAdminNo());
-			
+
 			return newUserAdmin;
 		}
 
@@ -177,8 +176,7 @@ public class AdminCapabilitiesRepository {
 
 	public UserAndAdmin deleteAdminUser(Integer userId) {
 		Users deletedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, false).set(USERS.ACTIVE_DEACTIVE, false)
-				.where(USERS.USER_ID.eq(userId))
-				.returning().fetchOne().into(Users.class);
+				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
 
 		Admin deletedAdmin = dslContext.selectFrom(ADMIN).where(ADMIN.USER_ID.eq(deletedUser.getUserId())).fetchOne()
 				.into(Admin.class);
@@ -215,8 +213,7 @@ public class AdminCapabilitiesRepository {
 				.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
 				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
 				.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
-				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-				.where(USERS.ACTIVE_DEACTIVE.eq(true))
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).where(USERS.ACTIVE_DEACTIVE.eq(true))
 				.fetchInto(UserAndStudent.class);
 	}
 
@@ -250,17 +247,17 @@ public class AdminCapabilitiesRepository {
 			UserAndStudent information = dslContext
 					.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
 							USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
-							USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
-							USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
-							CURRICULUM.CURRICULUM_NAME, STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE,
-							MAJOR.MAJOR_CODE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
+							USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS,
+							USERS.ACTIVE_DEACTIVE, USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO,
+							STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE, CURRICULUM.CURRICULUM_NAME,
+							STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE, MAJOR.MAJOR_CODE,
+							MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
 					.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
 					.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
 					.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
 					.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-					.where(STUDENT.STUDENT_NO.eq(insertStudent.getStudentNo()))
-					.fetchOneInto(UserAndStudent.class);
-			
+					.where(STUDENT.STUDENT_NO.eq(insertStudent.getStudentNo())).fetchOneInto(UserAndStudent.class);
+
 			return information;
 		}
 		return null;
@@ -275,32 +272,30 @@ public class AdminCapabilitiesRepository {
 				.set(USERS.USER_TYPE, student.getUserType()).set(USERS.BIRTH_DATE, student.getBirthDate())
 				.set(USERS.ADDRESS, student.getAddress()).set(USERS.CIVIL_STATUS, student.getCivilStatus())
 				.set(USERS.GENDER, student.getGender()).set(USERS.NATIONALITY, student.getNationality())
-				.set(USERS.IMAGE, student.getImage()).where(USERS.USER_ID.eq(student.getUserId()))
-				.returning().fetchOne().into(Users.class);
-		
+				.set(USERS.IMAGE, student.getImage()).where(USERS.USER_ID.eq(student.getUserId())).returning()
+				.fetchOne().into(Users.class);
+
 		Student updatedStudent = dslContext.update(STUDENT).set(STUDENT.PARENT_NO, student.getParentNo())
 				.set(STUDENT.CURRICULUM_CODE, student.getCurriculumCode())
 				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId())
-				.set(STUDENT.YEAR_LEVEL, student.getYearLevel())
-				.where(STUDENT.STUDENT_NO.eq(student.getStudentNo()))
+				.set(STUDENT.YEAR_LEVEL, student.getYearLevel()).where(STUDENT.STUDENT_NO.eq(student.getStudentNo()))
 				.returning().fetchOne().into(Student.class);
-		
-		
+
 		if (updatedUser != null && updatedStudent != null) {
 			UserAndStudent information = dslContext
 					.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
 							USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
-							USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
-							USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
-							CURRICULUM.CURRICULUM_NAME, STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE,
-							MAJOR.MAJOR_CODE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
+							USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS,
+							USERS.ACTIVE_DEACTIVE, USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO,
+							STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE, CURRICULUM.CURRICULUM_NAME,
+							STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE, MAJOR.MAJOR_CODE,
+							MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
 					.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
 					.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
 					.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
 					.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-					.where(STUDENT.STUDENT_NO.eq(updatedStudent.getStudentNo()))
-					.fetchOneInto(UserAndStudent.class);
-			
+					.where(STUDENT.STUDENT_NO.eq(updatedStudent.getStudentNo())).fetchOneInto(UserAndStudent.class);
+
 			return information;
 		}
 		return null;
@@ -317,17 +312,17 @@ public class AdminCapabilitiesRepository {
 			UserAndStudent information = dslContext
 					.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
 							USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
-							USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
-							USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
-							CURRICULUM.CURRICULUM_NAME, STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE,
-							MAJOR.MAJOR_CODE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
+							USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS,
+							USERS.ACTIVE_DEACTIVE, USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO,
+							STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE, CURRICULUM.CURRICULUM_NAME,
+							STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE, MAJOR.MAJOR_CODE,
+							MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL)
 					.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
 					.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
 					.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
 					.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-					.where(STUDENT.STUDENT_NO.eq(deactivatedStudent.getStudentNo()))
-					.fetchOneInto(UserAndStudent.class);
-			
+					.where(STUDENT.STUDENT_NO.eq(deactivatedStudent.getStudentNo())).fetchOneInto(UserAndStudent.class);
+
 			return information;
 		}
 		return null;
@@ -337,8 +332,8 @@ public class AdminCapabilitiesRepository {
 		Users deletedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, false).set(USERS.ACTIVE_DEACTIVE, false)
 				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
 
-		Student deactivatedStudent = dslContext.selectFrom(STUDENT)
-				.where(STUDENT.USER_ID.eq(deletedUser.getUserId())).fetchOne().into(Student.class);
+		Student deactivatedStudent = dslContext.selectFrom(STUDENT).where(STUDENT.USER_ID.eq(deletedUser.getUserId()))
+				.fetchOne().into(Student.class);
 
 		if (deletedUser != null && deactivatedStudent != null) {
 			UserAndStudent information = new UserAndStudent(deletedUser.getUserId(), deletedUser.getUsername(),
@@ -348,7 +343,8 @@ public class AdminCapabilitiesRepository {
 					deletedUser.getCivilStatus(), deletedUser.getGender(), deletedUser.getNationality(),
 					deletedUser.getActiveStatus(), deletedUser.getActiveDeactive(), deletedUser.getImage(),
 					deactivatedStudent.getStudentNo(), deactivatedStudent.getUserId(), deactivatedStudent.getParentNo(),
-					deactivatedStudent.getCurriculumCode(), deactivatedStudent.getYearLevel(), deactivatedStudent.getAcademicYearId());
+					deactivatedStudent.getCurriculumCode(), deactivatedStudent.getYearLevel(),
+					deactivatedStudent.getAcademicYearId());
 			return information;
 		}
 		return null;
@@ -363,8 +359,7 @@ public class AdminCapabilitiesRepository {
 						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
 						USERS.IMAGE, PROFESSOR.PROFESSOR_ID, PROFESSOR.PROFESSOR_NO, PROFESSOR.WORK)
 				.from(USERS).innerJoin(PROFESSOR).on(USERS.USER_ID.eq(PROFESSOR.USER_ID))
-				.where(USERS.ACTIVE_DEACTIVE.eq(true))
-				.fetchInto(UserAndProfessor.class);
+				.where(USERS.ACTIVE_DEACTIVE.eq(true)).fetchInto(UserAndProfessor.class);
 	}
 
 	public UserAndProfessor insertProfessor(UserAndProfessor userAndProfessor) {
@@ -455,8 +450,9 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndProfessor deleteProfessor(Integer userId) {
-		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, false).set(USERS.ACTIVE_DEACTIVE, false)
-				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
+		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, false)
+				.set(USERS.ACTIVE_DEACTIVE, false).where(USERS.USER_ID.eq(userId)).returning().fetchOne()
+				.into(Users.class);
 
 		Professor deletedProfessor = dslContext.selectFrom(PROFESSOR)
 				.where(PROFESSOR.USER_ID.eq(deactivatedUser.getUserId())).fetchOne().into(Professor.class);
@@ -483,14 +479,13 @@ public class AdminCapabilitiesRepository {
 						SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
 						ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
 						DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
-						PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"), 
+						PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"),
 						PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
 				.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
 				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
 				.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
 				.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
-				.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
-				.where(PROFESSOR_LOAD.ACTIVE_DEACTIVE.eq(true))
+				.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE)).where(PROFESSOR_LOAD.ACTIVE_DEACTIVE.eq(true))
 				.fetchMaps();
 	}
 
@@ -501,7 +496,7 @@ public class AdminCapabilitiesRepository {
 						SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
 						ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
 						DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
-						PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"), 
+						PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"),
 						PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
 				.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
 				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
@@ -521,24 +516,23 @@ public class AdminCapabilitiesRepository {
 				.set(PROFESSOR_LOAD.DAY, professorLoad.getDay())
 				.set(PROFESSOR_LOAD.START_TIME, professorLoad.getStartTime())
 				.set(PROFESSOR_LOAD.END_TIME, professorLoad.getEndTime())
-				.set(PROFESSOR_LOAD.ACTIVE_DEACTIVE, professorLoad.getActiveDeactive())
-				.returning().fetchOne()
+				.set(PROFESSOR_LOAD.ACTIVE_DEACTIVE, professorLoad.getActiveDeactive()).returning().fetchOne()
 				.into(ProfessorLoad.class);
-		
-		Map<String, Object> insertedprofessorLoad = 
-				dslContext.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
-				PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
-				SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
-				ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
-				DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
-				PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"), 
-				PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
-		.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
-		.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
-		.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
-		.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
-		.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
-		.where(PROFESSOR_LOAD.LOAD_ID.eq(insertProfessorLoad.getLoadId())).fetchOneMap();
+
+		Map<String, Object> insertedprofessorLoad = dslContext
+				.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
+						PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
+						SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
+						ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
+						DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
+						PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"),
+						PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
+				.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
+				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
+				.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
+				.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
+				.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+				.where(PROFESSOR_LOAD.LOAD_ID.eq(insertProfessorLoad.getLoadId())).fetchOneMap();
 
 		return insertedprofessorLoad;
 	}
@@ -553,50 +547,46 @@ public class AdminCapabilitiesRepository {
 				.set(PROFESSOR_LOAD.DAY, professorLoad.getDay())
 				.set(PROFESSOR_LOAD.START_TIME, professorLoad.getStartTime())
 				.set(PROFESSOR_LOAD.END_TIME, professorLoad.getEndTime())
-				.where(PROFESSOR_LOAD.LOAD_ID.eq(professorLoad.getLoadId()))
-				.returning().fetchOne()
+				.where(PROFESSOR_LOAD.LOAD_ID.eq(professorLoad.getLoadId())).returning().fetchOne()
 				.into(ProfessorLoad.class);
-		
-		Map<String, Object> insertedprofessorLoad = 
-				dslContext.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
-				PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
-				SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
-				ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
-				DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
-				PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"), 
-				PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
-		.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
-		.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
-		.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
-		.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
-		.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
-		.where(PROFESSOR_LOAD.LOAD_ID.eq(insertedProfessorLoad.getLoadId())).fetchOneMap();
-		
+
+		Map<String, Object> insertedprofessorLoad = dslContext
+				.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
+						PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
+						SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
+						ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
+						DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
+						PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"),
+						PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
+				.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
+				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
+				.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
+				.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
+				.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+				.where(PROFESSOR_LOAD.LOAD_ID.eq(insertedProfessorLoad.getLoadId())).fetchOneMap();
+
 		return insertedprofessorLoad;
 	}
-	
+
 	public Map<String, Object> deleteProfessorLoad(Integer loadId) {
-		ProfessorLoad deletedLoad = dslContext.update(PROFESSOR_LOAD)
-				.set(PROFESSOR_LOAD.ACTIVE_DEACTIVE, false)
-				.where(PROFESSOR_LOAD.LOAD_ID.eq(loadId))
-				.returning()
-				.fetchOne().into(ProfessorLoad.class);
-		
-		Map<String, Object> deletedprofessorLoad = 
-				dslContext.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
-				PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
-				SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
-				ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
-				DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
-				PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"), 
-				PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
-		.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
-		.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
-		.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
-		.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
-		.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
-		.where(PROFESSOR_LOAD.LOAD_ID.eq(deletedLoad.getLoadId())).fetchOneMap();
-		
+		ProfessorLoad deletedLoad = dslContext.update(PROFESSOR_LOAD).set(PROFESSOR_LOAD.ACTIVE_DEACTIVE, false)
+				.where(PROFESSOR_LOAD.LOAD_ID.eq(loadId)).returning().fetchOne().into(ProfessorLoad.class);
+
+		Map<String, Object> deletedprofessorLoad = dslContext
+				.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
+						PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
+						SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
+						ROOM.ROOM_ID.as("roomId"), ROOM.ROOM_NO.as("roomNo"), DEPARTMENT.DEPT_CODE.as("deptCode"),
+						DEPARTMENT.DEPT_NAME.as("deptName"), PROFESSOR_LOAD.DAY,
+						PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"),
+						PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
+				.from(PROFESSOR_LOAD).innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
+				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(SECTION)
+				.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
+				.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
+				.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
+				.where(PROFESSOR_LOAD.LOAD_ID.eq(deletedLoad.getLoadId())).fetchOneMap();
+
 		return deletedprofessorLoad;
 	}
 
@@ -606,8 +596,8 @@ public class AdminCapabilitiesRepository {
 				.select(USERS.USER_ID, USERS.USERNAME, USERS.PASSWORD, USERS.FIRST_NAME, USERS.MIDDLE_NAME,
 						USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS, USERS.CIVIL_STATUS,
 						USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_DEACTIVE, USERS.IMAGE, PARENT.PARENT_ID)
-				.from(USERS).innerJoin(PARENT).on(USERS.USER_ID.eq(PARENT.USER_ID)).where(USERS.ACTIVE_DEACTIVE.eq(true))
-				.fetchInto(UserAndParent.class);
+				.from(USERS).innerJoin(PARENT).on(USERS.USER_ID.eq(PARENT.USER_ID))
+				.where(USERS.ACTIVE_DEACTIVE.eq(true)).fetchInto(UserAndParent.class);
 	}
 
 	public UserAndParent updateParentInfo(UserAndParent parent) {
@@ -627,7 +617,7 @@ public class AdminCapabilitiesRepository {
 					updatedUser.getNationality(), updatedUser.getActiveStatus(), updatedUser.getActiveDeactive(),
 					updatedUser.getImage(), parent.getParentId());
 			return newParentInfo;
-			
+
 		}
 		return null;
 	}
@@ -652,8 +642,9 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndParent deleteParent(Integer userId) {
-		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, false).set(USERS.ACTIVE_DEACTIVE, false)
-				.where(USERS.USER_ID.eq(userId)).returning().fetchOne().into(Users.class);
+		Users deactivatedUser = dslContext.update(USERS).set(USERS.ACTIVE_STATUS, false)
+				.set(USERS.ACTIVE_DEACTIVE, false).where(USERS.USER_ID.eq(userId)).returning().fetchOne()
+				.into(Users.class);
 
 		Parent deactivatedParent = dslContext.selectFrom(PARENT).where(PARENT.USER_ID.eq(deactivatedUser.getUserId()))
 				.fetchOne().into(Parent.class);
@@ -814,26 +805,22 @@ public class AdminCapabilitiesRepository {
 						COURSE.COURSE_TITLE.as("courseTitle"), CURRICULUM.ACTIVE_DEACTIVE.as("activeDeactive"))
 				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
 				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-				.where(CURRICULUM.ACTIVE_DEACTIVE.eq(true).and(MAJOR.ACTIVE_DEACTIVE.eq(true)))
-				.fetchMaps();
+				.where(CURRICULUM.ACTIVE_DEACTIVE.eq(true).and(MAJOR.ACTIVE_DEACTIVE.eq(true))).fetchMaps();
 		return !query.isEmpty() ? query : null;
 	}
-	
+
 	// -------------------------- FOR CURRICULUM AND MAJOR
 	public Map<String, Object> addCurriculumAndMajor(Map<String, Object> payload) {
 		Major addedMajor = dslContext.insertInto(MAJOR)
 				.set(MAJOR.COURSE_CODE, Integer.valueOf(payload.get("courseCode").toString()))
-				.set(MAJOR.MAJOR_TITLE, payload.get("majorTitle").toString())
-				.set(MAJOR.ACTIVE_DEACTIVE, true)
+				.set(MAJOR.MAJOR_TITLE, payload.get("majorTitle").toString()).set(MAJOR.ACTIVE_DEACTIVE, true)
 				.returning().fetchOne().into(Major.class);
-		
+
 		Curriculum addedCurriculum = dslContext.insertInto(CURRICULUM)
 				.set(CURRICULUM.MAJOR_CODE, addedMajor.getMajorCode())
 				.set(CURRICULUM.CURRICULUM_NAME, payload.get("curriculumName").toString())
-				.set(CURRICULUM.ACTIVE_DEACTIVE, true)
-				.returning().fetchOne()
-				.into(Curriculum.class);
-		
+				.set(CURRICULUM.ACTIVE_DEACTIVE, true).returning().fetchOne().into(Curriculum.class);
+
 		Map<String, Object> query = dslContext
 				.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriculumCode"),
 						CURRICULUM.CURRICULUM_NAME.as("curriculumName"), MAJOR.MAJOR_CODE.as("majorCode"),
@@ -841,28 +828,25 @@ public class AdminCapabilitiesRepository {
 						COURSE.COURSE_TITLE.as("courseTitle"), CURRICULUM.ACTIVE_DEACTIVE.as("activeDeactive"))
 				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
 				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-				.where(CURRICULUM.CURRICULUM_CODE.eq(addedCurriculum.getCurriculumCode()))
-				.fetchOneMap();
-		
+				.where(CURRICULUM.CURRICULUM_CODE.eq(addedCurriculum.getCurriculumCode())).fetchOneMap();
+
 		return query;
 	}
-	
+
 	public Map<String, Object> editCurriculumAndMajor(Map<String, Object> payload) {
 		Major updatedMajor = dslContext.update(MAJOR)
 				.set(MAJOR.COURSE_CODE, Integer.valueOf(payload.get("courseCode").toString()))
-				.set(MAJOR.MAJOR_TITLE, payload.get("majorTitle").toString())
-				.set(MAJOR.ACTIVE_DEACTIVE, true)
-				.where(MAJOR.MAJOR_CODE.eq(Integer.valueOf(payload.get("majorCode").toString())))
-				.returning().fetchOne().into(Major.class);
-		
+				.set(MAJOR.MAJOR_TITLE, payload.get("majorTitle").toString()).set(MAJOR.ACTIVE_DEACTIVE, true)
+				.where(MAJOR.MAJOR_CODE.eq(Integer.valueOf(payload.get("majorCode").toString()))).returning().fetchOne()
+				.into(Major.class);
+
 		Curriculum updatedCurriculum = dslContext.update(CURRICULUM)
 				.set(CURRICULUM.MAJOR_CODE, updatedMajor.getMajorCode())
 				.set(CURRICULUM.CURRICULUM_NAME, payload.get("curriculumName").toString())
 				.set(CURRICULUM.ACTIVE_DEACTIVE, true)
 				.where(CURRICULUM.CURRICULUM_CODE.eq(Integer.valueOf(payload.get("curriculumCode").toString())))
-				.returning().fetchOne()
-				.into(Curriculum.class);
-		
+				.returning().fetchOne().into(Curriculum.class);
+
 		Map<String, Object> query = dslContext
 				.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriculumCode"),
 						CURRICULUM.CURRICULUM_NAME.as("curriculumName"), MAJOR.MAJOR_CODE.as("majorCode"),
@@ -870,25 +854,19 @@ public class AdminCapabilitiesRepository {
 						COURSE.COURSE_TITLE.as("courseTitle"), CURRICULUM.ACTIVE_DEACTIVE.as("activeDeactive"))
 				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
 				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-				.where(CURRICULUM.CURRICULUM_CODE.eq(updatedCurriculum.getCurriculumCode()))
-				.fetchOneMap();
-		
+				.where(CURRICULUM.CURRICULUM_CODE.eq(updatedCurriculum.getCurriculumCode())).fetchOneMap();
+
 		return query;
 	}
-	
+
 	public Map<String, Object> deleteCurriculumAndMajor(Integer curriculumCode) {
-		Curriculum deletedCurriculum = dslContext.update(CURRICULUM)
-				.set(CURRICULUM.ACTIVE_DEACTIVE, false)
-				.where(CURRICULUM.CURRICULUM_CODE.eq(curriculumCode))
-				.returning()
-				.fetchOne().into(Curriculum.class);
-		
-		dslContext.update(MAJOR)
-				.set(MAJOR.ACTIVE_DEACTIVE, false)
-				.where(MAJOR.MAJOR_CODE.eq(deletedCurriculum.getMajorCode()))
-				.returning()
-				.fetchOne().into(Curriculum.class);
-		
+		Curriculum deletedCurriculum = dslContext.update(CURRICULUM).set(CURRICULUM.ACTIVE_DEACTIVE, false)
+				.where(CURRICULUM.CURRICULUM_CODE.eq(curriculumCode)).returning().fetchOne().into(Curriculum.class);
+
+		dslContext.update(MAJOR).set(MAJOR.ACTIVE_DEACTIVE, false)
+				.where(MAJOR.MAJOR_CODE.eq(deletedCurriculum.getMajorCode())).returning().fetchOne()
+				.into(Curriculum.class);
+
 		Map<String, Object> query = dslContext
 				.select(CURRICULUM.CURRICULUM_ID.as("curriculumId"), CURRICULUM.CURRICULUM_CODE.as("curriculumCode"),
 						CURRICULUM.CURRICULUM_NAME.as("curriculumName"), MAJOR.MAJOR_CODE.as("majorCode"),
@@ -896,33 +874,30 @@ public class AdminCapabilitiesRepository {
 						COURSE.COURSE_TITLE.as("courseTitle"), CURRICULUM.ACTIVE_DEACTIVE.as("activeDeactive"))
 				.from(CURRICULUM).innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
 				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-				.where(CURRICULUM.CURRICULUM_CODE.eq(deletedCurriculum.getCurriculumCode()))
-				.fetchOneMap();	
+				.where(CURRICULUM.CURRICULUM_CODE.eq(deletedCurriculum.getCurriculumCode())).fetchOneMap();
 		return query;
 	}
-	
+
 	// -------------------------- FOR SUBJECTS
 	public List<Subject> selectAllSubject() {
-		List<Subject> query = dslContext.selectFrom(SUBJECT)
-										.where(SUBJECT.SUBJECT_CODE.greaterThan(9000))
-										.fetchInto(Subject.class);
+		List<Subject> query = dslContext.selectFrom(SUBJECT).where(SUBJECT.SUBJECT_CODE.greaterThan(9000))
+				.fetchInto(Subject.class);
 		return !query.isEmpty() ? query : null;
 	}
-	
+
 	// -------------------------- FOR SECTION
 	public List<Section> selectAllSection() {
 		List<Section> query = dslContext.selectFrom(SECTION).fetchInto(Section.class);
 		return !query.isEmpty() ? query : null;
 	}
-	
+
 	// -------------------------- FOR ROOM
 	public List<Room> selectAllRoom() {
 		List<Room> query = dslContext.selectFrom(ROOM).fetchInto(Room.class);
 		return !query.isEmpty() ? query : null;
 	}
 
-	
-	//Get All Minor Subject
+	// Get All Minor Subject
 	public List<Map<String, Object>> selectAllMinorSubjects() {
 		List<Map<String, Object>> query = dslContext
 				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
@@ -930,56 +905,52 @@ public class AdminCapabilitiesRepository {
 						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 						MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
 						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
-						.from(SUBJECT)
-						.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
-						.fetchMaps();
-		
+				.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+				.fetchMaps();
+
 		return !query.isEmpty() ? query : null;
 	}
-	
+
 	public Map<String, Object> inserMinorSubject(Map<String, Object> payload) {
 		Subject subjectQuery = dslContext.insertInto(SUBJECT)
-										.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
-										.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
-										.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
-										.set(SUBJECT.ACTIVE_STATUS, Boolean.valueOf(payload.get("activeStatus").toString()))
-										.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString()))
-										.returning().fetchOne().into(Subject.class);
+				.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
+				.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
+				.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+				.set(SUBJECT.ACTIVE_STATUS, Boolean.valueOf(payload.get("activeStatus").toString()))
+				.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString())).returning()
+				.fetchOne().into(Subject.class);
 		MinorSubject minorQuery = dslContext.insertInto(MINOR_SUBJECT)
-											.set(MINOR_SUBJECT.SUBJECT_CODE, subjectQuery.getSubjectCode())
-											.set(MINOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
-											.set(MINOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
-											.set(MINOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
-											.returning().fetchOne().into(MinorSubject.class);
+				.set(MINOR_SUBJECT.SUBJECT_CODE, subjectQuery.getSubjectCode())
+				.set(MINOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
+				.set(MINOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
+				.set(MINOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString())).returning().fetchOne()
+				.into(MinorSubject.class);
 		Map<String, Object> query = dslContext
 				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
 						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 						MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
 						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
-						.from(SUBJECT)
-						.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
-						.where(SUBJECT.SUBJECT_CODE.eq(minorQuery.getSubjectCode()))
-						.fetchOneMap();
-		
+				.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+				.where(SUBJECT.SUBJECT_CODE.eq(minorQuery.getSubjectCode())).fetchOneMap();
+
 		return !query.isEmpty() ? query : null;
 	}
-	
+
 	public Map<String, Object> editMinorSubject(Map<String, Object> payload) {
 		Subject updatedSubject = dslContext.update(SUBJECT)
 				.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 				.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 				.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
-				.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
-				.returning().fetchOne().into(Subject.class);
-		
+				.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString()))).returning()
+				.fetchOne().into(Subject.class);
+
 		dslContext.update(MINOR_SUBJECT)
 				.set(MINOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
 				.set(MINOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
 				.set(MINOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
-				.where(MINOR_SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode()))
-				.returning().fetchOne().into(MinorSubject.class);
-		
+				.where(MINOR_SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).returning().fetchOne()
+				.into(MinorSubject.class);
 
 		Map<String, Object> query = dslContext
 				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
@@ -987,24 +958,21 @@ public class AdminCapabilitiesRepository {
 						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 						MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
 						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
-						.from(SUBJECT)
-						.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
-						.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode()))
-						.fetchOneMap();
+				.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+				.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).fetchOneMap();
 		return query;
 	}
-	
+
 	public Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
 		Subject update = dslContext.update(SUBJECT).set(SUBJECT.ACTIVE_STATUS, activeStatus)
-										.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).returning().fetchOne().into(Subject.class);	
+				.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).returning().fetchOne().into(Subject.class);
 		if (update != null) {
 			Map<String, Object> query = dslContext
 					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-							MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"), 
+							MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
-					.from(SUBJECT)
-					.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+					.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
 					.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).fetchOneMap();
 			return !query.isEmpty() ? query : null;
 		}
@@ -1042,12 +1010,27 @@ public class AdminCapabilitiesRepository {
 							.having(DSL.count(MAJOR_SUBJECT.SUBJECT_CODE).eq(1))
 							.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM)
 							.fetchMaps();
+
+	// Get All MAJOR SUBJECTS BY CURRICULUM
+	public List<Map<String, Object>> selectAllMajorSubjects() {
+		List<Map<String, Object>> query = dslContext
+				.select(MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+						MAJOR_SUBJECT.SEM.as("sem"), SUBJECT.SUBJECT_CODE.as("subjectCode"),
+						SUBJECT.ABBREVATION.as("abbrevation"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
+						SUBJECT.UNITS.as("units"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
+				.from(SUBJECT).join(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+//							.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(5001))
+				.groupBy(MAJOR_SUBJECT.CURRICULUM_CODE, MAJOR_SUBJECT.SUBJECT_CODE, MAJOR_SUBJECT.YEAR_LEVEL,
+						MAJOR_SUBJECT.SEM, SUBJECT.SUBJECT_CODE, SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE,
+						SUBJECT.UNITS, SUBJECT.ACTIVE_DEACTIVE, SUBJECT.ACTIVE_STATUS)
+				.having(DSL.count(MAJOR_SUBJECT.SUBJECT_CODE).eq(1)).fetchMaps();
 		return query;
 	}
-	
+
 	public Map<String, Object> changeMajorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
 		Subject update = dslContext.update(SUBJECT).set(SUBJECT.ACTIVE_STATUS, activeStatus)
-										.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).returning().fetchOne().into(Subject.class);	
+				.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).returning().fetchOne().into(Subject.class);
 		if (update != null) {
 			Map<String, Object> query = dslContext
 					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
@@ -1056,14 +1039,13 @@ public class AdminCapabilitiesRepository {
 							MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
 							MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
-					.from(SUBJECT)
-					.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+					.from(SUBJECT).innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
 					.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).fetchOneMap();
 			return !query.isEmpty() ? query : null;
 		}
 		return null;
 	}
-	
+
 	public Map<String, Object> editMajorSubject(Map<String, Object> payload) {
 		if (Integer.valueOf(payload.get("subjectCode").toString()) != 9000) {
 			Map<String, Object> checkQuery = dslContext
@@ -1084,33 +1066,50 @@ public class AdminCapabilitiesRepository {
 				.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 				.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 				.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
-				.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
-				.returning().fetchOne().into(Subject.class);
-		System.out.println("UpdatedSubject");
-		
-		MajorSubject updatedMajorSubject =  dslContext.update(MAJOR_SUBJECT)
-		.set(MAJOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
-		.set(MAJOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
-		.set(MAJOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
-//		.where(MAJOR_SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode()))
-		.where(MAJOR_SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
-		.returning().fetchOne().into(MajorSubject.class);
-		
-		
-		
-		System.out.println("Update Major Subject");
+				.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString()))).returning()
+				.fetchOne().into(Subject.class);
+		dslContext.update(MAJOR_SUBJECT)
+				.set(MAJOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
+				.set(MAJOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
+				.set(MAJOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
+				.where(MAJOR_SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).returning().fetchOne()
+				.into(MajorSubject.class);
+
 		Map<String, Object> query = dslContext
 				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
 						MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
-						MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
-						MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
-						SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+						MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
 						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
-						.from(SUBJECT)
-						.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
-						.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode()))
-						.fetchOneMap();
+				.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+				.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).fetchOneMap();
 		return query;
 	}
+
+	// On Progress
+
+	/*
+	 * For 2nd Year and above Get All the student's passed major subject
+	 * 
+	 * The data getting from the student using studentNo are the ff:
+	 * Curriculum_Code, Remarks, Subject_Title, Year_Level, Sem
+	 * 
+	 */
+	public List<Map<String, Object>> selectStudentPassedMajorSubject(Integer studentNo) {
+		List<Map<String, Object>> student = dslContext
+				.select(STUDENT.CURRICULUM_CODE.as("curriculumCode"), GRADES.REMARKS.as("remarks"),
+						SUBJECT.SUBJECT_TITLE.as("subject_title"), MAJOR_SUBJECT.YEAR_LEVEL.as("year_level"),
+						MAJOR_SUBJECT.SEM.as("sem"))
+				.from(GRADES)
+				.innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
+				.innerJoin(SUBJECT).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.innerJoin(MAJOR_SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(STUDENT.CURRICULUM_CODE.eq(MAJOR_SUBJECT.CURRICULUM_CODE).and(STUDENT.YEAR_LEVEL.eq(MAJOR_SUBJECT.YEAR_LEVEL)))
+				.groupBy(STUDENT.CURRICULUM_CODE, GRADES.REMARKS,
+						SUBJECT.SUBJECT_TITLE, MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM)
+				.fetchMaps();
+		return student;
+	}
+
 }

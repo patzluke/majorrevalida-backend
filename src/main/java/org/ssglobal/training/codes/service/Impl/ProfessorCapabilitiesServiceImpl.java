@@ -8,7 +8,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.ssglobal.training.codes.model.UserAndProfessor;
-import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.repository.ProfessorCapabilitiesRepository;
 import org.ssglobal.training.codes.service.ProfessorCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
@@ -73,8 +72,8 @@ public class ProfessorCapabilitiesServiceImpl implements ProfessorCapabilitiesSe
 	}
 	
 	@Override
-	public List<UserAndStudent> selectAllStudentsBySectionId(String sectionName) {
-		return repository.selectAllStudentsBySectionId(sectionName);
+	public List<Map<String, Object>> selectAllStudentsBySection() {
+		return repository.selectAllStudentsBySection();
 	}
 	
 	@Override
