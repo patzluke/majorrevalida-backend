@@ -371,8 +371,8 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 
 	@Override
-	public List<Map<String, Object>> selecAllMajorSubjects() {
-		return repository.selecAllMajorSubjects();
+	public List<Map<String, Object>> selectAllMajorSubjects() {
+		return repository.selectAllMajorSubjects();
 	}
 	
 	@Override
@@ -393,5 +393,10 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public Map<String, Object> changeMajorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
 		return repository.changeMajorSubjectStatus(subjectCode, activeStatus);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectStudentPassedMajorSubject(Integer studentNo) {
+		return repository.selectStudentPassedMajorSubject(studentNo);
 	}
 }

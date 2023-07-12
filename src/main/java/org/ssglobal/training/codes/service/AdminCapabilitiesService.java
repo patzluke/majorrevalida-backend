@@ -103,11 +103,14 @@ public interface AdminCapabilitiesService {
 	
 	//-------------------------FOR THE MINOR SUBJECTS
 	List<Map<String, Object>> selectAllMinorSubjects();
-	List<Map<String, Object>> selecAllMajorSubjects();
+	List<Map<String, Object>> selectAllMajorSubjects();
 	Map<String, Object> editMinorSubject(Map<String, Object> payload);
 	Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus);
 	Map<String, Object> inserMinorSubject(Map<String, Object> payload);
 	
 	//---------------------- FOR THE MAJOR SUBJECTS
 	public Map<String, Object> changeMajorSubjectStatus(Integer subjectCode, Boolean activeStatus);
+	
+	//---------------------- FOR THE PASSED MAJOR SUBJECTS
+	public List<Map<String, Object>> selectStudentPassedMajorSubject(Integer studentNo);
 }
