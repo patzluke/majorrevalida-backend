@@ -60,7 +60,7 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	@GetMapping(value = "/get/admin/{adminNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserAndAdmin> selectAdmin(@PathVariable(name = "adminNo") Integer adminNo) {
 		try {
@@ -74,7 +74,6 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-
 
 	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/insert/admin", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
@@ -291,7 +290,6 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-
 
 	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/professor", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
@@ -625,7 +623,7 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
+
 	// -------- For Curriculum And Major
 	@PostMapping(value = "/insert/curriculum/major", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
@@ -641,7 +639,7 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	@PutMapping(value = "/update/curriculum/major", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Map<String, Object>> editCurriculumAndMajor(@RequestBody Map<String, Object> payload) {
@@ -657,9 +655,10 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	@DeleteMapping(value = "/delete/curriculum/major/{curriculumCode}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Map<String, Object>> deleteCurriculumAndMajor(@PathVariable(name = "curriculumCode") Integer curriculumCode) {
+	public ResponseEntity<Map<String, Object>> deleteCurriculumAndMajor(
+			@PathVariable(name = "curriculumCode") Integer curriculumCode) {
 		try {
 			Map<String, Object> updatedAdmin = service.deleteCurriculumAndMajor(curriculumCode);
 			if (!updatedAdmin.isEmpty()) {
@@ -717,8 +716,7 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
-	
-	//---------FOR THE MINOR SUBJECTS
+	// ---------FOR THE MINOR SUBJECTS
 	@GetMapping(value = "/get/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<Map<String, Object>>> selectAllMinorSubjects() {
 		try {
@@ -732,7 +730,7 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
+
 	@PutMapping(value = "/update/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Map<String, Object>> editMinorSubject(@RequestBody Map<String, Object> payload) {
 		try {
@@ -746,7 +744,7 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
+
 	@PutMapping(value = "/deactive/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Map<String, Object>> deactivelMinorSubjects(@RequestBody Map<String, Object> payload) {
 		try {
@@ -762,7 +760,7 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
+
 	@PostMapping(value = "/add/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Map<String, Object>> inserMinorSubject(@RequestBody Map<String, Object> payload) {
 		try {
@@ -776,12 +774,12 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
-	//---------FOR THE MAJOR SUBJECTS
-	@GetMapping(value = "/get/subjects/major", produces = { MediaType.APPLICATION_JSON_VALUE})
+
+	// ---------FOR THE MAJOR SUBJECTS
+	@GetMapping(value = "/get/subjects/major", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsByCurriculum() {
 		try {
-			List<Map<String, Object>> allSubjects = service.selecAllMajorSubjects();
+			List<Map<String, Object>> allSubjects = service.selectAllMajorSubjects();
 			if (!allSubjects.isEmpty()) {
 				return ResponseEntity.ok(allSubjects);
 			}
@@ -791,7 +789,7 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
+
 	@PutMapping(value = "/deactive/subjects/major", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Map<String, Object>> deactivelMajorSubjects(@RequestBody Map<String, Object> payload) {
 		try {
@@ -805,6 +803,22 @@ public class AdminCapabilitiesController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+
+	@GetMapping(value = "/get/majorsubject/remarks/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectStudentPassedMajorSubject(
+			@PathVariable(name = "studentNo") Integer studentNo) {
+		try {
+			List<Map<String, Object>> passedMajor = service.selectStudentPassedMajorSubject(studentNo);
+			System.out.println(passedMajor);
+			if (!passedMajor.isEmpty()) {
+				return ResponseEntity.ok(passedMajor);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}

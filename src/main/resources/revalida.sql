@@ -111,7 +111,7 @@ create table student_applicant (
     
     date_applied timestamp,
     date_accepted timestamp,
-    acceptance_status varchar(30) default 'Not yet Accepted'
+    acceptance_status varchar(30) default 'Pending'
 ); 
 
 drop table if exists users cascade;
