@@ -422,7 +422,7 @@ insert into curriculum(major_code, curriculum_name, active_deactive) values(4003
 	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
 	values('ICS 2603', 'Discrete Structures', 3, 'true', 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9012, 9004, 5001, 1, 2);
+	values(9012, 9000, 5001, 1, 2);
 	
 	--minor subjs
 	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
@@ -445,7 +445,7 @@ insert into curriculum(major_code, curriculum_name, active_deactive) values(4003
 	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
 	values('ICS 2605', 'Data Structures and Algorithms', 4, 'true', 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9016, 9014, 5001, 2, 1);
+	values(9016, 9000, 5001, 2, 1);
 	
 	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
 	values('ICS 2607', 'Information Management', 4, 'true', 'true');
@@ -471,7 +471,7 @@ insert into curriculum(major_code, curriculum_name, active_deactive) values(4003
 	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
 	values('THY 3', 'Christian Vision of the Church in Society', 3, 'true', 'true');
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
-	values(9021, 9016, 2, 1);
+	values(9021, 9000, 2, 1);
 	
 	--for information technology major in web and mobile major subjects (SECOND year 2ND SEM)
 	--major subjs
@@ -483,7 +483,7 @@ insert into curriculum(major_code, curriculum_name, active_deactive) values(4003
 	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
 	values('IT 2623', 'Computer Architecture, Organization, and Logic', 3, 'true', 'true');
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
-	values(9023, 9010, 5001, 2, 2);
+	values(9023, 9000, 5001, 2, 2);
 	
 	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
 	values('IT 2624', 'Data Communications and Networking II', 3, 'true', 'true');

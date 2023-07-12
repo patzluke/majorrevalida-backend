@@ -110,4 +110,5 @@ public interface AdminCapabilitiesService {
 	
 	//---------------------- FOR THE MAJOR SUBJECTS
 	public Map<String, Object> changeMajorSubjectStatus(Integer subjectCode, Boolean activeStatus);
+	public Map<String, Object> editMajorSubject(Map<String, Object> payload);
 }

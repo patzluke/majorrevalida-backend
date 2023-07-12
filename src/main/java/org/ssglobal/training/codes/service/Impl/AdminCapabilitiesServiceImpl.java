@@ -394,4 +394,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public Map<String, Object> changeMajorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
 		return repository.changeMajorSubjectStatus(subjectCode, activeStatus);
 	}
+
+	@Override
+	public Map<String, Object> editMajorSubject(Map<String, Object> payload) {
+		return repository.editMajorSubject(payload);
+	}
 }
