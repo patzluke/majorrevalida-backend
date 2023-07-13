@@ -1010,6 +1010,8 @@ public class AdminCapabilitiesRepository {
 							.having(DSL.count(MAJOR_SUBJECT.SUBJECT_CODE).eq(1))
 							.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM)
 							.fetchMaps();
+		return query;
+	}
 
 	// Get All MAJOR SUBJECTS BY CURRICULUM
 	public List<Map<String, Object>> selectAllMajorSubjects() {
