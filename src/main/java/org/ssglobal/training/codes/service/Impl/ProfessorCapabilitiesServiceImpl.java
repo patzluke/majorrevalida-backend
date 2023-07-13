@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.ssglobal.training.codes.model.UserAndProfessor;
 import org.ssglobal.training.codes.repository.ProfessorCapabilitiesRepository;
 import org.ssglobal.training.codes.service.ProfessorCapabilitiesService;
+import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.Users;
@@ -92,6 +93,11 @@ public class ProfessorCapabilitiesServiceImpl implements ProfessorCapabilitiesSe
 		Integer studentAttendanceId = Integer.valueOf(payload.get("studentAttendanceId").toString());
 
 		return repository.updateStudentAttendance(subjectTitle, sectionName, professorNo, date, status, studentAttendanceId);
+	}
+	
+	@Override
+	public List<Grades> updateStudentGrades(List<Grades> studentGrades) {
+		return repository.updateStudentGrades(studentGrades);
 	}
 	
 	@Override

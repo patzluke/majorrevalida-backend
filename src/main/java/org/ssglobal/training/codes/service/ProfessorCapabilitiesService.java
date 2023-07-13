@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.ssglobal.training.codes.model.UserAndProfessor;
+import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.Users;
@@ -22,6 +23,7 @@ public interface ProfessorCapabilitiesService {
 							(String subjectTitle, String sectionName, Integer professorNo, String date);
 	
 	Map<String, Object> updateStudentAttendance(Map<String, Object> payload);
+	List<Grades> updateStudentGrades(List<Grades> studentGrades);
 	
 	List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct();
 	

@@ -299,7 +299,7 @@ create table grades (
     prelim_grade float,
     finals_grade float,
     total_grade float,
-    comment text,
+    comment text default 'N/A',
     date_prelim_grade_inserted timestamp,
     date_finals_grade_inserted timestamp,
     date_prelim_grade_modified timestamp,

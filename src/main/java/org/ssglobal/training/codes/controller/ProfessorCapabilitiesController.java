@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.UserAndProfessor;
 import org.ssglobal.training.codes.service.ProfessorCapabilitiesService;
+import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 
@@ -165,6 +166,25 @@ public class ProfessorCapabilitiesController {
 			return ResponseEntity.badRequest().body("something went wrong");
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update/studentgrades", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity updateStudentGrades(@RequestBody List<Grades> payload) {
+		List<Grades> updatedStudentGrades;
+		updatedStudentGrades = service.updateStudentGrades(payload);
+		try {
+			if (!updatedStudentGrades.isEmpty()) {
+				return ResponseEntity.ok(updatedStudentGrades);
+			}
+		} catch (DuplicateKeyException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body("something went wrong");
+		}
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 	
 }	

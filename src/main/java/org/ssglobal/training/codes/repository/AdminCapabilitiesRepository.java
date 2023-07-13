@@ -1012,7 +1012,6 @@ public class AdminCapabilitiesRepository {
 							.fetchMaps();
 		return query;
 	}
-	
 	// Get All MAJOR SUBJECTS BY CURRICULUM
 	public List<Map<String, Object>> selectAllMajorSubjects() {
 		List<Map<String, Object>> query = dslContext
