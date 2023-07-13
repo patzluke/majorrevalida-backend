@@ -1010,7 +1010,9 @@ public class AdminCapabilitiesRepository {
 							.having(DSL.count(MAJOR_SUBJECT.SUBJECT_CODE).eq(1))
 							.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM)
 							.fetchMaps();
-
+		return query;
+	}
+	
 	// Get All MAJOR SUBJECTS BY CURRICULUM
 	public List<Map<String, Object>> selectAllMajorSubjects() {
 		List<Map<String, Object>> query = dslContext
@@ -1060,6 +1062,7 @@ public class AdminCapabilitiesRepository {
 							.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
 							.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("preRequisites").toString())))
 							.fetchOneMap();
+			return checkQuery;
 		}
 		
 		Subject updatedSubject = dslContext.update(SUBJECT)
@@ -1093,7 +1096,7 @@ public class AdminCapabilitiesRepository {
 	 * Curriculum_Code, Remarks, Subject_Title, Year_Level, Sem
 	 * 
 	 */
-	public List<Map<String, Object>> selectStudentPassedMajorSubject(Integer studentNo) {
+	public List<Map<String, Object>> selectStudentPassedMajorSubject(Integer studentApplicantId) {
 		List<Map<String, Object>> student = dslContext
 				.select(STUDENT.CURRICULUM_CODE.as("curriculumCode"), GRADES.REMARKS.as("remarks"),
 						SUBJECT.SUBJECT_TITLE.as("subject_title"), MAJOR_SUBJECT.YEAR_LEVEL.as("year_level"),
@@ -1119,7 +1122,7 @@ public class AdminCapabilitiesRepository {
 	 * Curriculum_Code, Remarks, Subject_Title, Year_Level, Sem
 	 * 
 	 */
-	public List<Map<String, Object>> selectStudentPassedMinorSubject(Integer studentNo) {
+	public List<Map<String, Object>> selectStudentPassedMinorSubject(Integer studentApplicantId) {
 		List<Map<String, Object>> student = dslContext
 				.select(STUDENT.CURRICULUM_CODE.as("curriculumCode"), GRADES.REMARKS.as("remarks"),
 						SUBJECT.SUBJECT_TITLE.as("subject_title"), MINOR_SUBJECT.YEAR_LEVEL.as("year_level"),
@@ -1144,7 +1147,7 @@ public class AdminCapabilitiesRepository {
 	 * Curriculum_Code, Subject_Title, Year_Level, Sem
 	 * 
 	 */
-	public List<Map<String, Object>> selectFreshManStudentMajorSubject(Integer studentNo) {
+	public List<Map<String, Object>> selectFreshManStudentMajorSubject(Integer studentApplicantId) {
 		List<Map<String, Object>> student = dslContext
 				.select(STUDENT.CURRICULUM_CODE.as("curriculumCode"), SUBJECT.SUBJECT_TITLE.as("subject_title"),
 						MAJOR_SUBJECT.YEAR_LEVEL.as("year_level"), MAJOR_SUBJECT.SEM.as("sem"))
@@ -1169,7 +1172,7 @@ public class AdminCapabilitiesRepository {
 	 * Curriculum_Code, Subject_Title, Year_Level, Sem
 	 * 
 	 */
-	public List<Map<String, Object>> selectFreshManStudentMinorSubject(Integer studentNo) {
+	public List<Map<String, Object>> selectFreshManStudentMinorSubject(Integer studentApplicantId) {
 		List<Map<String, Object>> student = dslContext
 				.select(STUDENT.CURRICULUM_CODE.as("curriculumCode"), SUBJECT.SUBJECT_TITLE.as("subject_title"),
 						MINOR_SUBJECT.YEAR_LEVEL.as("year_level"), MINOR_SUBJECT.SEM.as("sem"))
