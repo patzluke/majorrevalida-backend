@@ -396,7 +396,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 
 	@Override
-	public Map<String, Object> editMajorSubject(Map<String, Object> payload) {
+	public Map<String, Object> editMajorSubject(Map<String, Object> payload) throws Exception {
 		return repository.editMajorSubject(payload);
 	}
 	public List<Map<String, Object>> selectStudentPassedMajorSubject(Integer studentNo) {

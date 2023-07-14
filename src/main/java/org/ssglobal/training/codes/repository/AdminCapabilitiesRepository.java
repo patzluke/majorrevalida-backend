@@ -1031,7 +1031,7 @@ public class AdminCapabilitiesRepository {
 		return null;
 	}
 
-	public Map<String, Object> editMajorSubject(Map<String, Object> payload) {
+	public Map<String, Object> editMajorSubject(Map<String, Object> payload) throws Exception {
 		if (Integer.valueOf(payload.get("preRequisites").toString()) != 9000) {
 			Map<String, Object> preRequites = dslContext
 					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
@@ -1045,40 +1045,105 @@ public class AdminCapabilitiesRepository {
 							.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
 							.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("preRequisites").toString())))
 							.fetchOneMap();
-			Integer preYear = Integer.valueOf(payload.get("yearLevel").toString());
+			Integer preYear = Integer.valueOf(preRequites.get("yearLevel").toString());
 			Integer payloadYear = Integer.valueOf(payload.get("yearLevel").toString());
 			Integer preSem = Integer.valueOf(preRequites.get("sem").toString());
 			Integer payloadSem = Integer.valueOf(payload.get("sem").toString());
 			if (preYear < payloadYear || (preYear == payloadYear && preSem < payloadSem)) {
-				System.out.println(true);
+				Subject updatedSubject = dslContext.update(SUBJECT)
+						.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
+						.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
+						.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+						.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString()))).returning()
+						.fetchOne().into(Subject.class);
+				dslContext.update(MAJOR_SUBJECT)
+						.set(MAJOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
+						.set(MAJOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
+						.set(MAJOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
+						.where(MAJOR_SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).returning().fetchOne()
+						.into(MajorSubject.class);
+
+				Map<String, Object> query = dslContext
+						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
+								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
+								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+								SUBJECT.ACTIVE_STATUS.as("activeStatus"), MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"))
+						.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+						.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).fetchOneMap();
+				return query;
 			} else {
-				System.out.println(false);
-				return null;
+				throw new Exception("%s is at year %d and sem %d".formatted(preRequites.get("subjectTitle").toString(), preYear, preSem));
+			}
+		} else {
+			Map<String, Object> subSubject = dslContext
+					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
+							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+							MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
+							MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+							MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
+							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+							SUBJECT.ACTIVE_STATUS.as("activeStatus"))
+							.from(SUBJECT)
+							.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+							.where(MAJOR_SUBJECT.PRE_REQUISITES.eq(Integer.valueOf(payload.get("subjectCode").toString())))
+							.fetchOneMap();
+			if (subSubject != null)  {
+				Integer preYear = Integer.valueOf(subSubject.get("yearLevel").toString());
+				Integer payloadYear = Integer.valueOf(payload.get("yearLevel").toString());
+				Integer preSem = Integer.valueOf(subSubject.get("sem").toString());
+				Integer payloadSem = Integer.valueOf(payload.get("sem").toString());
+				if (preYear > payloadYear || (preYear == payloadYear && preSem > payloadSem)) {
+					Subject updatedSubject = dslContext.update(SUBJECT)
+							.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
+							.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
+							.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+							.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString()))).returning()
+							.fetchOne().into(Subject.class);
+					dslContext.update(MAJOR_SUBJECT)
+							.set(MAJOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
+							.set(MAJOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
+							.set(MAJOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
+							.where(MAJOR_SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).returning().fetchOne()
+							.into(MajorSubject.class);
+
+					Map<String, Object> query = dslContext
+							.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
+									SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+									MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
+									MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+									SUBJECT.ACTIVE_STATUS.as("activeStatus"), MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"))
+							.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+							.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).fetchOneMap();
+					return query;
+				} else {
+					throw new Exception("%s is at year %d and sem %d".formatted(subSubject.get("subjectTitle").toString(), preYear, preSem));
+				}
+			} else {
+				Subject updatedSubject = dslContext.update(SUBJECT)
+						.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
+						.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
+						.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+						.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString()))).returning()
+						.fetchOne().into(Subject.class);
+				dslContext.update(MAJOR_SUBJECT)
+						.set(MAJOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
+						.set(MAJOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
+						.set(MAJOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
+						.where(MAJOR_SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).returning().fetchOne()
+						.into(MajorSubject.class);
+
+				Map<String, Object> query = dslContext
+						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
+								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
+								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+								SUBJECT.ACTIVE_STATUS.as("activeStatus"), MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"))
+						.from(SUBJECT).innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+						.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).fetchOneMap();
+				return query;
 			}
 		}
-		
-//		Subject updatedSubject = dslContext.update(SUBJECT)
-//				.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
-//				.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
-//				.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
-//				.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString()))).returning()
-//				.fetchOne().into(Subject.class);
-//		dslContext.update(MAJOR_SUBJECT)
-//				.set(MAJOR_SUBJECT.PRE_REQUISITES, Integer.valueOf(payload.get("preRequisites").toString()))
-//				.set(MAJOR_SUBJECT.YEAR_LEVEL, Integer.valueOf(payload.get("yearLevel").toString()))
-//				.set(MAJOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
-//				.where(MAJOR_SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).returning().fetchOne()
-//				.into(MajorSubject.class);
-//
-//		Map<String, Object> query = dslContext
-//				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
-//						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-//						MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
-//						MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
-//						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
-//				.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
-//				.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).fetchOneMap();
-		return null;
 	}
 
 	/*

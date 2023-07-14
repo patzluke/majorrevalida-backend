@@ -817,7 +817,7 @@ public class AdminCapabilitiesController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Backend");
 	}
