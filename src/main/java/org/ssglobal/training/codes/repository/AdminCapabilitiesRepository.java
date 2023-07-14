@@ -17,7 +17,6 @@ import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
-import org.ssglobal.training.codes.tables.pojos.MajorSubject;
 import org.ssglobal.training.codes.tables.pojos.MinorSubject;
 import org.ssglobal.training.codes.tables.pojos.Parent;
 import org.ssglobal.training.codes.tables.pojos.Professor;
@@ -349,6 +348,25 @@ public class AdminCapabilitiesRepository {
 		}
 		return null;
 	}
+	
+	//  -------------------------- GETTING THE NUMBER OF STUDENT PER YEAR
+	/*
+	 * This query will return the ff:
+	 * 
+	 * 
+	 * */
+	public List<Map<String, Object>> getAllStudentWithAcademicYear(){
+		List<Map<String, Object>> student = dslContext.select(STUDENT.STUDENT_NO.as("studentNo")
+				, STUDENT.ACADEMIC_YEAR_ID.as("academicYearId")
+				, ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear")
+				, ACADEMIC_YEAR.STATUS.as("status"))
+				.from(STUDENT).innerJoin(ACADEMIC_YEAR)
+				.on(STUDENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+				.groupBy(STUDENT.STUDENT_NO, ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.STATUS)
+				.fetchMaps();
+		return student;
+	}
+	
 
 	// ------------------------FOR PROFESSOR
 
@@ -896,7 +914,7 @@ public class AdminCapabilitiesRepository {
 		return !query.isEmpty() ? query : null;
 	}
 
-	// Get All Minor Subject
+	// -------------------------- Get All Minor Subject
 	public List<Map<String, Object>> selectAllMinorSubjects() {
 		List<Map<String, Object>> query = dslContext
 				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
@@ -978,7 +996,7 @@ public class AdminCapabilitiesRepository {
 		return null;
 	}
 	
-	//Get All MAJOR SUBJECTS BY CURRICULUM
+	// -------------------------- Get All MAJOR SUBJECTS BY CURRICULUM
 	public List<Map<String, Object>> selectAllMajorSubjects() {
 		List<Map<String, Object>> query = dslContext.select(
 									MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
