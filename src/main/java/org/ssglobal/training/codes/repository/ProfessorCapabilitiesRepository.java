@@ -4,10 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndProfessor;
+import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Professor;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
@@ -142,7 +144,7 @@ public class ProfessorCapabilitiesRepository {
 				.select(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
 						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
 						USERS.LAST_NAME.as("lastName"), USERS.EMAIL, GRADES.PRELIM_GRADE.as("prelimGrade"),
-						GRADES.FINALS_GRADE.as("finalGrade"), GRADES.COMMENT, GRADES.REMARKS,
+						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.COMMENT, GRADES.REMARKS,
 						SECTION.SECTION_NAME.as("sectionName"), T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"))
 				.from(GRADES)
@@ -197,6 +199,21 @@ public class ProfessorCapabilitiesRepository {
 						 .innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))			 
 						 .where(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID.eq(updatedStudentAttendance.getStudentAttendanceId()))
 						 .fetchOneMap();
+	}
+	
+	public List<Grades> updateStudentGrades(List<Grades> studentGrades) {		
+		for (Grades student : studentGrades) {
+			dslContext.update(GRADES)
+			  .set(GRADES.PRELIM_GRADE, student.getPrelimGrade())
+			  .set(GRADES.FINALS_GRADE, student.getFinalsGrade())
+			  .set(GRADES.COMMENT, student.getComment())
+			  .set(GRADES.REMARKS, student.getRemarks())
+			  .where(GRADES.GRADE_ID.eq(student.getGradeId()))
+			  .returning()
+			  .fetch()
+			  .into(Grades.class);
+		}
+		return studentGrades;
 	}
 	
 //	List of students attendance

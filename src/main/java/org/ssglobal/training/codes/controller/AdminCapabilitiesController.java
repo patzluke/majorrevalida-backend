@@ -822,11 +822,11 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Backend");
 	}
 
-	@GetMapping(value = "/get/majorsubject/remarks/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@GetMapping(value = "/get/majorsubject/remarks/{studentApplicantId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<Map<String, Object>>> selectStudentPassedMajorSubject(
-			@PathVariable(name = "studentNo") Integer studentNo) {
+			@PathVariable(name = "studentApplicantId") Integer studentApplicantId) {
 		try {
-			List<Map<String, Object>> passedMajor = service.selectStudentPassedMajorSubject(studentNo);
+			List<Map<String, Object>> passedMajor = service.selectStudentPassedMajorSubject(studentApplicantId);
 			if (!passedMajor.isEmpty()) {
 				return ResponseEntity.ok(passedMajor);
 			}
@@ -837,11 +837,11 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
-	@GetMapping(value = "/get/minorsubject/remarks/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@GetMapping(value = "/get/minorsubject/remarks/{studentApplicantId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<Map<String, Object>>> selectStudentPassedMinorSubject(
-			@PathVariable(name = "studentNo") Integer studentNo) {
+			@PathVariable(name = "studentApplicantId") Integer studentApplicantId) {
 		try {
-			List<Map<String, Object>> passedMinor = service.selectStudentPassedMinorSubject(studentNo);
+			List<Map<String, Object>> passedMinor = service.selectStudentPassedMinorSubject(studentApplicantId);
 			if (!passedMinor.isEmpty()) {
 				return ResponseEntity.ok(passedMinor);
 			}
@@ -853,11 +853,11 @@ public class AdminCapabilitiesController {
 	}
 	
 	
-	@GetMapping(value = "/get/majorsubject/freshman/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@GetMapping(value = "/get/majorsubject/freshman/{studentApplicantId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<Map<String, Object>>> selectFreshManStudentMajorSubject(
-			@PathVariable(name = "studentNo") Integer studentNo) {
+			@PathVariable(name = "studentApplicantId") Integer studentApplicantId) {
 		try {
-			List<Map<String, Object>> freshmanMajor = service.selectFreshManStudentMajorSubject(studentNo);
+			List<Map<String, Object>> freshmanMajor = service.selectFreshManStudentMajorSubject(studentApplicantId);
 			if (!freshmanMajor.isEmpty()) {
 				return ResponseEntity.ok(freshmanMajor);
 			}
@@ -868,11 +868,11 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
-	@GetMapping(value = "/get/minorsubject/freshman/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@GetMapping(value = "/get/minorsubject/freshman/{studentApplicantId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<Map<String, Object>>> selectFreshManStudentMinorSubject(
-			@PathVariable(name = "studentNo") Integer studentNo) {
+			@PathVariable(name = "studentApplicantId") Integer studentApplicantId) {
 		try {
-			List<Map<String, Object>> freshmanMinor = service.selectFreshManStudentMinorSubject(studentNo);
+			List<Map<String, Object>> freshmanMinor = service.selectFreshManStudentMinorSubject(studentApplicantId);
 			if (!freshmanMinor.isEmpty()) {
 				return ResponseEntity.ok(freshmanMinor);
 			}
@@ -882,4 +882,5 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+	
 }

@@ -299,7 +299,7 @@ create table grades (
     prelim_grade float,
     finals_grade float,
     total_grade float,
-    comment text,
+    comment text default 'N/A',
     date_prelim_grade_inserted timestamp,
     date_finals_grade_inserted timestamp,
     date_prelim_grade_modified timestamp,
@@ -1887,6 +1887,51 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77012, 8, '2023-08-14'),
 (77012, 8, '2023-08-15');
 
+
+--Insert value to student_applicant
+INSERT INTO student_applicant (
+    student_type,
+    selected_course_code,
+    selected_major_code,
+    year_level,
+    school_year,
+    first_name,
+    middle_name,
+    last_name,
+    suffix_name,
+    gender,
+    civil_status,
+    citizenship,
+    birth_date,
+    birth_place,
+    religion,
+    address,
+    telephone_no,
+    mobile_no,
+    email,
+    father_first_name,
+    father_middle_name,
+    father_last_name,
+    father_suffix_name,
+    father_mobile_no,
+    father_email,
+    father_occupation,
+    mother_first_name,
+    mother_middle_name,
+    mother_last_name,
+    mother_suffix_name,
+    mother_mobile_no,
+    mother_email,
+    mother_occupation,
+    date_applied,
+    date_accepted,
+    acceptance_status
+) VALUES
+    ('New', 3001, 4001, 1, 2023, 'John', 'Doe', 'Smith', 'Jr.', 'Male', 'Single', 'US', '1990-01-01', 'New York', 'Christian', '123 Main St', '123456789', '987654321', 'john.doe@example.com', 'Father', 'Father Middle', 'Father Last', 'Sr.', '123456789', 'father@example.com', 'Engineer', 'Mother', 'Mother Middle', 'Mother Last', 'Sr.', '987654321', 'mother@example.com', 'Doctor', NOW(), NULL, 'Pending'),
+    ('New', 3001, 4001, 2, 2023, 'Jane', 'Doe', 'Johnson', NULL, 'Female', 'Married', 'UK', '1992-05-15', 'London', 'Catholic', '456 Elm St', '987654321', '123456789', 'jane.doe@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '987654321', 'father@example.com', 'Teacher', 'Mother', 'Mother Middle', 'Mother Last', NULL, '123456789', 'mother@example.com', 'Nurse', NOW(), NULL, 'Pending'),
+    ('New', 3001, 4001, 1, 2023, 'Michael', 'Brown', 'Johnson', NULL, 'Male', 'Single', 'Canada', '1991-07-20', 'Toronto', 'Protestant', '789 Oak St', '555555555', '999999999', 'michael.brown@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '555555555', 'father@example.com', 'Architect', 'Mother', 'Mother Middle', 'Mother Last', NULL, '999999999', 'mother@example.com', 'Designer', NOW(), NULL, 'Pending'),
+    ('New', 3001, 4001, 3, 2023, 'Emily', 'Smith', 'Wilson', 'Jr.', 'Female', 'Single', 'Australia', '1993-09-10', 'Sydney', 'Buddhist', '234 Pine St', '222222222', '888888888', 'emily.smith@example.com', 'Father', 'Father Middle', 'Father Last', 'Sr.', '222222222', 'father@example.com', 'Lawyer', 'Mother', 'Mother Middle', 'Mother Last', 'Sr.', '888888888', 'mother@example.com', 'Accountant', NOW(), NULL, 'Pending'),
+    ('New', 3001, 4001, 2, 2023, 'David', 'Johnson', 'Taylor', NULL, 'Male', 'Married', 'France', '1992-04-05', 'Paris', 'Jewish', '345 Walnut St', '333333333', '777777777', 'david.johnson@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '333333333', 'father@example.com', 'Entrepreneur', 'Mother', 'Mother Middle', 'Mother Last', NULL, '777777777', 'mother@example.com', 'Businesswoman', NOW(), NULL, 'Pending');
 
 --select sa.* from student_attendance sa 
 --inner join professor_load pl on sa.load_id = pl.load_id
