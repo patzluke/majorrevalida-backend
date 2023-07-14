@@ -422,4 +422,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<Map<String, Object>> selectFreshManStudentMinorSubject(Integer studentNo) {
 		return repository.selectFreshManStudentMinorSubject(studentNo);
 	}
+
+	@Override
+	public List<Map<String, Object>> getAllStudentWithAcademicYear() {
+		return repository.getAllStudentWithAcademicYear();
+	}
 }
