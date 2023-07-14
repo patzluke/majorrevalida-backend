@@ -226,6 +226,20 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+	
+	@GetMapping(value ="/get/student/studentyear", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<List<Map<String, Object>>> getAllStudentWithAcademicYear(){
+		try {
+			List<Map<String, Object>> student = service.getAllStudentWithAcademicYear();
+			if (!student.isEmpty()) {
+				return ResponseEntity.ok(student);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
 
 	// -------- For Student Applicants
 	@GetMapping(value = "/get/studentapplicant")

@@ -340,7 +340,13 @@ create table student_attendance (
 ); 
 
 --insert into academic_year table
-insert into academic_year(academic_year, status) values('2023-2024', 'On-going');
+insert into academic_year(academic_year, status) values('2023', 'On-going');
+insert into academic_year(academic_year, status) values('2022', 'Finished');
+insert into academic_year(academic_year, status) values('2021', 'Finished');
+insert into academic_year(academic_year, status) values('2020', 'Finished');	
+insert into academic_year(academic_year, status) values('2019', 'Finished');	
+insert into academic_year(academic_year, status) values('2018', 'Finished');
+insert into academic_year(academic_year, status) values('2017', 'Finished');	
 
 --insert into program table
 insert into program(program_title) values('Bachelor Of Science');
@@ -588,47 +594,47 @@ insert into student(user_id, curriculum_code, academic_year_id, year_level) valu
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('george', '123456', 'george@gmail.com', '9188192721', 'George', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'george.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(10, 5001, 1, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(10, 5001, 2, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('steven', '123456', 'steven@gmail.com', '9188192721', 'Steven', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'steven.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(11, 5001, 1, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(11, 5001, 2, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('zephania', '123456', 'zephania@gmail.com', '9188192721', 'Zephania', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'zephania.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(12, 5001, 1, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(12, 5001, 3, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('eoin', '123456', 'eoin@gmail.com', '9188192721', 'Eoin', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'eoin.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(13, 5001, 1, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(13, 5001, 4, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('norbin', '123456', 'norbin@gmail.com', '9188192721', 'Norbin', 'Fernando', 'Astrero', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'norbin.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(14, 5001, 1, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(14, 5001, 4, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('vanlester', '123456', 'vanlester@gmail.com', '9188192721', 'Lester', 'Astros', 'Artuz', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'vanlester.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(15, 5001, 1, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(15, 5001, 5, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('johnpaul', '123456', 'johnpaul@gmail.com', '9188192721', 'John', 'Paul', 'Artuz', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'johnpaul.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(16, 5001, 1, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(16, 5001, 6, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('linda', '123456', 'linda@gmail.com', '9188192721', 'Linda', 'Gabriel', 'Artuz', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'linda.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(17, 5001, 1, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(17, 5001, 6, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('robgerson', '123456', 'robgerson@gmail.com', '9188192721', 'Robert', 'Paul', 'Artuz', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'robgerson.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(18, 5001, 1, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(18, 5001, 7, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('aluz', '123456', 'aluz@gmail.com', '9188192721', 'Luz', 'nina', 'Artuz', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'aluz.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(19, 5001, 1, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(19, 5001, 7, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('christopher', '123456', 'christopher@gmail.com', '9188192721', 'Christof', 'Paul', 'Labastos', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'christopher.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(20, 5001, 1, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(20, 5001, 7, 1);
 
 
 --insert into student_enrollment

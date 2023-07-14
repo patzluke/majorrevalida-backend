@@ -59,6 +59,7 @@ public interface AdminCapabilitiesService {
 	UserAndParent updateParentInfo(UserAndParent parent) throws DuplicateKeyException, Exception;
 	UserAndParent changeParentAccountStatus(Integer userId, Boolean status);
 	UserAndParent deleteParent(Integer userId);
+	List<Map<String, Object>> getAllStudentWithAcademicYear();
 	
 	// ------------------------FOR Student_applicants
 	List<StudentApplicant> selectAllStudentApplicants();
