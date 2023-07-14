@@ -212,7 +212,6 @@ public class ProfessorCapabilitiesRepository {
 			  .returning()
 			  .fetch()
 			  .into(Grades.class);
-			System.out.println(student.getFinalsGrade());
 		}
 		return studentGrades;
 	}
