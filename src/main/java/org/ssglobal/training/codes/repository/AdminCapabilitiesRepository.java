@@ -358,8 +358,7 @@ public class AdminCapabilitiesRepository {
 						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
 						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
 						USERS.IMAGE, PROFESSOR.PROFESSOR_ID, PROFESSOR.PROFESSOR_NO, PROFESSOR.WORK)
-				.from(USERS).innerJoin(PROFESSOR).on(USERS.USER_ID.eq(PROFESSOR.USER_ID))
-				.where(USERS.ACTIVE_DEACTIVE.eq(true)).fetchInto(UserAndProfessor.class);
+				.from(USERS).innerJoin(PROFESSOR).on(USERS.USER_ID.eq(PROFESSOR.USER_ID)).fetchInto(UserAndProfessor.class);
 	}
 
 	public UserAndProfessor insertProfessor(UserAndProfessor userAndProfessor) {
