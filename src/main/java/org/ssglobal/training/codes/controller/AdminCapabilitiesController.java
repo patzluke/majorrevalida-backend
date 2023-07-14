@@ -810,17 +810,16 @@ public class AdminCapabilitiesController {
 	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/subjects/major", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity editMajorSubject(@RequestBody Map<String, Object> payload) {
-//		try {
-//			Map<String, Object> updatedMinorSubject = service.editMajorSubject(payload);
-//			if (!updatedMinorSubject.isEmpty()) {
-//				return ResponseEntity.ok(updatedMinorSubject);
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			return ResponseEntity.badRequest().build();
-//		}
-//		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Backend");
-		return ResponseEntity.badRequest().body("Error Backend");
+		try {
+			Map<String, Object> updatedMinorSubject = service.editMajorSubject(payload);
+			if (!updatedMinorSubject.isEmpty()) {
+				return ResponseEntity.ok(updatedMinorSubject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Backend");
 	}
 
 	@GetMapping(value = "/get/majorsubject/remarks/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
