@@ -261,9 +261,9 @@ public class AdminCapabilitiesController {
 	@GetMapping(value = "/get/professor", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<UserAndProfessor>> selectAllProfessor() {
 		try {
-			List<UserAndProfessor> updatedAdmin = service.selectAllProfessor();
-			if (!updatedAdmin.isEmpty()) {
-				return ResponseEntity.ok(updatedAdmin);
+			List<UserAndProfessor> professorList = service.selectAllProfessor();
+			if (!professorList.isEmpty()) {
+				return ResponseEntity.ok(professorList);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
