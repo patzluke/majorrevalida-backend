@@ -821,8 +821,9 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/add/subjects/major", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Map<String, Object>> insertMajorSubjectByMajor(@RequestBody Map<String, Object> payload) {
+	public ResponseEntity insertMajorSubjectByMajor(@RequestBody Map<String, Object> payload) {
 		try {
 			Map<String, Object> newMajorSubject = service.addMajorSubjectByMajor(payload);
 			if (!newMajorSubject.isEmpty()) {
@@ -830,7 +831,7 @@ public class AdminCapabilitiesController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}

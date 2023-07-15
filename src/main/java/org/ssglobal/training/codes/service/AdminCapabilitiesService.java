@@ -112,7 +112,7 @@ public interface AdminCapabilitiesService {
 	//---------------------- FOR THE MAJOR SUBJECTS
 	public Map<String, Object> changeMajorSubjectStatus(Integer subjectCode, Boolean activeStatus);
 	public Map<String, Object> editMajorSubject(Map<String, Object> payload) throws Exception;
-	public Map<String, Object> addMajorSubjectByMajor(Map<String, Object> payload);
+	public Map<String, Object> addMajorSubjectByMajor(Map<String, Object> payload) throws Exception;
 	
 	//---------------------- FOR THE PASSED MAJOR SUBJECTS
 	public List<Map<String, Object>> selectStudentPassedMajorSubject(Integer studentNo);
