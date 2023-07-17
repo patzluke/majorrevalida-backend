@@ -57,7 +57,8 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.MajorSubject MAJOR_SUBJECT = org.ssglobal.training.codes.tables.MajorSubject.MAJOR_SUBJECT;
 	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
 	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
-
+	private final org.ssglobal.training.codes.tables.StudentEnrollment STUDENT_ENROLLMENT = org.ssglobal.training.codes.tables.StudentEnrollment.STUDENT_ENROLLMENT;
+	
 	// ------------------------FOR ALL
 	public List<Users> selectAllUsers() {
 		return dslContext.selectFrom(USERS).fetchInto(Users.class);
@@ -353,17 +354,19 @@ public class AdminCapabilitiesRepository {
 	//  -------------------------- GETTING THE NUMBER OF STUDENT PER YEAR
 	/*
 	 * This query will return the ff:
-	 * 
+	 * studentNo, academicYearId, academicYear, status
 	 * 
 	 * */
+	
 	public List<Map<String, Object>> getAllStudentWithAcademicYear(){
-		List<Map<String, Object>> student = dslContext.select(STUDENT.STUDENT_NO.as("studentNo")
-				, STUDENT.ACADEMIC_YEAR_ID.as("academicYearId")
-				, ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear")
-				, ACADEMIC_YEAR.STATUS.as("status"))
-				.from(STUDENT).innerJoin(ACADEMIC_YEAR)
-				.on(STUDENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
-				.groupBy(STUDENT.STUDENT_NO, ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.STATUS)
+		List<Map<String, Object>> student = dslContext.select(STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"),
+				STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.as("academicYearId"),
+				ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), 
+				ACADEMIC_YEAR.STATUS.as("status"))
+				.from(STUDENT_ENROLLMENT).innerJoin(ACADEMIC_YEAR)
+				.on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+				.groupBy(STUDENT_ENROLLMENT.STUDENT_NO, STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID,  
+						ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.STATUS)
 				.fetchMaps();
 		return student;
 	}
