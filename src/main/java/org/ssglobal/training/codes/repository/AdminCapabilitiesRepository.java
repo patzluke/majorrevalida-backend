@@ -17,6 +17,7 @@ import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.Major;
+import org.ssglobal.training.codes.tables.pojos.MajorSubject;
 import org.ssglobal.training.codes.tables.pojos.MinorSubject;
 import org.ssglobal.training.codes.tables.pojos.Parent;
 import org.ssglobal.training.codes.tables.pojos.Professor;
