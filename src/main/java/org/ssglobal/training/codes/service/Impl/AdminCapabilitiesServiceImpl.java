@@ -376,6 +376,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
+	public List<Map<String, Object>> selectAllMajorSubjectsByAllCourse() {
+		return repository.selectAllMajorSubjectsByAllCourse();
+	}
+	
+	@Override
 	public Map<String, Object> editMinorSubject(Map<String, Object> payload) {
 		return repository.editMinorSubject(payload);
 	}
@@ -384,7 +389,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
 		return repository.changeMinorSubjectStatus(subjectCode, activeStatus);
 	}
-
+	
 	@Override
 	public Map<String, Object> inserMinorSubject(Map<String, Object> payload) {
 		return repository.inserMinorSubject(payload);
@@ -393,6 +398,16 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public Map<String, Object> changeMajorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
 		return repository.changeMajorSubjectStatus(subjectCode, activeStatus);
+	}
+	
+	@Override
+	public Map<String, Object> addMajorSubjectByMajor(Map<String, Object> payload) throws Exception {
+		return repository.addMajorSubjectByMajor(payload);
+	}
+	
+	@Override
+	public Map<String, Object> addMajorSubjectByAll(Map<String, Object> payload, Integer courseCode) {
+		return repository.addMajorSubjectByAll(payload, courseCode);
 	}
 
 	@Override
