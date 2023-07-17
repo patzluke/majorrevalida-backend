@@ -216,6 +216,18 @@ public class ProfessorCapabilitiesRepository {
 		return studentGrades;
 	}
 	
+	public List<Grades> updateStudentGradesIsSubmitted(List<Grades> studentGrades) {		
+		for (Grades student : studentGrades) {
+			dslContext.update(GRADES)
+			  .set(GRADES.IS_SUBMITTED, true)
+			  .where(GRADES.GRADE_ID.eq(student.getGradeId()))
+			  .returning()
+			  .fetch()
+			  .into(Grades.class);
+		}
+		return studentGrades;
+	}
+	
 //	List of students attendance
 	public List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct() {
 		return dslContext.selectDistinct(STUDENT_ATTENDANCE.ATTENDANCE_DATE)

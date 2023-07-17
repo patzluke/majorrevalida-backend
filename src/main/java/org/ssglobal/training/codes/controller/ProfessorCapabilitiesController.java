@@ -187,4 +187,23 @@ public class ProfessorCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 	
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update/studentgrades/submit", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity updateStudentGradesIsSubmitted(@RequestBody List<Grades> payload) {
+		List<Grades> updatedStudentGrades;
+		updatedStudentGrades = service.updateStudentGradesIsSubmitted(payload);
+		try {
+			if (!updatedStudentGrades.isEmpty()) {
+				return ResponseEntity.ok(updatedStudentGrades);
+			}
+		} catch (DuplicateKeyException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body("something went wrong");
+		}
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+	
 }	

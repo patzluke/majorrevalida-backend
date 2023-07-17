@@ -101,6 +101,11 @@ public class ProfessorCapabilitiesServiceImpl implements ProfessorCapabilitiesSe
 	}
 	
 	@Override
+	public List<Grades> updateStudentGradesIsSubmitted(List<Grades> studentGrades) {
+		return repository.updateStudentGradesIsSubmitted(studentGrades);
+	}
+	
+	@Override
 	public List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct() {
 		return repository.selectStudentAttendanceByAttendanceDateDistinct();
 	}

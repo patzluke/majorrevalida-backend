@@ -23,6 +23,7 @@ public interface ProfessorCapabilitiesService {
 							(String subjectTitle, String sectionName, Integer professorNo, String date);
 	
 	Map<String, Object> updateStudentAttendance(Map<String, Object> payload);
+	List<Grades> updateStudentGradesIsSubmitted(List<Grades> studentGrades);
 	List<Grades> updateStudentGrades(List<Grades> studentGrades);
 	
 	List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct();

@@ -729,6 +729,22 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+	
+	// -------- For Room
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/studentgrades", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity selectAllStudentsBySection() {
+		try {
+			List<Map<String, Object>> rooms = service.selectAllStudentsBySection();
+			if (!rooms.isEmpty()) {
+				return ResponseEntity.ok(rooms);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
 
 	// ---------FOR THE MINOR SUBJECTS
 	@GetMapping(value = "/get/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
