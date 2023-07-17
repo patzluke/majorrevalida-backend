@@ -278,6 +278,8 @@ create table student_enrollment (
     sem int,
     start_date date,
     end_date date,
+    payment_status varchar(30),
+    status varchar(30),
     foreign key(student_no) references student(student_no) on delete cascade,
     foreign key(academic_year_id) references academic_year(academic_year_id) on delete cascade,
     foreign key(section_id) references section(section_id) on delete cascade
@@ -342,13 +344,14 @@ create table student_attendance (
 ); 
 
 --insert into academic_year table
-insert into academic_year(academic_year, status) values('2023', 'On-going');
-insert into academic_year(academic_year, status) values('2022', 'Finished');
-insert into academic_year(academic_year, status) values('2021', 'Finished');
-insert into academic_year(academic_year, status) values('2020', 'Finished');	
-insert into academic_year(academic_year, status) values('2019', 'Finished');	
-insert into academic_year(academic_year, status) values('2018', 'Finished');
 insert into academic_year(academic_year, status) values('2017', 'Finished');	
+insert into academic_year(academic_year, status) values('2018', 'Finished');
+insert into academic_year(academic_year, status) values('2019', 'Finished');
+insert into academic_year(academic_year, status) values('2020', 'Finished');	
+insert into academic_year(academic_year, status) values('2021', 'Finished');
+insert into academic_year(academic_year, status) values('2022', 'Finished');
+insert into academic_year(academic_year, status) values('2023', 'On-going');
+
 
 --insert into program table
 insert into program(program_title) values('Bachelor Of Science');
