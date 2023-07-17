@@ -803,6 +803,20 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+	
+	@GetMapping(value = "/get/subjects/major/all", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsByAllCourses() {
+		try {
+			List<Map<String, Object>> allSubjects = service.selectAllMajorSubjectsByAllCourse();
+			if (!allSubjects.isEmpty()) {
+				return ResponseEntity.ok(allSubjects);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
 
 	@PutMapping(value = "/deactive/subjects/major", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Map<String, Object>> deactivelMajorSubjects(@RequestBody Map<String, Object> payload) {
@@ -826,6 +840,21 @@ public class AdminCapabilitiesController {
 	public ResponseEntity insertMajorSubjectByMajor(@RequestBody Map<String, Object> payload) {
 		try {
 			Map<String, Object> newMajorSubject = service.addMajorSubjectByMajor(payload);
+			if (!newMajorSubject.isEmpty()) {
+				return ResponseEntity.ok(newMajorSubject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PostMapping(value = "/add/subjects/major/all/{courseCode}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity insertMajorSubjectByCourse(@RequestBody Map<String, Object> payload, @PathVariable("courseCode") Integer courseCode) {
+		try {
+			Map<String, Object> newMajorSubject = service.addMajorSubjectByAll(payload, courseCode);
 			if (!newMajorSubject.isEmpty()) {
 				return ResponseEntity.ok(newMajorSubject);
 			}
