@@ -96,8 +96,13 @@ public class ProfessorCapabilitiesServiceImpl implements ProfessorCapabilitiesSe
 	}
 	
 	@Override
-	public List<Grades> updateStudentGrades(List<Grades> studentGrades) {
+	public List<Map<String, Object>> updateStudentGrades(List<Grades> studentGrades) {
 		return repository.updateStudentGrades(studentGrades);
+	}
+	
+	@Override
+	public List<Grades> updateStudentGradesIsSubmitted(List<Grades> studentGrades) {
+		return repository.updateStudentGradesIsSubmitted(studentGrades);
 	}
 	
 	@Override

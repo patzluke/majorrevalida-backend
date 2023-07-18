@@ -363,6 +363,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 		return repository.selectAllRoom();
 	}
 	
+	// ------------------------FOR Room
+	@Override
+	public List<Map<String, Object>> selectAllStudentsBySection() {
+		return repository.selectAllStudentsBySection();
+	}
 
 	// ------------------------FOR Minor Subjects
 	@Override

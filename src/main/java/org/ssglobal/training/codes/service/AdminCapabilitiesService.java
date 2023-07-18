@@ -102,6 +102,9 @@ public interface AdminCapabilitiesService {
 	// ------------------------FOR Room	
 	List<Room> selectAllRoom();
 	
+	// ------------------------FOR Grades	
+	List<Map<String, Object>> selectAllStudentsBySection();
+	
 	//-------------------------FOR THE MINOR SUBJECTS
 	List<Map<String, Object>> selectAllMinorSubjects();
 	List<Map<String, Object>> selectAllMajorSubjects();

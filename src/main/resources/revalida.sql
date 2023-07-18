@@ -242,7 +242,9 @@ create table room (
 drop table if exists section cascade;
 create table section (
     section_id serial primary key,
-    section_name varchar(30)
+    course_code int,
+    section_name varchar(30),
+    foreign key(course_code) references course(course_code) on delete cascade
 ); 
 
 drop table if exists professor_load cascade;
@@ -301,7 +303,7 @@ create table grades (
     date_prelim_grade_modified timestamp,
     date_finals_grade_modified timestamp,
     remarks text,
-    status varchar(15),
+    is_submitted boolean default 'f',
     foreign key(student_no) references student(student_no) on delete cascade,
     foreign key(subject_detail_his_id) references t_subject_detail_history(subject_detail_his_id) on delete cascade
 ); 
@@ -534,10 +536,10 @@ insert into room(room_no) values(201);insert into room(room_no) values(202);inse
 insert into room(room_no) values(301);insert into room(room_no) values(302);insert into room(room_no) values(303);insert into room(room_no) values(304);insert into room(room_no) values(305);
 
 --insert into Section table
-insert into section(section_name) values('1-ITA');insert into section(section_name) values('1-ITB');insert into section(section_name) values('1-ITC');insert into section(section_name) values('1-ITD');
-insert into section(section_name) values('2-ITA');insert into section(section_name) values('2-ITB');insert into section(section_name) values('2-ITC');insert into section(section_name) values('2-ITD');
-insert into section(section_name) values('3-ITA');insert into section(section_name) values('3-ITB');insert into section(section_name) values('3-ITC');insert into section(section_name) values('3-ITD');
-insert into section(section_name) values('4-ITA');insert into section(section_name) values('4-ITB');insert into section(section_name) values('4-ITC');insert into section(section_name) values('4-ITD');
+insert into section(course_code, section_name) values(3001, '1-ITA'), (3001, '1-ITB'), (3001, '1-ITC'), (3001, '1-ITD');
+insert into section(course_code, section_name) values(3001, '2-ITA'), (3001, '2-ITB'), (3001, '2-ITC'), (3001, '2-ITD');
+insert into section(course_code, section_name) values(3001, '3-ITA'), (3001, '3-ITB'), (3001, '3-ITC'), (3001, '3-ITD');
+insert into section(course_code, section_name) values(3001, '4-ITA'), (3001, '4-ITB'), (3001, '4-ITC'), (3001, '4-ITD');
 
 
 --insert into users and admin table
