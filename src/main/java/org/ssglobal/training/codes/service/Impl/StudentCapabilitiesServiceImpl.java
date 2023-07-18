@@ -1,6 +1,10 @@
 package org.ssglobal.training.codes.service.Impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.ssglobal.training.codes.model.StudentCourseData;
 import org.ssglobal.training.codes.model.UserAndStudent;
@@ -11,12 +15,21 @@ import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
+import org.ssglobal.training.codes.tables.pojos.Users;
 
 @Service
 public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesService {
 
 	@Autowired
 	private StudentCapabilitiesRepository repository;
+	
+	@Autowired
+	private PasswordEncoder encoder;
+	
+	@Override
+	public List<Users> selectAllUsers() {
+		return repository.selectAllUsers();
+	}
 
 	@Override
 	public UserAndStudent viewStudentProfile(Integer studentId) {
@@ -24,8 +37,23 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	}
 
 	@Override
-	public UserAndStudent updateStudentProfile(UserAndStudent student, Integer studentId) {
-		return repository.updateStudentProfile(student, studentId);
+	public UserAndStudent updateStudentProfile(UserAndStudent student) {
+		selectAllUsers().forEach(user -> {
+			if (!user.getUserId().equals(student.getUserId())) {
+				if (user.getUsername().equals(student.getUsername())) {
+					throw new DuplicateKeyException("username already exists");
+				}
+				if (user.getEmail().equals(student.getEmail())) {
+					throw new DuplicateKeyException("email already exists");
+				}
+				
+			}
+		});
+		
+		if (!student.getPassword().isEmpty()) {
+			student.setPassword(encoder.encode(student.getPassword()));
+		}
+		return repository.updateStudentProfile(student);
 	}
 
 	@Override

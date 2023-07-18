@@ -226,8 +226,6 @@ public class ProfessorCapabilitiesRepository {
 			  .fetch()
 			  .into(Grades.class);
 		}
-		System.out.println(studentGrades.size());
-		System.out.println("-".repeat(10));
 		return dslContext
 				.select(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
 						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
