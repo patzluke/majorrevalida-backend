@@ -27,6 +27,7 @@ import org.ssglobal.training.codes.tables.pojos.Room;
 import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
@@ -372,6 +373,23 @@ public class AdminCapabilitiesRepository {
 				.fetchMaps();
 		return student;
 	}
+	
+	// ------------------------FOR STUDENT_ENROLLMENT
+	public StudentEnrollment insertStudentEnrollmentData(StudentEnrollment studentApplicant) {
+			
+		StudentEnrollment applicant = dslContext.insertInto(STUDENT_ENROLLMENT)
+				.set(STUDENT_ENROLLMENT.SEM, studentApplicant.getSem())
+				.set(STUDENT_ENROLLMENT.START_DATE, studentApplicant.getStartDate())
+				.set(STUDENT_ENROLLMENT.END_DATE, studentApplicant.getEndDate())
+				.set(STUDENT_ENROLLMENT.PAYMENT_STATUS, studentApplicant.getPaymentStatus())
+				.set(STUDENT_ENROLLMENT.STATUS, studentApplicant.getStatus())
+				.returning().fetchOne().into(StudentEnrollment.class);
+		
+		return applicant;
+		
+	}
+	
+	
 
 	// ------------------------FOR PROFESSOR
 
@@ -1146,7 +1164,7 @@ public class AdminCapabilitiesRepository {
 				.fetchOne().into(Subject.class);
 		System.out.println(addedSUbject);
 		List<Curriculum> allCurriculum = dslContext.select(CURRICULUM.CURRICULUM_CODE, CURRICULUM.CURRICULUM_ID, CURRICULUM.CURRICULUM_NAME,
-				CURRICULUM.MAJOR_CODE).from(CURRICULUM)
+				CURRICULUM.MAJOR_CODE, CURRICULUM.ACTIVE_DEACTIVE).from(CURRICULUM)
 				.join(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
 				.where(MAJOR.COURSE_CODE.eq(courseCode))
 				.fetchInto(Curriculum.class);
@@ -1166,9 +1184,14 @@ public class AdminCapabilitiesRepository {
 						MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 						MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
 						MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
-						SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
-				.from(SUBJECT).innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
-				.where(SUBJECT.SUBJECT_CODE.eq(addedSUbject.getSubjectCode())).fetchOneMap();
+						SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
+						MAJOR.COURSE_CODE.as("courseCode"))
+				.from(SUBJECT)
+				.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+				.join(CURRICULUM).on(MAJOR_SUBJECT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE))
+				.join(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+				.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(allCurriculum.get(0).getCurriculumCode())
+						.and(MAJOR_SUBJECT.SUBJECT_CODE.eq(addedSUbject.getSubjectCode()))).fetchOneMap();
 		System.out.println(query);
 		return query;
 	}
@@ -1232,7 +1255,7 @@ public class AdminCapabilitiesRepository {
 					.set(MAJOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString())).returning().fetchOne()
 					.into(MajorSubject.class);
 			Map<String, Object> query = dslContext
-					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
 							MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 							MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
