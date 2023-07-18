@@ -144,8 +144,9 @@ public class ProfessorCapabilitiesRepository {
 				.select(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
 						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
 						USERS.LAST_NAME.as("lastName"), USERS.EMAIL, GRADES.PRELIM_GRADE.as("prelimGrade"),
-						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.COMMENT, GRADES.REMARKS,
-						SECTION.SECTION_NAME.as("sectionName"), T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
+						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.TOTAL_GRADE.as("totalGrade"), GRADES.COMMENT,
+						GRADES.REMARKS, SECTION.SECTION_NAME.as("sectionName"),
+						T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"))
 				.from(GRADES)
 				.innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
@@ -154,6 +155,7 @@ public class ProfessorCapabilitiesRepository {
 				.innerJoin(SECTION).on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID))
 				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
 				.innerJoin(SUBJECT).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.orderBy(USERS.LAST_NAME)
 				.fetchMaps();
 	}
 
@@ -201,19 +203,48 @@ public class ProfessorCapabilitiesRepository {
 						 .fetchOneMap();
 	}
 	
-	public List<Grades> updateStudentGrades(List<Grades> studentGrades) {		
+	public List<Map<String, Object>> updateStudentGrades(List<Grades> studentGrades) {		
 		for (Grades student : studentGrades) {
+			double totalGrade = 0;
+			String remarks = null;
+			if (student.getPrelimGrade() != null || student.getFinalsGrade() != null) {
+				totalGrade = (student.getPrelimGrade().doubleValue() + student.getFinalsGrade().doubleValue()) / 2;
+				if (totalGrade >= 75) {
+					remarks = "Passed";
+				} else if (totalGrade < 75) {
+					remarks = "Failed";
+				}
+			}
 			dslContext.update(GRADES)
 			  .set(GRADES.PRELIM_GRADE, student.getPrelimGrade())
 			  .set(GRADES.FINALS_GRADE, student.getFinalsGrade())
+			  .set(GRADES.TOTAL_GRADE, totalGrade)
 			  .set(GRADES.COMMENT, student.getComment())
-			  .set(GRADES.REMARKS, student.getRemarks())
+			  .set(GRADES.REMARKS, remarks)
 			  .where(GRADES.GRADE_ID.eq(student.getGradeId()))
 			  .returning()
 			  .fetch()
 			  .into(Grades.class);
 		}
-		return studentGrades;
+		System.out.println(studentGrades.size());
+		System.out.println("-".repeat(10));
+		return dslContext
+				.select(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
+						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
+						USERS.LAST_NAME.as("lastName"), USERS.EMAIL, GRADES.PRELIM_GRADE.as("prelimGrade"),
+						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.TOTAL_GRADE.as("totalGrade"), GRADES.COMMENT,
+						GRADES.REMARKS, SECTION.SECTION_NAME.as("sectionName"),
+						T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"))
+				.from(GRADES)
+				.innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
+				.innerJoin(STUDENT_ENROLLMENT).on(STUDENT.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
+				.innerJoin(SECTION).on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID))
+				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
+				.innerJoin(SUBJECT).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.orderBy(USERS.LAST_NAME)
+				.fetchMaps();
 	}
 	
 	public List<Grades> updateStudentGradesIsSubmitted(List<Grades> studentGrades) {		
