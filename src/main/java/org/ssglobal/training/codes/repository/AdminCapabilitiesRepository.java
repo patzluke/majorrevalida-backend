@@ -27,6 +27,7 @@ import org.ssglobal.training.codes.tables.pojos.Room;
 import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
@@ -372,6 +373,23 @@ public class AdminCapabilitiesRepository {
 				.fetchMaps();
 		return student;
 	}
+	
+	// ------------------------FOR STUDENT_ENROLLMENT
+	public StudentEnrollment insertStudentEnrollmentData(StudentEnrollment studentApplicant) {
+			
+		StudentEnrollment applicant = dslContext.insertInto(STUDENT_ENROLLMENT)
+				.set(STUDENT_ENROLLMENT.SEM, studentApplicant.getSem())
+				.set(STUDENT_ENROLLMENT.START_DATE, studentApplicant.getStartDate())
+				.set(STUDENT_ENROLLMENT.END_DATE, studentApplicant.getEndDate())
+				.set(STUDENT_ENROLLMENT.PAYMENT_STATUS, studentApplicant.getPaymentStatus())
+				.set(STUDENT_ENROLLMENT.STATUS, studentApplicant.getStatus())
+				.returning().fetchOne().into(StudentEnrollment.class);
+		
+		return applicant;
+		
+	}
+	
+	
 
 	// ------------------------FOR PROFESSOR
 
