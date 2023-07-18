@@ -172,7 +172,7 @@ public class ProfessorCapabilitiesController {
 	@PutMapping(value = "/update/studentgrades", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity updateStudentGrades(@RequestBody List<Grades> payload) {
-		List<Grades> updatedStudentGrades;
+		List<Map<String, Object>> updatedStudentGrades;
 		updatedStudentGrades = service.updateStudentGrades(payload);
 		try {
 			if (!updatedStudentGrades.isEmpty()) {
