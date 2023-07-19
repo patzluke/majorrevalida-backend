@@ -851,6 +851,25 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
+	@PutMapping(value = "/deactive/subjects/major/all", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Map<String, Object>> deactivelMajorSubjectsByCourse(@RequestBody Map<String, Object> payload) {
+		try {
+			System.out.println(Boolean.valueOf(payload.get("activeStatus").toString()));
+			Map<String, Object> updatedMinorSubject = service.changeMajorSubjectStatusByCourse(
+					Integer.valueOf(payload.get("subjectCode").toString()),
+					Boolean.valueOf(payload.get("activeStatus").toString()),
+					Integer.valueOf(payload.get("courseCode").toString())
+					);
+			if (!updatedMinorSubject.isEmpty()) {
+				return ResponseEntity.ok(updatedMinorSubject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/add/subjects/major", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity insertMajorSubjectByMajor(@RequestBody Map<String, Object> payload) {
@@ -879,6 +898,21 @@ public class AdminCapabilitiesController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update/subjects/major/all", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity editMajorSubjectByCourse(@RequestBody Map<String, Object> payload) {
+		try {
+			Map<String, Object> updatedMinorSubject = service.editMajorSubjectByAll(payload);
+			if (!updatedMinorSubject.isEmpty()) {
+				return ResponseEntity.ok(updatedMinorSubject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Backend");
 	}
 	
 	@SuppressWarnings("rawtypes")

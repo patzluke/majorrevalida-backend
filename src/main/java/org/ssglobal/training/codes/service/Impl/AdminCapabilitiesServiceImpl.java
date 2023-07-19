@@ -389,6 +389,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public Map<String, Object> editMinorSubject(Map<String, Object> payload) {
 		return repository.editMinorSubject(payload);
 	}
+	
+	@Override
+	public Map<String, Object> editMajorSubjectByAll(Map<String, Object> payload) {
+		return repository.editMajorSubjectByAll(payload);
+	}
 
 	@Override
 	public Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
@@ -403,6 +408,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public Map<String, Object> changeMajorSubjectStatus(Integer subjectCode, Boolean activeStatus) {
 		return repository.changeMajorSubjectStatus(subjectCode, activeStatus);
+	}
+	
+	@Override
+	public Map<String, Object> changeMajorSubjectStatusByCourse(Integer subjectCode, Boolean activeStatus, Integer courseCode) {
+		return repository.changeMajorSubjectStatusByCourse(subjectCode, activeStatus, courseCode);
 	}
 	
 	@Override

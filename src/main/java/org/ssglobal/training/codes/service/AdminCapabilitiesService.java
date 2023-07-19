@@ -114,7 +114,9 @@ public interface AdminCapabilitiesService {
 	
 	//---------------------- FOR THE MAJOR SUBJECTS
 	public Map<String, Object> changeMajorSubjectStatus(Integer subjectCode, Boolean activeStatus);
+	public Map<String, Object> changeMajorSubjectStatusByCourse(Integer subjectCode, Boolean activeStatus, Integer courseCode);
 	public Map<String, Object> editMajorSubject(Map<String, Object> payload) throws Exception;
+	public Map<String, Object> editMajorSubjectByAll(Map<String, Object> payload);
 	public Map<String, Object> addMajorSubjectByMajor(Map<String, Object> payload) throws Exception;
 	public Map<String, Object> addMajorSubjectByAll(Map<String, Object> payload, Integer courseCode);
 	public List<Map<String, Object>> selectAllMajorSubjectsByAllCourse();
