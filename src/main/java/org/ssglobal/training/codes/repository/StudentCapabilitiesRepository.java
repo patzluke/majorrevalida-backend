@@ -1,6 +1,7 @@
 package org.ssglobal.training.codes.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,15 @@ public class StudentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 	private final org.ssglobal.training.codes.tables.Grades GRADES = org.ssglobal.training.codes.tables.Grades.GRADES;
+	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
 	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
 	private final org.ssglobal.training.codes.tables.Program PROGRAM = org.ssglobal.training.codes.tables.Program.PROGRAM;
 	private final org.ssglobal.training.codes.tables.StudentAttendance STUDENT_ATTENDANCE = org.ssglobal.training.codes.tables.StudentAttendance.STUDENT_ATTENDANCE;
+	private final org.ssglobal.training.codes.tables.StudentSubjectEnrolled STUDENT_SUBJECT_ENROLLED = org.ssglobal.training.codes.tables.StudentSubjectEnrolled.STUDENT_SUBJECT_ENROLLED;
+	private final org.ssglobal.training.codes.tables.StudentEnrollment STUDENT_ENROLLMENT = org.ssglobal.training.codes.tables.StudentEnrollment.STUDENT_ENROLLMENT;
+	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
 
 	public List<Users> selectAllUsers() {
 		return dslContext.selectFrom(USERS).fetchInto(Users.class);
@@ -172,6 +177,19 @@ public class StudentCapabilitiesRepository {
 	public Grades viewStudentGrade(Integer studentNo) {
 		// Get the grade where the studentId equal to the Grade's table student_no
 		return dslContext.selectFrom(GRADES).where(GRADES.STUDENT_NO.eq(studentNo)).fetchOneInto(Grades.class);
+	}
+	
+	public List<Map<String, Object>> selectAllStudentSubjectEnrolledByStudentNo(Integer studentNo) {
+		return dslContext
+				.select(STUDENT_SUBJECT_ENROLLED.ENROLL_SUBJECT_ID.as("enrollSubjectId"), STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"),
+						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"))
+				.from(STUDENT_SUBJECT_ENROLLED)
+				.innerJoin(STUDENT_ENROLLMENT).on(STUDENT_SUBJECT_ENROLLED.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.innerJoin(PROFESSOR_LOAD).on(STUDENT_SUBJECT_ENROLLED.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID))
+				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo))
+				.orderBy(SUBJECT.SUBJECT_CODE)
+				.fetchMaps();
 	}
 
 }

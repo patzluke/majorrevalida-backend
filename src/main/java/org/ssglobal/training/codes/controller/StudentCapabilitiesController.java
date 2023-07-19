@@ -1,5 +1,8 @@
 package org.ssglobal.training.codes.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -146,4 +149,18 @@ public class StudentCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/studentsubjectenrolled/{studentNo}")
+	public ResponseEntity selectAllStudentSubjectEnrolledByStudentNo(@PathVariable("studentNo") Integer studentNo) {
+		try {
+			List<Map<String, Object>> studentGrades = service.selectAllStudentSubjectEnrolledByStudentNo(studentNo);
+			if (studentGrades != null) {
+				return ResponseEntity.ok(studentGrades);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
 }

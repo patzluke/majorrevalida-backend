@@ -1,6 +1,7 @@
 package org.ssglobal.training.codes.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.ssglobal.training.codes.model.StudentCourseData;
 import org.ssglobal.training.codes.model.UserAndStudent;
@@ -30,4 +31,6 @@ public interface StudentCapabilitiesService {
 	Program editProgram(Program program);
 
 	StudentAttendance viewStudentAttendance(Integer studentNo);
+	
+	public List<Map<String, Object>> selectAllStudentSubjectEnrolledByStudentNo(Integer studentNo);
 }

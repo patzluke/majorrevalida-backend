@@ -1,6 +1,7 @@
 package org.ssglobal.training.codes.service.Impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -85,5 +86,9 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	public StudentAttendance viewStudentAttendance(Integer studentNo) {
 		return repository.viewStudentAttendance(studentNo);
 	}
-
+	
+	@Override
+	public List<Map<String, Object>> selectAllStudentSubjectEnrolledByStudentNo(Integer studentNo) {
+		return repository.selectAllStudentSubjectEnrolledByStudentNo(studentNo);
+	}
 }

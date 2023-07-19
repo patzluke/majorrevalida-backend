@@ -379,8 +379,6 @@ public class AdminCapabilitiesRepository {
 			
 		StudentEnrollment applicant = dslContext.insertInto(STUDENT_ENROLLMENT)
 				.set(STUDENT_ENROLLMENT.SEM, studentApplicant.getSem())
-				.set(STUDENT_ENROLLMENT.START_DATE, studentApplicant.getStartDate())
-				.set(STUDENT_ENROLLMENT.END_DATE, studentApplicant.getEndDate())
 				.set(STUDENT_ENROLLMENT.PAYMENT_STATUS, studentApplicant.getPaymentStatus())
 				.set(STUDENT_ENROLLMENT.STATUS, studentApplicant.getStatus())
 				.returning().fetchOne().into(StudentEnrollment.class);

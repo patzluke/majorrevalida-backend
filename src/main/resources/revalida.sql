@@ -308,6 +308,11 @@ create table grades (
     foreign key(subject_detail_his_id) references t_subject_detail_history(subject_detail_his_id) on delete cascade
 ); 
 
+select stu.student_no, enr.enroll_subject_id, pl.subject_code, sub.abbrevation, sub.subject_title from student_subject_enrolled enr 
+inner join student_enrollment stu on enr.enrollment_id = stu.enrollment_id
+inner join professor_load pl on enr.load_id = pl.load_id
+inner join subject sub on pl.subject_code = sub.subject_code;
+
 drop table if exists student_subject_enrolled cascade;
 create table student_subject_enrolled (
     enroll_subject_id serial primary key,
