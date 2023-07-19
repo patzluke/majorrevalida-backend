@@ -1,5 +1,8 @@
 package org.ssglobal.training.codes.repository;
 
+import java.util.List;
+import java.util.Map;
+
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -23,20 +26,28 @@ public class StudentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 	private final org.ssglobal.training.codes.tables.Grades GRADES = org.ssglobal.training.codes.tables.Grades.GRADES;
+	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
 	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
 	private final org.ssglobal.training.codes.tables.Program PROGRAM = org.ssglobal.training.codes.tables.Program.PROGRAM;
 	private final org.ssglobal.training.codes.tables.StudentAttendance STUDENT_ATTENDANCE = org.ssglobal.training.codes.tables.StudentAttendance.STUDENT_ATTENDANCE;
+	private final org.ssglobal.training.codes.tables.StudentSubjectEnrolled STUDENT_SUBJECT_ENROLLED = org.ssglobal.training.codes.tables.StudentSubjectEnrolled.STUDENT_SUBJECT_ENROLLED;
+	private final org.ssglobal.training.codes.tables.StudentEnrollment STUDENT_ENROLLMENT = org.ssglobal.training.codes.tables.StudentEnrollment.STUDENT_ENROLLMENT;
+	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
 
+	public List<Users> selectAllUsers() {
+		return dslContext.selectFrom(USERS).fetchInto(Users.class);
+	}
+	
 	public UserAndStudent viewStudentProfile(Integer studentNo) {
 
 		// Get the student's data via student table
 		Student studentData = dslContext.selectFrom(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo))
 				.fetchOneInto(Student.class);
-
+		
 		// Get the student's data via users table
-		Users userData = dslContext.selectFrom(USERS).where(USERS.USER_ID.eq(studentData.getStudentId()))
+		Users userData = dslContext.selectFrom(USERS).where(USERS.USER_ID.eq(studentData.getUserId()))
 				.fetchOneInto(Users.class);
 
 		// Return all the information of the updated student
@@ -45,44 +56,54 @@ public class StudentCapabilitiesRepository {
 				userData.getMiddleName(), userData.getLastName(), userData.getUserType(), userData.getBirthDate(),
 				userData.getAddress(), userData.getCivilStatus(), userData.getGender(), userData.getNationality(),
 				userData.getActiveStatus(), userData.getActiveDeactive(), userData.getImage(),
-				studentData.getStudentNo(), studentData.getUserId(), studentData.getParentNo(),
+				studentData.getStudentId(), studentData.getStudentNo(), studentData.getParentNo(),
 				studentData.getCurriculumCode(), studentData.getYearLevel(), studentData.getAcademicYearId());
 
 		return information;
 
 	}
 
-	public UserAndStudent updateStudentProfile(UserAndStudent student, Integer studentId) {
+	public UserAndStudent updateStudentProfile(UserAndStudent student) {
 		/*
 		 * This will add the User's data limited to: username, password, email,
 		 * contactNo, first_name, middle_name, last_name, birth_date, address,
 		 * civil_status, gender, nationality, active_deactive, and image
 		 */
-		Users updatedUser = dslContext.insertInto(USERS).set(USERS.USERNAME, student.getUsername())
-				.set(USERS.PASSWORD, student.getPassword()).set(USERS.EMAIL, student.getEmail())
+		Users updatedUser = dslContext.update(USERS)
+				.set(USERS.USERNAME, student.getUsername()).set(USERS.EMAIL, student.getEmail())
 				.set(USERS.CONTACT_NO, student.getContactNo()).set(USERS.FIRST_NAME, student.getFirstName())
 				.set(USERS.MIDDLE_NAME, student.getMiddleName()).set(USERS.LAST_NAME, student.getLastName())
 				.set(USERS.USER_TYPE, student.getUserType()).set(USERS.BIRTH_DATE, student.getBirthDate())
 				.set(USERS.ADDRESS, student.getAddress()).set(USERS.CIVIL_STATUS, student.getCivilStatus())
 				.set(USERS.GENDER, student.getGender()).set(USERS.NATIONALITY, student.getNationality())
-				.set(USERS.ACTIVE_DEACTIVE, student.getActiveDeactive()).set(USERS.IMAGE, student.getImage())
+				.set(USERS.IMAGE, student.getImage()).where(USERS.USER_ID.eq(student.getUserId()))
 				.returning().fetchOne().into(Users.class);
+		
+		if (!student.getPassword().isBlank()) {
+			dslContext.update(USERS).set(USERS.PASSWORD, student.getPassword())
+			.where(USERS.USER_ID.eq(student.getUserId()))
+			.execute();
+		}
 
 		Student updatedStudent = dslContext.update(STUDENT).set(STUDENT.STUDENT_NO, student.getStudentNo())
 				.set(STUDENT.USER_ID, student.getUserId()).set(STUDENT.PARENT_NO, student.getParentNo())
 				.set(STUDENT.CURRICULUM_CODE, student.getCurriculumCode())
-				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId()).returning().fetchOne().into(Student.class);
-
-		UserAndStudent information = new UserAndStudent(updatedUser.getUserId(), updatedUser.getUsername(),
-				updatedUser.getPassword(), updatedUser.getEmail(), updatedUser.getContactNo(),
-				updatedUser.getFirstName(), updatedUser.getMiddleName(), updatedUser.getLastName(),
-				updatedUser.getUserType(), updatedUser.getBirthDate(), updatedUser.getAddress(),
-				updatedUser.getCivilStatus(), updatedUser.getGender(), updatedUser.getNationality(),
-				updatedUser.getActiveStatus(), updatedUser.getActiveDeactive(), updatedUser.getImage(),
-				updatedStudent.getStudentNo(), updatedStudent.getUserId(), updatedStudent.getParentNo(),
-				updatedStudent.getCurriculumCode(), updatedStudent.getYearLevel(), updatedStudent.getAcademicYearId());
-		return information;
-
+				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId())
+				.where(STUDENT.STUDENT_NO.eq(student.getStudentNo()))
+				.returning().fetchOne().into(Student.class);
+		
+		if (!updatedStudent.equals(null) && !updatedUser.equals(null)) {
+			UserAndStudent information = new UserAndStudent(updatedUser.getUserId(), updatedUser.getUsername(),
+					updatedUser.getPassword(), updatedUser.getEmail(), updatedUser.getContactNo(),
+					updatedUser.getFirstName(), updatedUser.getMiddleName(), updatedUser.getLastName(),
+					updatedUser.getUserType(), updatedUser.getBirthDate(), updatedUser.getAddress(),
+					updatedUser.getCivilStatus(), updatedUser.getGender(), updatedUser.getNationality(),
+					updatedUser.getActiveStatus(), updatedUser.getActiveDeactive(), updatedUser.getImage(),
+					updatedStudent.getStudentId(), updatedStudent.getStudentNo(), updatedStudent.getParentNo(),
+					updatedStudent.getCurriculumCode(), updatedStudent.getYearLevel(), updatedStudent.getAcademicYearId());
+			return information;	
+		}
+		return null;
 	}
 
 	public StudentCourseData viewCourse(Integer studentNo) {
@@ -156,6 +177,19 @@ public class StudentCapabilitiesRepository {
 	public Grades viewStudentGrade(Integer studentNo) {
 		// Get the grade where the studentId equal to the Grade's table student_no
 		return dslContext.selectFrom(GRADES).where(GRADES.STUDENT_NO.eq(studentNo)).fetchOneInto(Grades.class);
+	}
+	
+	public List<Map<String, Object>> selectAllStudentSubjectEnrolledByStudentNo(Integer studentNo) {
+		return dslContext
+				.select(STUDENT_SUBJECT_ENROLLED.ENROLL_SUBJECT_ID.as("enrollSubjectId"), STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"),
+						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"))
+				.from(STUDENT_SUBJECT_ENROLLED)
+				.innerJoin(STUDENT_ENROLLMENT).on(STUDENT_SUBJECT_ENROLLED.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.innerJoin(PROFESSOR_LOAD).on(STUDENT_SUBJECT_ENROLLED.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID))
+				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo))
+				.orderBy(SUBJECT.SUBJECT_CODE)
+				.fetchMaps();
 	}
 
 }

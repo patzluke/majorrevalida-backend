@@ -67,6 +67,8 @@ drop table if exists academic_year cascade;
 create table academic_year (
     academic_year_id serial primary key,
     academic_year varchar(50),
+    start_date date,
+    end_date date,
    	status varchar(20)
 ); 
 
@@ -78,6 +80,7 @@ create table student_applicant (
     selected_major_code int,
     year_level int,
     school_year int,
+    semester int,
     first_name varchar(70),
     middle_name varchar(70),
     last_name varchar(70),
@@ -93,21 +96,14 @@ create table student_applicant (
     mobile_no varchar(15),
     email varchar(80) unique,
     
-    father_first_name varchar(70),
-    father_middle_name varchar(70),
-    father_last_name varchar(70),
-    father_suffix_name varchar(70),
-    father_mobile_no varchar(15),
-    father_email varchar(80),
-    father_occupation varchar(80),
-    
-   	mother_first_name varchar(70),
-    mother_middle_name varchar(70),
-    mother_last_name varchar(70),
-    mother_suffix_name varchar(70),
-    mother_mobile_no varchar(15),
-    mother_email varchar(80),
-    mother_occupation varchar(80),
+    guardian_first_name varchar(70),
+    guardian_middle_name varchar(70),
+    guardian_last_name varchar(70),
+    guardian_suffix_name varchar(70),
+    guardian_mobile_no varchar(15),
+    guardian_email varchar(80),
+    guardian_occupation varchar(80),
+    guardian_relation varchar(80),
     
     date_applied timestamp,
     date_accepted timestamp,
@@ -276,8 +272,6 @@ create table student_enrollment (
     academic_year_id int,
     section_id int,
     sem int,
-    start_date date,
-    end_date date,
     payment_status varchar(30),
     status varchar(30),
     foreign key(student_no) references student(student_no) on delete cascade,
@@ -314,6 +308,11 @@ create table grades (
     foreign key(subject_detail_his_id) references t_subject_detail_history(subject_detail_his_id) on delete cascade
 ); 
 
+select stu.student_no, enr.enroll_subject_id, pl.subject_code, sub.abbrevation, sub.subject_title from student_subject_enrolled enr 
+inner join student_enrollment stu on enr.enrollment_id = stu.enrollment_id
+inner join professor_load pl on enr.load_id = pl.load_id
+inner join subject sub on pl.subject_code = sub.subject_code;
+
 drop table if exists student_subject_enrolled cascade;
 create table student_subject_enrolled (
     enroll_subject_id serial primary key,
@@ -344,13 +343,28 @@ create table student_attendance (
 ); 
 
 --insert into academic_year table
-insert into academic_year(academic_year, status) values('2017', 'Finished');	
-insert into academic_year(academic_year, status) values('2018', 'Finished');
-insert into academic_year(academic_year, status) values('2019', 'Finished');
-insert into academic_year(academic_year, status) values('2020', 'Finished');	
-insert into academic_year(academic_year, status) values('2021', 'Finished');
-insert into academic_year(academic_year, status) values('2022', 'Finished');
-insert into academic_year(academic_year, status) values('2023', 'On-going');
+INSERT INTO academic_year (academic_year, start_date, end_date, status)
+VALUES
+  ('2017', '2017-08-14', '2017-12-31', 'Finished'),
+  ('2017', '2017-01-16', '2017-06-11', 'Finished'),
+
+  ('2018', '2018-08-13', '2018-12-31', 'Finished'),
+  ('2018', '2018-01-15', '2018-06-10', 'Finished'),
+
+  ('2019', '2019-08-12', '2019-12-31', 'Finished'),
+  ('2019', '2019-01-21', '2019-06-09', 'Finished'),
+
+  ('2020', '2020-08-10', '2020-12-31', 'Finished'),
+  ('2020', '2020-01-20', '2020-06-14', 'Finished'),
+
+  ('2021', '2021-08-09', '2021-12-31', 'Finished'),
+  ('2021', '2021-01-18', '2021-06-13', 'Finished'),
+
+  ('2022', '2022-08-15', '2022-12-31', 'Finished'),
+  ('2022', '2022-01-17', '2022-06-12', 'Finished'),
+
+  ('2023', '2023-08-14', '2023-12-31', 'On-going'),
+  ('2023', '2023-01-16', '2023-06-11', 'Finished');
 
 
 --insert into program table
@@ -643,8 +657,8 @@ insert into student(user_id, curriculum_code, academic_year_id, year_level) valu
 
 
 --insert into student_enrollment
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, start_date, end_date) 
-values(77001, 1, 1, 1, '2023-08-10', '2023-12-20');
+insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
+values(77001, 1, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 1),
@@ -680,8 +694,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77001, 8, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, start_date, end_date) 
-values(77002, 1, 1, 1, '2023-08-10', '2023-12-20');
+insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
+values(77002, 1, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 2),
@@ -717,8 +731,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77002, 16, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, start_date, end_date) 
-values(77003, 1, 1, 1, '2023-08-10', '2023-12-20');
+insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
+values(77003, 1, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 3),
@@ -755,8 +769,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 ;
 
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, start_date, end_date) 
-values(77004, 1, 1, 1, '2023-08-10', '2023-12-20');
+insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
+values(77004, 1, 1, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 4),
@@ -793,8 +807,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 ;
 
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, start_date, end_date) 
-values(77005, 1, 1, 1, '2023-08-10', '2023-12-20');
+insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
+values(77005, 1, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 5),
@@ -831,8 +845,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 ;
 
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, start_date, end_date) 
-values(77006, 1, 1, 1, '2023-08-10', '2023-12-20');
+insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
+values(77006, 1, 1, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 6),
@@ -868,8 +882,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77006, 48, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, start_date, end_date) 
-values(77007, 1, 1, 1, '2023-08-10', '2023-12-20');
+insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
+values(77007, 1, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 7),
@@ -905,8 +919,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77007, 56, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, start_date, end_date) 
-values(77008, 1, 1, 1, '2023-08-10', '2023-12-20');
+insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
+values(77008, 1, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 8),
@@ -942,8 +956,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77008, 64, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, start_date, end_date) 
-values(77009, 1, 1, 1, '2023-08-10', '2023-12-20');
+insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
+values(77009, 1, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 9),
@@ -979,8 +993,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77009, 72, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, start_date, end_date) 
-values(77010, 1, 1, 1, '2023-08-10', '2023-12-20');
+insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
+values(77010, 1, 1, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 10),
@@ -1017,8 +1031,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 ;
 
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, start_date, end_date) 
-values(77011, 1, 1, 1, '2023-08-10', '2023-12-20');
+insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
+values(77011, 1, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 11),
@@ -1054,8 +1068,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77011, 88, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, start_date, end_date) 
-values(77012, 1, 1, 1, '2023-08-10', '2023-12-20');
+insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
+values(77012, 1, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 12),
@@ -1906,6 +1920,7 @@ INSERT INTO student_applicant (
     selected_major_code,
     year_level,
     school_year,
+    semester,
     first_name,
     middle_name,
     last_name,
@@ -1920,30 +1935,29 @@ INSERT INTO student_applicant (
     telephone_no,
     mobile_no,
     email,
-    father_first_name,
-    father_middle_name,
-    father_last_name,
-    father_suffix_name,
-    father_mobile_no,
-    father_email,
-    father_occupation,
-    mother_first_name,
-    mother_middle_name,
-    mother_last_name,
-    mother_suffix_name,
-    mother_mobile_no,
-    mother_email,
-    mother_occupation,
+    guardian_first_name,
+    guardian_middle_name,
+    guardian_last_name,
+    guardian_suffix_name,
+    guardian_mobile_no,
+    guardian_email,
+    guardian_occupation,
+    guardian_relation,
     date_applied,
     date_accepted,
     acceptance_status
 ) VALUES
-    ('New', 3001, 4001, 1, 2023, 'John', 'Doe', 'Smith', 'Jr.', 'Male', 'Single', 'US', '1990-01-01', 'New York', 'Christian', '123 Main St', '123456789', '987654321', 'john.doe@example.com', 'Father', 'Father Middle', 'Father Last', 'Sr.', '123456789', 'father@example.com', 'Engineer', 'Mother', 'Mother Middle', 'Mother Last', 'Sr.', '987654321', 'mother@example.com', 'Doctor', NOW(), NULL, 'Pending'),
-    ('New', 3001, 4001, 2, 2023, 'Jane', 'Doe', 'Johnson', NULL, 'Female', 'Married', 'UK', '1992-05-15', 'London', 'Catholic', '456 Elm St', '987654321', '123456789', 'jane.doe@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '987654321', 'father@example.com', 'Teacher', 'Mother', 'Mother Middle', 'Mother Last', NULL, '123456789', 'mother@example.com', 'Nurse', NOW(), NULL, 'Pending'),
-    ('New', 3001, 4001, 1, 2023, 'Michael', 'Brown', 'Johnson', NULL, 'Male', 'Single', 'Canada', '1991-07-20', 'Toronto', 'Protestant', '789 Oak St', '555555555', '999999999', 'michael.brown@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '555555555', 'father@example.com', 'Architect', 'Mother', 'Mother Middle', 'Mother Last', NULL, '999999999', 'mother@example.com', 'Designer', NOW(), NULL, 'Pending'),
-    ('New', 3001, 4001, 3, 2023, 'Emily', 'Smith', 'Wilson', 'Jr.', 'Female', 'Single', 'Australia', '1993-09-10', 'Sydney', 'Buddhist', '234 Pine St', '222222222', '888888888', 'emily.smith@example.com', 'Father', 'Father Middle', 'Father Last', 'Sr.', '222222222', 'father@example.com', 'Lawyer', 'Mother', 'Mother Middle', 'Mother Last', 'Sr.', '888888888', 'mother@example.com', 'Accountant', NOW(), NULL, 'Pending'),
-    ('New', 3001, 4001, 2, 2023, 'David', 'Johnson', 'Taylor', NULL, 'Male', 'Married', 'France', '1992-04-05', 'Paris', 'Jewish', '345 Walnut St', '333333333', '777777777', 'david.johnson@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '333333333', 'father@example.com', 'Entrepreneur', 'Mother', 'Mother Middle', 'Mother Last', NULL, '777777777', 'mother@example.com', 'Businesswoman', NOW(), NULL, 'Pending');
-
+    -- First row
+    ('New', 3001, 4001, 1, 2023, 1, 'John', 'Doe', 'Smith', 'Jr.', 'Male', 'Single', 'US', '1990-01-01', 'New York', 'Christian', '123 Main St', '123456789', '987654321', 'john.doe@example.com', 'Father', 'Father Middle', 'Father Last', 'Sr.', '123456789', 'father@example.com', 'Engineer', 'Father', NOW(), NULL, 'Pending'),
+    -- Second row
+    ('New', 3001, 4001, 2, 2023, 2, 'Jane', 'Doe', 'Johnson', NULL, 'Female', 'Married', 'UK', '1992-05-15', 'London', 'Catholic', '456 Elm St', '987654321', '123456789', 'jane.doe@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '987654321', 'father@example.com', 'Teacher', 'Mother', NOW(), NULL, 'Pending'),
+    -- Third row
+    ('New', 3001, 4001, 1, 2023, 1, 'Michael', 'Brown', 'Johnson', NULL, 'Male', 'Single', 'Canada', '1991-07-20', 'Toronto', 'Protestant', '789 Oak St', '555555555', '999999999', 'michael.brown@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '555555555', 'father@example.com', 'Architect', 'Mother',  NOW(), NULL, 'Pending'),
+    -- Fourth row
+    ('New', 3001, 4001, 3, 2023, 2, 'Emily', 'Smith', 'Wilson', 'Jr.', 'Female', 'Single', 'Australia', '1993-09-10', 'Sydney', 'Buddhist', '234 Pine St', '222222222', '888888888', 'emily.smith@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '222222222', 'father@example.com', 'Lawyer', 'Mother', NOW(), NULL, 'Pending'),
+    -- Fifth row
+    ('New', 3001, 4001, 2, 2023, 2, 'David', 'Johnson', 'Taylor', NULL, 'Male', 'Married', 'France', '1992-04-05', 'Paris', 'Jewish', '345 Walnut St', '333333333', '777777777', 'david.johnson@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '333333333', 'father@example.com', 'Entrepreneur', 'Mother', NOW(), NULL, 'Pending');
+    
 --select sa.* from student_attendance sa 
 --inner join professor_load pl on sa.load_id = pl.load_id
 --inner join section sec on pl.section_id = sec.section_id

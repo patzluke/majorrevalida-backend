@@ -27,6 +27,7 @@ import org.ssglobal.training.codes.tables.pojos.Room;
 import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
@@ -372,6 +373,21 @@ public class AdminCapabilitiesRepository {
 				.fetchMaps();
 		return student;
 	}
+	
+	// ------------------------FOR STUDENT_ENROLLMENT
+	public StudentEnrollment insertStudentEnrollmentData(StudentEnrollment studentApplicant) {
+			
+		StudentEnrollment applicant = dslContext.insertInto(STUDENT_ENROLLMENT)
+				.set(STUDENT_ENROLLMENT.SEM, studentApplicant.getSem())
+				.set(STUDENT_ENROLLMENT.PAYMENT_STATUS, studentApplicant.getPaymentStatus())
+				.set(STUDENT_ENROLLMENT.STATUS, studentApplicant.getStatus())
+				.returning().fetchOne().into(StudentEnrollment.class);
+		
+		return applicant;
+		
+	}
+	
+	
 
 	// ------------------------FOR PROFESSOR
 
@@ -941,6 +957,7 @@ public class AdminCapabilitiesRepository {
 				.on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(T_SUBJECT_DETAIL_HISTORY)
 				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
 				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(GRADES.IS_SUBMITTED.eq(true))
 				.orderBy(GRADES.GRADE_ID)
 				.fetchMaps();
 	}

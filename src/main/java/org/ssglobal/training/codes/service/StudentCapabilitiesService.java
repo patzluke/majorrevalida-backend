@@ -1,5 +1,8 @@
 package org.ssglobal.training.codes.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.ssglobal.training.codes.model.StudentCourseData;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.Course;
@@ -7,12 +10,15 @@ import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
+import org.ssglobal.training.codes.tables.pojos.Users;
 
 public interface StudentCapabilitiesService {
+	
+	List<Users> selectAllUsers();
 
 	UserAndStudent viewStudentProfile(Integer studentId);
 
-	UserAndStudent updateStudentProfile(UserAndStudent student, Integer studentId);
+	UserAndStudent updateStudentProfile(UserAndStudent student);
 
 	Grades viewStudentGrade(Integer studentId);
 
@@ -25,5 +31,6 @@ public interface StudentCapabilitiesService {
 	Program editProgram(Program program);
 
 	StudentAttendance viewStudentAttendance(Integer studentNo);
-
+	
+	public List<Map<String, Object>> selectAllStudentSubjectEnrolledByStudentNo(Integer studentNo);
 }

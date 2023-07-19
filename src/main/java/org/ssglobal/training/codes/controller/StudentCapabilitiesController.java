@@ -1,6 +1,10 @@
 package org.ssglobal.training.codes.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +30,7 @@ public class StudentCapabilitiesController {
 	@Autowired
 	private StudentCapabilitiesService service;
 
-	@GetMapping(value = "/view/{studentId}")
+	@GetMapping(value = "/get/{studentId}")
 	public ResponseEntity<UserAndStudent> viewStudentProfile(@PathVariable("studentId") Integer studentId) {
 		try {
 			UserAndStudent studentProfile = service.viewStudentProfile(studentId);
@@ -40,20 +44,22 @@ public class StudentCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
-	@PutMapping(value = "/update/{studentId}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<UserAndStudent> updateStudentProfile(@RequestBody UserAndStudent student,
-			@PathVariable("studentId") Integer studentId) {
+	public ResponseEntity updateStudentProfile(@RequestBody UserAndStudent student) {
 		try {
-			UserAndStudent updatedStudent = service.updateStudentProfile(student, studentId);
+			UserAndStudent updatedStudent = service.updateStudentProfile(student);
 			if (updatedStudent != null) {
 				return ResponseEntity.ok(updatedStudent);
 			}
+		} catch (DuplicateKeyException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.badRequest().body("something went wrong");
 		}
-		return ResponseEntity.badRequest().build();
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 
 	@GetMapping(value = "/view/course/{studentId}")
@@ -143,4 +149,18 @@ public class StudentCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/studentsubjectenrolled/{studentNo}")
+	public ResponseEntity selectAllStudentSubjectEnrolledByStudentNo(@PathVariable("studentNo") Integer studentNo) {
+		try {
+			List<Map<String, Object>> studentGrades = service.selectAllStudentSubjectEnrolledByStudentNo(studentNo);
+			if (studentGrades != null) {
+				return ResponseEntity.ok(studentGrades);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
 }

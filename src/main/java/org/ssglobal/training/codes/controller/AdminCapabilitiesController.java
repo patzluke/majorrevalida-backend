@@ -736,6 +736,7 @@ public class AdminCapabilitiesController {
 	public ResponseEntity selectAllStudentsBySection() {
 		try {
 			List<Map<String, Object>> rooms = service.selectAllStudentsBySection();
+			System.out.println(rooms);
 			if (!rooms.isEmpty()) {
 				return ResponseEntity.ok(rooms);
 			}
