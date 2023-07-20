@@ -46,17 +46,17 @@ public class MyJwtTokenValidator extends OncePerRequestFilter {
 			String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 			String token = authorizationHeader.substring("Bearer".length()).trim();
 			if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer")) {
-				response.sendError(HttpStatus.UNAUTHORIZED.value(), "not ok");
+				response.sendError(HttpStatus.UNAUTHORIZED.value());
 			}
 			if (!validateToken(token)) {
-				response.sendError(HttpStatus.UNAUTHORIZED.value(), "not ok");
+				response.sendError(HttpStatus.UNAUTHORIZED.value());
 			}
 			filterChain.doFilter(request, response);
 		} catch (NullPointerException e) {
-			response.sendError(HttpStatus.UNAUTHORIZED.value(), "not ok");
+			response.sendError(HttpStatus.UNAUTHORIZED.value());
 		} catch (Exception e) {
 			e.printStackTrace();
-			response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "not ok");
+			response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 	}
 	
@@ -67,7 +67,10 @@ public class MyJwtTokenValidator extends OncePerRequestFilter {
 			   //for admin api
 			   request.getRequestURI().matches("/api/admin/update/password") ||
 			   //for studentapplicant api
-			   request.getRequestURI().matches("/api/studentapplicant/.*");			 
+			   request.getRequestURI().matches("/api/studentapplicant/.*") ||
+			   //for studentapplicant api
+			   request.getRequestURI().matches("/api/file/.*")
+			   ;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -184,6 +187,32 @@ public class MyJwtTokenValidator extends OncePerRequestFilter {
 			}
 		} catch (NullPointerException e) {
 			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}		
+		return false;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean validateFileApiRequests() throws IOException {
+		if (httpServletRequest.getRequestURI().equals("/api/admin/update/password")) {
+			return true;
+		}
+		try {
+			String authorizationHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+			String token = authorizationHeader.substring("Bearer".length()).trim();
+			String[] chunks = token.split("\\.");
+			Decoder decoder = Base64.getUrlDecoder();			
+			String payload = new String(decoder.decode(chunks[1]));
+			HashMap<String,Object> result = new ObjectMapper().readValue(payload, HashMap.class);
+			if (result.get("userType").equals("Admin") || result.get("userType").equals("Student") ||
+				result.get("userType").equals("Professor") || result.get("userType").equals("Parent")) {
+				return true;
+			}
+		} catch (NullPointerException e) {
+			httpServletResponse.sendError(HttpStatus.NOT_FOUND.value(), "not ok shit");
 		} catch (JsonMappingException e) {
 			e.printStackTrace();
 		} catch (JsonProcessingException e) {

@@ -69,6 +69,7 @@ create table academic_year (
     academic_year varchar(50),
     start_date date,
     end_date date,
+    semester int,
    	status varchar(20)
 ); 
 
@@ -128,7 +129,7 @@ create table users (
     nationality varchar(30),
     active_status boolean,
     active_deactive boolean, --soft delete
-    image varchar(50)
+    image varchar(255)
 ); 
 
 drop table if exists user_tokens;
@@ -271,7 +272,6 @@ create table student_enrollment (
     student_no int,
     academic_year_id int,
     section_id int,
-    sem int,
     payment_status varchar(30),
     status varchar(30),
     foreign key(student_no) references student(student_no) on delete cascade,
@@ -294,15 +294,15 @@ create table grades (
     grade_id serial primary key,
     student_no int,
     subject_detail_his_id int,
-    prelim_grade float,
-    finals_grade float,
-    total_grade float,
-    comment text default 'N/A',
+    prelim_grade float default 0.00,
+    finals_grade float default 0.00,
+    total_grade float default 0.00,
+    comment text,
     date_prelim_grade_inserted timestamp,
     date_finals_grade_inserted timestamp,
     date_prelim_grade_modified timestamp,
     date_finals_grade_modified timestamp,
-    remarks text,
+    remarks text default 'Failed',
     is_submitted boolean default 'f',
     foreign key(student_no) references student(student_no) on delete cascade,
     foreign key(subject_detail_his_id) references t_subject_detail_history(subject_detail_his_id) on delete cascade
@@ -343,28 +343,28 @@ create table student_attendance (
 ); 
 
 --insert into academic_year table
-INSERT INTO academic_year (academic_year, start_date, end_date, status)
+INSERT INTO academic_year (academic_year, start_date, end_date, semester, status)
 VALUES
-  ('2017', '2017-08-14', '2017-12-31', 'Finished'),
-  ('2017', '2017-01-16', '2017-06-11', 'Finished'),
+  ('2017', '2017-08-14', '2017-12-31', '1', 'Finished'),
+  ('2017', '2017-01-16', '2017-06-11', '2','Finished'),
 
-  ('2018', '2018-08-13', '2018-12-31', 'Finished'),
-  ('2018', '2018-01-15', '2018-06-10', 'Finished'),
+  ('2018', '2018-08-13', '2018-12-31', '1', 'Finished'),
+  ('2018', '2018-01-15', '2018-06-10', '2', 'Finished'),
 
-  ('2019', '2019-08-12', '2019-12-31', 'Finished'),
-  ('2019', '2019-01-21', '2019-06-09', 'Finished'),
+  ('2019', '2019-08-12', '2019-12-31', '1', 'Finished'),
+  ('2019', '2019-01-21', '2019-06-09', '2', 'Finished'),
 
-  ('2020', '2020-08-10', '2020-12-31', 'Finished'),
-  ('2020', '2020-01-20', '2020-06-14', 'Finished'),
+  ('2020', '2020-08-10', '2020-12-31', '1', 'Finished'),
+  ('2020', '2020-01-20', '2020-06-14', '2', 'Finished'),
 
-  ('2021', '2021-08-09', '2021-12-31', 'Finished'),
-  ('2021', '2021-01-18', '2021-06-13', 'Finished'),
+  ('2021', '2021-08-09', '2021-12-31', '1', 'Finished'),
+  ('2021', '2021-01-18', '2021-06-13', '2', 'Finished'),
 
-  ('2022', '2022-08-15', '2022-12-31', 'Finished'),
-  ('2022', '2022-01-17', '2022-06-12', 'Finished'),
+  ('2022', '2022-08-15', '2022-12-31', '1', 'Finished'),
+  ('2022', '2022-01-17', '2022-06-12', '2', 'Finished'),
 
-  ('2023', '2023-08-14', '2023-12-31', 'On-going'),
-  ('2023', '2023-01-16', '2023-06-11', 'Finished');
+  ('2023', '2023-08-14', '2023-12-31', '1', 'On-going'),
+  ('2023', '2023-01-16', '2023-06-11', '2', 'Process');
 
 
 --insert into program table
@@ -657,8 +657,8 @@ insert into student(user_id, curriculum_code, academic_year_id, year_level) valu
 
 
 --insert into student_enrollment
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
-values(77001, 1, 1, 1, 'Full', 'Enrolled');
+insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
+values(77001, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 1),
@@ -694,8 +694,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77001, 8, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
-values(77002, 1, 1, 1, 'Full', 'Enrolled');
+insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
+values(77002, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 2),
@@ -731,8 +731,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77002, 16, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
-values(77003, 1, 1, 1, 'Full', 'Enrolled');
+insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
+values(77003, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 3),
@@ -769,8 +769,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 ;
 
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
-values(77004, 1, 1, 1, 'Partial', 'Not Enrolled');
+insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
+values(77004, 1, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 4),
@@ -807,8 +807,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 ;
 
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
-values(77005, 1, 1, 1, 'Full', 'Enrolled');
+insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
+values(77005, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 5),
@@ -845,8 +845,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 ;
 
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
-values(77006, 1, 1, 1, 'Partial', 'Not Enrolled');
+insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
+values(77006, 1, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 6),
@@ -882,8 +882,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77006, 48, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
-values(77007, 1, 1, 1, 'Full', 'Enrolled');
+insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
+values(77007, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 7),
@@ -919,8 +919,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77007, 56, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
-values(77008, 1, 1, 1, 'Full', 'Enrolled');
+insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
+values(77008, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 8),
@@ -956,8 +956,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77008, 64, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
-values(77009, 1, 1, 1, 'Full', 'Enrolled');
+insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
+values(77009, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 9),
@@ -993,8 +993,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77009, 72, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
-values(77010, 1, 1, 1, 'Partial', 'Not Enrolled');
+insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
+values(77010, 1, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 10),
@@ -1031,8 +1031,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 ;
 
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
-values(77011, 1, 1, 1, 'Full', 'Enrolled');
+insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
+values(77011, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 11),
@@ -1068,8 +1068,8 @@ insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade
 (77011, 88, 0.00, 0.00)
 ;
 
-insert into student_enrollment(student_no, academic_year_id, section_id, sem, payment_status, status) 
-values(77012, 1, 1, 1, 'Full', 'Enrolled');
+insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
+values(77012, 1, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 12),

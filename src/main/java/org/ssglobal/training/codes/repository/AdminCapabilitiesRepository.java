@@ -378,7 +378,7 @@ public class AdminCapabilitiesRepository {
 	public StudentEnrollment insertStudentEnrollmentData(StudentEnrollment studentApplicant) {
 			
 		StudentEnrollment applicant = dslContext.insertInto(STUDENT_ENROLLMENT)
-				.set(STUDENT_ENROLLMENT.SEM, studentApplicant.getSem())
+				//.set(STUDENT_ENROLLMENT.SEM, studentApplicant.getSem()) na delete na ba to? kc nageerror wala sa schema
 				.set(STUDENT_ENROLLMENT.PAYMENT_STATUS, studentApplicant.getPaymentStatus())
 				.set(STUDENT_ENROLLMENT.STATUS, studentApplicant.getStatus())
 				.returning().fetchOne().into(StudentEnrollment.class);
