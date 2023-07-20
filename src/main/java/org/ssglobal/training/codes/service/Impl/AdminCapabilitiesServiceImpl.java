@@ -25,6 +25,7 @@ import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
 import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
@@ -451,5 +452,10 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public List<Map<String, Object>> getAllStudentWithAcademicYear() {
 		return repository.getAllStudentWithAcademicYear();
+	}
+
+	@Override
+	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {		
+		return repository.insertStudentEnrollmentData(studentApplicant);
 	}
 }
