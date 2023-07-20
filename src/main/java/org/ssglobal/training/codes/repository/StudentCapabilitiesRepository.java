@@ -26,6 +26,7 @@ public class StudentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
 	private final org.ssglobal.training.codes.tables.Users USERS = org.ssglobal.training.codes.tables.Users.USERS;
 	private final org.ssglobal.training.codes.tables.Grades GRADES = org.ssglobal.training.codes.tables.Grades.GRADES;
+	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
 	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
@@ -191,5 +192,23 @@ public class StudentCapabilitiesRepository {
 				.orderBy(SUBJECT.SUBJECT_CODE)
 				.fetchMaps();
 	}
-
+	
+//	List of students attendance
+	public List<Map<String, Object>> selectStudentAttendanceByAndSubjectAndStudentNo(
+			String subjectTitle, Integer studentNo) {
+		
+		return dslContext.select(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID.as("studentAttendanceId"), USERS.LAST_NAME.as("lastName"), 
+								 USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"), STUDENT_ATTENDANCE.STATUS, 
+								 STUDENT_ATTENDANCE.ATTENDANCE_DATE.as("attendanceDate"))
+						 .from(STUDENT_ATTENDANCE)
+						 .innerJoin(STUDENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+						 .innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
+						 .innerJoin(PROFESSOR_LOAD).on(STUDENT_ATTENDANCE.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID))
+						 .innerJoin(SECTION).on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID))
+						 .innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))	
+						 .where(SUBJECT.SUBJECT_TITLE.eq(subjectTitle)
+						 .and(STUDENT.STUDENT_NO.eq(studentNo)))
+						 .orderBy(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID)
+						 .fetchMaps();
+	}
 }

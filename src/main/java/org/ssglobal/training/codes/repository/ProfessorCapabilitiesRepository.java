@@ -203,18 +203,18 @@ public class ProfessorCapabilitiesRepository {
 						 .fetchOneMap();
 	}
 	
-	public List<Map<String, Object>> updateStudentGrades(List<Grades> studentGrades) {		
+	public List<Map<String, Object>> updateStudentGrades(List<Grades> studentGrades) {
 		for (Grades student : studentGrades) {
 			double totalGrade = 0;
 			String remarks = null;
-			if (student.getPrelimGrade() != null || student.getFinalsGrade() != null) {
-				totalGrade = (student.getPrelimGrade().doubleValue() + student.getFinalsGrade().doubleValue()) / 2;
-				if (totalGrade >= 75) {
-					remarks = "Passed";
-				} else if (totalGrade < 75) {
-					remarks = "Failed";
-				}
+			totalGrade = (student.getPrelimGrade().doubleValue() + student.getFinalsGrade().doubleValue()) / 2;
+			
+			if (totalGrade >= 75) {
+				remarks = "Passed";
+			} else if (totalGrade < 75) {
+				remarks = "Failed";
 			}
+
 			dslContext.update(GRADES)
 			  .set(GRADES.PRELIM_GRADE, student.getPrelimGrade())
 			  .set(GRADES.FINALS_GRADE, student.getFinalsGrade())

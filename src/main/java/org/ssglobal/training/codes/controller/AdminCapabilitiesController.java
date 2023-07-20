@@ -822,10 +822,10 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
-	@GetMapping(value = "/get/subjects/major/all", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsByAllCourses() {
+	@GetMapping(value = "/get/subjects/major/all/{courseCode}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsByAllCourses(@PathVariable(name = "courseCode") Integer courseCode) {
 		try {
-			List<Map<String, Object>> allSubjects = service.selectAllMajorSubjectsByAllCourse();
+			List<Map<String, Object>> allSubjects = service.selectAllMajorSubjectsByAllCourse(courseCode);
 			if (!allSubjects.isEmpty()) {
 				return ResponseEntity.ok(allSubjects);
 			}
@@ -922,6 +922,36 @@ public class AdminCapabilitiesController {
 	public ResponseEntity editMajorSubject(@RequestBody Map<String, Object> payload) {
 		try {
 			Map<String, Object> updatedMinorSubject = service.editMajorSubject(payload);
+			if (!updatedMinorSubject.isEmpty()) {
+				return ResponseEntity.ok(updatedMinorSubject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Backend");
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@DeleteMapping(value = "/delete/subjects/major/{subjectCode}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity deleteMajorSubject(@PathVariable("subjectCode") Integer subjectCode) {
+		try {
+			Map<String, Object> updatedMinorSubject = service.deleteMajorSubject(subjectCode);
+			if (!updatedMinorSubject.isEmpty()) {
+				return ResponseEntity.ok(updatedMinorSubject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Backend");
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@DeleteMapping(value = "/delete/subjects/major/all/{subjectCode}/{curriculumCode}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity deleteMajorSubjectByCourse(@PathVariable("subjectCode") Integer subjectCode,@PathVariable("curriculumCode") Integer curriculumCode) {
+		try {
+			Map<String, Object> updatedMinorSubject = service.deleteMajorSubjectByCourse(subjectCode, curriculumCode);
 			if (!updatedMinorSubject.isEmpty()) {
 				return ResponseEntity.ok(updatedMinorSubject);
 			}

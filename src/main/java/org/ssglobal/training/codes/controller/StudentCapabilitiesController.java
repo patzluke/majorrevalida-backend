@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.StudentCourseData;
 import org.ssglobal.training.codes.model.UserAndStudent;
@@ -154,6 +155,21 @@ public class StudentCapabilitiesController {
 	public ResponseEntity selectAllStudentSubjectEnrolledByStudentNo(@PathVariable("studentNo") Integer studentNo) {
 		try {
 			List<Map<String, Object>> studentGrades = service.selectAllStudentSubjectEnrolledByStudentNo(studentNo);
+			if (studentGrades != null) {
+				return ResponseEntity.ok(studentGrades);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/studentattendance")
+	public ResponseEntity selectStudentAttendanceByAndSubjectAndSectionAndProfessorNoAndDate(@RequestParam("subjectTitle") String subjectTitle, @RequestParam("studentNo") Integer studentNo) {
+		try {
+			List<Map<String, Object>> studentGrades = service.selectStudentAttendanceByAndSubjectAndStudentNo(subjectTitle, studentNo);
 			if (studentGrades != null) {
 				return ResponseEntity.ok(studentGrades);
 			}
