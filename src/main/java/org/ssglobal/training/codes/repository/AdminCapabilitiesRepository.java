@@ -1102,6 +1102,7 @@ public class AdminCapabilitiesRepository {
 							.having(DSL.count(MAJOR_SUBJECT.SUBJECT_CODE).eq(1))
 							.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM)
 							.fetchMaps();
+		System.out.println(query + "heyey");
 		return query;
 	}
 	
@@ -1126,7 +1127,7 @@ public class AdminCapabilitiesRepository {
 				MAJOR_SUBJECT.SUBJECT_CODE.in(
 						dslContext.selectDistinct(MAJOR_SUBJECT.SUBJECT_CODE).from(MAJOR_SUBJECT).groupBy(MAJOR_SUBJECT.SUBJECT_CODE)
 						.having(DSL.count().gt(1))
-						)
+						).and(MAJOR_SUBJECT.CURRICULUM_CODE.eq(5001))
 				)
 		.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM)
 		.fetchMaps();
@@ -1147,6 +1148,33 @@ public class AdminCapabilitiesRepository {
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
 					.from(SUBJECT).innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
 					.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).fetchOneMap();
+			return !query.isEmpty() ? query : null;
+		}
+		return null;
+	}
+	
+	public Map<String, Object> changeMajorSubjectStatusByCourse(Integer subjectCode, Boolean activeStatus, Integer courseCode) {
+		Subject update = dslContext.update(SUBJECT).set(SUBJECT.ACTIVE_STATUS, activeStatus)
+				.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).returning().fetchOne().into(Subject.class);
+		if (update != null) {
+			List<Curriculum> allCurriculum = dslContext.select(CURRICULUM.CURRICULUM_CODE, CURRICULUM.CURRICULUM_ID, CURRICULUM.CURRICULUM_NAME,
+					CURRICULUM.MAJOR_CODE, CURRICULUM.ACTIVE_DEACTIVE).from(CURRICULUM)
+					.join(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+					.where(MAJOR.COURSE_CODE.eq(courseCode))
+					.fetchInto(Curriculum.class);
+			Map<String, Object> query = dslContext
+					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
+							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+							MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
+							MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
+							MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
+							MAJOR.COURSE_CODE.as("courseCode"))
+					.from(SUBJECT).innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+					.join(CURRICULUM).on(MAJOR_SUBJECT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE))
+					.join(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+					.where(SUBJECT.SUBJECT_CODE.eq(subjectCode).and(MAJOR_SUBJECT.CURRICULUM_CODE.eq(allCurriculum.get(0).getCurriculumCode())))
+					.fetchOneMap();
 			return !query.isEmpty() ? query : null;
 		}
 		return null;
@@ -1264,6 +1292,10 @@ public class AdminCapabilitiesRepository {
 			return !query.isEmpty() ? query : null;
 		}
 
+	}
+	
+	public Map<String, Object> editMajorSubjectByAll(Map<String, Object> payload) {
+		return null;
 	}
 
 	public Map<String, Object> editMajorSubject(Map<String, Object> payload) throws Exception {
