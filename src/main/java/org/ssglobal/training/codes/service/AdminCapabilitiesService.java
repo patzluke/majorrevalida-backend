@@ -17,6 +17,7 @@ import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
 import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
@@ -64,6 +65,9 @@ public interface AdminCapabilitiesService {
 	// ------------------------FOR Student_applicants
 	List<StudentApplicant> selectAllStudentApplicants();
 	StudentApplicant updateStudentApplicantStatus(StudentApplicant studentApplicant);
+	
+	//------------------------FOR StudentEnrollment
+	StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant);
 	
 	// ------------------------FOR Academic year
 	AcademicYear addAcademicYear(AcademicYear academicYear);

@@ -1,11 +1,13 @@
 package org.ssglobal.training.codes.repository;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndParent;
@@ -59,6 +61,7 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.MajorSubject MAJOR_SUBJECT = org.ssglobal.training.codes.tables.MajorSubject.MAJOR_SUBJECT;
 	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
 	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
+	
 	
 	// ------------------------FOR ALL
 	public List<Users> selectAllUsers() {
@@ -374,14 +377,153 @@ public class AdminCapabilitiesRepository {
 		return student;
 	}
 	
+	
 	// ------------------------FOR STUDENT_ENROLLMENT
-	public StudentEnrollment insertStudentEnrollmentData(StudentEnrollment studentApplicant) {
-			
+	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {
+		
+		// Get the academic_year_id
+		// The applicant can be applied to the academic year that is on process and cannot be in 
+		// finished or on going academic school year 
+		
+		AcademicYear applicantAcademicYear = dslContext
+			    .select(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.as("academicYearId"))
+			    .from(ACADEMIC_YEAR)
+			    .where(ACADEMIC_YEAR.SEMESTER.eq(studentApplicant.getSemester())
+			    		.and(ACADEMIC_YEAR.ACADEMIC_YEAR_.eq(String.valueOf(studentApplicant.getSchoolYear())))
+			    		.and(ACADEMIC_YEAR.STATUS.eq("Process")))
+			    .fetchOneInto(AcademicYear.class);
+		
+		// From pending application to Not Enrolled
+		studentApplicant.setAcceptanceStatus("Not Enrolled");
+		
 		StudentEnrollment applicant = dslContext.insertInto(STUDENT_ENROLLMENT)
-				//.set(STUDENT_ENROLLMENT.SEM, studentApplicant.getSem()) na delete na ba to? kc nageerror wala sa schema
+				.set(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID, applicantAcademicYear.getAcademicYearId())
 				.set(STUDENT_ENROLLMENT.PAYMENT_STATUS, studentApplicant.getPaymentStatus())
-				.set(STUDENT_ENROLLMENT.STATUS, studentApplicant.getStatus())
+				.set(STUDENT_ENROLLMENT.STATUS, studentApplicant.getAcceptanceStatus())
 				.returning().fetchOne().into(StudentEnrollment.class);
+		
+		
+		// NOTE: Implement the BCrypt in the impl
+		
+		String formattedBirthDate = new SimpleDateFormat("yyyyMMdd").format(studentApplicant.getBirthDate());
+		
+		// Replace the white space with underscore
+		String applicantLastName = studentApplicant.getLastName().replace(" ", "_");
+		
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		
+		// Combine formatted birthdate and last name with an underscore
+		String password = "%s%s".formatted(formattedBirthDate, applicantLastName);
+		
+		// Secure the password using bcrypt
+		String bcryptPassword = passwordEncoder.encode(password);
+		
+		Users applicantUserData = dslContext.insertInto(USERS)
+		    .set(USERS.USERNAME, "") 
+		    .set(USERS.PASSWORD, bcryptPassword)
+		    .set(USERS.EMAIL, studentApplicant.getEmail())
+		    .set(USERS.CONTACT_NO, studentApplicant.getMobileNo())
+		    .set(USERS.FIRST_NAME, studentApplicant.getFirstName())
+		    .set(USERS.MIDDLE_NAME, studentApplicant.getMiddleName())
+		    .set(USERS.LAST_NAME, studentApplicant.getLastName())
+		    .set(USERS.USER_TYPE, "Student")
+		    .set(USERS.BIRTH_DATE, studentApplicant.getBirthDate())
+		    .set(USERS.ADDRESS, studentApplicant.getAddress())
+		    .set(USERS.CIVIL_STATUS, studentApplicant.getCivilStatus())
+		    .set(USERS.GENDER, studentApplicant.getGender())
+		    .set(USERS.NATIONALITY, studentApplicant.getCitizenship())
+		    .set(USERS.ACTIVE_STATUS, true)
+		    .set(USERS.ACTIVE_DEACTIVE, true)
+		    .set(USERS.IMAGE, "")
+		    .returning()
+		    .fetchOne()
+		    .into(Users.class);
+				
+			
+		// Get the userId of the current user by their username, firstname, lastname, birthdate, type
+		Users userId = dslContext.select(USERS.USER_ID.as("userId"))
+		        .from(USERS)
+		        .where(USERS.USERNAME.eq(applicantUserData.getUsername())
+		                .and(USERS.FIRST_NAME.eq(applicantUserData.getFirstName()))
+		                .and(USERS.LAST_NAME.eq(applicantUserData.getLastName()))
+		                .and(USERS.BIRTH_DATE.eq(applicantUserData.getBirthDate()))
+		                .and(USERS.USER_TYPE.eq(applicantUserData.getUserType())))
+		        .fetchOneInto(Users.class);
+		       
+		
+		// --------------------- FOR PARENT
+		
+		// Create User Parent
+		dslContext.insertInto(USERS)
+			    .set(USERS.USERNAME, "hELLO") //PENDING 
+			    .set(USERS.PASSWORD, password)
+			    .set(USERS.EMAIL, studentApplicant.getGuardianEmail())
+			    .set(USERS.CONTACT_NO, studentApplicant.getGuardianMobileNo())
+			    .set(USERS.FIRST_NAME, studentApplicant.getGuardianFirstName())
+			    .set(USERS.MIDDLE_NAME, studentApplicant.getGuardianMiddleName())
+			    .set(USERS.LAST_NAME, studentApplicant.getGuardianLastName())
+			    .set(USERS.USER_TYPE, "Parent")
+			    .set(USERS.ADDRESS, studentApplicant.getAddress())
+			    .returning()
+			    .fetchOne()
+			    .into(Users.class);
+		
+		// Get the parentUserId from user
+		Users parentUserId = dslContext.select(USERS.USER_ID.as("parentUserId"))
+			.from(USERS)
+				        .where(USERS.EMAIL.eq(applicantUserData.getEmail())
+				                .and(USERS.CONTACT_NO.eq(applicantUserData.getContactNo()))
+				                .and(USERS.FIRST_NAME.eq(applicantUserData.getFirstName()))
+				                .and(USERS.MIDDLE_NAME.eq(applicantUserData.getMiddleName()))
+				                .and(USERS.LAST_NAME.eq(applicantUserData.getLastName()))
+				                .and(USERS.USER_TYPE.eq(applicantUserData.getUserType()))
+				                .and(USERS.ADDRESS.eq(applicantUserData.getAddress())))
+				        .fetchOneInto(Users.class);
+		
+		// Insert data to parent
+		dslContext.insertInto(PARENT)
+				.set(PARENT.USER_ID, parentUserId.getUserId())
+				.set(PARENT.OCCUPATION, studentApplicant.getGuardianOccupation())
+				.set(PARENT.RELATION, studentApplicant.getGuardianRelation())
+				.returning()
+			    .fetchOne()
+			    .into(Parent.class);
+		
+		// Select parentId from Parent
+		Parent parentId = dslContext.select(PARENT.PARENT_ID.as("parentId"))
+		        .from(PARENT)
+		        .where(PARENT.USER_ID.eq(parentUserId.getUserId()))
+		        .fetchOneInto(Parent.class);
+		
+		// Select Curriculum code 
+		Curriculum curriculumCode = dslContext.select(CURRICULUM.CURRICULUM_CODE.as("curriculumCode"))
+				.from(CURRICULUM)
+				.where(CURRICULUM.MAJOR_CODE.eq(studentApplicant.getSelectedMajorCode()))
+				.fetchOneInto(Curriculum.class);	
+		
+		// Add the details to the student
+		dslContext.insertInto(STUDENT)
+				.set(STUDENT.USER_ID, userId.getUserId())
+				.set(STUDENT.PARENT_NO, parentId.getParentId())
+				.set(STUDENT.CURRICULUM_CODE, curriculumCode.getCurriculumCode())
+				.set(STUDENT.YEAR_LEVEL, studentApplicant.getYearLevel())
+				.returning()
+				.fetchOne()
+				.into(Student.class);
+		
+		// Select the Student and get the studentNo
+		Student studentNo = dslContext.select(STUDENT.STUDENT_NO.as("studentNo"))
+				.from(STUDENT)
+				.where(STUDENT.USER_ID.eq(userId.getUserId()))
+				.fetchOneInto(Student.class);
+		
+		// Update the Username of the User
+		dslContext.update(USERS)
+				.set(USERS.USERNAME, String.valueOf(studentNo.getStudentNo()))
+				.where(USERS.USER_ID.eq(userId.getUserId()))
+				.returning()
+				.fetchOne()
+				.into(Users.class);
 		
 		return applicant;
 		
