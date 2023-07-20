@@ -129,7 +129,7 @@ create table users (
     nationality varchar(30),
     active_status boolean,
     active_deactive boolean, --soft delete
-    image varchar(50)
+    image varchar(255)
 ); 
 
 drop table if exists user_tokens;
