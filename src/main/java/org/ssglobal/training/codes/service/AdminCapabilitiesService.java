@@ -17,6 +17,7 @@ import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
 import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
@@ -64,6 +65,9 @@ public interface AdminCapabilitiesService {
 	// ------------------------FOR Student_applicants
 	List<StudentApplicant> selectAllStudentApplicants();
 	StudentApplicant updateStudentApplicantStatus(StudentApplicant studentApplicant);
+	
+	//------------------------FOR StudentEnrollment
+	StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant);
 	
 	// ------------------------FOR Academic year
 	AcademicYear addAcademicYear(AcademicYear academicYear);
@@ -116,10 +120,12 @@ public interface AdminCapabilitiesService {
 	public Map<String, Object> changeMajorSubjectStatus(Integer subjectCode, Boolean activeStatus);
 	public Map<String, Object> changeMajorSubjectStatusByCourse(Integer subjectCode, Boolean activeStatus, Integer courseCode);
 	public Map<String, Object> editMajorSubject(Map<String, Object> payload) throws Exception;
-	public Map<String, Object> editMajorSubjectByAll(Map<String, Object> payload);
+	public Map<String, Object> editMajorSubjectByAll(Map<String, Object> payload)throws Exception;
 	public Map<String, Object> addMajorSubjectByMajor(Map<String, Object> payload) throws Exception;
-	public Map<String, Object> addMajorSubjectByAll(Map<String, Object> payload, Integer courseCode);
-	public List<Map<String, Object>> selectAllMajorSubjectsByAllCourse();
+	public Map<String, Object> addMajorSubjectByAll(Map<String, Object> payload, Integer courseCode) throws Exception;
+	public Map<String, Object> deleteMajorSubject(Integer subjectCode) throws Exception;
+	public Map<String, Object> deleteMajorSubjectByCourse(Integer subjectCode, Integer curriculumCode) throws Exception;
+	public List<Map<String, Object>> selectAllMajorSubjectsByAllCourse(Integer courseCode);
 	
 	//---------------------- FOR THE PASSED MAJOR SUBJECTS
 	public List<Map<String, Object>> selectStudentPassedMajorSubject(Integer studentNo);

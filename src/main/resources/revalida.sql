@@ -108,7 +108,8 @@ create table student_applicant (
     
     date_applied timestamp,
     date_accepted timestamp,
-    acceptance_status varchar(30) default 'Pending'
+    acceptance_status varchar(30) default 'Pending',
+    payment_status varchar(30)
 ); 
 
 drop table if exists users cascade;
@@ -146,6 +147,8 @@ drop table if exists parent cascade;
 create table parent(
     parent_id serial,
     user_id int,
+    occupation varchar(30),
+    relation varchar(30),
     parent_no int default nextval('parent_sequence') not null primary key,
     foreign key(user_id) references users(user_id) on delete cascade
 ); 
@@ -1945,18 +1948,19 @@ INSERT INTO student_applicant (
     guardian_relation,
     date_applied,
     date_accepted,
-    acceptance_status
+    acceptance_status,
+    payment_status
 ) VALUES
     -- First row
-    ('New', 3001, 4001, 1, 2023, 1, 'John', 'Doe', 'Smith', 'Jr.', 'Male', 'Single', 'US', '1990-01-01', 'New York', 'Christian', '123 Main St', '123456789', '987654321', 'john.doe@example.com', 'Father', 'Father Middle', 'Father Last', 'Sr.', '123456789', 'father@example.com', 'Engineer', 'Father', NOW(), NULL, 'Pending'),
+    ('New', 3001, 4001, 1, 2023, 2, 'John', 'Doe', 'Smith', 'Jr.', 'Male', 'Single', 'US', '1990-01-01', 'New York', 'Christian', '123 Main St', '123456789', '987654321', 'john.doe@example.com', 'Father', 'Father Middle', 'Father Last', 'Sr.', '123456789', 'father@example.com', 'Engineer', 'Father', NOW(), NULL, 'Pending', 'Partial'),
     -- Second row
-    ('New', 3001, 4001, 2, 2023, 2, 'Jane', 'Doe', 'Johnson', NULL, 'Female', 'Married', 'UK', '1992-05-15', 'London', 'Catholic', '456 Elm St', '987654321', '123456789', 'jane.doe@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '987654321', 'father@example.com', 'Teacher', 'Mother', NOW(), NULL, 'Pending'),
+    ('New', 3001, 4001, 2, 2023, 2, 'Jane', 'Doe', 'Johnson', NULL, 'Female', 'Married', 'UK', '1992-05-15', 'London', 'Catholic', '456 Elm St', '987654321', '123456789', 'jane.doe@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '987654321', 'father@example.com', 'Teacher', 'Mother', NOW(), NULL, 'Pending', 'Full'),
     -- Third row
-    ('New', 3001, 4001, 1, 2023, 1, 'Michael', 'Brown', 'Johnson', NULL, 'Male', 'Single', 'Canada', '1991-07-20', 'Toronto', 'Protestant', '789 Oak St', '555555555', '999999999', 'michael.brown@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '555555555', 'father@example.com', 'Architect', 'Mother',  NOW(), NULL, 'Pending'),
+    ('New', 3001, 4001, 1, 2023, 2, 'Michael', 'Brown', 'Johnson', NULL, 'Male', 'Single', 'Canada', '1991-07-20', 'Toronto', 'Protestant', '789 Oak St', '555555555', '999999999', 'michael.brown@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '555555555', 'father@example.com', 'Architect', 'Mother',  NOW(), NULL, 'Pending', 'Partial'),
     -- Fourth row
-    ('New', 3001, 4001, 3, 2023, 2, 'Emily', 'Smith', 'Wilson', 'Jr.', 'Female', 'Single', 'Australia', '1993-09-10', 'Sydney', 'Buddhist', '234 Pine St', '222222222', '888888888', 'emily.smith@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '222222222', 'father@example.com', 'Lawyer', 'Mother', NOW(), NULL, 'Pending'),
+    ('New', 3001, 4001, 3, 2023, 2, 'Emily', 'Smith', 'Wilson', 'Jr.', 'Female', 'Single', 'Australia', '1993-09-10', 'Sydney', 'Buddhist', '234 Pine St', '222222222', '888888888', 'emily.smith@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '222222222', 'father@example.com', 'Lawyer', 'Mother', NOW(), NULL, 'Pending', 'Partial'),
     -- Fifth row
-    ('New', 3001, 4001, 2, 2023, 2, 'David', 'Johnson', 'Taylor', NULL, 'Male', 'Married', 'France', '1992-04-05', 'Paris', 'Jewish', '345 Walnut St', '333333333', '777777777', 'david.johnson@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '333333333', 'father@example.com', 'Entrepreneur', 'Mother', NOW(), NULL, 'Pending');
+    ('New', 3001, 4001, 2, 2023, 2, 'David', 'Johnson', 'Taylor', NULL, 'Male', 'Married', 'France', '1992-04-05', 'Paris', 'Jewish', '345 Walnut St', '333333333', '777777777', 'david.johnson@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '333333333', 'father@example.com', 'Entrepreneur', 'Mother', NOW(), NULL, 'Pending', 'Full');
     
 --select sa.* from student_attendance sa 
 --inner join professor_load pl on sa.load_id = pl.load_id

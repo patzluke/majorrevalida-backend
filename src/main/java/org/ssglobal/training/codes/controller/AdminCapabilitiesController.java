@@ -30,6 +30,7 @@ import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
 import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
 
 @RestController
@@ -821,10 +822,10 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
-	@GetMapping(value = "/get/subjects/major/all", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsByAllCourses() {
+	@GetMapping(value = "/get/subjects/major/all/{courseCode}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsByAllCourses(@PathVariable(name = "courseCode") Integer courseCode) {
 		try {
-			List<Map<String, Object>> allSubjects = service.selectAllMajorSubjectsByAllCourse();
+			List<Map<String, Object>> allSubjects = service.selectAllMajorSubjectsByAllCourse(courseCode);
 			if (!allSubjects.isEmpty()) {
 				return ResponseEntity.ok(allSubjects);
 			}
@@ -930,6 +931,36 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Backend");
 	}
+	
+	@SuppressWarnings("rawtypes")
+	@DeleteMapping(value = "/delete/subjects/major/{subjectCode}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity deleteMajorSubject(@PathVariable("subjectCode") Integer subjectCode) {
+		try {
+			Map<String, Object> updatedMinorSubject = service.deleteMajorSubject(subjectCode);
+			if (!updatedMinorSubject.isEmpty()) {
+				return ResponseEntity.ok(updatedMinorSubject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Backend");
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@DeleteMapping(value = "/delete/subjects/major/all/{subjectCode}/{curriculumCode}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity deleteMajorSubjectByCourse(@PathVariable("subjectCode") Integer subjectCode,@PathVariable("curriculumCode") Integer curriculumCode) {
+		try {
+			Map<String, Object> updatedMinorSubject = service.deleteMajorSubjectByCourse(subjectCode, curriculumCode);
+			if (!updatedMinorSubject.isEmpty()) {
+				return ResponseEntity.ok(updatedMinorSubject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Backend");
+	}
 
 	@GetMapping(value = "/get/majorsubject/remarks/{studentApplicantId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<Map<String, Object>>> selectStudentPassedMajorSubject(
@@ -985,6 +1016,23 @@ public class AdminCapabilitiesController {
 			if (!freshmanMinor.isEmpty()) {
 				return ResponseEntity.ok(freshmanMinor);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@PostMapping(value = "/enroll/applicant", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<StudentEnrollment> insertStudentEnrollmentData(@RequestBody StudentApplicant studentApplicant) {
+		try {
+			StudentEnrollment applicant = service.insertStudentEnrollmentData(studentApplicant);
+			if (applicant != null) {
+				return ResponseEntity.ok(applicant);
+			}
+		} catch (NullPointerException e) {
+			System.out.println("Academic year not exist");
+			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.notFound().build();

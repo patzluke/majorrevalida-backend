@@ -25,6 +25,7 @@ import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
 import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
+import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
@@ -381,8 +382,8 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public List<Map<String, Object>> selectAllMajorSubjectsByAllCourse() {
-		return repository.selectAllMajorSubjectsByAllCourse();
+	public List<Map<String, Object>> selectAllMajorSubjectsByAllCourse(Integer courseCode) {
+		return repository.selectAllMajorSubjectsByAllCourse(courseCode);
 	}
 	
 	@Override
@@ -391,7 +392,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public Map<String, Object> editMajorSubjectByAll(Map<String, Object> payload) {
+	public Map<String, Object> editMajorSubjectByAll(Map<String, Object> payload) throws Exception {
 		return repository.editMajorSubjectByAll(payload);
 	}
 
@@ -421,7 +422,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public Map<String, Object> addMajorSubjectByAll(Map<String, Object> payload, Integer courseCode) {
+	public Map<String, Object> addMajorSubjectByAll(Map<String, Object> payload, Integer courseCode) throws Exception {
 		return repository.addMajorSubjectByAll(payload, courseCode);
 	}
 
@@ -431,6 +432,16 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	public List<Map<String, Object>> selectStudentPassedMajorSubject(Integer studentNo) {
 		return repository.selectStudentPassedMajorSubject(studentNo);
+	}
+	
+	@Override
+	public Map<String, Object> deleteMajorSubject(Integer subjectCode) throws Exception {
+		return repository.deleteMajorSubject(subjectCode);
+	}
+	
+	@Override
+	public Map<String, Object> deleteMajorSubjectByCourse(Integer subjectCode, Integer curriculumCode) throws Exception {
+		return repository.deleteMajorSubjectByCourse(subjectCode, curriculumCode);
 	}
 
 	@Override
@@ -451,5 +462,10 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public List<Map<String, Object>> getAllStudentWithAcademicYear() {
 		return repository.getAllStudentWithAcademicYear();
+	}
+
+	@Override
+	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {		
+		return repository.insertStudentEnrollmentData(studentApplicant);
 	}
 }
