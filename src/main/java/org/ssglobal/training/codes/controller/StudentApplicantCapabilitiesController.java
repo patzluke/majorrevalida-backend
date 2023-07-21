@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.EmailDetails;
 import org.ssglobal.training.codes.service.StudentApplicantCapabilitiesService;
 import org.ssglobal.training.codes.service.Impl.EmailServiceImpl;
+import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
@@ -85,5 +86,19 @@ public class StudentApplicantCapabilitiesController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.badRequest().build();
+	}
+	
+	@GetMapping(value = "/get/schoolyear/available", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<AcademicYear> getAvailableAcademicYear(){
+		try {
+			AcademicYear academicYear = service.getAvailableAcademicYear();
+			if (academicYear != null) {
+				return ResponseEntity.ok(academicYear);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 }	

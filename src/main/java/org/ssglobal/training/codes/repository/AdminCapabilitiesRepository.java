@@ -1,6 +1,7 @@
 package org.ssglobal.training.codes.repository;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -215,12 +216,20 @@ public class AdminCapabilitiesRepository {
 						USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
 						CURRICULUM.CURRICULUM_NAME, STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE,
 						MAJOR.MAJOR_CODE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL, SECTION.SECTION_NAME)
-				.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
-				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
-				.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
-				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).innerJoin(STUDENT_ENROLLMENT)
-				.on(STUDENT.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO)).innerJoin(SECTION)
-				.on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID)).where(USERS.ACTIVE_DEACTIVE.eq(true))
+				.from(USERS)
+				.innerJoin(STUDENT)
+				.on(USERS.USER_ID.eq(STUDENT.USER_ID))
+				.innerJoin(CURRICULUM)
+				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE))
+				.innerJoin(MAJOR)
+				.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+				.innerJoin(COURSE)
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+				.innerJoin(STUDENT_ENROLLMENT)
+				.on(STUDENT.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
+				.innerJoin(SECTION)
+				.on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID))
+				.where(USERS.ACTIVE_DEACTIVE.eq(true).and(USERS.USER_TYPE.eq("Student")))
 				.orderBy(STUDENT.STUDENT_NO).fetchInto(UserAndStudent.class);
 	}
 
@@ -377,7 +386,6 @@ public class AdminCapabilitiesRepository {
 		return student;
 	}
 	
-	
 	// ------------------------FOR STUDENT_ENROLLMENT
 	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {
 		
@@ -393,19 +401,19 @@ public class AdminCapabilitiesRepository {
 			    		.and(ACADEMIC_YEAR.STATUS.eq("Process")))
 			    .fetchOneInto(AcademicYear.class);
 		
-		// From pending application to Not Enrolled
-		studentApplicant.setAcceptanceStatus("Not Enrolled");
 		
-		StudentEnrollment applicant = dslContext.insertInto(STUDENT_ENROLLMENT)
-				.set(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID, applicantAcademicYear.getAcademicYearId())
-				.set(STUDENT_ENROLLMENT.PAYMENT_STATUS, studentApplicant.getPaymentStatus())
-				.set(STUDENT_ENROLLMENT.STATUS, studentApplicant.getAcceptanceStatus())
-				.returning().fetchOne().into(StudentEnrollment.class);
-		
-		
+			
 		// NOTE: Implement the BCrypt in the impl
 		
-		String formattedBirthDate = new SimpleDateFormat("yyyyMMdd").format(studentApplicant.getBirthDate());
+		LocalDate birthDate = studentApplicant.getBirthDate();
+		String formattedBirthDate = null;
+
+		if (birthDate != null) {
+		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		    formattedBirthDate = birthDate.format(formatter);
+		} else {
+		    System.out.println("Birthdate is null");
+		}
 		
 		// Replace the white space with underscore
 		String applicantLastName = studentApplicant.getLastName().replace(" ", "_");
@@ -414,12 +422,13 @@ public class AdminCapabilitiesRepository {
 		
 		// Combine formatted birthdate and last name with an underscore
 		String password = "%s%s".formatted(formattedBirthDate, applicantLastName);
+		System.out.println(password);
 		
 		// Secure the password using bcrypt
 		String bcryptPassword = passwordEncoder.encode(password);
 		
 		Users applicantUserData = dslContext.insertInto(USERS)
-		    .set(USERS.USERNAME, "") 
+		    .set(USERS.USERNAME, "pendingUsername") 
 		    .set(USERS.PASSWORD, bcryptPassword)
 		    .set(USERS.EMAIL, studentApplicant.getEmail())
 		    .set(USERS.CONTACT_NO, studentApplicant.getMobileNo())
@@ -434,11 +443,9 @@ public class AdminCapabilitiesRepository {
 		    .set(USERS.NATIONALITY, studentApplicant.getCitizenship())
 		    .set(USERS.ACTIVE_STATUS, true)
 		    .set(USERS.ACTIVE_DEACTIVE, true)
-		    .set(USERS.IMAGE, "")
 		    .returning()
 		    .fetchOne()
-		    .into(Users.class);
-				
+		    .into(Users.class);		
 			
 		// Get the userId of the current user by their username, firstname, lastname, birthdate, type
 		Users userId = dslContext.select(USERS.USER_ID.as("userId"))
@@ -449,14 +456,19 @@ public class AdminCapabilitiesRepository {
 		                .and(USERS.BIRTH_DATE.eq(applicantUserData.getBirthDate()))
 		                .and(USERS.USER_TYPE.eq(applicantUserData.getUserType())))
 		        .fetchOneInto(Users.class);
-		       
+		      	
+		// --------------------- FOR PARENT 
 		
-		// --------------------- FOR PARENT
+		// default password
+		String parentPassword = "123456";
+		
+		// Secure the password using bcrypt
+		String bcryptParentPassword = passwordEncoder.encode(parentPassword);
 		
 		// Create User Parent
 		dslContext.insertInto(USERS)
-			    .set(USERS.USERNAME, "hELLO") //PENDING 
-			    .set(USERS.PASSWORD, password)
+			    .set(USERS.USERNAME, "pendingParentUsername")
+			    .set(USERS.PASSWORD, bcryptParentPassword)
 			    .set(USERS.EMAIL, studentApplicant.getGuardianEmail())
 			    .set(USERS.CONTACT_NO, studentApplicant.getGuardianMobileNo())
 			    .set(USERS.FIRST_NAME, studentApplicant.getGuardianFirstName())
@@ -468,17 +480,16 @@ public class AdminCapabilitiesRepository {
 			    .fetchOne()
 			    .into(Users.class);
 		
-		// Get the parentUserId from user
-		Users parentUserId = dslContext.select(USERS.USER_ID.as("parentUserId"))
-			.from(USERS)
-				        .where(USERS.EMAIL.eq(applicantUserData.getEmail())
-				                .and(USERS.CONTACT_NO.eq(applicantUserData.getContactNo()))
-				                .and(USERS.FIRST_NAME.eq(applicantUserData.getFirstName()))
-				                .and(USERS.MIDDLE_NAME.eq(applicantUserData.getMiddleName()))
-				                .and(USERS.LAST_NAME.eq(applicantUserData.getLastName()))
-				                .and(USERS.USER_TYPE.eq(applicantUserData.getUserType()))
-				                .and(USERS.ADDRESS.eq(applicantUserData.getAddress())))
-				        .fetchOneInto(Users.class);
+		// Get the parentUserId and lastName from user
+		Users parentUserId = dslContext.select(USERS.USER_ID.as("userId"), USERS.LAST_NAME.as("lastName"))
+			    .from(USERS)
+			    .where(USERS.EMAIL.equalIgnoreCase(studentApplicant.getGuardianEmail())
+			        .and(USERS.CONTACT_NO.eq(studentApplicant.getGuardianMobileNo()))
+			        .and(USERS.FIRST_NAME.equalIgnoreCase(studentApplicant.getGuardianFirstName()))
+			        .and(USERS.MIDDLE_NAME.equalIgnoreCase(studentApplicant.getGuardianMiddleName()))
+			        .and(USERS.LAST_NAME.equalIgnoreCase(studentApplicant.getGuardianLastName()))
+			        .and(USERS.USER_TYPE.equalIgnoreCase("Parent")))
+			    .fetchOneInto(Users.class);
 		
 		// Insert data to parent
 		dslContext.insertInto(PARENT)
@@ -489,8 +500,9 @@ public class AdminCapabilitiesRepository {
 			    .fetchOne()
 			    .into(Parent.class);
 		
-		// Select parentId from Parent
-		Parent parentId = dslContext.select(PARENT.PARENT_ID.as("parentId"))
+		// Select parentId and parentNo from Parent
+		Parent parentId = dslContext.select(PARENT.PARENT_ID.as("parentId"),
+				PARENT.PARENT_NO.as("parentNo"), PARENT.USER_ID.as("userId"))
 		        .from(PARENT)
 		        .where(PARENT.USER_ID.eq(parentUserId.getUserId()))
 		        .fetchOneInto(Parent.class);
@@ -504,8 +516,9 @@ public class AdminCapabilitiesRepository {
 		// Add the details to the student
 		dslContext.insertInto(STUDENT)
 				.set(STUDENT.USER_ID, userId.getUserId())
-				.set(STUDENT.PARENT_NO, parentId.getParentId())
+				.set(STUDENT.PARENT_NO, parentId.getParentNo())
 				.set(STUDENT.CURRICULUM_CODE, curriculumCode.getCurriculumCode())
+				.set(STUDENT.ACADEMIC_YEAR_ID, applicantAcademicYear.getAcademicYearId())
 				.set(STUDENT.YEAR_LEVEL, studentApplicant.getYearLevel())
 				.returning()
 				.fetchOne()
@@ -524,6 +537,26 @@ public class AdminCapabilitiesRepository {
 				.returning()
 				.fetchOne()
 				.into(Users.class);
+		
+		// Update the Username of the Parent
+		String parentUsername = "%s%s".formatted(String.valueOf(parentId.getParentNo()), parentUserId.getLastName().replace(" ", "_"));
+		
+		dslContext.update(USERS)
+				.set(USERS.USERNAME, parentUsername)
+				.where(USERS.USER_ID.eq(parentId.getUserId()))
+				.returning()
+				.fetchOne()
+				.into(Users.class);
+		
+		// From pending application to Not Enrolled
+		studentApplicant.setAcceptanceStatus("Not Enrolled");
+				
+		StudentEnrollment applicant = dslContext.insertInto(STUDENT_ENROLLMENT)
+				.set(STUDENT_ENROLLMENT.STUDENT_NO, studentNo.getStudentNo())
+				.set(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID, applicantAcademicYear.getAcademicYearId())
+				.set(STUDENT_ENROLLMENT.PAYMENT_STATUS, studentApplicant.getPaymentStatus())
+				.set(STUDENT_ENROLLMENT.STATUS, studentApplicant.getAcceptanceStatus())
+				.returning().fetchOne().into(StudentEnrollment.class);
 		
 		return applicant;
 		

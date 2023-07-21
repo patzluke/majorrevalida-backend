@@ -1047,14 +1047,10 @@ public class AdminCapabilitiesController {
 			if (applicant != null) {
 				return ResponseEntity.ok(applicant);
 			}
-		} catch (NullPointerException e) {
-			System.out.println("Academic year not exist");
-			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
 }
