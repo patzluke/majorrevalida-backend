@@ -468,4 +468,5 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {		
 		return repository.insertStudentEnrollmentData(studentApplicant);
 	}
+
 }

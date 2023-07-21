@@ -5,6 +5,7 @@ import java.util.List;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
@@ -18,7 +19,8 @@ public class StudentApplicantCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.StudentApplicant STUDENT_APPLICANT = org.ssglobal.training.codes.tables.StudentApplicant.STUDENT_APPLICANT;
 	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
-
+	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
+	
 	public StudentApplicant insertStudentApplicant(StudentApplicant studentApplicant) {
 		StudentApplicant applicant = dslContext.insertInto(STUDENT_APPLICANT)
 									.set(STUDENT_APPLICANT.STUDENT_TYPE, studentApplicant.getStudentType())
@@ -69,4 +71,14 @@ public class StudentApplicantCapabilitiesRepository {
 						 .where(MAJOR.COURSE_CODE.eq(courseCode))
 						 .fetchInto(Major.class);
 	}
+	
+	// -------------------------- GETTING THE AVAILABLE OF SCHOOL YEAR THAT CAN BE ENROLL
+	public AcademicYear getAvailableAcademicYear(){
+		AcademicYear availableSchoolYear = dslContext.selectFrom(ACADEMIC_YEAR)
+			.where(ACADEMIC_YEAR.STATUS.eq("Process"))
+			.fetchOneInto(AcademicYear.class);
+			
+		return availableSchoolYear;
+	} 
+		
 }

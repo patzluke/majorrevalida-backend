@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.ssglobal.training.codes.repository.AdminCapabilitiesRepository;
 import org.ssglobal.training.codes.repository.StudentApplicantCapabilitiesRepository;
 import org.ssglobal.training.codes.service.StudentApplicantCapabilitiesService;
+import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
@@ -39,5 +40,10 @@ public class StudentApplicantCapabilitiesServiceImpl implements StudentApplicant
 	@Override
 	public List<Major> selectCourseMajors(Integer courseCode) {
 		return repository.selectCourseMajors(courseCode);
+	}
+	
+	@Override
+	public AcademicYear getAvailableAcademicYear() {
+		return repository.getAvailableAcademicYear();
 	}
 }

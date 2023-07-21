@@ -72,6 +72,7 @@ public interface AdminCapabilitiesService {
 	// ------------------------FOR Academic year
 	AcademicYear addAcademicYear(AcademicYear academicYear);
 	AcademicYear updateAcademicYearStatus(AcademicYear academicYear);
+
 	
 	// ------------------------FOR Program
 	List<Program> selectAllProgram();
