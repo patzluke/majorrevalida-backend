@@ -32,6 +32,9 @@ public interface StudentCapabilitiesService {
 
 	StudentAttendance viewStudentAttendance(Integer studentNo);
 	
-	public List<Map<String, Object>> selectAllStudentSubjectEnrolledByStudentNo(Integer studentNo);
+	List<Map<String, Object>> selectAllStudentSubjectEnrolledByStudentNo(Integer studentNo);
+	
 	List<Map<String, Object>> selectStudentAttendanceByAndSubjectAndStudentNo(String subjectTitle, Integer studentNo);
+	
+	List<Map<String, Object>> selectAllSubjectGradesOfStudent(Integer studentNo);
 }

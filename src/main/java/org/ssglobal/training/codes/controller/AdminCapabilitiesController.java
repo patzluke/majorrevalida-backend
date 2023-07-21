@@ -731,7 +731,7 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 	
-	// -------- For Room
+	// -------- For Student grades
 	@SuppressWarnings("rawtypes")
 	@GetMapping(value = "/get/studentgrades", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity selectAllStudentsBySection() {
