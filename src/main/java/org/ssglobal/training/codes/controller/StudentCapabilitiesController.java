@@ -179,4 +179,21 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+	
+	// -------- For Student grades
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/studentgrades/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity selectAllSubjectGradesOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
+		try {
+			List<Map<String, Object>> rooms = service.selectAllSubjectGradesOfStudent(studentNo);
+			System.out.println(rooms);
+			if (!rooms.isEmpty()) {
+				return ResponseEntity.ok(rooms);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
 }

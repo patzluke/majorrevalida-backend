@@ -28,6 +28,7 @@ public class StudentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Grades GRADES = org.ssglobal.training.codes.tables.Grades.GRADES;
 	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
 	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
+	private final org.ssglobal.training.codes.tables.TSubjectDetailHistory T_SUBJECT_DETAIL_HISTORY = org.ssglobal.training.codes.tables.TSubjectDetailHistory.T_SUBJECT_DETAIL_HISTORY;
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
 	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
@@ -208,5 +209,23 @@ public class StudentCapabilitiesRepository {
 						 .and(STUDENT.STUDENT_NO.eq(studentNo)))
 						 .orderBy(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID)
 						 .fetchMaps();
+	}
+
+	// ------------ FOR GRADES
+	public List<Map<String, Object>> selectAllSubjectGradesOfStudent(Integer studentNo) {
+		return dslContext
+				.select(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
+						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
+						USERS.LAST_NAME.as("lastName"), USERS.EMAIL, GRADES.PRELIM_GRADE.as("prelimGrade"),
+						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.TOTAL_GRADE.as("totalGrade"), GRADES.COMMENT, GRADES.REMARKS,
+						SECTION.SECTION_NAME.as("sectionName"), T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.ABBREVATION, SUBJECT.UNITS)
+				.from(GRADES).innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO)).innerJoin(USERS)
+				.on(STUDENT.USER_ID.eq(USERS.USER_ID)).innerJoin(STUDENT_ENROLLMENT)
+				.on(STUDENT.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO)).innerJoin(SECTION)
+				.on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(T_SUBJECT_DETAIL_HISTORY)
+				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
+				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(GRADES.STUDENT_NO.eq(studentNo)).orderBy(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE).fetchMaps();
 	}
 }
