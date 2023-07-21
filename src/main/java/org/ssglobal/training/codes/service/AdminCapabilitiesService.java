@@ -122,7 +122,7 @@ public interface AdminCapabilitiesService {
 	public Map<String, Object> editMajorSubject(Map<String, Object> payload) throws Exception;
 	public Map<String, Object> editMajorSubjectByAll(Map<String, Object> payload)throws Exception;
 	public Map<String, Object> addMajorSubjectByMajor(Map<String, Object> payload) throws Exception;
-	public Map<String, Object> addMajorSubjectByAll(Map<String, Object> payload, Integer courseCode);
+	public Map<String, Object> addMajorSubjectByAll(Map<String, Object> payload, Integer courseCode) throws Exception;
 	public Map<String, Object> deleteMajorSubject(Integer subjectCode) throws Exception;
 	public Map<String, Object> deleteMajorSubjectByCourse(Integer subjectCode, Integer curriculumCode) throws Exception;
 	public List<Map<String, Object>> selectAllMajorSubjectsByAllCourse(Integer courseCode);
