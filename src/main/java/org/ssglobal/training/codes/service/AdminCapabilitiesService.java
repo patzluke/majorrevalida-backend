@@ -115,6 +115,7 @@ public interface AdminCapabilitiesService {
 	Map<String, Object> editMinorSubject(Map<String, Object> payload);
 	Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus);
 	Map<String, Object> inserMinorSubject(Map<String, Object> payload);
+	public Map<String, Object> deleteMinorSubject(Integer subjectCode, Boolean activeStatus) throws Exception;
 	
 	//---------------------- FOR THE MAJOR SUBJECTS
 	public Map<String, Object> changeMajorSubjectStatus(Integer subjectCode, Boolean activeStatus);

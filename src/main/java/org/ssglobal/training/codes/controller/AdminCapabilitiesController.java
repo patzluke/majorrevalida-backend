@@ -792,6 +792,23 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/delete/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity deleteMinorSubjects(@RequestBody Map<String, Object> payload) {
+		try {
+			Map<String, Object> updatedMinorSubject = service.deleteMinorSubject(
+					Integer.valueOf(payload.get("subjectCode").toString()),
+					Boolean.valueOf(payload.get("activeStatus").toString()));
+			if (!updatedMinorSubject.isEmpty()) {
+				return ResponseEntity.ok(updatedMinorSubject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
 
 	@PostMapping(value = "/add/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Map<String, Object>> inserMinorSubject(@RequestBody Map<String, Object> payload) {

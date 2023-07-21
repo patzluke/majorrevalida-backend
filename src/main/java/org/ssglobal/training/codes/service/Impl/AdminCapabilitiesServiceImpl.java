@@ -395,6 +395,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public Map<String, Object> editMajorSubjectByAll(Map<String, Object> payload) throws Exception {
 		return repository.editMajorSubjectByAll(payload);
 	}
+	
+	@Override
+	public Map<String, Object> deleteMinorSubject(Integer subjectCode, Boolean activeStatus) throws Exception {
+		return repository.deleteMinorSubject(subjectCode, activeStatus);
+	}
 
 	@Override
 	public Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus) {

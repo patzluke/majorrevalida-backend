@@ -1112,7 +1112,9 @@ public class AdminCapabilitiesRepository {
 						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 						MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
 						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
-				.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+				.from(SUBJECT)
+				.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+				.where(SUBJECT.ACTIVE_DEACTIVE.eq(true))
 				.orderBy(SUBJECT.SUBJECT_CODE)
 				.fetchMaps();
 
@@ -1176,7 +1178,7 @@ public class AdminCapabilitiesRepository {
 				.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).returning().fetchOne().into(Subject.class);
 		if (update != null) {
 			Map<String, Object> query = dslContext
-					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
 							MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
@@ -1185,6 +1187,31 @@ public class AdminCapabilitiesRepository {
 			return !query.isEmpty() ? query : null;
 		}
 		return null;
+	}
+	
+	public Map<String, Object> deleteMinorSubject(Integer subjectCode, Boolean activeStatus) throws Exception {
+		Subject update = dslContext.update(SUBJECT).set(SUBJECT.ACTIVE_DEACTIVE, activeStatus)
+				.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).returning().fetchOne().into(Subject.class);
+		Map<String, Object> subSubject = dslContext.select(SUBJECT.ABBREVATION.as("abbreviation"), 
+										SUBJECT.SUBJECT_TITLE.as("subjectTitle")
+										)
+										.from(SUBJECT)
+										.join(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+										.where(MINOR_SUBJECT.PRE_REQUISITES.eq(subjectCode))
+										.fetchOneMap();
+										
+		if (update != null && subSubject == null) {
+			Map<String, Object> query = dslContext
+					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbrevation"),
+							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+							MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
+							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
+					.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+					.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).fetchOneMap();
+			return !query.isEmpty() ? query : null;
+		} else {
+			throw new Exception("%s is pre-requisites by this Subject".formatted(subSubject.get("subjectTitle")));
+		}
 	}
 
 	// -------------------------- Get All MAJOR SUBJECTS BY CURRICULUM
