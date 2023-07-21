@@ -88,8 +88,6 @@ public class StudentCapabilitiesRepository {
 
 		Student updatedStudent = dslContext.update(STUDENT).set(STUDENT.STUDENT_NO, student.getStudentNo())
 				.set(STUDENT.USER_ID, student.getUserId()).set(STUDENT.PARENT_NO, student.getParentNo())
-				.set(STUDENT.CURRICULUM_CODE, student.getCurriculumCode())
-				.set(STUDENT.ACADEMIC_YEAR_ID, student.getAcademicYearId())
 				.where(STUDENT.STUDENT_NO.eq(student.getStudentNo()))
 				.returning().fetchOne().into(Student.class);
 		
