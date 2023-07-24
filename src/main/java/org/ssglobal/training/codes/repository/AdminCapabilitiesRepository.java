@@ -1185,7 +1185,7 @@ public class AdminCapabilitiesRepository {
 
 	// -------------------------- FOR SUBJECTS
 	public List<Subject> selectAllSubject() {
-		List<Subject> query = dslContext.selectFrom(SUBJECT).where(SUBJECT.SUBJECT_CODE.greaterThan(9000))
+		List<Subject> query = dslContext.selectFrom(SUBJECT).where(SUBJECT.SUBJECT_CODE.greaterThan(9000).and(SUBJECT.ACTIVE_DEACTIVE.eq(true)))
 				.orderBy(SUBJECT.SUBJECT_CODE)
 				.fetchInto(Subject.class);
 		return !query.isEmpty() ? query : null;
