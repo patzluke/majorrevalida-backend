@@ -112,9 +112,9 @@ public interface AdminCapabilitiesService {
 	//-------------------------FOR THE MINOR SUBJECTS
 	List<Map<String, Object>> selectAllMinorSubjects();
 	List<Map<String, Object>> selectAllMajorSubjects();
-	Map<String, Object> editMinorSubject(Map<String, Object> payload);
+	Map<String, Object> editMinorSubject(Map<String, Object> payload) throws Exception;
 	Map<String, Object> changeMinorSubjectStatus(Integer subjectCode, Boolean activeStatus);
-	Map<String, Object> inserMinorSubject(Map<String, Object> payload);
+	Map<String, Object> inserMinorSubject(Map<String, Object> payload) throws Exception;
 	public Map<String, Object> deleteMinorSubject(Integer subjectCode, Boolean activeStatus) throws Exception;
 	
 	//---------------------- FOR THE MAJOR SUBJECTS

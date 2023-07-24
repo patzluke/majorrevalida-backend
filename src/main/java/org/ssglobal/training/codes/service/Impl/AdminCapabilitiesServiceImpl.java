@@ -387,7 +387,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public Map<String, Object> editMinorSubject(Map<String, Object> payload) {
+	public Map<String, Object> editMinorSubject(Map<String, Object> payload) throws Exception {
 		return repository.editMinorSubject(payload);
 	}
 	
@@ -407,7 +407,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public Map<String, Object> inserMinorSubject(Map<String, Object> payload) {
+	public Map<String, Object> inserMinorSubject(Map<String, Object> payload) throws Exception {
 		return repository.inserMinorSubject(payload);
 	}
 

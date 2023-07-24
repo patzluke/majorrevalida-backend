@@ -763,8 +763,9 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 
+	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Map<String, Object>> editMinorSubject(@RequestBody Map<String, Object> payload) {
+	public ResponseEntity editMinorSubject(@RequestBody Map<String, Object> payload) {
 		try {
 			Map<String, Object> updatedMinorSubject = service.editMinorSubject(payload);
 			if (!updatedMinorSubject.isEmpty()) {
@@ -772,7 +773,7 @@ public class AdminCapabilitiesController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
@@ -799,7 +800,7 @@ public class AdminCapabilitiesController {
 		try {
 			Map<String, Object> updatedMinorSubject = service.deleteMinorSubject(
 					Integer.valueOf(payload.get("subjectCode").toString()),
-					Boolean.valueOf(payload.get("activeStatus").toString()));
+					Boolean.valueOf(payload.get("activeDeactive").toString()));
 			if (!updatedMinorSubject.isEmpty()) {
 				return ResponseEntity.ok(updatedMinorSubject);
 			}
@@ -810,8 +811,9 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 
+	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/add/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Map<String, Object>> inserMinorSubject(@RequestBody Map<String, Object> payload) {
+	public ResponseEntity inserMinorSubject(@RequestBody Map<String, Object> payload) {
 		try {
 			Map<String, Object> newMinorSubject = service.inserMinorSubject(payload);
 			if (!newMinorSubject.isEmpty()) {
@@ -819,7 +821,7 @@ public class AdminCapabilitiesController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
