@@ -68,6 +68,8 @@ public interface AdminCapabilitiesService {
 	
 	//------------------------FOR StudentEnrollment
 	StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant);
+	List<Map<String, Object>> getAllEnrollmentData();
+	StudentEnrollment fullyEnrollStudent(StudentEnrollment studentApplicant);
 	
 	// ------------------------FOR Academic year
 	AcademicYear addAcademicYear(AcademicYear academicYear);

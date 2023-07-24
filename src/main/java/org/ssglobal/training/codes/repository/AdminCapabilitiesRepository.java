@@ -386,6 +386,36 @@ public class AdminCapabilitiesRepository {
 		return student;
 	}
 	
+	// Get all the enrollment data needed
+	/*
+	 * The data is limited to the studentNo, firstName, middleName, LastName
+	 * majorCode, majorTitle, courseCode, courseTitle, status
+	 * */
+	public List<Map<String, Object>> getAllEnrollmentData(){
+		return dslContext.select(STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), 
+				USERS.FIRST_NAME.as("firstName"),
+				USERS.MIDDLE_NAME.as("middleName"),
+				USERS.LAST_NAME.as("lastName"),
+				MAJOR.MAJOR_CODE.as("majorCode"),
+				MAJOR.MAJOR_TITLE.as("majorTitle"),
+				COURSE.COURSE_CODE.as("courseCode"),
+				COURSE.COURSE_TITLE.as("courseTitle"),
+				STUDENT.YEAR_LEVEL.as("yearLevel"),
+				STUDENT_ENROLLMENT.STATUS.as("status"))
+				.from(STUDENT_ENROLLMENT)
+				.innerJoin(STUDENT)
+				.on(STUDENT_ENROLLMENT.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.innerJoin(USERS)
+				.on(STUDENT.USER_ID.eq(USERS.USER_ID))
+				.innerJoin(CURRICULUM)
+				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE))
+				.innerJoin(MAJOR)
+				.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+				.innerJoin(COURSE)
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+				.fetchMaps();
+	}
+	
 	// ------------------------FOR STUDENT_ENROLLMENT
 	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {
 		
@@ -400,8 +430,6 @@ public class AdminCapabilitiesRepository {
 			    		.and(ACADEMIC_YEAR.ACADEMIC_YEAR_.eq(String.valueOf(studentApplicant.getSchoolYear())))
 			    		.and(ACADEMIC_YEAR.STATUS.eq("Process")))
 			    .fetchOneInto(AcademicYear.class);
-		
-		
 			
 		// NOTE: Implement the BCrypt in the impl
 		
@@ -551,15 +579,22 @@ public class AdminCapabilitiesRepository {
 		// From pending application to Not Enrolled
 		studentApplicant.setAcceptanceStatus("Not Enrolled");
 				
-		StudentEnrollment applicant = dslContext.insertInto(STUDENT_ENROLLMENT)
+		return dslContext.insertInto(STUDENT_ENROLLMENT)
 				.set(STUDENT_ENROLLMENT.STUDENT_NO, studentNo.getStudentNo())
 				.set(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID, applicantAcademicYear.getAcademicYearId())
 				.set(STUDENT_ENROLLMENT.PAYMENT_STATUS, studentApplicant.getPaymentStatus())
 				.set(STUDENT_ENROLLMENT.STATUS, studentApplicant.getAcceptanceStatus())
 				.returning().fetchOne().into(StudentEnrollment.class);
 		
-		return applicant;
-		
+	}
+	
+	// Update the studentEnrollment's section and paymentStatus
+	public StudentEnrollment fullyEnrollStudent(StudentEnrollment student) {
+		return dslContext.update(STUDENT_ENROLLMENT)
+				.set(STUDENT_ENROLLMENT.SECTION_ID, student.getSectionId())
+				.set(STUDENT_ENROLLMENT.PAYMENT_STATUS, student.getPaymentStatus())
+				.set(STUDENT_ENROLLMENT.STATUS, "Enrolled")
+				.returning().fetchOne().into(StudentEnrollment.class);
 	}
 	
 	
@@ -2059,10 +2094,14 @@ public class AdminCapabilitiesRepository {
 		List<Map<String, Object>> student = dslContext
 				.select(STUDENT.CURRICULUM_CODE.as("curriculumCode"), SUBJECT.SUBJECT_TITLE.as("subject_title"),
 						MINOR_SUBJECT.YEAR_LEVEL.as("year_level"), MINOR_SUBJECT.SEM.as("sem"))
-				.from(GRADES).innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.from(GRADES)
+				.innerJoin(STUDENT)
+				.on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
 				.innerJoin(T_SUBJECT_DETAIL_HISTORY)
-				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
-				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(MINOR_SUBJECT)
+				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
+				.innerJoin(SUBJECT)
+				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.innerJoin(MINOR_SUBJECT)
 				.on(MINOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(STUDENT.YEAR_LEVEL.eq(MINOR_SUBJECT.YEAR_LEVEL)
 						.and(MINOR_SUBJECT.YEAR_LEVEL.eq(1).and(MINOR_SUBJECT.SEM.eq(1))))
