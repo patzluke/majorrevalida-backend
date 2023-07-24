@@ -474,4 +474,14 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 		return repository.insertStudentEnrollmentData(studentApplicant);
 	}
 
+	@Override
+	public List<Map<String, Object>> getAllEnrollmentData() {
+		return repository.getAllEnrollmentData();
+	}
+
+	@Override
+	public StudentEnrollment fullyEnrollStudent(StudentEnrollment studentApplicant) {
+		return repository.fullyEnrollStudent(studentApplicant);
+	}
+
 }

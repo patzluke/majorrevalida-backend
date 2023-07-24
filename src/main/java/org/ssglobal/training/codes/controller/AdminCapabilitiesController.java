@@ -1053,4 +1053,32 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+	
+	@GetMapping(value = "/get/enrollment/all-data", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> getAllEnrollmentData() {
+		try {
+			List<Map<String, Object>> enrollee = service.getAllEnrollmentData();
+			if (!enrollee.isEmpty()) {
+				return ResponseEntity.ok(enrollee);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@PutMapping(value = "/update/enrollment", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<StudentEnrollment> fullyEnrollStudent(@RequestBody StudentEnrollment student){
+		try {
+			StudentEnrollment enrollee = service.fullyEnrollStudent(student);
+			if (enrollee != null) {
+				return ResponseEntity.ok(enrollee);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
 }
