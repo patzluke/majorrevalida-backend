@@ -214,7 +214,7 @@ public class ProfessorCapabilitiesRepository {
 			} else if (totalGrade < 75) {
 				remarks = "Failed";
 			}
-
+			System.out.println(student);
 			dslContext.update(GRADES)
 			  .set(GRADES.PRELIM_GRADE, student.getPrelimGrade())
 			  .set(GRADES.FINALS_GRADE, student.getFinalsGrade())
@@ -222,9 +222,7 @@ public class ProfessorCapabilitiesRepository {
 			  .set(GRADES.COMMENT, student.getComment())
 			  .set(GRADES.REMARKS, remarks)
 			  .where(GRADES.GRADE_ID.eq(student.getGradeId()))
-			  .returning()
-			  .fetch()
-			  .into(Grades.class);
+			  .execute();			
 		}
 		return dslContext
 				.select(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
