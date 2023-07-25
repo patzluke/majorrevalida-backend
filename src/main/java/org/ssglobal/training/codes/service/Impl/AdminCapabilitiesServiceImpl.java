@@ -10,6 +10,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndProfessor;
@@ -480,8 +481,8 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 
 	@Override
-	public StudentEnrollment fullyEnrollStudent(StudentEnrollment studentApplicant) {
-		return repository.fullyEnrollStudent(studentApplicant);
+	public EnrollmentData fullyEnrollStudent(EnrollmentData student) {
+		return repository.fullyEnrollStudent(student);
 	}
 
 }
