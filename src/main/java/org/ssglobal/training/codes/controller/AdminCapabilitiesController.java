@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndProfessor;
@@ -1071,9 +1072,9 @@ public class AdminCapabilitiesController {
 	}
 	
 	@PutMapping(value = "/update/enrollment", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<StudentEnrollment> fullyEnrollStudent(@RequestBody StudentEnrollment student){
+	public ResponseEntity<EnrollmentData> fullyEnrollStudent(@RequestBody EnrollmentData student){
 		try {
-			StudentEnrollment enrollee = service.fullyEnrollStudent(student);
+			EnrollmentData enrollee = service.fullyEnrollStudent(student);
 			if (enrollee != null) {
 				return ResponseEntity.ok(enrollee);
 			}

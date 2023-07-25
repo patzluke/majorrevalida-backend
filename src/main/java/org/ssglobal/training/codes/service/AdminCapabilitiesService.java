@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndProfessor;
@@ -69,7 +70,7 @@ public interface AdminCapabilitiesService {
 	//------------------------FOR StudentEnrollment
 	StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant);
 	List<Map<String, Object>> getAllEnrollmentData();
-	StudentEnrollment fullyEnrollStudent(StudentEnrollment studentApplicant);
+	EnrollmentData fullyEnrollStudent(EnrollmentData student);
 	
 	// ------------------------FOR Academic year
 	AcademicYear addAcademicYear(AcademicYear academicYear);
