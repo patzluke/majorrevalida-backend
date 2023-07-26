@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.StudentCourseData;
 import org.ssglobal.training.codes.model.UserAndStudent;
-import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Grades;
@@ -31,11 +30,13 @@ public class StudentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
 	private final org.ssglobal.training.codes.tables.TSubjectDetailHistory T_SUBJECT_DETAIL_HISTORY = org.ssglobal.training.codes.tables.TSubjectDetailHistory.T_SUBJECT_DETAIL_HISTORY;
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
+	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
 	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
 	private final org.ssglobal.training.codes.tables.Program PROGRAM = org.ssglobal.training.codes.tables.Program.PROGRAM;
 	private final org.ssglobal.training.codes.tables.StudentAttendance STUDENT_ATTENDANCE = org.ssglobal.training.codes.tables.StudentAttendance.STUDENT_ATTENDANCE;
 	private final org.ssglobal.training.codes.tables.StudentSubjectEnrolled STUDENT_SUBJECT_ENROLLED = org.ssglobal.training.codes.tables.StudentSubjectEnrolled.STUDENT_SUBJECT_ENROLLED;
+	private final org.ssglobal.training.codes.tables.StudentSchedule STUDENT_SCHEDULE = org.ssglobal.training.codes.tables.StudentSchedule.STUDENT_SCHEDULE;
 	private final org.ssglobal.training.codes.tables.StudentEnrollment STUDENT_ENROLLMENT = org.ssglobal.training.codes.tables.StudentEnrollment.STUDENT_ENROLLMENT;
 	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
 	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
@@ -235,10 +236,25 @@ public class StudentCapabilitiesRepository {
 	
 	// ------------ FOR GRADES
 	public List<Map<String, Object>> selectEnrolledSchoolYearOfStudent(Integer studentNo) {
-		return dslContext.select(STUDENT_ENROLLMENT.ENROLLMENT_ID.as("enrollmentId"), ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER)
-				.from(STUDENT_ENROLLMENT).innerJoin(ACADEMIC_YEAR)
-				.on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+		return dslContext.select(STUDENT_ENROLLMENT.ENROLLMENT_ID.as("enrollmentId"), ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), 
+								 ACADEMIC_YEAR.SEMESTER, STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.as("academicYearId"))
+				.from(STUDENT_ENROLLMENT)
+				.innerJoin(ACADEMIC_YEAR).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
 				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)).orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.SEMESTER)
 				.fetchMaps();
+	}
+	
+	// ------------ FOR Student Schedule	
+	public List<Map<String, Object>> selectScheduleOfStudent(Integer studentNo, Integer academicYearId) {
+		return dslContext.select(STUDENT_SCHEDULE.STUDENT_NO.as("studentNo"), STUDENT_SCHEDULE.LOAD_ID.as("loadId"),
+								 SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+								 PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"),
+								 ROOM.ROOM_NO.as("roomNo"))
+				.from(STUDENT_SCHEDULE)
+				.innerJoin(PROFESSOR_LOAD).on(STUDENT_SCHEDULE.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID))
+				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.innerJoin(ROOM).on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID))
+				.where(STUDENT_SCHEDULE.STUDENT_NO.eq(studentNo).and(STUDENT_SCHEDULE.ACADEMIC_YEAR_ID.eq(academicYearId)))
+				.orderBy(SUBJECT.SUBJECT_TITLE).fetchMaps();
 	}
 }
