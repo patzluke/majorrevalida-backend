@@ -1032,7 +1032,40 @@ public class AdminCapabilitiesRepository {
 
 	// -------------------------- FOR DEPARTMENT
 	public List<Department> selectAllDepartment() {
-		return dslContext.selectFrom(DEPARTMENT).orderBy(DEPARTMENT.DEPT_CODE).fetchInto(Department.class);
+		return dslContext.selectFrom(DEPARTMENT).where(DEPARTMENT.ACTIVE_DEACTIVE.eq(true)).orderBy(DEPARTMENT.DEPT_CODE).fetchInto(Department.class);
+	}
+	
+	public Department updateDepartment(Department department) {
+		Department updated = dslContext.update(DEPARTMENT).set(DEPARTMENT.DEPT_NAME, department.getDeptName())
+				.returning().fetchOne().into(Department.class);
+		if (updated.getDeptCode() != null) {
+			return dslContext.selectFrom(DEPARTMENT).where(DEPARTMENT.DEPT_CODE.eq(updated.getDeptCode())).fetchOne().into(Department.class);
+		} else {
+			return null;
+		}
+		
+	}
+	
+	public Department insertDepartment(Department department) {
+		Department updated = dslContext.insertInto(DEPARTMENT).set(DEPARTMENT.DEPT_NAME, department.getDeptName())
+				.returning().fetchOne().into(Department.class);
+		if (updated.getDeptCode() != null) {
+			return dslContext.selectFrom(DEPARTMENT).where(DEPARTMENT.DEPT_CODE.eq(updated.getDeptCode())).fetchOne().into(Department.class);
+		} else {
+			return null;
+		}
+		
+	}
+	
+	public Department deleteDepartment(Department department) {
+		Department updated = dslContext.update(DEPARTMENT).set(DEPARTMENT.ACTIVE_DEACTIVE, department.getActiveDeactive())
+				.returning().fetchOne().into(Department.class);
+		if (updated.getDeptCode() != null) {
+			return dslContext.selectFrom(DEPARTMENT).where(DEPARTMENT.DEPT_CODE.eq(updated.getDeptCode())).fetchOne().into(Department.class);
+		} else {
+			return null;
+		}
+		
 	}
 
 	// -------------------------- FOR COURSE
