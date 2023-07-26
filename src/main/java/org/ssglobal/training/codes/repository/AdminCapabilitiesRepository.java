@@ -409,8 +409,8 @@ public class AdminCapabilitiesRepository {
 		AcademicYear applicantAcademicYear = dslContext.select(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.as("academicYearId"))
 				.from(ACADEMIC_YEAR)
 				.where(ACADEMIC_YEAR.SEMESTER.eq(studentApplicant.getSemester())
-						.and(ACADEMIC_YEAR.ACADEMIC_YEAR_.eq(String.valueOf(studentApplicant.getSchoolYear())))
-						.and(ACADEMIC_YEAR.STATUS.eq("Process")))
+						.and(ACADEMIC_YEAR.ACADEMIC_YEAR_.eq(studentApplicant.getSchoolYear())
+						.and(ACADEMIC_YEAR.STATUS.eq("Process"))))
 				.fetchOneInto(AcademicYear.class);
 
 		// NOTE: Implement the BCrypt in the impl
