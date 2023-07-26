@@ -317,6 +317,21 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<Department> selectAllDepartment() {
 		return repository.selectAllDepartment();
 	}
+	
+	@Override
+	public Department updateDepartment(Department department) {
+		return repository.updateDepartment(department);
+	}
+	
+	@Override
+	public Department insertDepartment(Department department) {
+		return repository.insertDepartment(department);
+	}
+	
+	@Override
+	public Department deleteDepartment(Department department) {
+		return repository.deleteDepartment(department);
+	}
 
 
 	// ------------------------FOR Major

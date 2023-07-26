@@ -89,6 +89,9 @@ public interface AdminCapabilitiesService {
 	
 	// ------------------------FOR Department
 	List<Department> selectAllDepartment();
+	public Department updateDepartment(Department department);
+	public Department insertDepartment(Department department);
+	public Department deleteDepartment(Department department);
 	
 	// ------------------------FOR Major
 	List<Major> selectAllMajor();

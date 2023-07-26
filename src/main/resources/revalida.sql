@@ -20,7 +20,8 @@ drop table if exists department cascade;
 create table department (
     dept_id serial,
     dept_code int default nextval('department_sequence') not null primary key,
-    dept_name varchar(50)
+    dept_name varchar(50),
+    active_deactive boolean
 ); 
 
 drop sequence if exists course_sequence;
@@ -372,8 +373,8 @@ insert into program(program_title) values('Bachelor Of Science');
 insert into program(program_title) values('Bachelor Of Arts');
 
 --insert into Department table
-insert into department(dept_name) values('Department of Information And Computing Sciences');
-insert into department(dept_name) values('Department of Engineering');
+insert into department(dept_name, active_deactive) values('Department of Information And Computing Sciences', 't');
+insert into department(dept_name, active_deactive) values('Department of Engineering', 't');
 
 --insert into Course table
 insert into course(program_code, dept_code, course_title) values(1001, 2001, 'Information Technology');

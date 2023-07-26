@@ -609,6 +609,48 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+	
+	@PostMapping(value = "/add/department", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Department> addDepartment(@RequestBody Department department) {
+		try {
+			Department departments = service.insertDepartment(department);
+			if (departments.getDeptCode() != null) {
+				return ResponseEntity.ok(departments);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@PutMapping(value = "/update/department", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Department> updateDepartment(@RequestBody Department department) {
+		try {
+			Department departments = service.updateDepartment(department);
+			if (departments.getDeptCode() != null) {
+				return ResponseEntity.ok(departments);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@PutMapping(value = "/delete/department", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Department> deleteDepartment(@RequestBody Department department) {
+		try {
+			Department departments = service.deleteDepartment(department);
+			if (departments.getDeptCode() != null) {
+				return ResponseEntity.ok(departments);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
 
 	// -------- For Major
 	@GetMapping(value = "/get/major", produces = { MediaType.APPLICATION_JSON_VALUE })
