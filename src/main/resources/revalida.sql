@@ -20,7 +20,8 @@ drop table if exists department cascade;
 create table department (
     dept_id serial,
     dept_code int default nextval('department_sequence') not null primary key,
-    dept_name varchar(50)
+    dept_name varchar(50),
+    active_deactive boolean
 ); 
 
 drop sequence if exists course_sequence;
@@ -66,7 +67,7 @@ create table curriculum (
 drop table if exists academic_year cascade;
 create table academic_year (
     academic_year_id serial primary key,
-    academic_year varchar(50),
+    academic_year int,
     start_date date,
     end_date date,
     semester int,
@@ -286,8 +287,17 @@ create table t_subject_detail_history (
     subject_detail_his_id serial primary key,
     professor_no int,
     subject_code int,
-    enrollment_id int,
+    academic_year_id int,
     foreign key(professor_no) references professor(professor_no) on delete cascade,
+    foreign key(academic_year_id) references academic_year(academic_year_id) on delete cascade
+); 
+
+drop table if exists student_subject_enrolled cascade;
+create table student_subject_enrolled (
+    enroll_subject_id serial primary key,
+    load_id int,
+    enrollment_id int,
+    foreign key(load_id) references professor_load(load_id) on delete cascade,
     foreign key(enrollment_id) references student_enrollment(enrollment_id) on delete cascade
 ); 
 
@@ -296,6 +306,7 @@ create table grades (
     grade_id serial primary key,
     student_no int,
     subject_detail_his_id int,
+    enroll_subject_id int,
     prelim_grade float default 0.00,
     finals_grade float default 0.00,
     total_grade float default 0.00,
@@ -307,21 +318,9 @@ create table grades (
     remarks text default 'Failed',
     is_submitted boolean default 'f',
     foreign key(student_no) references student(student_no) on delete cascade,
-    foreign key(subject_detail_his_id) references t_subject_detail_history(subject_detail_his_id) on delete cascade
-); 
+    foreign key(subject_detail_his_id) references t_subject_detail_history(subject_detail_his_id) on delete cascade,
+    foreign key(enroll_subject_id) references student_subject_enrolled(enroll_subject_id) on delete cascade
 
-select stu.student_no, enr.enroll_subject_id, pl.subject_code, sub.abbrevation, sub.subject_title from student_subject_enrolled enr 
-inner join student_enrollment stu on enr.enrollment_id = stu.enrollment_id
-inner join professor_load pl on enr.load_id = pl.load_id
-inner join subject sub on pl.subject_code = sub.subject_code;
-
-drop table if exists student_subject_enrolled cascade;
-create table student_subject_enrolled (
-    enroll_subject_id serial primary key,
-    load_id int,
-    enrollment_id int,
-    foreign key(load_id) references professor_load(load_id) on delete cascade,
-    foreign key(enrollment_id) references student_enrollment(enrollment_id) on delete cascade
 ); 
 
 drop table if exists student_schedule cascade;
@@ -329,8 +328,10 @@ create table student_schedule (
     schedule_id serial primary key,
     student_no int,
     load_id int,
+    academic_year_id int,
     foreign key(student_no) references student(student_no) on delete cascade,
-    foreign key(load_id) references professor_load(load_id) on delete cascade    
+    foreign key(load_id) references professor_load(load_id) on delete cascade,
+    foreign key(academic_year_id) references academic_year(academic_year_id) on delete cascade
 ); 
 
 drop table if exists student_attendance cascade;
@@ -347,26 +348,26 @@ create table student_attendance (
 --insert into academic_year table
 INSERT INTO academic_year (academic_year, start_date, end_date, semester, status)
 VALUES
-  ('2017', '2017-08-14', '2017-12-31', '1', 'Finished'),
-  ('2017', '2017-01-16', '2017-06-11', '2','Finished'),
+  (2017, '2017-08-14', '2017-12-31', 1, 'Finished'),
+  (2017, '2017-01-16', '2017-06-11', 2,'Finished'),
 
-  ('2018', '2018-08-13', '2018-12-31', '1', 'Finished'),
-  ('2018', '2018-01-15', '2018-06-10', '2', 'Finished'),
+  (2018, '2018-08-13', '2018-12-31', 1, 'Finished'),
+  (2018, '2018-01-15', '2018-06-10', 2, 'Finished'),
 
-  ('2019', '2019-08-12', '2019-12-31', '1', 'Finished'),
-  ('2019', '2019-01-21', '2019-06-09', '2', 'Finished'),
+  (2019, '2019-08-12', '2019-12-31', 1, 'Finished'),
+  (2019, '2019-01-21', '2019-06-09', 2, 'Finished'),
 
-  ('2020', '2020-08-10', '2020-12-31', '1', 'Finished'),
-  ('2020', '2020-01-20', '2020-06-14', '2', 'Finished'),
+  (2020, '2020-08-10', '2020-12-31', 1, 'Finished'),
+  (2020, '2020-01-20', '2020-06-14', 2, 'Finished'),
 
-  ('2021', '2021-08-09', '2021-12-31', '1', 'Finished'),
-  ('2021', '2021-01-18', '2021-06-13', '2', 'Finished'),
+  (2021, '2021-08-09', '2021-12-31', 1, 'Finished'),
+  (2021, '2021-01-18', '2021-06-13', 2, 'Finished'),
 
-  ('2022', '2022-08-15', '2022-12-31', '1', 'Finished'),
-  ('2022', '2022-01-17', '2022-06-12', '2', 'Finished'),
+  (2022, '2022-08-15', '2022-12-31', 1, 'Finished'),
+  (2022, '2022-01-17', '2022-06-12', 2, 'Finished'),
 
-  ('2023', '2023-08-14', '2023-12-31', '1', 'On-going'),
-  ('2023', '2023-01-16', '2023-06-11', '2', 'Process');
+  (2023, '2023-08-14', '2023-12-31', '1', 'On-going'),
+  (2023, '2023-01-16', '2023-06-11', '2', 'Process');
 
 
 --insert into program table
@@ -374,8 +375,8 @@ insert into program(program_title) values('Bachelor Of Science');
 insert into program(program_title) values('Bachelor Of Arts');
 
 --insert into Department table
-insert into department(dept_name) values('Department of Information And Computing Sciences');
-insert into department(dept_name) values('Department of Engineering');
+insert into department(dept_name, active_deactive) values('Department of Information And Computing Sciences', 't');
+insert into department(dept_name, active_deactive) values('Department of Engineering', 't');
 
 --insert into Course table
 insert into course(program_code, dept_code, course_title) values(1001, 2001, 'Information Technology');
@@ -589,6 +590,7 @@ values('jackson', '123456', 'jackson@gmail.com', '9055261278', 'Jackson', 'Norma
 insert into professor(user_id, work) values(8, 'Teacher');
 
 --insert into Professor Load table
+--1st sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
 values(8001, 9001, 1, 1, 2001, 'M', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
@@ -607,6 +609,26 @@ insert into professor_load(professor_no, subject_code, section_id, room_id, dept
 values(8004, 9007, 1, 1, 2001, 'W', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
 values(8004, 9008, 1, 1, 2001, 'W', '11:00', '14:00', 't');
+
+--2nd sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9009, 2, 1, 2001, 'M', '11:00', '14:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9010, 2, 1, 2001, 'M', '16:00', '19:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9011, 2, 1, 2001, 'T', '09:00', '11:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9012, 3, 1, 2001, 'T', '13:00', '16:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9013, 4, 1, 2001, 'T', '13:00', '16:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9014, 4, 1, 2001, 'T', '17:00', '19:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9015, 5, 1, 2001, 'W', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9016, 5, 1, 2001, 'W', '11:00', '14:00', 't');
 
 --insert into users and Student table
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
@@ -658,9 +680,10 @@ values('christopher', '123456', 'christopher@gmail.com', '9188192721', 'Christof
 insert into student(user_id, curriculum_code, academic_year_id, year_level) values(20, 5001, 7, 1);
 
 
+----------------1st sem
 --insert into student_enrollment
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77001, 1, 1, 'Full', 'Enrolled');
+values(77001, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 1),
@@ -673,7 +696,7 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 (8, 1);
 
 --insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) values
+insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 (8001, 9001, 1),
 (8001, 9002, 1),
 (8002, 9003, 1),
@@ -685,19 +708,19 @@ insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) 
 ;
 
 --insert into grades
-insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade) values
-(77001, 1, 0.00, 0.00),
-(77001, 2, 0.00, 0.00),
-(77001, 3, 0.00, 0.00),
-(77001, 4, 0.00, 0.00),
-(77001, 5, 0.00, 0.00),
-(77001, 6, 0.00, 0.00),
-(77001, 7, 0.00, 0.00),
-(77001, 8, 0.00, 0.00)
+insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
+(77001, 1, 1, 0.00, 0.00),
+(77001, 2, 2, 0.00, 0.00),
+(77001, 3, 3, 0.00, 0.00),
+(77001, 4, 4, 0.00, 0.00),
+(77001, 5, 5, 0.00, 0.00),
+(77001, 6, 6, 0.00, 0.00),
+(77001, 7, 7, 0.00, 0.00),
+(77001, 8, 8, 0.00, 0.00)
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77002, 1, 1, 'Full', 'Enrolled');
+values(77002, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 2),
@@ -710,31 +733,31 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 (8, 2);
 
 --insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) values
-(8001, 9001, 2),
-(8001, 9002, 2),
-(8002, 9003, 2),
-(8002, 9004, 2),
-(8003, 9005, 2),
-(8003, 9006, 2),
-(8004, 9007, 2),
-(8004, 9008, 2)
+insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
+(8001, 9001, 1),
+(8001, 9002, 1),
+(8002, 9003, 1),
+(8002, 9004, 1),
+(8003, 9005, 1),
+(8003, 9006, 1),
+(8004, 9007, 1),
+(8004, 9008, 1)
 ;
 
 --insert into grades
-insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade) values
-(77002, 9, 0.00, 0.00),
-(77002, 10, 0.00, 0.00),
-(77002, 11, 0.00, 0.00),
-(77002, 12, 0.00, 0.00),
-(77002, 13, 0.00, 0.00),
-(77002, 14, 0.00, 0.00),
-(77002, 15, 0.00, 0.00),
-(77002, 16, 0.00, 0.00)
+insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
+(77002, 9, 9, 0.00, 0.00),
+(77002, 10, 10, 0.00, 0.00),
+(77002, 11, 11,0.00, 0.00),
+(77002, 12, 12, 0.00, 0.00),
+(77002, 13, 13, 0.00, 0.00),
+(77002, 14, 14, 0.00, 0.00),
+(77002, 15, 15, 0.00, 0.00),
+(77002, 16, 16, 0.00, 0.00)
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77003, 1, 1, 'Full', 'Enrolled');
+values(77003, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 3),
@@ -747,32 +770,31 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 (8, 3);
 
 --insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) values
-(8001, 9001, 3),
-(8001, 9002, 3),
-(8002, 9003, 3),
-(8002, 9004, 3),
-(8003, 9005, 3),
-(8003, 9006, 3),
-(8004, 9007, 3),
-(8004, 9008, 3)
+insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
+(8001, 9001, 1),
+(8001, 9002, 1),
+(8002, 9003, 1),
+(8002, 9004, 1),
+(8003, 9005, 1),
+(8003, 9006, 1),
+(8004, 9007, 1),
+(8004, 9008, 1)
 ;
 
 --insert into grades
-insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade) values
-(77003, 17, 0.00, 0.00),
-(77003, 18, 0.00, 0.00),
-(77003, 19, 0.00, 0.00),
-(77003, 20, 0.00, 0.00),
-(77003, 21, 0.00, 0.00),
-(77003, 22, 0.00, 0.00),
-(77003, 23, 0.00, 0.00),
-(77003, 24, 0.00, 0.00)
+insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
+(77003, 17, 17, 0.00, 0.00),
+(77003, 18, 18, 0.00, 0.00),
+(77003, 19, 19, 0.00, 0.00),
+(77003, 20, 20, 0.00, 0.00),
+(77003, 21, 21, 0.00, 0.00),
+(77003, 22, 22, 0.00, 0.00),
+(77003, 23, 23, 0.00, 0.00),
+(77003, 24, 24, 0.00, 0.00)
 ;
 
-
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77004, 1, 1, 'Partial', 'Not Enrolled');
+values(77004, 13, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 4),
@@ -785,32 +807,32 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 (8, 4);
 
 --insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) values
-(8001, 9001, 4),
-(8001, 9002, 4),
-(8002, 9003, 4),
-(8002, 9004, 4),
-(8003, 9005, 4),
-(8003, 9006, 4),
-(8004, 9007, 4),
-(8004, 9008, 4)
+insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
+(8001, 9001, 1),
+(8001, 9002, 1),
+(8002, 9003, 1),
+(8002, 9004, 1),
+(8003, 9005, 1),
+(8003, 9006, 1),
+(8004, 9007, 1),
+(8004, 9008, 1)
 ;
 
 --insert into grades
-insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade) values
-(77004, 25, 0.00, 0.00),
-(77004, 26, 0.00, 0.00),
-(77004, 27, 0.00, 0.00),
-(77004, 28, 0.00, 0.00),
-(77004, 29, 0.00, 0.00),
-(77004, 30, 0.00, 0.00),
-(77004, 31, 0.00, 0.00),
-(77004, 32, 0.00, 0.00)
+insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
+(77004, 25, 25, 0.00, 0.00),
+(77004, 26, 26, 0.00, 0.00),
+(77004, 27, 27, 0.00, 0.00),
+(77004, 28, 28, 0.00, 0.00),
+(77004, 29, 29, 0.00, 0.00),
+(77004, 30, 30, 0.00, 0.00),
+(77004, 31, 31, 0.00, 0.00),
+(77004, 32, 32, 0.00, 0.00)
 ;
 
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77005, 1, 1, 'Full', 'Enrolled');
+values(77005, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 5),
@@ -823,32 +845,32 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 (8, 5);
 
 --insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) values
-(8001, 9001, 5),
-(8001, 9002, 5),
-(8002, 9003, 5),
-(8002, 9004, 5),
-(8003, 9005, 5),
-(8003, 9006, 5),
-(8004, 9007, 5),
-(8004, 9008, 5)
+insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
+(8001, 9001, 1),
+(8001, 9002, 1),
+(8002, 9003, 1),
+(8002, 9004, 1),
+(8003, 9005, 1),
+(8003, 9006, 1),
+(8004, 9007, 1),
+(8004, 9008, 1)
 ;
 
 --insert into grades
-insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade) values
-(77005, 33, 0.00, 0.00),
-(77005, 34, 0.00, 0.00),
-(77005, 35, 0.00, 0.00),
-(77005, 36, 0.00, 0.00),
-(77005, 37, 0.00, 0.00),
-(77005, 38, 0.00, 0.00),
-(77005, 39, 0.00, 0.00),
-(77005, 40, 0.00, 0.00)
+insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
+(77005, 33, 33, 0.00, 0.00),
+(77005, 34, 34, 0.00, 0.00),
+(77005, 35, 35, 0.00, 0.00),
+(77005, 36, 36, 0.00, 0.00),
+(77005, 37, 37, 0.00, 0.00),
+(77005, 38, 38, 0.00, 0.00),
+(77005, 39, 39, 0.00, 0.00),
+(77005, 40, 40, 0.00, 0.00)
 ;
 
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77006, 1, 1, 'Partial', 'Not Enrolled');
+values(77006, 13, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 6),
@@ -861,31 +883,31 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 (8, 6);
 
 --insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) values
-(8001, 9001, 6),
-(8001, 9002, 6),
-(8002, 9003, 6),
-(8002, 9004, 6),
-(8003, 9005, 6),
-(8003, 9006, 6),
-(8004, 9007, 6),
-(8004, 9008, 6)
+insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
+(8001, 9001, 1),
+(8001, 9002, 1),
+(8002, 9003, 1),
+(8002, 9004, 1),
+(8003, 9005, 1),
+(8003, 9006, 1),
+(8004, 9007, 1),
+(8004, 9008, 1)
 ;
 
 --insert into grades
-insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade) values
-(77006, 41, 0.00, 0.00),
-(77006, 42, 0.00, 0.00),
-(77006, 43, 0.00, 0.00),
-(77006, 44, 0.00, 0.00),
-(77006, 45, 0.00, 0.00),
-(77006, 46, 0.00, 0.00),
-(77006, 47, 0.00, 0.00),
-(77006, 48, 0.00, 0.00)
+insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
+(77006, 41, 41, 0.00, 0.00),
+(77006, 42, 42, 0.00, 0.00),
+(77006, 43, 43, 0.00, 0.00),
+(77006, 44, 44, 0.00, 0.00),
+(77006, 45, 45, 0.00, 0.00),
+(77006, 46, 46, 0.00, 0.00),
+(77006, 47, 47, 0.00, 0.00),
+(77006, 48, 48, 0.00, 0.00)
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77007, 1, 1, 'Full', 'Enrolled');
+values(77007, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 7),
@@ -898,31 +920,31 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 (8, 7);
 
 --insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) values
-(8001, 9001, 7),
-(8001, 9002, 7),
-(8002, 9003, 7),
-(8002, 9004, 7),
-(8003, 9005, 7),
-(8003, 9006, 7),
-(8004, 9007, 7),
-(8004, 9008, 7)
+insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
+(8001, 9001, 1),
+(8001, 9002, 1),
+(8002, 9003, 1),
+(8002, 9004, 1),
+(8003, 9005, 1),
+(8003, 9006, 1),
+(8004, 9007, 1),
+(8004, 9008, 1)
 ;
 
 --insert into grades
-insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade) values
-(77007, 49, 0.00, 0.00),
-(77007, 50, 0.00, 0.00),
-(77007, 51, 0.00, 0.00),
-(77007, 52, 0.00, 0.00),
-(77007, 53, 0.00, 0.00),
-(77007, 54, 0.00, 0.00),
-(77007, 55, 0.00, 0.00),
-(77007, 56, 0.00, 0.00)
+insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
+(77007, 49, 49, 0.00, 0.00),
+(77007, 50, 50, 0.00, 0.00),
+(77007, 51, 51, 0.00, 0.00),
+(77007, 52, 52, 0.00, 0.00),
+(77007, 53, 53, 0.00, 0.00),
+(77007, 54, 54, 0.00, 0.00),
+(77007, 55, 55, 0.00, 0.00),
+(77007, 56, 56, 0.00, 0.00)
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77008, 1, 1, 'Full', 'Enrolled');
+values(77008, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 8),
@@ -935,31 +957,31 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 (8, 8);
 
 --insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) values
-(8001, 9001, 8),
-(8001, 9002, 8),
-(8002, 9003, 8),
-(8002, 9004, 8),
-(8003, 9005, 8),
-(8003, 9006, 8),
-(8004, 9007, 8),
-(8004, 9008, 8)
+insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
+(8001, 9001, 1),
+(8001, 9002, 1),
+(8002, 9003, 1),
+(8002, 9004, 1),
+(8003, 9005, 1),
+(8003, 9006, 1),
+(8004, 9007, 1),
+(8004, 9008, 1)
 ;
 
 --insert into grades
-insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade) values
-(77008, 57, 0.00, 0.00),
-(77008, 58, 0.00, 0.00),
-(77008, 59, 0.00, 0.00),
-(77008, 60, 0.00, 0.00),
-(77008, 61, 0.00, 0.00),
-(77008, 62, 0.00, 0.00),
-(77008, 63, 0.00, 0.00),
-(77008, 64, 0.00, 0.00)
+insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
+(77008, 57, 57, 0.00, 0.00),
+(77008, 58, 58, 0.00, 0.00),
+(77008, 59, 59, 0.00, 0.00),
+(77008, 60, 60, 0.00, 0.00),
+(77008, 61, 61, 0.00, 0.00),
+(77008, 62, 62, 0.00, 0.00),
+(77008, 63, 63, 0.00, 0.00),
+(77008, 64, 64, 0.00, 0.00)
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77009, 1, 1, 'Full', 'Enrolled');
+values(77009, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 9),
@@ -972,31 +994,31 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 (8, 9);
 
 --insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) values
-(8001, 9001, 9),
-(8001, 9002, 9),
-(8002, 9003, 9),
-(8002, 9004, 9),
-(8003, 9005, 9),
-(8003, 9006, 9),
-(8004, 9007, 9),
-(8004, 9008, 9)
+insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
+(8001, 9001, 1),
+(8001, 9002, 1),
+(8002, 9003, 1),
+(8002, 9004, 1),
+(8003, 9005, 1),
+(8003, 9006, 1),
+(8004, 9007, 1),
+(8004, 9008, 1)
 ;
 
 --insert into grades
-insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade) values
-(77009, 65, 0.00, 0.00),
-(77009, 66, 0.00, 0.00),
-(77009, 67, 0.00, 0.00),
-(77009, 68, 0.00, 0.00),
-(77009, 69, 0.00, 0.00),
-(77009, 70, 0.00, 0.00),
-(77009, 71, 0.00, 0.00),
-(77009, 72, 0.00, 0.00)
+insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
+(77009, 65, 65, 0.00, 0.00),
+(77009, 66, 66, 0.00, 0.00),
+(77009, 67, 67, 0.00, 0.00),
+(77009, 68, 68, 0.00, 0.00),
+(77009, 69, 69, 0.00, 0.00),
+(77009, 70, 70, 0.00, 0.00),
+(77009, 71, 71, 0.00, 0.00),
+(77009, 72, 72, 0.00, 0.00)
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77010, 1, 1, 'Partial', 'Not Enrolled');
+values(77010, 13, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 10),
@@ -1009,32 +1031,32 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 (8, 10);
 
 --insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) values
-(8001, 9001, 10),
-(8001, 9002, 10),
-(8002, 9003, 10),
-(8002, 9004, 10),
-(8003, 9005, 10),
-(8003, 9006, 10),
-(8004, 9007, 10),
-(8004, 9008, 10)
+insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
+(8001, 9001, 1),
+(8001, 9002, 1),
+(8002, 9003, 1),
+(8002, 9004, 1),
+(8003, 9005, 1),
+(8003, 9006, 1),
+(8004, 9007, 1),
+(8004, 9008, 1)
 ;
 
 --insert into grades
-insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade) values
-(77010, 73, 0.00, 0.00),
-(77010, 74, 0.00, 0.00),
-(77010, 75, 0.00, 0.00),
-(77010, 76, 0.00, 0.00),
-(77010, 77, 0.00, 0.00),
-(77010, 78, 0.00, 0.00),
-(77010, 79, 0.00, 0.00),
-(77010, 80, 0.00, 0.00)
+insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
+(77010, 73, 73, 0.00, 0.00),
+(77010, 74, 74, 0.00, 0.00),
+(77010, 75, 75, 0.00, 0.00),
+(77010, 76, 76, 0.00, 0.00),
+(77010, 77, 77, 0.00, 0.00),
+(77010, 78, 78, 0.00, 0.00),
+(77010, 79, 79, 0.00, 0.00),
+(77010, 80, 80, 0.00, 0.00)
 ;
 
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77011, 1, 1, 'Full', 'Enrolled');
+values(77011, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 11),
@@ -1047,31 +1069,31 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 (8, 11);
 
 --insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) values
-(8001, 9001, 11),
-(8001, 9002, 11),
-(8002, 9003, 11),
-(8002, 9004, 11),
-(8003, 9005, 11),
-(8003, 9006, 11),
-(8004, 9007, 11),
-(8004, 9008, 11)
+insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
+(8001, 9001, 1),
+(8001, 9002, 1),
+(8002, 9003, 1),
+(8002, 9004, 1),
+(8003, 9005, 1),
+(8003, 9006, 1),
+(8004, 9007, 1),
+(8004, 9008, 1)
 ;
 
 --insert into grades
-insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade) values
-(77011, 81, 0.00, 0.00),
-(77011, 82, 0.00, 0.00),
-(77011, 83, 0.00, 0.00),
-(77011, 84, 0.00, 0.00),
-(77011, 85, 0.00, 0.00),
-(77011, 86, 0.00, 0.00),
-(77011, 87, 0.00, 0.00),
-(77011, 88, 0.00, 0.00)
+insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
+(77011, 81, 81, 0.00, 0.00),
+(77011, 82, 82, 0.00, 0.00),
+(77011, 83, 83, 0.00, 0.00),
+(77011, 84, 84, 0.00, 0.00),
+(77011, 85, 85, 0.00, 0.00),
+(77011, 86, 86, 0.00, 0.00),
+(77011, 87, 87, 0.00, 0.00),
+(77011, 88, 88, 0.00, 0.00)
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77012, 1, 1, 'Full', 'Enrolled');
+values(77012, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 12),
@@ -1084,152 +1106,173 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 (8, 12);
 
 --insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, enrollment_id) values
-(8001, 9001, 12),
-(8001, 9002, 12),
-(8002, 9003, 12),
-(8002, 9004, 12),
-(8003, 9005, 12),
-(8003, 9006, 12),
-(8004, 9007, 12),
-(8004, 9008, 12)
+insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
+(8001, 9001, 1),
+(8001, 9002, 1),
+(8002, 9003, 1),
+(8002, 9004, 1),
+(8003, 9005, 1),
+(8003, 9006, 1),
+(8004, 9007, 1),
+(8004, 9008, 1)
 ;
 
 --insert into grades
-insert into grades(student_no, subject_detail_his_id, prelim_grade, finals_grade) values
-(77012, 89, 0.00, 0.00),
-(77012, 90, 0.00, 0.00),
-(77012, 91, 0.00, 0.00),
-(77012, 92, 0.00, 0.00),
-(77012, 93, 0.00, 0.00),
-(77012, 94, 0.00, 0.00),
-(77012, 95, 0.00, 0.00),
-(77012, 96, 0.00, 0.00)
+insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
+(77012, 89, 89, 0.00, 0.00),
+(77012, 90, 90, 0.00, 0.00),
+(77012, 91, 91, 0.00, 0.00),
+(77012, 92, 92, 0.00, 0.00),
+(77012, 93, 93, 0.00, 0.00),
+(77012, 94, 94, 0.00, 0.00),
+(77012, 95, 95, 0.00, 0.00),
+(77012, 96, 96, 0.00, 0.00)
 ;
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9009, 2, 1, 2001, 'M', '11:00', '14:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9010, 2, 1, 2001, 'M', '16:00', '19:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9011, 2, 1, 2001, 'T', '09:00', '11:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9012, 3, 1, 2001, 'T', '13:00', '16:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9013, 4, 1, 2001, 'T', '13:00', '16:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9014, 4, 1, 2001, 'T', '17:00', '19:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9015, 5, 1, 2001, 'W', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9016, 5, 1, 2001, 'W', '11:00', '14:00', 't');
 
 
 --insert into student_schedule
-insert into student_schedule(student_no, load_id) values
-(77001, 1),
-(77001, 2),
-(77001, 3),
-(77001, 4),
-(77001, 5),
-(77001, 6),
-(77001, 7),
-(77001, 8);
+--1st sem
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77001, 1, 13),
+(77001, 2, 13),
+(77001, 3, 13),
+(77001, 4, 13),
+(77001, 5, 13),
+(77001, 6, 13),
+(77001, 7, 13),
+(77001, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77004, 1),
-(77004, 2),
-(77004, 3),
-(77004, 4),
-(77004, 5),
-(77004, 6),
-(77004, 7),
-(77004, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77002, 1, 13),
+(77002, 2, 13),
+(77002, 3, 13),
+(77002, 4, 13),
+(77002, 5, 13),
+(77002, 6, 13),
+(77002, 7, 13),
+(77002, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77003, 1),
-(77003, 2),
-(77003, 3),
-(77003, 4),
-(77003, 5),
-(77003, 6),
-(77003, 7),
-(77003, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77003, 1, 13),
+(77003, 2, 13),
+(77003, 3, 13),
+(77003, 4, 13),
+(77003, 5, 13),
+(77003, 6, 13),
+(77003, 7, 13),
+(77003, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77004, 1),
-(77004, 2),
-(77004, 3),
-(77004, 4),
-(77004, 5),
-(77004, 6),
-(77004, 7),
-(77004, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77004, 1, 13),
+(77004, 2, 13),
+(77004, 3, 13),
+(77004, 4, 13),
+(77004, 5, 13),
+(77004, 6, 13),
+(77004, 7, 13),
+(77004, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77005, 1),
-(77005, 2),
-(77005, 3),
-(77005, 4),
-(77005, 5),
-(77005, 6),
-(77005, 7),
-(77005, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77005, 1, 13),
+(77005, 2, 13),
+(77005, 3, 13),
+(77005, 4, 13),
+(77005, 5, 13),
+(77005, 6, 13),
+(77005, 7, 13),
+(77005, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77006, 1),
-(77006, 2),
-(77006, 3),
-(77006, 4),
-(77006, 5),
-(77006, 6),
-(77006, 7),
-(77006, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77006, 1, 13),
+(77006, 2, 13),
+(77006, 3, 13),
+(77006, 4, 13),
+(77006, 5, 13),
+(77006, 6, 13),
+(77006, 7, 13),
+(77006, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77007, 1),
-(77007, 2),
-(77007, 3),
-(77007, 4),
-(77007, 5),
-(77007, 6),
-(77007, 7),
-(77007, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77007, 1, 13),
+(77007, 2, 13),
+(77007, 3, 13),
+(77007, 4, 13),
+(77007, 5, 13),
+(77007, 6, 13),
+(77007, 7, 13),
+(77007, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77008, 1),
-(77008, 2),
-(77008, 3),
-(77008, 4),
-(77008, 5),
-(77008, 6),
-(77008, 7),
-(77008, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77008, 1, 13),
+(77008, 2, 13),
+(77008, 3, 13),
+(77008, 4, 13),
+(77008, 5, 13),
+(77008, 6, 13),
+(77008, 7, 13),
+(77008, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77009, 1),
-(77009, 2),
-(77009, 3),
-(77009, 4),
-(77009, 5),
-(77009, 6),
-(77009, 7),
-(77009, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77009, 1, 13),
+(77009, 2, 13),
+(77009, 3, 13),
+(77009, 4, 13),
+(77009, 5, 13),
+(77009, 6, 13),
+(77009, 7, 13),
+(77009, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77010, 1),
-(77010, 2),
-(77010, 3),
-(77010, 4),
-(77010, 5),
-(77010, 6),
-(77010, 7),
-(77010, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77010, 1, 13),
+(77010, 2, 13),
+(77010, 3, 13),
+(77010, 4, 13),
+(77010, 5, 13),
+(77010, 6, 13),
+(77010, 7, 13),
+(77010, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77011, 1),
-(77011, 2),
-(77011, 3),
-(77011, 4),
-(77011, 5),
-(77011, 6),
-(77011, 7),
-(77011, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77011, 1, 13),
+(77011, 2, 13),
+(77011, 3, 13),
+(77011, 4, 13),
+(77011, 5, 13),
+(77011, 6, 13),
+(77011, 7, 13),
+(77011, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77012, 1),
-(77012, 2),
-(77012, 3),
-(77012, 4),
-(77012, 5),
-(77012, 6),
-(77012, 7),
-(77012, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77012, 1, 13),
+(77012, 2, 13),
+(77012, 3, 13),
+(77012, 4, 13),
+(77012, 5, 13),
+(77012, 6, 13),
+(77012, 7, 13),
+(77012, 8, 13);
 
 --insert into student_attendance
+--1st sem
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77001, 1, '2023-07-11'),
 (77001, 1, '2023-08-11'),
@@ -1286,6 +1329,64 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77001, 8, '2023-08-13'),
 (77001, 8, '2023-08-14'),
 (77001, 8, '2023-08-15');
+
+----2nd sem
+--insert into student_attendance(student_no, load_id, attendance_date) values
+--(77001, 9, '2023-01-16'),
+--(77001, 9, '2023-01-17'),
+--(77001, 9, '2023-01-18'),
+--(77001, 9, '2023-01-19'),
+--(77001, 9, '2023-01-20'),
+--(77001, 9, '2023-01-21'),
+--
+--(77001, 10, '2023-07-11'),
+--(77001, 10, '2023-08-11'),
+--(77001, 10, '2023-08-12'),
+--(77001, 10, '2023-08-13'),
+--(77001, 10, '2023-08-14'),
+--(77001, 10, '2023-08-15'),
+--
+--(77001, 11, '2023-07-11'),
+--(77001, 11, '2023-08-11'),
+--(77001, 11, '2023-08-12'),
+--(77001, 11, '2023-08-13'),
+--(77001, 11, '2023-08-14'),
+--(77001, 11, '2023-08-15'),
+--
+--(77001, 12, '2023-07-11'),
+--(77001, 12, '2023-08-11'),
+--(77001, 12, '2023-08-12'),
+--(77001, 12, '2023-08-13'),
+--(77001, 12, '2023-08-14'),
+--(77001, 12, '2023-08-15'),
+--
+--(77001, 13, '2023-07-11'),
+--(77001, 13, '2023-08-11'),
+--(77001, 13, '2023-08-12'),
+--(77001, 13, '2023-08-13'),
+--(77001, 13, '2023-08-14'),
+--(77001, 13, '2023-08-15'),
+--
+--(77001, 14, '2023-07-11'),
+--(77001, 14, '2023-08-11'),
+--(77001, 14, '2023-08-12'),
+--(77001, 14, '2023-08-13'),
+--(77001, 14, '2023-08-14'),
+--(77001, 14, '2023-08-15'),
+--
+--(77001, 15, '2023-07-11'),
+--(77001, 15, '2023-08-11'),
+--(77001, 15, '2023-08-12'),
+--(77001, 15, '2023-08-13'),
+--(77001, 15, '2023-08-14'),
+--(77001, 15, '2023-08-15'),
+--
+--(77001, 16, '2023-07-11'),
+--(77001, 16, '2023-08-11'),
+--(77001, 16, '2023-08-12'),
+--(77001, 16, '2023-08-13'),
+--(77001, 16, '2023-08-14'),
+--(77001, 16, '2023-08-15');
 
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77002, 1, '2023-07-11'),
@@ -1960,15 +2061,22 @@ INSERT INTO student_applicant (
     -- Fifth row
     ('New', 3001, 4001, 2, 2023, 2, 'David', 'Johnson', 'Taylor', NULL, 'Male', 'Married', 'France', '1992-04-05', 'Paris', 'Jewish', '345 Walnut St', '333333333', '777777777', 'david.johnson@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '333333333', 'father5@example.com', 'Entrepreneur', 'Mother', NOW(), NULL, 'Pending');
     
---select sa.* from student_attendance sa 
---inner join professor_load pl on sa.load_id = pl.load_id
---inner join section sec on pl.section_id = sec.section_id
---inner join subject subj on pl.subject_code = subj.subject_code
+--select g.grade_id, g.student_no, use.first_name, use.middle_name, 
+--use.last_name, use.email, g.prelim_grade, g.finals_grade, g.total_grade,
+--g.comment, g.remarks, sub.subject_code, sub.subject_title,
+--sub.abbrevation, sub.units, ay.academic_year, ay.semester
+--from grades g
 --
---where sa.student_no = 77001 and pl.professor_no = 8001 
---and subject_title = 'Introduction to Computing' 
---and sec.section_name = '1-ITA' 
---and sa.student_no = 77002;
+--inner join T_SUBJECT_DETAIL_HISTORY tsdh on g.SUBJECT_DETAIL_HIS_ID = tsdh.SUBJECT_DETAIL_HIS_ID
+--inner join academic_year ay on tsdh.academic_year_id = ay.academic_year_id
+--inner join SUBJECT sub on tsdh.SUBJECT_CODE = sub.SUBJECT_CODE
+--inner join student stu on g.STUDENT_NO = stu.STUDENT_NO
+--inner join users use on stu.USER_ID = use.USER_ID
+--
+--where g.student_no = 77001 and ay.academic_year = 2017 and ay.semester = 2;
+
+
+
 
 
 

@@ -43,7 +43,7 @@ public class AdminCapabilitiesController {
 
 	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/password", consumes = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity changePassword(@RequestBody Map<String, String> payload) {
+	public ResponseEntity changePassword(@RequestBody Map<String, String> payload) {		
 		return service.changePassword(payload.get("password"), payload.get("username")) ? ResponseEntity.ok().build()
 				: ResponseEntity.badRequest().build();
 	}
@@ -601,6 +601,48 @@ public class AdminCapabilitiesController {
 		try {
 			List<Department> departments = service.selectAllDepartment();
 			if (!departments.isEmpty()) {
+				return ResponseEntity.ok(departments);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@PostMapping(value = "/add/department", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Department> addDepartment(@RequestBody Department department) {
+		try {
+			Department departments = service.insertDepartment(department);
+			if (departments.getDeptCode() != null) {
+				return ResponseEntity.ok(departments);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@PutMapping(value = "/update/department", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Department> updateDepartment(@RequestBody Department department) {
+		try {
+			Department departments = service.updateDepartment(department);
+			if (departments.getDeptCode() != null) {
+				return ResponseEntity.ok(departments);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@PutMapping(value = "/delete/department", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Department> deleteDepartment(@RequestBody Department department) {
+		try {
+			Department departments = service.deleteDepartment(department);
+			if (departments.getDeptCode() != null) {
 				return ResponseEntity.ok(departments);
 			}
 		} catch (Exception e) {

@@ -30,12 +30,15 @@ public class StudentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
 	private final org.ssglobal.training.codes.tables.TSubjectDetailHistory T_SUBJECT_DETAIL_HISTORY = org.ssglobal.training.codes.tables.TSubjectDetailHistory.T_SUBJECT_DETAIL_HISTORY;
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
+	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
 	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
 	private final org.ssglobal.training.codes.tables.Program PROGRAM = org.ssglobal.training.codes.tables.Program.PROGRAM;
 	private final org.ssglobal.training.codes.tables.StudentAttendance STUDENT_ATTENDANCE = org.ssglobal.training.codes.tables.StudentAttendance.STUDENT_ATTENDANCE;
 	private final org.ssglobal.training.codes.tables.StudentSubjectEnrolled STUDENT_SUBJECT_ENROLLED = org.ssglobal.training.codes.tables.StudentSubjectEnrolled.STUDENT_SUBJECT_ENROLLED;
+	private final org.ssglobal.training.codes.tables.StudentSchedule STUDENT_SCHEDULE = org.ssglobal.training.codes.tables.StudentSchedule.STUDENT_SCHEDULE;
 	private final org.ssglobal.training.codes.tables.StudentEnrollment STUDENT_ENROLLMENT = org.ssglobal.training.codes.tables.StudentEnrollment.STUDENT_ENROLLMENT;
+	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
 	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
 
 	public List<Users> selectAllUsers() {
@@ -214,18 +217,44 @@ public class StudentCapabilitiesRepository {
 	// ------------ FOR GRADES
 	public List<Map<String, Object>> selectAllSubjectGradesOfStudent(Integer studentNo) {
 		return dslContext
-				.select(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
+				.selectDistinct(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
 						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
 						USERS.LAST_NAME.as("lastName"), USERS.EMAIL, GRADES.PRELIM_GRADE.as("prelimGrade"),
-						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.TOTAL_GRADE.as("totalGrade"), GRADES.COMMENT, GRADES.REMARKS,
-						SECTION.SECTION_NAME.as("sectionName"), T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
-						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.ABBREVATION, SUBJECT.UNITS)
-				.from(GRADES).innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO)).innerJoin(USERS)
-				.on(STUDENT.USER_ID.eq(USERS.USER_ID)).innerJoin(STUDENT_ENROLLMENT)
-				.on(STUDENT.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO)).innerJoin(SECTION)
-				.on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(T_SUBJECT_DETAIL_HISTORY)
-				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
-				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-				.where(GRADES.STUDENT_NO.eq(studentNo)).orderBy(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE).fetchMaps();
+						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.TOTAL_GRADE.as("totalGrade"), 
+						GRADES.COMMENT, GRADES.REMARKS, T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.ABBREVATION, SUBJECT.UNITS,
+						ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER)
+				.from(GRADES)
+				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
+				.innerJoin(ACADEMIC_YEAR).on(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+				.innerJoin(SUBJECT).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
+				.where(GRADES.STUDENT_NO.eq(studentNo))
+				.orderBy(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE).fetchMaps();
+	}
+	
+	// ------------ FOR GRADES
+	public List<Map<String, Object>> selectEnrolledSchoolYearOfStudent(Integer studentNo) {
+		return dslContext.select(STUDENT_ENROLLMENT.ENROLLMENT_ID.as("enrollmentId"), ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), 
+								 ACADEMIC_YEAR.SEMESTER, STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.as("academicYearId"))
+				.from(STUDENT_ENROLLMENT)
+				.innerJoin(ACADEMIC_YEAR).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)).orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.SEMESTER)
+				.fetchMaps();
+	}
+	
+	// ------------ FOR Student Schedule	
+	public List<Map<String, Object>> selectScheduleOfStudent(Integer studentNo, Integer academicYearId) {
+		return dslContext.select(STUDENT_SCHEDULE.STUDENT_NO.as("studentNo"), STUDENT_SCHEDULE.LOAD_ID.as("loadId"),
+								 SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+								 PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"),
+								 ROOM.ROOM_NO.as("roomNo"))
+				.from(STUDENT_SCHEDULE)
+				.innerJoin(PROFESSOR_LOAD).on(STUDENT_SCHEDULE.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID))
+				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.innerJoin(ROOM).on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID))
+				.where(STUDENT_SCHEDULE.STUDENT_NO.eq(studentNo).and(STUDENT_SCHEDULE.ACADEMIC_YEAR_ID.eq(academicYearId)))
+				.orderBy(SUBJECT.SUBJECT_TITLE).fetchMaps();
 	}
 }

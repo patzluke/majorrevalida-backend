@@ -102,4 +102,15 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	public List<Map<String, Object>> selectAllSubjectGradesOfStudent(Integer studentNo) {
 		return repository.selectAllSubjectGradesOfStudent(studentNo);
 	}
+	
+	@Override
+	public List<Map<String, Object>> selectEnrolledSchoolYearOfStudent(Integer studentNo) {
+		return repository.selectEnrolledSchoolYearOfStudent(studentNo);
+
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectScheduleOfStudent(Integer studentNo, Integer academicYearId) {
+		return repository.selectScheduleOfStudent(studentNo, academicYearId);
+	}
 }

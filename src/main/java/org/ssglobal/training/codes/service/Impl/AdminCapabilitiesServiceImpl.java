@@ -1,9 +1,12 @@
 package org.ssglobal.training.codes.service.Impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DuplicateKeyException;
@@ -27,11 +30,19 @@ import org.ssglobal.training.codes.tables.pojos.Room;
 import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
+import org.ssglobal.training.codes.tables.pojos.StudentSubjectEnrolled;
 import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.records.StudentAttendanceRecord;
+import org.ssglobal.training.codes.tables.records.StudentScheduleRecord;
 
 @Service
 public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
+	private final org.ssglobal.training.codes.tables.StudentAttendance STUDENT_ATTENDANCE = org.ssglobal.training.codes.tables.StudentAttendance.STUDENT_ATTENDANCE;
+	private final org.ssglobal.training.codes.tables.StudentSchedule STUDENT_SCHEDULE = org.ssglobal.training.codes.tables.StudentSchedule.STUDENT_SCHEDULE;
+
+	@Autowired
+	private DSLContext dslContext;
 
 	@Autowired
 	private AdminCapabilitiesRepository repository;
@@ -210,6 +221,17 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
+	public List<Map<String, Object>> selectProfessorLoadWithMajorSubjectBySectionAndCurriculumCode(Integer sectionId,
+			Integer curriculumCode, Integer yearLevel, Integer sem) {
+		return repository.selectProfessorLoadWithMajorSubjectBySectionAndCurriculumCode(sectionId, curriculumCode, yearLevel, sem);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectProfessorLoadWithMinorSubjectBySectionAndCurriculumCode(Integer sectionId, Integer yearLevel, Integer sem) {
+		return repository.selectProfessorLoadWithMinorSubjectBySectionAndCurriculumCode(sectionId, yearLevel, sem);
+	}
+	
+	@Override
 	public Map<String, Object> insertProfessorLoad(ProfessorLoad professorLoad) {
 		return repository.insertProfessorLoad(professorLoad);
 	}
@@ -316,6 +338,21 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public List<Department> selectAllDepartment() {
 		return repository.selectAllDepartment();
+	}
+	
+	@Override
+	public Department updateDepartment(Department department) {
+		return repository.updateDepartment(department);
+	}
+	
+	@Override
+	public Department insertDepartment(Department department) {
+		return repository.insertDepartment(department);
+	}
+	
+	@Override
+	public Department deleteDepartment(Department department) {
+		return repository.deleteDepartment(department);
 	}
 
 
@@ -482,7 +519,73 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 
 	@Override
 	public EnrollmentData fullyEnrollStudent(EnrollmentData student) {
-		return repository.fullyEnrollStudent(student);
-	}
+		List<StudentAttendanceRecord> studentAttendanceRecords = new ArrayList<>();
+		List<StudentScheduleRecord> studentScheduleRecords = new ArrayList<>();
 
+		EnrollmentData enrolledStudent = repository.fullyEnrollStudent(student);
+		selectProfessorLoadWithMajorSubjectBySectionAndCurriculumCode(enrolledStudent.getSectionId(),
+				enrolledStudent.getCurriculumCode(), enrolledStudent.getYearLevel(), enrolledStudent.getSemester()).forEach(data -> {
+					
+					StudentSubjectEnrolled studentSubjectEnrolled = repository.fullyEnrollStudentSubjects(Integer.valueOf(data.get("loadId").toString()), 
+														  enrolledStudent.getEnrollmentId());
+					repository.insertGradesAndt_subject_detail_history(Integer.valueOf(data.get("professorNo").toString()), Integer.valueOf(data.get("subjectCode").toString()), 
+																	   enrolledStudent.getAcademicYearId(), enrolledStudent.getStudentNo(), studentSubjectEnrolled.getEnrollSubjectId());
+					
+					AcademicYear enrolledAcademicYear = selectEnrolledSchoolYearOfStudent(enrolledStudent.getStudentNo());
+					LocalDate startDate = enrolledAcademicYear.getStartDate();
+			        LocalDate endDate = enrolledAcademicYear.getEndDate();
+			        LocalDate currentDate = startDate;
+					while (!currentDate.equals(endDate)) {
+						StudentAttendanceRecord record = dslContext.newRecord(STUDENT_ATTENDANCE);
+						record.setStudentNo(enrolledStudent.getStudentNo());
+						record.setLoadId(Integer.valueOf(data.get("loadId").toString()));
+						record.setAttendanceDate(currentDate);
+						studentAttendanceRecords.add(record);
+			            currentDate = currentDate.plusDays(1);
+					}
+					StudentScheduleRecord record = dslContext.newRecord(STUDENT_SCHEDULE);
+					record.setStudentNo(enrolledStudent.getStudentNo());
+					record.setLoadId(Integer.valueOf(data.get("loadId").toString()));
+					record.setAcademicYearId(enrolledStudent.getAcademicYearId());
+					studentScheduleRecords.add(record);
+				});
+		selectProfessorLoadWithMinorSubjectBySectionAndCurriculumCode(enrolledStudent.getSectionId(),
+				enrolledStudent.getYearLevel(), enrolledStudent.getSemester()).forEach(data -> {
+					StudentSubjectEnrolled studentSubjectEnrolled = repository.fullyEnrollStudentSubjects(Integer.valueOf(data.get("loadId").toString()), 
+							  							  enrolledStudent.getEnrollmentId());
+					repository.insertGradesAndt_subject_detail_history(Integer.valueOf(data.get("professorNo").toString()), Integer.valueOf(data.get("subjectCode").toString()), 
+							   enrolledStudent.getAcademicYearId(), enrolledStudent.getStudentNo(), studentSubjectEnrolled.getEnrollSubjectId());
+					
+					AcademicYear enrolledAcademicYear = selectEnrolledSchoolYearOfStudent(enrolledStudent.getStudentNo());
+					LocalDate startDate = enrolledAcademicYear.getStartDate();
+			        LocalDate endDate = enrolledAcademicYear.getEndDate();
+			        LocalDate currentDate = startDate;
+					while (!currentDate.equals(endDate)) {
+						StudentAttendanceRecord record = dslContext.newRecord(STUDENT_ATTENDANCE);
+						record.setStudentNo(enrolledStudent.getStudentNo());
+						record.setLoadId(Integer.valueOf(data.get("loadId").toString()));
+						record.setAttendanceDate(currentDate);
+						studentAttendanceRecords.add(record);
+			            currentDate = currentDate.plusDays(1);
+					}
+					StudentScheduleRecord record = dslContext.newRecord(STUDENT_SCHEDULE);
+					record.setStudentNo(enrolledStudent.getStudentNo());
+					record.setLoadId(Integer.valueOf(data.get("loadId").toString()));
+					record.setAcademicYearId(enrolledStudent.getAcademicYearId());
+					studentScheduleRecords.add(record);
+				});
+		repository.batchInsertStudentAttendanceBySubject(studentAttendanceRecords);
+		repository.batchInsertStudentScheduleBySubject(studentScheduleRecords);
+		return enrolledStudent;
+	}
+	
+	@Override
+	public AcademicYear selectEnrolledSchoolYearOfStudent(Integer studentNo) {
+		return repository.selectEnrolledSchoolYearOfStudent(studentNo);
+	}
+	
+	@Override
+	public boolean batchInsertStudentAttendanceBySubject(List<StudentAttendanceRecord> studentAttendanceRecords) {
+		return repository.batchInsertStudentAttendanceBySubject(studentAttendanceRecords);
+	}
 }

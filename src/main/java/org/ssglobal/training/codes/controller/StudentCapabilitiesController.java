@@ -186,9 +186,41 @@ public class StudentCapabilitiesController {
 	public ResponseEntity selectAllSubjectGradesOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
 			List<Map<String, Object>> rooms = service.selectAllSubjectGradesOfStudent(studentNo);
-			System.out.println(rooms);
 			if (!rooms.isEmpty()) {
 				return ResponseEntity.ok(rooms);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	// -------- For Student grades
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/academicyear/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity selectEnrolledSchoolYearOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
+		try {
+			List<Map<String, Object>> rooms = service.selectEnrolledSchoolYearOfStudent(studentNo);
+			if (!rooms.isEmpty()) {
+				return ResponseEntity.ok(rooms);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	// -------- For Student Schedule
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/studentschedule/{studentNo}/{academicYearId}", produces = {MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity selectEnrolledSchoolYearOfStudent(@PathVariable(name = "studentNo") Integer studentNo,
+															@PathVariable(name = "academicYearId") Integer academicYearId) {
+		try {
+			List<Map<String, Object>> schedule = service.selectScheduleOfStudent(studentNo, academicYearId);
+			if (!schedule.isEmpty()) {
+				return ResponseEntity.ok(schedule);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
