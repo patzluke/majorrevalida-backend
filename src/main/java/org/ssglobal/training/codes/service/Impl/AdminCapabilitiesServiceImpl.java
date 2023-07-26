@@ -10,6 +10,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndProfessor;
@@ -387,7 +388,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public Map<String, Object> editMinorSubject(Map<String, Object> payload) {
+	public Map<String, Object> editMinorSubject(Map<String, Object> payload) throws Exception {
 		return repository.editMinorSubject(payload);
 	}
 	
@@ -407,7 +408,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public Map<String, Object> inserMinorSubject(Map<String, Object> payload) {
+	public Map<String, Object> inserMinorSubject(Map<String, Object> payload) throws Exception {
 		return repository.inserMinorSubject(payload);
 	}
 
@@ -472,6 +473,16 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {		
 		return repository.insertStudentEnrollmentData(studentApplicant);
+	}
+
+	@Override
+	public List<Map<String, Object>> getAllEnrollmentData() {
+		return repository.getAllEnrollmentData();
+	}
+
+	@Override
+	public EnrollmentData fullyEnrollStudent(EnrollmentData student) {
+		return repository.fullyEnrollStudent(student);
 	}
 
 }

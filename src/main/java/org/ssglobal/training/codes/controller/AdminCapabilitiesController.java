@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndProfessor;
@@ -763,8 +764,9 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 
+	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Map<String, Object>> editMinorSubject(@RequestBody Map<String, Object> payload) {
+	public ResponseEntity editMinorSubject(@RequestBody Map<String, Object> payload) {
 		try {
 			Map<String, Object> updatedMinorSubject = service.editMinorSubject(payload);
 			if (!updatedMinorSubject.isEmpty()) {
@@ -772,7 +774,7 @@ public class AdminCapabilitiesController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
@@ -799,7 +801,7 @@ public class AdminCapabilitiesController {
 		try {
 			Map<String, Object> updatedMinorSubject = service.deleteMinorSubject(
 					Integer.valueOf(payload.get("subjectCode").toString()),
-					Boolean.valueOf(payload.get("activeStatus").toString()));
+					Boolean.valueOf(payload.get("activeDeactive").toString()));
 			if (!updatedMinorSubject.isEmpty()) {
 				return ResponseEntity.ok(updatedMinorSubject);
 			}
@@ -810,8 +812,9 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 
+	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/add/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Map<String, Object>> inserMinorSubject(@RequestBody Map<String, Object> payload) {
+	public ResponseEntity inserMinorSubject(@RequestBody Map<String, Object> payload) {
 		try {
 			Map<String, Object> newMinorSubject = service.inserMinorSubject(payload);
 			if (!newMinorSubject.isEmpty()) {
@@ -819,7 +822,7 @@ public class AdminCapabilitiesController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
@@ -1046,6 +1049,34 @@ public class AdminCapabilitiesController {
 			StudentEnrollment applicant = service.insertStudentEnrollmentData(studentApplicant);
 			if (applicant != null) {
 				return ResponseEntity.ok(applicant);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@GetMapping(value = "/get/enrollment/all-data", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> getAllEnrollmentData() {
+		try {
+			List<Map<String, Object>> enrollee = service.getAllEnrollmentData();
+			if (!enrollee.isEmpty()) {
+				return ResponseEntity.ok(enrollee);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@PutMapping(value = "/update/enrollment", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<EnrollmentData> fullyEnrollStudent(@RequestBody EnrollmentData student){
+		try {
+			EnrollmentData enrollee = service.fullyEnrollStudent(student);
+			if (enrollee != null) {
+				return ResponseEntity.ok(enrollee);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
