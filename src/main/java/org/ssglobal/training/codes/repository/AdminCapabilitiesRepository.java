@@ -470,13 +470,16 @@ public class AdminCapabilitiesRepository {
 
 		// default password
 		String parentPassword = "123456";
-
+		
+		BCryptPasswordEncoder parentPasswordEncoder = new BCryptPasswordEncoder();
+		
 		// Secure the password using bcrypt
-		String bcryptParentPassword = passwordEncoder.encode(parentPassword);
+		String bcryptParentPassword = parentPasswordEncoder.encode(parentPassword);
 
 		// Create User Parent
-		dslContext.insertInto(USERS).set(USERS.USERNAME, "ultimateParent")
-				.set(USERS.PASSWORD, bcryptParentPassword).set(USERS.EMAIL, studentApplicant.getGuardianEmail())
+		dslContext.insertInto(USERS).set(USERS.USERNAME, "pendingParentUsername")
+				.set(USERS.PASSWORD, bcryptParentPassword)
+				.set(USERS.EMAIL, studentApplicant.getGuardianEmail())
 				.set(USERS.CONTACT_NO, studentApplicant.getGuardianMobileNo())
 				.set(USERS.FIRST_NAME, studentApplicant.getGuardianFirstName())
 				.set(USERS.MIDDLE_NAME, studentApplicant.getGuardianMiddleName())
