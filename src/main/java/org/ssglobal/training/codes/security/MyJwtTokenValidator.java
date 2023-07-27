@@ -212,7 +212,7 @@ public class MyJwtTokenValidator extends OncePerRequestFilter {
 				return true;
 			}
 		} catch (NullPointerException e) {
-			httpServletResponse.sendError(HttpStatus.NOT_FOUND.value(), "not ok shit");
+			httpServletResponse.sendError(HttpStatus.NOT_FOUND.value(), "not ok");
 		} catch (JsonMappingException e) {
 			e.printStackTrace();
 		} catch (JsonProcessingException e) {
