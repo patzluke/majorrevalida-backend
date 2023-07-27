@@ -932,7 +932,7 @@ public class AdminCapabilitiesRepository {
 
 	// -------------------------- FOR PROGRAM
 	public List<Program> selectAllProgram() {
-		return dslContext.selectFrom(PROGRAM).orderBy(PROGRAM.PROGRAM_CODE).fetchInto(Program.class);
+		return dslContext.selectFrom(PROGRAM).where(PROGRAM.ACTIVE_DEACTIVE.eq(true)).orderBy(PROGRAM.PROGRAM_CODE).fetchInto(Program.class);
 	}
 
 	public Program addProgram(Program program) {
@@ -950,6 +950,7 @@ public class AdminCapabilitiesRepository {
 		 * The program data added is limited to: program_title
 		 */
 		Program editProgram = dslContext.update(PROGRAM).set(PROGRAM.PROGRAM_TITLE, program.getProgramTitle())
+				.set(PROGRAM.ACTIVE_DEACTIVE, program.getActiveDeactive())
 				.where(PROGRAM.PROGRAM_CODE.eq(program.getProgramCode())).returning().fetchOne().into(Program.class);
 		return editProgram;
 	}
@@ -961,6 +962,7 @@ public class AdminCapabilitiesRepository {
 	
 	public Department updateDepartment(Department department) {
 		Department updated = dslContext.update(DEPARTMENT).set(DEPARTMENT.DEPT_NAME, department.getDeptName())
+				.where(DEPARTMENT.DEPT_CODE.eq(department.getDeptCode()))
 				.returning().fetchOne().into(Department.class);
 		if (updated.getDeptCode() != null) {
 			return dslContext.selectFrom(DEPARTMENT).where(DEPARTMENT.DEPT_CODE.eq(updated.getDeptCode())).fetchOne().into(Department.class);
@@ -982,8 +984,7 @@ public class AdminCapabilitiesRepository {
 	}
 	
 	public Department deleteDepartment(Department department) {
-		Department updated = dslContext.update(DEPARTMENT).set(DEPARTMENT.ACTIVE_DEACTIVE, department.getActiveDeactive())
-				.returning().fetchOne().into(Department.class);
+		Department updated = dslContext.update(DEPARTMENT).set(DEPARTMENT.ACTIVE_DEACTIVE, !department.getActiveDeactive())				.where(DEPARTMENT.DEPT_CODE.eq(department.getDeptCode())).returning().fetchOne().into(Department.class);
 		if (updated.getDeptCode() != null) {
 			return dslContext.selectFrom(DEPARTMENT).where(DEPARTMENT.DEPT_CODE.eq(updated.getDeptCode())).fetchOne().into(Department.class);
 		} else {

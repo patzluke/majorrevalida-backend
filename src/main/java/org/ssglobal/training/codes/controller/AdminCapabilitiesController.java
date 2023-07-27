@@ -549,6 +549,21 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+	
+	@PutMapping(value = "/update/program", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Program> updateProgram(@RequestBody Program program) {
+		try {
+			Program addedProgram = service.editProgram(program);
+			if (addedProgram != null) {
+				return ResponseEntity.ok(addedProgram);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
 
 	// -------- For Course
 	@GetMapping(value = "/get/course/dept/program", produces = { MediaType.APPLICATION_JSON_VALUE })
