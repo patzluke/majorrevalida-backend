@@ -218,6 +218,7 @@ public class StudentCapabilitiesController {
 	public ResponseEntity selectEnrolledSchoolYearOfStudent(@PathVariable(name = "studentNo") Integer studentNo,
 															@PathVariable(name = "academicYearId") Integer academicYearId) {
 		try {
+			
 			List<Map<String, Object>> schedule = service.selectScheduleOfStudent(studentNo, academicYearId);
 			if (!schedule.isEmpty()) {
 				return ResponseEntity.ok(schedule);
@@ -228,4 +229,21 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+	
+	// -------- For Student grades
+		@SuppressWarnings("rawtypes")
+		@GetMapping(value = "/get/majorsubject/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+		public ResponseEntity selectAllMajorSubjectsInACurriculumOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
+			try {
+				List<Map<String, Object>> rooms = service.selectAllMajorSubjectsInACurriculumOfStudent(studentNo);
+				System.out.println(rooms);
+				if (!rooms.isEmpty()) {
+					return ResponseEntity.ok(rooms);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			}
+			return ResponseEntity.badRequest().build();
+		}
 }

@@ -63,7 +63,12 @@ public class StudentApplicantCapabilitiesRepository {
 	}
 	
 	public List<Course> selectAllCourses() {
-		return dslContext.selectFrom(COURSE).fetchInto(Course.class);
+		return dslContext.selectDistinct(COURSE.COURSE_ID.as("courseId"), COURSE.COURSE_CODE.as("courseCode"), COURSE.PROGRAM_CODE.as("programCode"), 
+								 COURSE.DEPT_CODE.as("deptCode"), COURSE.COURSE_TITLE.as("courseTitle"))
+						 .from(MAJOR)
+						 
+						 .innerJoin(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+						 .fetchInto(Course.class);
 	}
 	
 	public List<Major> selectCourseMajors(Integer courseCode) {

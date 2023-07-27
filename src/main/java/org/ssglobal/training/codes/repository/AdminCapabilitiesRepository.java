@@ -20,6 +20,7 @@ import org.ssglobal.training.codes.tables.pojos.Admin;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Department;
+import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.MajorSubject;
 import org.ssglobal.training.codes.tables.pojos.MinorSubject;
@@ -32,8 +33,12 @@ import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
+import org.ssglobal.training.codes.tables.pojos.StudentSubjectEnrolled;
 import org.ssglobal.training.codes.tables.pojos.Subject;
+import org.ssglobal.training.codes.tables.pojos.TSubjectDetailHistory;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.records.StudentAttendanceRecord;
+import org.ssglobal.training.codes.tables.records.StudentScheduleRecord;
 
 @Repository
 public class AdminCapabilitiesRepository {
@@ -45,6 +50,7 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Admin ADMIN = org.ssglobal.training.codes.tables.Admin.ADMIN;
 	private final org.ssglobal.training.codes.tables.Student STUDENT = org.ssglobal.training.codes.tables.Student.STUDENT;
 	private final org.ssglobal.training.codes.tables.StudentEnrollment STUDENT_ENROLLMENT = org.ssglobal.training.codes.tables.StudentEnrollment.STUDENT_ENROLLMENT;
+	private final org.ssglobal.training.codes.tables.StudentSubjectEnrolled STUDENT_SUBJECT_ENROLLED = org.ssglobal.training.codes.tables.StudentSubjectEnrolled.STUDENT_SUBJECT_ENROLLED;
 
 	private final org.ssglobal.training.codes.tables.Professor PROFESSOR = org.ssglobal.training.codes.tables.Professor.PROFESSOR;
 	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
@@ -437,7 +443,7 @@ public class AdminCapabilitiesRepository {
 		// Secure the password using bcrypt
 		String bcryptPassword = passwordEncoder.encode(password);
 
-		Users applicantUserData = dslContext.insertInto(USERS).set(USERS.USERNAME, "pendingUsername")
+		Users applicantUserData = dslContext.insertInto(USERS).set(USERS.USERNAME, "ultimate")
 				.set(USERS.PASSWORD, bcryptPassword).set(USERS.EMAIL, studentApplicant.getEmail())
 				.set(USERS.CONTACT_NO, studentApplicant.getMobileNo())
 				.set(USERS.FIRST_NAME, studentApplicant.getFirstName())
@@ -464,13 +470,16 @@ public class AdminCapabilitiesRepository {
 
 		// default password
 		String parentPassword = "123456";
-
+		
+		BCryptPasswordEncoder parentPasswordEncoder = new BCryptPasswordEncoder();
+		
 		// Secure the password using bcrypt
-		String bcryptParentPassword = passwordEncoder.encode(parentPassword);
+		String bcryptParentPassword = parentPasswordEncoder.encode(parentPassword);
 
 		// Create User Parent
 		dslContext.insertInto(USERS).set(USERS.USERNAME, "pendingParentUsername")
-				.set(USERS.PASSWORD, bcryptParentPassword).set(USERS.EMAIL, studentApplicant.getGuardianEmail())
+				.set(USERS.PASSWORD, bcryptParentPassword)
+				.set(USERS.EMAIL, studentApplicant.getGuardianEmail())
 				.set(USERS.CONTACT_NO, studentApplicant.getGuardianMobileNo())
 				.set(USERS.FIRST_NAME, studentApplicant.getGuardianFirstName())
 				.set(USERS.MIDDLE_NAME, studentApplicant.getGuardianMiddleName())
@@ -546,20 +555,54 @@ public class AdminCapabilitiesRepository {
 
 		// return the data that is edited
 		return dslContext
-				.select(STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), USERS.FIRST_NAME.as("firstName"),
-						USERS.MIDDLE_NAME.as("middleName"), USERS.LAST_NAME.as("lastName"),
-						MAJOR.MAJOR_CODE.as("majorCode"), MAJOR.MAJOR_TITLE.as("majorTitle"),
-						COURSE.COURSE_CODE.as("courseCode"), COURSE.COURSE_TITLE.as("courseTitle"),
+				.select(STUDENT_ENROLLMENT.ENROLLMENT_ID.as("enrollmentId"),
+						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), STUDENT.CURRICULUM_CODE.as("curriculumCode"),
+						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
+						USERS.LAST_NAME.as("lastName"), COURSE.COURSE_CODE.as("courseCode"),
+						COURSE.COURSE_TITLE.as("courseTitle"), MAJOR.MAJOR_TITLE.as("majorTitle"),
 						STUDENT.YEAR_LEVEL.as("yearLevel"), STUDENT_ENROLLMENT.STATUS.as("status"),
 						STUDENT_ENROLLMENT.SECTION_ID.as("sectionId"),
-						STUDENT_ENROLLMENT.PAYMENT_STATUS.as("paymentStatus"))
-				.from(STUDENT_ENROLLMENT).innerJoin(STUDENT).on(STUDENT_ENROLLMENT.STUDENT_NO.eq(STUDENT.STUDENT_NO))
-				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID)).innerJoin(CURRICULUM)
-				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
-				.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
-				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+						STUDENT_ENROLLMENT.PAYMENT_STATUS.as("paymentStatus"), STUDENT.YEAR_LEVEL.as("yearLevel"),
+						ACADEMIC_YEAR.SEMESTER, STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.as("academicYearId"))
+				.from(STUDENT_ENROLLMENT)
+				.innerJoin(STUDENT).on(STUDENT_ENROLLMENT.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.innerJoin(ACADEMIC_YEAR).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
+				.innerJoin(CURRICULUM).on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE))
+				.innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+				.innerJoin(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
 				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(student.getStudentNo())).fetchOne().into(EnrollmentData.class);
 	}
+	
+	public StudentSubjectEnrolled fullyEnrollStudentSubjects(Integer loadId, Integer enrollmentId) {
+		// update the data of the student to make them fully enrolled
+		StudentSubjectEnrolled studentSubjectEnrolled = dslContext.insertInto(STUDENT_SUBJECT_ENROLLED)
+				  .set(STUDENT_SUBJECT_ENROLLED.LOAD_ID, loadId)
+				  .set(STUDENT_SUBJECT_ENROLLED.ENROLLMENT_ID, enrollmentId)
+				  .returning().fetchOne().into(StudentSubjectEnrolled.class);
+		System.out.println(studentSubjectEnrolled + " pat");
+		return studentSubjectEnrolled;
+	}
+	
+	//-------------------------FOR Student Attendance
+	public AcademicYear selectEnrolledSchoolYearOfStudent(Integer studentNo) {
+		return dslContext.select(ACADEMIC_YEAR.START_DATE, ACADEMIC_YEAR.END_DATE, ACADEMIC_YEAR.ACADEMIC_YEAR_)
+				.from(STUDENT_ENROLLMENT)
+				.innerJoin(ACADEMIC_YEAR).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)).orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.SEMESTER)
+				.fetchOneInto(AcademicYear.class);
+	}
+	public boolean batchInsertStudentAttendanceBySubject(List<StudentAttendanceRecord> studentAttendanceRecords) {		
+		dslContext.batchInsert(studentAttendanceRecords).execute();
+		return true;
+	}
+	
+	//-------------------------FOR Student Schedule
+	public boolean batchInsertStudentScheduleBySubject(List<StudentScheduleRecord> studentScheduleRecords) {
+		dslContext.batchInsert(studentScheduleRecords).execute();
+		return true;
+	}
+	
 
 	// ------------------------FOR PROFESSOR
 
@@ -698,6 +741,42 @@ public class AdminCapabilitiesRepository {
 				.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
 				.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE)).where(PROFESSOR_LOAD.ACTIVE_DEACTIVE.eq(true))
 				.orderBy(PROFESSOR_LOAD.LOAD_ID).fetchMaps();
+	}
+	
+	public List<Map<String, Object>> selectProfessorLoadWithMajorSubjectBySectionAndCurriculumCode(Integer sectionId, Integer curriculumCode,
+																								   Integer yearLevel, Integer sem) {
+		return dslContext
+				.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
+						PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
+						SECTION.SECTION_NAME.as("sectionName"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+						MAJOR_SUBJECT.SEM)
+				.from(PROFESSOR_LOAD)
+				.innerJoin(SECTION).on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID))
+				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+				.where(SECTION.SECTION_ID.eq(sectionId).and(MAJOR_SUBJECT.CURRICULUM_CODE.eq(curriculumCode))
+					   .and(MAJOR_SUBJECT.YEAR_LEVEL.eq(yearLevel))
+					   .and(MAJOR_SUBJECT.SEM.eq(sem))
+					   .and(PROFESSOR_LOAD.ACTIVE_DEACTIVE.eq(true))
+					   )
+				.fetchMaps();
+	}
+	
+	public List<Map<String, Object>> selectProfessorLoadWithMinorSubjectBySectionAndCurriculumCode(Integer sectionId, Integer yearLevel, Integer sem) {
+		return dslContext
+				.select(PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
+						PROFESSOR_LOAD.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
+						SECTION.SECTION_ID.as("sectionId"), SECTION.SECTION_NAME.as("sectionName"),
+						PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.START_TIME.as("startTime"), 
+						PROFESSOR_LOAD.END_TIME.as("endTime"), PROFESSOR_LOAD.ACTIVE_DEACTIVE.as("activeDeactive"))
+				.from(PROFESSOR_LOAD)
+				.innerJoin(SECTION).on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID))
+				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+				.where(SECTION.SECTION_ID.eq(sectionId).and(MINOR_SUBJECT.YEAR_LEVEL.eq(yearLevel))
+					   .and(MINOR_SUBJECT.SEM.eq(sem))
+				)
+				.fetchMaps();
 	}
 
 	public List<Map<String, Object>> selectProfessorLoad(Integer professorNo) {
@@ -932,7 +1011,7 @@ public class AdminCapabilitiesRepository {
 
 	// -------------------------- FOR PROGRAM
 	public List<Program> selectAllProgram() {
-		return dslContext.selectFrom(PROGRAM).where(PROGRAM.ACTIVE_DEACTIVE.eq(true)).orderBy(PROGRAM.PROGRAM_CODE).fetchInto(Program.class);
+		return dslContext.selectFrom(PROGRAM).orderBy(PROGRAM.PROGRAM_CODE).fetchInto(Program.class);
 	}
 
 	public Program addProgram(Program program) {
@@ -950,7 +1029,6 @@ public class AdminCapabilitiesRepository {
 		 * The program data added is limited to: program_title
 		 */
 		Program editProgram = dslContext.update(PROGRAM).set(PROGRAM.PROGRAM_TITLE, program.getProgramTitle())
-				.set(PROGRAM.ACTIVE_DEACTIVE, program.getActiveDeactive())
 				.where(PROGRAM.PROGRAM_CODE.eq(program.getProgramCode())).returning().fetchOne().into(Program.class);
 		return editProgram;
 	}
@@ -962,7 +1040,6 @@ public class AdminCapabilitiesRepository {
 	
 	public Department updateDepartment(Department department) {
 		Department updated = dslContext.update(DEPARTMENT).set(DEPARTMENT.DEPT_NAME, department.getDeptName())
-				.where(DEPARTMENT.DEPT_CODE.eq(department.getDeptCode()))
 				.returning().fetchOne().into(Department.class);
 		if (updated.getDeptCode() != null) {
 			return dslContext.selectFrom(DEPARTMENT).where(DEPARTMENT.DEPT_CODE.eq(updated.getDeptCode())).fetchOne().into(Department.class);
@@ -984,13 +1061,13 @@ public class AdminCapabilitiesRepository {
 	}
 	
 	public Department deleteDepartment(Department department) {
-		Department updated = dslContext.update(DEPARTMENT).set(DEPARTMENT.ACTIVE_DEACTIVE, !department.getActiveDeactive())				.where(DEPARTMENT.DEPT_CODE.eq(department.getDeptCode())).returning().fetchOne().into(Department.class);
+		Department updated = dslContext.update(DEPARTMENT).set(DEPARTMENT.ACTIVE_DEACTIVE, department.getActiveDeactive())
+				.returning().fetchOne().into(Department.class);
 		if (updated.getDeptCode() != null) {
 			return dslContext.selectFrom(DEPARTMENT).where(DEPARTMENT.DEPT_CODE.eq(updated.getDeptCode())).fetchOne().into(Department.class);
 		} else {
 			return null;
 		}
-		
 	}
 
 	// -------------------------- FOR COURSE
@@ -1204,6 +1281,28 @@ public class AdminCapabilitiesRepository {
 				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).where(GRADES.IS_SUBMITTED.eq(true))
 				.orderBy(GRADES.GRADE_ID).fetchMaps();
 	}
+	
+	public boolean insertGradesAndt_subject_detail_history(Integer professorNo, Integer subjectCode, Integer academicYearId, 
+																Integer studentNo, Integer enrollSubjectId) {
+		
+		TSubjectDetailHistory insertedTSubjectDetailHistory = dslContext.insertInto(T_SUBJECT_DETAIL_HISTORY)
+				.set(T_SUBJECT_DETAIL_HISTORY.PROFESSOR_NO, professorNo)
+				.set(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE, subjectCode)
+				.set(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID, academicYearId)
+				.returning().fetchOne().into(TSubjectDetailHistory.class);
+
+		Grades grade = dslContext.insertInto(GRADES)
+				.set(GRADES.STUDENT_NO, studentNo)
+				.set(GRADES.SUBJECT_DETAIL_HIS_ID, insertedTSubjectDetailHistory.getSubjectDetailHisId())
+				.set(GRADES.ENROLL_SUBJECT_ID, enrollSubjectId)
+				.returning().fetchOne().into(Grades.class);
+
+		if (insertedTSubjectDetailHistory != null && grade != null) {
+			return true;
+		}
+		return false;
+	}
+	
 
 	// -------------------------- Get All Minor Subject
 	public List<Map<String, Object>> selectAllMinorSubjects() {
