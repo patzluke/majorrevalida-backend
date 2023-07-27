@@ -29,7 +29,6 @@ import org.ssglobal.training.codes.tables.pojos.Professor;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
-import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
@@ -1255,8 +1254,13 @@ public class AdminCapabilitiesRepository {
 	}
 
 	// -------------------------- FOR SECTION
-	public List<Section> selectAllSection() {
-		List<Section> query = dslContext.selectFrom(SECTION).orderBy(SECTION.SECTION_ID).fetchInto(Section.class);
+	public List<Map<String, Object>> selectAllSection() {
+		List<Map<String, Object>> query = dslContext.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
+												SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"))
+				.from(SECTION)
+				.innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+				.orderBy(SECTION.SECTION_ID)
+				.fetchMaps();
 		return !query.isEmpty() ? query : null;
 	}
 

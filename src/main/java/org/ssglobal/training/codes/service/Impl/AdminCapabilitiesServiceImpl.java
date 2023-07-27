@@ -27,7 +27,6 @@ import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
-import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.StudentSubjectEnrolled;
@@ -392,7 +391,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	
 	// ------------------------FOR Section
 	@Override
-	public List<Section> selectAllSection() {
+	public List<Map<String, Object>> selectAllSection() {
 		return repository.selectAllSection();
 	}
 	

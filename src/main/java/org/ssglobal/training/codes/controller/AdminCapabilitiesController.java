@@ -29,7 +29,6 @@ import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
-import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
@@ -761,9 +760,10 @@ public class AdminCapabilitiesController {
 
 	// -------- For Section
 	@GetMapping(value = "/get/section", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<Section>> selectAllSection() {
+	public ResponseEntity<List<Map<String, Object>>> selectAllSection() {
 		try {
-			List<Section> sections = service.selectAllSection();
+			List<Map<String, Object>> sections = service.selectAllSection();
+			System.out.println(sections);
 			if (!sections.isEmpty()) {
 				return ResponseEntity.ok(sections);
 			}

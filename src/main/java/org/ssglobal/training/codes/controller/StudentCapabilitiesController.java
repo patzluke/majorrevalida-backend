@@ -2,7 +2,6 @@ package org.ssglobal.training.codes.controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.StudentCourseData;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.StudentCapabilitiesService;
-import org.ssglobal.training.codes.tables.Subject;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
