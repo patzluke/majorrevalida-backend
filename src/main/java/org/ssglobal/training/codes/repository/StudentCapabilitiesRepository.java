@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.StudentCourseData;
@@ -18,7 +16,6 @@ import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.Users;
-import org.ssglobal.training.codes.tables.records.SubjectRecord;
 
 @Repository
 public class StudentCapabilitiesRepository {
@@ -267,31 +264,36 @@ public class StudentCapabilitiesRepository {
 				.orderBy(SUBJECT.SUBJECT_TITLE).fetchMaps();
 	}
 	
-	// ------------ FOR Major Subject (for curriculum display)	
-		public List<Map<String, Object>> selectAllMajorSubjectsInACurriculumOfStudent(Integer studentNo) {
-			org.ssglobal.training.codes.tables.Subject SUBJECT2 = org.ssglobal.training.codes.tables.Subject.SUBJECT.as("SUBJECT2");
-			Student student = dslContext.selectFrom(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo)).fetchOneInto(Student.class);
-			
-			return dslContext.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), 
-									 SUBJECT.UNITS, MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM, SUBJECT2.SUBJECT_TITLE.as("preRequisite"))
-					.from(MAJOR_SUBJECT)
-					.innerJoin(SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-					.join(SUBJECT2).on(MAJOR_SUBJECT.PRE_REQUISITES.eq(SUBJECT2.SUBJECT_CODE))
-					.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode()))
-					.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM).fetchMaps();
-		}
+	// ------------ FOR Major Subject (for curriculum display)
+	public List<Map<String, Object>> selectAllMajorSubjectsInACurriculumOfStudent(Integer studentNo) {
+		org.ssglobal.training.codes.tables.Subject SUBJECT2 = org.ssglobal.training.codes.tables.Subject.SUBJECT
+				.as("SUBJECT2");
+		Student student = dslContext.selectFrom(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo))
+				.fetchOneInto(Student.class);
+
+		return dslContext
+				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+						MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM,
+						SUBJECT2.SUBJECT_TITLE.as("preRequisite"))
+				.from(MAJOR_SUBJECT).innerJoin(SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.join(SUBJECT2).on(MAJOR_SUBJECT.PRE_REQUISITES.eq(SUBJECT2.SUBJECT_CODE))
+				.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode()))
+				.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM).fetchMaps();
+	}
+
+	// ------------ FOR Minor Subject (for curriculum display)
+	public List<Map<String, Object>> selectAllMinorSubjectsInACurriculumOfStudent(Integer studentNo) {
+		org.ssglobal.training.codes.tables.Subject SUBJECT2 = org.ssglobal.training.codes.tables.Subject.SUBJECT
+				.as("SUBJECT2");
 		
-		// ------------ FOR Minor Subject (for curriculum display)	
-				public List<Map<String, Object>> selectAllMinorSubjectsInACurriculumOfStudent(Integer studentNo) {
-					org.ssglobal.training.codes.tables.Subject SUBJECT2 = org.ssglobal.training.codes.tables.Subject.SUBJECT.as("SUBJECT2");
-					Student student = dslContext.selectFrom(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo)).fetchOneInto(Student.class);
-					
-					return dslContext.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), 
-											 SUBJECT.UNITS, MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM, SUBJECT2.SUBJECT_TITLE.as("preRequisite"))
-							.from(MINOR_SUBJECT)
-							.innerJoin(SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-							.join(SUBJECT2).on(MAJOR_SUBJECT.PRE_REQUISITES.eq(SUBJECT2.SUBJECT_CODE))
-							.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode()))
-							.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM).fetchMaps();
-				}
+		return dslContext
+				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM,
+						SUBJECT2.SUBJECT_TITLE.as("preRequisite"))
+				.from(MINOR_SUBJECT).innerJoin(SUBJECT).on(MINOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.join(SUBJECT2).on(MINOR_SUBJECT.PRE_REQUISITES.eq(SUBJECT2.SUBJECT_CODE))
+				.orderBy(MINOR_SUBJECT.YEAR_LEVEL, MINOR_SUBJECT.SEM).fetchMaps();
+	}
 }

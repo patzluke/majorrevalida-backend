@@ -1,5 +1,8 @@
 package org.ssglobal.training.codes.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.model.StudentCourseData;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.StudentCapabilitiesService;
+import org.ssglobal.training.codes.tables.Subject;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
@@ -231,19 +235,30 @@ public class StudentCapabilitiesController {
 	}
 	
 	// -------- For Student grades
-		@SuppressWarnings("rawtypes")
-		@GetMapping(value = "/get/majorsubject/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
-		public ResponseEntity selectAllMajorSubjectsInACurriculumOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
-			try {
-				List<Map<String, Object>> rooms = service.selectAllMajorSubjectsInACurriculumOfStudent(studentNo);
-				System.out.println(rooms);
-				if (!rooms.isEmpty()) {
-					return ResponseEntity.ok(rooms);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/curriculumsubject/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity selectAllMajorSubjectsInACurriculumOfStudent(
+			@PathVariable(name = "studentNo") Integer studentNo) {
+		try {
+			List<Map<String, Object>> curriculumSubjects = new ArrayList<>();
+			List<Map<String, Object>> minor = service.selectAllMajorSubjectsInACurriculumOfStudent(studentNo);
+			List<Map<String, Object>> major = service.selectAllMinorSubjectsInACurriculumOfStudent(studentNo);
+			curriculumSubjects.addAll(minor);
+			curriculumSubjects.addAll(major);
+			
+			Collections.sort(curriculumSubjects, (o1, o2) -> {
+					if (Integer.parseInt(o2.get("subjectCode").toString()) < Integer.parseInt(o1.get("subjectCode").toString())) {
+						return 1;
+					}
+					return -1;
+			});		
+			if (!curriculumSubjects.isEmpty()) {
+				return ResponseEntity.ok(curriculumSubjects);
 			}
-			return ResponseEntity.badRequest().build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
+		return ResponseEntity.badRequest().build();
+	}
 }
