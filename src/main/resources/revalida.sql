@@ -1130,10 +1130,6 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 (77012, 96, 96, 0.00, 0.00)
 ;
 
-select sub.subject_title as title, sub2.subject_title from major_subject masub
-inner join subject sub on masub.subject_code = sub.subject_code
-join subject sub2 on masub.pre_requisites = sub2.subject_code;
-
 --insert into student_schedule
 --1st sem
 insert into student_schedule(student_no, load_id, academic_year_id) values
