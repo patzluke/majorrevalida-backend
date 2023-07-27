@@ -39,4 +39,6 @@ public interface StudentCapabilitiesService {
 	List<Map<String, Object>> selectAllSubjectGradesOfStudent(Integer studentNo);
 	
 	List<Map<String, Object>> selectEnrolledSchoolYearOfStudent(Integer studentNo);
+	
+	List<Map<String, Object>> selectScheduleOfStudent(Integer studentNo, Integer academicYearId);
 }

@@ -329,8 +329,10 @@ create table student_schedule (
     schedule_id serial primary key,
     student_no int,
     load_id int,
+    academic_year_id int,
     foreign key(student_no) references student(student_no) on delete cascade,
-    foreign key(load_id) references professor_load(load_id) on delete cascade    
+    foreign key(load_id) references professor_load(load_id) on delete cascade,
+    foreign key(academic_year_id) references academic_year(academic_year_id) on delete cascade
 ); 
 
 drop table if exists student_attendance cascade;
@@ -682,7 +684,7 @@ insert into student(user_id, curriculum_code, academic_year_id, year_level) valu
 ----------------1st sem
 --insert into student_enrollment
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77001, 1, 1, 'Full', 'Enrolled');
+values(77001, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 1),
@@ -719,7 +721,7 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77002, 1, 1, 'Full', 'Enrolled');
+values(77002, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 2),
@@ -756,7 +758,7 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77003, 1, 1, 'Full', 'Enrolled');
+values(77003, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 3),
@@ -793,7 +795,7 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77004, 1, 1, 'Partial', 'Not Enrolled');
+values(77004, 13, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 4),
@@ -831,7 +833,7 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77005, 1, 1, 'Full', 'Enrolled');
+values(77005, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 5),
@@ -869,7 +871,7 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77006, 1, 1, 'Partial', 'Not Enrolled');
+values(77006, 13, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 6),
@@ -906,7 +908,7 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77007, 1, 1, 'Full', 'Enrolled');
+values(77007, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 7),
@@ -943,7 +945,7 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77008, 1, 1, 'Full', 'Enrolled');
+values(77008, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 8),
@@ -980,7 +982,7 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77009, 1, 1, 'Full', 'Enrolled');
+values(77009, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 9),
@@ -1017,7 +1019,7 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77010, 1, 1, 'Partial', 'Not Enrolled');
+values(77010, 13, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 10),
@@ -1055,7 +1057,7 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77011, 1, 1, 'Full', 'Enrolled');
+values(77011, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 11),
@@ -1092,7 +1094,7 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77012, 1, 1, 'Full', 'Enrolled');
+values(77012, 13, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 12),
@@ -1128,21 +1130,6 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 (77012, 96, 96, 0.00, 0.00)
 ;
 
-----------------2nd sem
---insert into student_enrollment
-insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77001, 2, 1, 'Full', 'Enrolled');
-
-insert into student_subject_enrolled(load_id, enrollment_id) values
-(1, 13),
-(2, 13),
-(3, 13),
-(4, 13),
-(5, 13),
-(6, 13),
-(7, 13),
-(8, 13);
-
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
 values(8001, 9009, 2, 1, 2001, 'M', '11:00', '14:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
@@ -1162,165 +1149,128 @@ values(8004, 9015, 5, 1, 2001, 'W', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
 values(8004, 9016, 5, 1, 2001, 'W', '11:00', '14:00', 't');
 
---insert into t_subject_detail_history
-insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9009, 2),
-(8001, 9010, 2),
-(8002, 9011, 2),
-(8002, 9012, 2),
-(8003, 9013, 2),
-(8003, 9014, 2),
-(8004, 9015, 2),
-(8004, 9016, 2)
-;
-
---insert into grades
-insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
-(77001, 97, 97, 0.00, 0.00),
-(77001, 98, 98, 0.00, 0.00),
-(77001, 99, 99, 0.00, 0.00),
-(77001, 100, 100, 0.00, 0.00),
-(77001, 101, 101, 0.00, 0.00),
-(77001, 102, 102, 0.00, 0.00),
-(77001, 103, 103, 0.00, 0.00),
-(77001, 104, 104, 0.00, 0.00)
-;
-
-
-
 
 --insert into student_schedule
 --1st sem
-insert into student_schedule(student_no, load_id) values
-(77001, 1),
-(77001, 2),
-(77001, 3),
-(77001, 4),
-(77001, 5),
-(77001, 6),
-(77001, 7),
-(77001, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77001, 1, 13),
+(77001, 2, 13),
+(77001, 3, 13),
+(77001, 4, 13),
+(77001, 5, 13),
+(77001, 6, 13),
+(77001, 7, 13),
+(77001, 8, 13);
 
---2nd sem
-insert into student_schedule(student_no, load_id) values
-(77001, 9),
-(77001, 10),
-(77001, 11),
-(77001, 12),
-(77001, 13),
-(77001, 14),
-(77001, 15),
-(77001, 16);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77002, 1, 13),
+(77002, 2, 13),
+(77002, 3, 13),
+(77002, 4, 13),
+(77002, 5, 13),
+(77002, 6, 13),
+(77002, 7, 13),
+(77002, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77004, 1),
-(77004, 2),
-(77004, 3),
-(77004, 4),
-(77004, 5),
-(77004, 6),
-(77004, 7),
-(77004, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77003, 1, 13),
+(77003, 2, 13),
+(77003, 3, 13),
+(77003, 4, 13),
+(77003, 5, 13),
+(77003, 6, 13),
+(77003, 7, 13),
+(77003, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77003, 1),
-(77003, 2),
-(77003, 3),
-(77003, 4),
-(77003, 5),
-(77003, 6),
-(77003, 7),
-(77003, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77004, 1, 13),
+(77004, 2, 13),
+(77004, 3, 13),
+(77004, 4, 13),
+(77004, 5, 13),
+(77004, 6, 13),
+(77004, 7, 13),
+(77004, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77004, 1),
-(77004, 2),
-(77004, 3),
-(77004, 4),
-(77004, 5),
-(77004, 6),
-(77004, 7),
-(77004, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77005, 1, 13),
+(77005, 2, 13),
+(77005, 3, 13),
+(77005, 4, 13),
+(77005, 5, 13),
+(77005, 6, 13),
+(77005, 7, 13),
+(77005, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77005, 1),
-(77005, 2),
-(77005, 3),
-(77005, 4),
-(77005, 5),
-(77005, 6),
-(77005, 7),
-(77005, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77006, 1, 13),
+(77006, 2, 13),
+(77006, 3, 13),
+(77006, 4, 13),
+(77006, 5, 13),
+(77006, 6, 13),
+(77006, 7, 13),
+(77006, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77006, 1),
-(77006, 2),
-(77006, 3),
-(77006, 4),
-(77006, 5),
-(77006, 6),
-(77006, 7),
-(77006, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77007, 1, 13),
+(77007, 2, 13),
+(77007, 3, 13),
+(77007, 4, 13),
+(77007, 5, 13),
+(77007, 6, 13),
+(77007, 7, 13),
+(77007, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77007, 1),
-(77007, 2),
-(77007, 3),
-(77007, 4),
-(77007, 5),
-(77007, 6),
-(77007, 7),
-(77007, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77008, 1, 13),
+(77008, 2, 13),
+(77008, 3, 13),
+(77008, 4, 13),
+(77008, 5, 13),
+(77008, 6, 13),
+(77008, 7, 13),
+(77008, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77008, 1),
-(77008, 2),
-(77008, 3),
-(77008, 4),
-(77008, 5),
-(77008, 6),
-(77008, 7),
-(77008, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77009, 1, 13),
+(77009, 2, 13),
+(77009, 3, 13),
+(77009, 4, 13),
+(77009, 5, 13),
+(77009, 6, 13),
+(77009, 7, 13),
+(77009, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77009, 1),
-(77009, 2),
-(77009, 3),
-(77009, 4),
-(77009, 5),
-(77009, 6),
-(77009, 7),
-(77009, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77010, 1, 13),
+(77010, 2, 13),
+(77010, 3, 13),
+(77010, 4, 13),
+(77010, 5, 13),
+(77010, 6, 13),
+(77010, 7, 13),
+(77010, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77010, 1),
-(77010, 2),
-(77010, 3),
-(77010, 4),
-(77010, 5),
-(77010, 6),
-(77010, 7),
-(77010, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77011, 1, 13),
+(77011, 2, 13),
+(77011, 3, 13),
+(77011, 4, 13),
+(77011, 5, 13),
+(77011, 6, 13),
+(77011, 7, 13),
+(77011, 8, 13);
 
-insert into student_schedule(student_no, load_id) values
-(77011, 1),
-(77011, 2),
-(77011, 3),
-(77011, 4),
-(77011, 5),
-(77011, 6),
-(77011, 7),
-(77011, 8);
-
-insert into student_schedule(student_no, load_id) values
-(77012, 1),
-(77012, 2),
-(77012, 3),
-(77012, 4),
-(77012, 5),
-(77012, 6),
-(77012, 7),
-(77012, 8);
+insert into student_schedule(student_no, load_id, academic_year_id) values
+(77012, 1, 13),
+(77012, 2, 13),
+(77012, 3, 13),
+(77012, 4, 13),
+(77012, 5, 13),
+(77012, 6, 13),
+(77012, 7, 13),
+(77012, 8, 13);
 
 --insert into student_attendance
 --1st sem

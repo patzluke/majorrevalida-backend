@@ -43,7 +43,7 @@ public class AdminCapabilitiesController {
 
 	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/password", consumes = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity changePassword(@RequestBody Map<String, String> payload) {
+	public ResponseEntity changePassword(@RequestBody Map<String, String> payload) {		
 		return service.changePassword(payload.get("password"), payload.get("username")) ? ResponseEntity.ok().build()
 				: ResponseEntity.badRequest().build();
 	}
