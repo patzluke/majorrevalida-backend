@@ -10,7 +10,8 @@ drop table if exists program cascade;
 create table program (
     program_id serial,
     program_code int default nextval('program_sequence') not null primary key,
-    program_title varchar(50)
+    program_title varchar(50),
+    active_deactive boolean
 ); 
 
 drop sequence if exists department_sequence;
@@ -371,8 +372,8 @@ VALUES
 
 
 --insert into program table
-insert into program(program_title) values('Bachelor Of Science');
-insert into program(program_title) values('Bachelor Of Arts');
+insert into program(program_title, active_deactive) values('Bachelor Of Science', 't');
+insert into program(program_title, active_deactive) values('Bachelor Of Arts', 't');
 
 --insert into Department table
 insert into department(dept_name, active_deactive) values('Department of Information And Computing Sciences', 't');
