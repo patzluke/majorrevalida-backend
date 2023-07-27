@@ -1065,7 +1065,6 @@ public class AdminCapabilitiesRepository {
 		} else {
 			return null;
 		}
-		
 	}
 
 	// -------------------------- FOR COURSE
