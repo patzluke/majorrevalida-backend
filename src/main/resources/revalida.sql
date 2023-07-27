@@ -246,9 +246,9 @@ create table room (
 drop table if exists section cascade;
 create table section (
     section_id serial primary key,
-    course_code int,
+    major_code int,
     section_name varchar(30),
-    foreign key(course_code) references course(course_code) on delete cascade
+    foreign key(major_code) references major(major_code) on delete cascade
 ); 
 
 drop table if exists professor_load cascade;
@@ -544,10 +544,10 @@ insert into room(room_no) values(201);insert into room(room_no) values(202);inse
 insert into room(room_no) values(301);insert into room(room_no) values(302);insert into room(room_no) values(303);insert into room(room_no) values(304);insert into room(room_no) values(305);
 
 --insert into Section table
-insert into section(course_code, section_name) values(3001, '1-ITA'), (3001, '1-ITB'), (3001, '1-ITC'), (3001, '1-ITD');
-insert into section(course_code, section_name) values(3001, '2-ITA'), (3001, '2-ITB'), (3001, '2-ITC'), (3001, '2-ITD');
-insert into section(course_code, section_name) values(3001, '3-ITA'), (3001, '3-ITB'), (3001, '3-ITC'), (3001, '3-ITD');
-insert into section(course_code, section_name) values(3001, '4-ITA'), (3001, '4-ITB'), (3001, '4-ITC'), (3001, '4-ITD');
+insert into section(major_code, section_name) values(4001, '1-ITA'), (4001, '1-ITB'), (4002, '1-ITC'), (4003, '1-ITD');
+insert into section(major_code, section_name) values(4001, '2-ITA'), (4001, '2-ITB'), (4002, '2-ITC'), (4003, '2-ITD');
+insert into section(major_code, section_name) values(4001, '3-ITA'), (4001, '3-ITB'), (4002, '3-ITC'), (4003, '3-ITD');
+insert into section(major_code, section_name) values(4001, '4-ITA'), (4001, '4-ITB'), (4002, '4-ITC'), (4003, '4-ITD');
 
 
 --insert into users and admin table
@@ -697,14 +697,14 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 1),
-(8001, 9002, 1),
-(8002, 9003, 1),
-(8002, 9004, 1),
-(8003, 9005, 1),
-(8003, 9006, 1),
-(8004, 9007, 1),
-(8004, 9008, 1)
+(8001, 9001, 13),
+(8001, 9002, 13),
+(8002, 9003, 13),
+(8002, 9004, 13),
+(8003, 9005, 13),
+(8003, 9006, 13),
+(8004, 9007, 13),
+(8004, 9008, 13)
 ;
 
 --insert into grades
@@ -734,14 +734,14 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 1),
-(8001, 9002, 1),
-(8002, 9003, 1),
-(8002, 9004, 1),
-(8003, 9005, 1),
-(8003, 9006, 1),
-(8004, 9007, 1),
-(8004, 9008, 1)
+(8001, 9001, 13),
+(8001, 9002, 13),
+(8002, 9003, 13),
+(8002, 9004, 13),
+(8003, 9005, 13),
+(8003, 9006, 13),
+(8004, 9007, 13),
+(8004, 9008, 13)
 ;
 
 --insert into grades
@@ -771,14 +771,14 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 1),
-(8001, 9002, 1),
-(8002, 9003, 1),
-(8002, 9004, 1),
-(8003, 9005, 1),
-(8003, 9006, 1),
-(8004, 9007, 1),
-(8004, 9008, 1)
+(8001, 9001, 13),
+(8001, 9002, 13),
+(8002, 9003, 13),
+(8002, 9004, 13),
+(8003, 9005, 13),
+(8003, 9006, 13),
+(8004, 9007, 13),
+(8004, 9008, 13)
 ;
 
 --insert into grades
@@ -808,14 +808,14 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 1),
-(8001, 9002, 1),
-(8002, 9003, 1),
-(8002, 9004, 1),
-(8003, 9005, 1),
-(8003, 9006, 1),
-(8004, 9007, 1),
-(8004, 9008, 1)
+(8001, 9001, 13),
+(8001, 9002, 13),
+(8002, 9003, 13),
+(8002, 9004, 13),
+(8003, 9005, 13),
+(8003, 9006, 13),
+(8004, 9007, 13),
+(8004, 9008, 13)
 ;
 
 --insert into grades
@@ -846,14 +846,14 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 1),
-(8001, 9002, 1),
-(8002, 9003, 1),
-(8002, 9004, 1),
-(8003, 9005, 1),
-(8003, 9006, 1),
-(8004, 9007, 1),
-(8004, 9008, 1)
+(8001, 9001, 13),
+(8001, 9002, 13),
+(8002, 9003, 13),
+(8002, 9004, 13),
+(8003, 9005, 13),
+(8003, 9006, 13),
+(8004, 9007, 13),
+(8004, 9008, 13)
 ;
 
 --insert into grades
@@ -884,14 +884,14 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 1),
-(8001, 9002, 1),
-(8002, 9003, 1),
-(8002, 9004, 1),
-(8003, 9005, 1),
-(8003, 9006, 1),
-(8004, 9007, 1),
-(8004, 9008, 1)
+(8001, 9001, 13),
+(8001, 9002, 13),
+(8002, 9003, 13),
+(8002, 9004, 13),
+(8003, 9005, 13),
+(8003, 9006, 13),
+(8004, 9007, 13),
+(8004, 9008, 13)
 ;
 
 --insert into grades
@@ -921,14 +921,14 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 1),
-(8001, 9002, 1),
-(8002, 9003, 1),
-(8002, 9004, 1),
-(8003, 9005, 1),
-(8003, 9006, 1),
-(8004, 9007, 1),
-(8004, 9008, 1)
+(8001, 9001, 13),
+(8001, 9002, 13),
+(8002, 9003, 13),
+(8002, 9004, 13),
+(8003, 9005, 13),
+(8003, 9006, 13),
+(8004, 9007, 13),
+(8004, 9008, 13)
 ;
 
 --insert into grades
@@ -958,14 +958,14 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 1),
-(8001, 9002, 1),
-(8002, 9003, 1),
-(8002, 9004, 1),
-(8003, 9005, 1),
-(8003, 9006, 1),
-(8004, 9007, 1),
-(8004, 9008, 1)
+(8001, 9001, 13),
+(8001, 9002, 13),
+(8002, 9003, 13),
+(8002, 9004, 13),
+(8003, 9005, 13),
+(8003, 9006, 13),
+(8004, 9007, 13),
+(8004, 9008, 13)
 ;
 
 --insert into grades
@@ -995,14 +995,14 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 1),
-(8001, 9002, 1),
-(8002, 9003, 1),
-(8002, 9004, 1),
-(8003, 9005, 1),
-(8003, 9006, 1),
-(8004, 9007, 1),
-(8004, 9008, 1)
+(8001, 9001, 13),
+(8001, 9002, 13),
+(8002, 9003, 13),
+(8002, 9004, 13),
+(8003, 9005, 13),
+(8003, 9006, 13),
+(8004, 9007, 13),
+(8004, 9008, 13)
 ;
 
 --insert into grades
@@ -1032,14 +1032,14 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 1),
-(8001, 9002, 1),
-(8002, 9003, 1),
-(8002, 9004, 1),
-(8003, 9005, 1),
-(8003, 9006, 1),
-(8004, 9007, 1),
-(8004, 9008, 1)
+(8001, 9001, 13),
+(8001, 9002, 13),
+(8002, 9003, 13),
+(8002, 9004, 13),
+(8003, 9005, 13),
+(8003, 9006, 13),
+(8004, 9007, 13),
+(8004, 9008, 13)
 ;
 
 --insert into grades
@@ -1070,14 +1070,14 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 1),
-(8001, 9002, 1),
-(8002, 9003, 1),
-(8002, 9004, 1),
-(8003, 9005, 1),
-(8003, 9006, 1),
-(8004, 9007, 1),
-(8004, 9008, 1)
+(8001, 9001, 13),
+(8001, 9002, 13),
+(8002, 9003, 13),
+(8002, 9004, 13),
+(8003, 9005, 13),
+(8003, 9006, 13),
+(8004, 9007, 13),
+(8004, 9008, 13)
 ;
 
 --insert into grades
@@ -1107,14 +1107,14 @@ insert into student_subject_enrolled(load_id, enrollment_id) values
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 1),
-(8001, 9002, 1),
-(8002, 9003, 1),
-(8002, 9004, 1),
-(8003, 9005, 1),
-(8003, 9006, 1),
-(8004, 9007, 1),
-(8004, 9008, 1)
+(8001, 9001, 13),
+(8001, 9002, 13),
+(8002, 9003, 13),
+(8002, 9004, 13),
+(8003, 9005, 13),
+(8003, 9006, 13),
+(8004, 9007, 13),
+(8004, 9008, 13)
 ;
 
 --insert into grades
@@ -1129,25 +1129,9 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 (77012, 96, 96, 0.00, 0.00)
 ;
 
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9009, 2, 1, 2001, 'M', '11:00', '14:00', 't');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9010, 2, 1, 2001, 'M', '16:00', '19:00', 't');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9011, 2, 1, 2001, 'T', '09:00', '11:00', 't');
-
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9012, 3, 1, 2001, 'T', '13:00', '16:00', 't');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9013, 4, 1, 2001, 'T', '13:00', '16:00', 't');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9014, 4, 1, 2001, 'T', '17:00', '19:00', 't');
-
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8004, 9015, 5, 1, 2001, 'W', '08:00', '11:00', 't');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8004, 9016, 5, 1, 2001, 'W', '11:00', '14:00', 't');
-
+select sub.subject_title as title, sub2.subject_title from major_subject masub
+inner join subject sub on masub.subject_code = sub.subject_code
+join subject sub2 on masub.pre_requisites = sub2.subject_code;
 
 --insert into student_schedule
 --1st sem
