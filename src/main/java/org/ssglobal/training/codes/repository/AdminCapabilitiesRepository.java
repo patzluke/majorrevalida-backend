@@ -418,8 +418,6 @@ public class AdminCapabilitiesRepository {
 						.eq(studentApplicant.getSchoolYear()).and(ACADEMIC_YEAR.STATUS.eq("Process"))))
 				.fetchOneInto(AcademicYear.class);
 
-		// NOTE: Implement the BCrypt in the impl
-
 		LocalDate birthDate = studentApplicant.getBirthDate();
 		String formattedBirthDate = null;
 
@@ -437,7 +435,7 @@ public class AdminCapabilitiesRepository {
 
 		// Combine formatted birthdate and last name with an underscore
 		String password = "%s%s".formatted(formattedBirthDate, applicantLastName);
-		System.out.println(password);
+		System.out.println("User Password: %s".formatted(password));
 
 		// Secure the password using bcrypt
 		String bcryptPassword = passwordEncoder.encode(password);
@@ -478,22 +476,16 @@ public class AdminCapabilitiesRepository {
 				.fetchOneInto(Users.class);
 
 		Users parentUserId = null;
-		
 		Curriculum curriculumCode = null;
 
 		if (userParent == null) {
 
 			// default password
-			String parentPassword = "123456";
-
-			BCryptPasswordEncoder parentPasswordEncoder = new BCryptPasswordEncoder();
-
-			// Secure the password using bcrypt
-			String bcryptParentPassword = parentPasswordEncoder.encode(parentPassword);
+			String defaultParentPassword = "123456";
 
 			// Create User Parent
 			dslContext.insertInto(USERS).set(USERS.USERNAME, "pendingParentUsername")
-					.set(USERS.PASSWORD, bcryptParentPassword)
+					.set(USERS.PASSWORD, defaultParentPassword)
 					.set(USERS.EMAIL, studentApplicant.getGuardianEmail())
 					.set(USERS.CONTACT_NO, studentApplicant.getGuardianMobileNo())
 					.set(USERS.FIRST_NAME, studentApplicant.getGuardianFirstName())
@@ -537,11 +529,26 @@ public class AdminCapabilitiesRepository {
 					.set(STUDENT.YEAR_LEVEL, studentApplicant.getYearLevel()).returning().fetchOne()
 					.into(Student.class);
 			
+			// Select the Student and get the studentNo
+			Student studentNo = dslContext.select(STUDENT.STUDENT_NO.as("studentNo")).from(STUDENT)
+					.where(STUDENT.USER_ID.eq(userId.getUserId())).fetchOneInto(Student.class);
+			
 			// Update the Username of the Parent
-			String parentUsername = "%s%s".formatted(String.valueOf(parentId.getParentNo()),
-					parentUserId.getLastName().replace(" ", "_"));
+			String parentUsername = "%s_%s".formatted(String.valueOf(studentNo.getStudentNo()),
+					"Parent");
+			
+			String parentPassword = "%s%s".formatted(String.valueOf(parentId.getParentNo()), parentUserId.getLastName());
+			
+			System.out.println("Parent Password: %s".formatted(parentPassword));
+			
+			BCryptPasswordEncoder parentPasswordEncoder = new BCryptPasswordEncoder();
 
-			dslContext.update(USERS).set(USERS.USERNAME, parentUsername).where(USERS.USER_ID.eq(parentId.getUserId()))
+			// Secure the password using bcrypt
+			String bcryptParentPassword = parentPasswordEncoder.encode(parentPassword);
+
+			dslContext.update(USERS).set(USERS.USERNAME, parentUsername)
+			.set(USERS.PASSWORD, bcryptParentPassword)
+			.where(USERS.USER_ID.eq(parentId.getUserId()))
 					.returning().fetchOne().into(Users.class);
 
 		} else {

@@ -48,6 +48,27 @@ public class UserAndParent {
 		this.parentId = parentId;
 	}
 	
+	
+	
+	public UserAndParent(Integer userId, String username, String email, String contactNo, String firstName,
+			String middleName, String lastName, String userType, String address, Boolean activeStatus,
+			Boolean activeDeactive, String image, Integer parentId) {
+		super();
+		this.userId = userId;
+		this.username = username;
+		this.email = email;
+		this.contactNo = contactNo;
+		this.firstName = firstName;
+		this.middleName = middleName;
+		this.lastName = lastName;
+		this.userType = userType;
+		this.address = address;
+		this.activeStatus = activeStatus;
+		this.activeDeactive = activeDeactive;
+		this.image = image;
+		this.parentId = parentId;
+	}
+
 	public UserAndParent (UserAndParent value) {
 		this.userId = value.userId;
 		this.username = value.username;
