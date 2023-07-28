@@ -29,6 +29,7 @@ import org.ssglobal.training.codes.tables.pojos.Professor;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
+import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
@@ -1316,11 +1317,53 @@ public class AdminCapabilitiesRepository {
 	public List<Map<String, Object>> selectAllSection() {
 		List<Map<String, Object>> query = dslContext
 				.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
-						SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"))
-				.from(SECTION).innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).orderBy(SECTION.SECTION_ID)
+						SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
+						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_TITLE.as("courseTitle")
+						)
+				.from(SECTION)
+				.innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+				.join(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+				.orderBy(SECTION.SECTION_ID)
 				.fetchMaps();
 		return !query.isEmpty() ? query : null;
 	}
+	
+	public Map<String, Object> addSection(Section section) {
+		Section addSection = dslContext.insertInto(SECTION)
+				.set(SECTION.SECTION_NAME, section.getSectionName())
+				.set(SECTION.MAJOR_CODE, section.getMajorCode())
+				.returning().fetchOne().into(Section.class);
+		Map<String, Object> query = dslContext.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
+				SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
+				MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_TITLE.as("courseTitle")
+				)
+		.from(SECTION)
+		.innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+		.join(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+		.where(SECTION.SECTION_ID.eq(addSection.getSectionId()))
+		.fetchOneMap();
+		return !query.isEmpty() ? query : null;
+	}
+	
+	public Map<String, Object> updateSection(Section section) {
+		Section addSection = dslContext.update(SECTION)
+				.set(SECTION.SECTION_NAME, section.getSectionName())
+				.set(SECTION.MAJOR_CODE, section.getMajorCode())
+				.where(SECTION.SECTION_ID.eq(section.getSectionId()))
+				.returning().fetchOne().into(Section.class);
+		Map<String, Object> query = dslContext.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
+				SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
+				MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_TITLE.as("courseTitle")
+				)
+		.from(SECTION)
+		.innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+		.join(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+		.where(SECTION.SECTION_ID.eq(addSection.getSectionId()))
+		.fetchOneMap();
+		return !query.isEmpty() ? query : null;
+	}
+	
+	
 
 	// -------------------------- FOR ROOM
 	public List<Room> selectAllRoom() {

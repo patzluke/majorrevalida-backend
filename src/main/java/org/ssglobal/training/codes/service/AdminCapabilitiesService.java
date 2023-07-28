@@ -16,6 +16,7 @@ import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
+import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
@@ -157,6 +158,8 @@ public interface AdminCapabilitiesService {
 
 	// ------------------------FOR Section
 	List<Map<String, Object>> selectAllSection();
+	Map<String, Object> addSection(Section section);
+	Map<String, Object> updateSection(Section section);
 
 	// ------------------------FOR Room
 	List<Room> selectAllRoom();
