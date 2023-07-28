@@ -292,6 +292,21 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	
 	// ------------------------FOR academic_year
 	@Override
+	public List<AcademicYear> selectAllAcademicYear() {
+		return repository.selectAllAcademicYear();
+	}
+	
+	@Override
+	public AcademicYear addNewAcademicYear(AcademicYear academicYear) {
+		return repository.addNewAcademicYear(academicYear);
+	}
+	
+	@Override
+	public AcademicYear updateNewAcademicYear(AcademicYear academicYear) {
+		return repository.updateNewAcademicYear(academicYear);
+	}
+	
+	@Override
 	public AcademicYear addAcademicYear(AcademicYear academicYear) {
 		return repository.addAcademicYear(academicYear);
 	}

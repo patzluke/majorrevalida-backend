@@ -972,6 +972,30 @@ public class AdminCapabilitiesRepository {
 	}
 
 	// -------------------------- FOR ACADEMIC YEAR
+	public List<AcademicYear> selectAllAcademicYear() {
+		return dslContext.selectFrom(ACADEMIC_YEAR).orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_.desc()).fetchInto(AcademicYear.class);
+	}
+	
+	public AcademicYear addNewAcademicYear(AcademicYear academicYear) {
+		return dslContext.insertInto(ACADEMIC_YEAR)
+				.set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
+				.set(ACADEMIC_YEAR.START_DATE, academicYear.getStartDate())
+				.set(ACADEMIC_YEAR.END_DATE, academicYear.getEndDate())
+				.set(ACADEMIC_YEAR.SEMESTER, academicYear.getSemester())
+				.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus())
+				.returning().fetchOne().into(AcademicYear.class);
+	}
+	
+	public AcademicYear updateNewAcademicYear(AcademicYear academicYear) {
+		return dslContext.update(ACADEMIC_YEAR)
+				.set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
+				.set(ACADEMIC_YEAR.START_DATE, academicYear.getStartDate())
+				.set(ACADEMIC_YEAR.END_DATE, academicYear.getEndDate())
+				.set(ACADEMIC_YEAR.SEMESTER, academicYear.getSemester())
+				.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus()).where(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(academicYear.getAcademicYearId()))
+				.returning().fetchOne().into(AcademicYear.class);
+	}
+	
 	public AcademicYear addAcademicYear(AcademicYear academicYear) {
 		/*
 		 * The academic data added is limited to: academic_year and status

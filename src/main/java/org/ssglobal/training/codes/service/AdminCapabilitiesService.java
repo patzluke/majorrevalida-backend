@@ -111,6 +111,10 @@ public interface AdminCapabilitiesService {
 	// ------------------------FOR Student Schedule
 
 	// ------------------------FOR Academic year
+	List<AcademicYear> selectAllAcademicYear();
+	AcademicYear addNewAcademicYear(AcademicYear academicYear);
+	AcademicYear updateNewAcademicYear(AcademicYear academicYear);
+	
 	AcademicYear addAcademicYear(AcademicYear academicYear);
 
 	AcademicYear updateAcademicYearStatus(AcademicYear academicYear);

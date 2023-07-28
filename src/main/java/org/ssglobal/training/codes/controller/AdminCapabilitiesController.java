@@ -504,6 +504,51 @@ public class AdminCapabilitiesController {
 	}
 
 	// -------- For Academic Year
+	@GetMapping(value = "/get/academicYear", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<AcademicYear>> selectAllAcademicYear() {
+		try {
+			List<AcademicYear> list = service.selectAllAcademicYear();
+			if (list != null) {
+				return ResponseEntity.ok(list);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@PostMapping(value = "/add/academicYear", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<AcademicYear> addAcademicYear(@RequestBody AcademicYear academicYear) {
+		try {
+			AcademicYear addedAcademicYear = service.addNewAcademicYear(academicYear);
+			if (addedAcademicYear != null) {
+				return ResponseEntity.ok(addedAcademicYear);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@PutMapping(value = "/update/academicYear", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<AcademicYear> updateAcademicYear(@RequestBody AcademicYear academicYear) {
+		try {
+			System.out.println(academicYear);
+			AcademicYear addedAcademicYear = service.updateNewAcademicYear(academicYear);
+			if (addedAcademicYear != null) {
+				return ResponseEntity.ok(addedAcademicYear);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
 	@PostMapping(value = "/insert/academic-year", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<AcademicYear> insertAcademicYear(@RequestBody AcademicYear academicYear) {
