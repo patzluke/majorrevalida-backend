@@ -166,6 +166,8 @@ public interface AdminCapabilitiesService {
 
 	// ------------------------FOR Grades
 	List<Map<String, Object>> selectAllStudentsBySection();
+	
+	List<Map<String, Object>> selectAllBatchYearBySection(Integer sectionId);
 
 	// -------------------------FOR THE MINOR SUBJECTS
 	List<Map<String, Object>> selectAllMinorSubjects();

@@ -881,6 +881,23 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+	
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/academicYearBySection/{sectionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity selectAllBatchYearBySection(@PathVariable(name = "sectionId") Integer sectionId) {
+		try {
+			List<Map<String, Object>> sectionsBatch = service.selectAllBatchYearBySection(sectionId);
+
+			System.out.println(sectionsBatch);
+			if (!sectionsBatch.isEmpty()) {
+				return ResponseEntity.ok(sectionsBatch);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
 
 	// ---------FOR THE MINOR SUBJECTS
 	@GetMapping(value = "/get/subjects/minor", produces = { MediaType.APPLICATION_JSON_VALUE })

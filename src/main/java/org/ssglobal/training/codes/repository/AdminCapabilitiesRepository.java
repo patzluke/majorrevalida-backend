@@ -1395,6 +1395,15 @@ public class AdminCapabilitiesRepository {
 				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).where(GRADES.IS_SUBMITTED.eq(true))
 				.orderBy(GRADES.GRADE_ID).fetchMaps();
 	}
+	
+	public List<Map<String, Object>> selectAllBatchYearBySection(Integer sectionId) {
+		return dslContext.select(ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER.as("semester"))
+						 .from(ACADEMIC_YEAR)
+						 .whereExists(DSL.selectOne().from(STUDENT_ENROLLMENT)
+								 .where(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)
+										 .and(STUDENT_ENROLLMENT.SECTION_ID.eq(sectionId))))
+						 .fetchMaps();
+	}
 
 	public boolean insertGradesAndt_subject_detail_history(Integer professorNo, Integer subjectCode,
 			Integer academicYearId, Integer studentNo, Integer enrollSubjectId) {
