@@ -537,7 +537,7 @@ public class AdminCapabilitiesRepository {
 			String parentUsername = "%s_%s".formatted(String.valueOf(studentNo.getStudentNo()),
 					"Parent");
 			
-			String parentPassword = "%s%s".formatted(String.valueOf(parentId.getParentNo()), parentUserId.getLastName());
+			String parentPassword = "%s%s".formatted(String.valueOf(parentId.getParentNo()), parentUserId.getLastName().replace(" ", "_"));
 			
 			System.out.println("Parent Password: %s".formatted(parentPassword));
 			
