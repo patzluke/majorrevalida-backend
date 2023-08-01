@@ -118,7 +118,6 @@ public class StudentCapabilitiesRepository {
 					updatedStudent.getStudentId(), updatedStudent.getStudentNo(), updatedStudent.getParentNo(),
 					updatedStudent.getCurriculumCode(), updatedStudent.getYearLevel(),
 					updatedStudent.getAcademicYearId());
-			System.out.println(information);
 			return information;
 		}
 		return null;

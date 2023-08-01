@@ -626,7 +626,6 @@ public class AdminCapabilitiesRepository {
 		StudentSubjectEnrolled studentSubjectEnrolled = dslContext.insertInto(STUDENT_SUBJECT_ENROLLED)
 				.set(STUDENT_SUBJECT_ENROLLED.LOAD_ID, loadId).set(STUDENT_SUBJECT_ENROLLED.ENROLLMENT_ID, enrollmentId)
 				.returning().fetchOne().into(StudentSubjectEnrolled.class);
-		System.out.println(studentSubjectEnrolled + " pat");
 		return studentSubjectEnrolled;
 	}
 
