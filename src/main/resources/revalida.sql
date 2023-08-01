@@ -203,11 +203,12 @@ create table subject (
     subject_title varchar(100),
     units float,
     active_deactive boolean,
-    active_status boolean
+    active_status boolean,
+    price float
 );
 
-insert into subject(subject_code, abbrevation, subject_title, units, active_deactive, active_status) 
-values(9000, 'N/A', 'None', 0.0, false, false);
+insert into subject(subject_code, abbrevation, subject_title, units, active_deactive, active_status, price) 
+values(9000, 'N/A', 'None', 0.0, false, false, 0);
 
 drop sequence if exists subject_sequence;
 create sequence subject_sequence as int increment by 1 start with 9001;
@@ -399,143 +400,143 @@ insert into curriculum(major_code, curriculum_name, active_deactive) values(4003
 --insert into major and minor subject table
 	--for information technology major in web and mobile major subjects (first year 1ST SEM)
 	--major subjs
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('ICS 2601', 'Introduction to Computing', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 2601', 'Introduction to Computing', 3, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9001, 9000, 5001, 1, 1);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('ICS 2602', 'Computer Programming I (Fundamentals of Programming - Imperative)', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 2602', 'Computer Programming I (Fundamentals of Programming - Imperative)', 3, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9002, 9000, 5001, 1, 1);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('ICS 2604', 'Values Education', 2, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 2604', 'Values Education', 2, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9003, 9000, 5001, 1, 1);
 	
 	--minor subjs
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('ART_APP', 'Art Appreciation', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ART_APP', 'Art Appreciation', 3, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9004, 9000, 1, 1);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('MATH_MW', 'Mathematics in the Modern World', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('MATH_MW', 'Mathematics in the Modern World', 3, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9005, 9000, 1, 1);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('PATH-FIT', 'Physical Activities Towards Health and Fitness Sports', 2, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('PATH-FIT', 'Physical Activities Towards Health and Fitness Sports', 2, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9006, 9000, 1, 1);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('STS', 'Science, Technology and Society', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('STS', 'Science, Technology and Society', 3, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9007, 9000, 1, 1);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('THY 1', 'Christian Vision of the Human Person', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('THY 1', 'Christian Vision of the Human Person', 3, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9008, 9000, 1, 1);
 	
 	--for information technology major in web and mobile major subjects (first year 2ND SEM)
 	--major subjs
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('ICS 2606', 	'Computer Programming II (Intermediate Programming - Object-Oriented)', 4, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 2606', 	'Computer Programming II (Intermediate Programming - Object-Oriented)', 4, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9009, 9002, 5001, 1, 2);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('IT 2621', 'Information Technology Fundamentals', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('IT 2621', 'Information Technology Fundamentals', 3, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9010, 9004, 5001, 1, 2);
 
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('IT 2622', 'Human-Computer Interaction', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('IT 2622', 'Human-Computer Interaction', 3, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9011, 9004, 5001, 1, 2);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('ICS 2603', 'Discrete Structures', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 2603', 'Discrete Structures', 3, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9012, 9000, 5001, 1, 2);
 	
 	--minor subjs
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('PATH-FIT', 'Physical Activities Towards Health and Fitness in Dance', 2, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('PATH-FIT', 'Physical Activities Towards Health and Fitness in Dance', 2, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9013, 9006, 1, 2);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('PURPCOM', 'Purposive Communication', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('PURPCOM', 'Purposive Communication', 3, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9014, 9006, 1, 2);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('THY 2', 'Christian Vision of Marriage and Family', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('THY 2', 'Christian Vision of Marriage and Family', 3, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9015, 9006, 1, 2);
 	
 	--for information technology major in web and mobile major subjects (SECOND year 1ST SEM)
 	--major subjs
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('ICS 2605', 'Data Structures and Algorithms', 4, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 2605', 'Data Structures and Algorithms', 4, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9016, 9000, 5001, 2, 1);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('ICS 2607', 'Information Management', 4, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 2607', 'Information Management', 4, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9017, 9000, 5001, 2, 1);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('ICS 2608', 'Applications Development and Emerging Technologies 1 (Web-Front-End)', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 2608', 'Applications Development and Emerging Technologies 1 (Web-Front-End)', 3, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9018, 9009, 5001, 2, 1);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('ICS 26014', 'Data Communications and Networking I', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 26014', 'Data Communications and Networking I', 3, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9019, 9010, 5001, 2, 1);
 	
 	--minor subjs
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('PATH-FIT', 'Fitness Exercises for Specific Sports', 2, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('PATH-FIT', 'Fitness Exercises for Specific Sports', 2, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9020, 9000, 2, 1);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('THY 3', 'Christian Vision of the Church in Society', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('THY 3', 'Christian Vision of the Church in Society', 3, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9021, 9000, 2, 1);
 	
 	--for information technology major in web and mobile major subjects (SECOND year 2ND SEM)
 	--major subjs
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('ICS 2609', 'Applications Development and Emerging Technologies 2 (Enterprise Back-end)', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 2609', 'Applications Development and Emerging Technologies 2 (Enterprise Back-end)', 3, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9022, 9019, 5001, 2, 2);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('IT 2623', 'Computer Architecture, Organization, and Logic', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('IT 2623', 'Computer Architecture, Organization, and Logic', 3, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9023, 9000, 5001, 2, 2);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('IT 2624', 'Data Communications and Networking II', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('IT 2624', 'Data Communications and Networking II', 3, 'true', 'true', 1000);
 	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
 	values(9024, 9020, 5001, 2, 2);
 	
 	--minor subjs
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('PATH-FIT', 'Human Enhancement', 2, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('PATH-FIT', 'Human Enhancement', 2, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9025, 9000, 2, 2);
 	
-	insert into subject(abbrevation, subject_title, units, active_deactive, active_status) 
-	values('READ_PH', 'Readings in Philippine History', 3, 'true', 'true');
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('READ_PH', 'Readings in Philippine History', 3, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9026, 9000, 2, 2);
 	
