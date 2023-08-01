@@ -63,7 +63,8 @@ public class ParentCapabilitiesRepository {
 					.where(USERS.USER_ID.eq(updatedUser.getUserId())).execute();
 		}
 
-		Parent updatedParent = dslContext.selectFrom(PARENT).where(PARENT.USER_ID.eq(updatedUser.getUserId()))
+		Parent updatedParent = dslContext.selectFrom(PARENT)
+				.where(PARENT.USER_ID.eq(updatedUser.getUserId()))
 				.fetchOne().into(Parent.class);
 
 		if (updatedUser != null && updatedParent != null) {
@@ -103,7 +104,9 @@ public class ParentCapabilitiesRepository {
 	}
 
 	public List<Grades> selectAllGrades(Integer studentNo) {
-		return dslContext.selectFrom(GRADES).where(GRADES.STUDENT_NO.eq(studentNo)).fetchInto(Grades.class);
+		return dslContext.selectFrom(GRADES)
+				.where(GRADES.STUDENT_NO.eq(studentNo))
+				.fetchInto(Grades.class);
 	}
 
 }

@@ -47,13 +47,13 @@ public class StudentCapabilitiesRepository {
 	public List<Users> selectAllUsers() {
 		return dslContext.selectFrom(USERS).fetchInto(Users.class);
 	}
-	
+
 	public UserAndStudent viewStudentProfile(Integer studentNo) {
 
 		// Get the student's data via student table
 		Student studentData = dslContext.selectFrom(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo))
 				.fetchOneInto(Student.class);
-		
+
 		// Get the student's data via users table
 		Users userData = dslContext.selectFrom(USERS).where(USERS.USER_ID.eq(studentData.getUserId()))
 				.fetchOneInto(Users.class);
@@ -77,27 +77,36 @@ public class StudentCapabilitiesRepository {
 		 * contactNo, first_name, middle_name, last_name, birth_date, address,
 		 * civil_status, gender, nationality, active_deactive, and image
 		 */
-		Users updatedUser = dslContext.update(USERS)
-				.set(USERS.USERNAME, student.getUsername()).set(USERS.EMAIL, student.getEmail())
-				.set(USERS.CONTACT_NO, student.getContactNo()).set(USERS.FIRST_NAME, student.getFirstName())
+
+		Users currentUserData = dslContext.selectFrom(USERS).where(USERS.USER_ID.eq(student.getUserId()))
+				.fetchOneInto(Users.class);
+
+		Users updatedUser = dslContext.update(USERS).set(USERS.USERNAME, student.getUsername())
+				.set(USERS.EMAIL, student.getEmail()).set(USERS.CONTACT_NO, student.getContactNo())
+				.set(USERS.PASSWORD, student.getPassword()).set(USERS.FIRST_NAME, student.getFirstName())
 				.set(USERS.MIDDLE_NAME, student.getMiddleName()).set(USERS.LAST_NAME, student.getLastName())
 				.set(USERS.USER_TYPE, student.getUserType()).set(USERS.BIRTH_DATE, student.getBirthDate())
 				.set(USERS.ADDRESS, student.getAddress()).set(USERS.CIVIL_STATUS, student.getCivilStatus())
 				.set(USERS.GENDER, student.getGender()).set(USERS.NATIONALITY, student.getNationality())
-				.set(USERS.IMAGE, student.getImage()).where(USERS.USER_ID.eq(student.getUserId()))
-				.returning().fetchOne().into(Users.class);
-		
-		if (!student.getPassword().isBlank()) {
-			dslContext.update(USERS).set(USERS.PASSWORD, student.getPassword())
-			.where(USERS.USER_ID.eq(student.getUserId()))
-			.execute();
+				.set(USERS.IMAGE, student.getImage()).where(USERS.USER_ID.eq(student.getUserId())).returning()
+				.fetchOne().into(Users.class);
+
+		// if the sent password data is blank update back the current password
+		if (student.getPassword().isBlank()) {
+			dslContext.update(USERS).set(USERS.PASSWORD, currentUserData.getPassword())
+					.where(USERS.USER_ID.eq(student.getUserId())).execute();
+		}
+
+		// if the sent image data is blank update back the current image
+		if (student.getImage().equals("http://localhost:8080/api/file/images/undefined")) {
+			dslContext.update(USERS).set(USERS.IMAGE, currentUserData.getImage())
+					.where(USERS.USER_ID.eq(updatedUser.getUserId())).execute();
 		}
 
 		Student updatedStudent = dslContext.update(STUDENT).set(STUDENT.STUDENT_NO, student.getStudentNo())
-				.set(STUDENT.USER_ID, student.getUserId())
-				.where(STUDENT.STUDENT_NO.eq(student.getStudentNo()))
+				.set(STUDENT.USER_ID, student.getUserId()).where(STUDENT.STUDENT_NO.eq(student.getStudentNo()))
 				.returning().fetchOne().into(Student.class);
-		
+
 		if (!updatedStudent.equals(null) && !updatedUser.equals(null)) {
 			UserAndStudent information = new UserAndStudent(updatedUser.getUserId(), updatedUser.getUsername(),
 					updatedUser.getPassword(), updatedUser.getEmail(), updatedUser.getContactNo(),
@@ -106,8 +115,10 @@ public class StudentCapabilitiesRepository {
 					updatedUser.getCivilStatus(), updatedUser.getGender(), updatedUser.getNationality(),
 					updatedUser.getActiveStatus(), updatedUser.getActiveDeactive(), updatedUser.getImage(),
 					updatedStudent.getStudentId(), updatedStudent.getStudentNo(), updatedStudent.getParentNo(),
-					updatedStudent.getCurriculumCode(), updatedStudent.getYearLevel(), updatedStudent.getAcademicYearId());
-			return information;	
+					updatedStudent.getCurriculumCode(), updatedStudent.getYearLevel(),
+					updatedStudent.getAcademicYearId());
+			System.out.println(information);
+			return information;
 		}
 		return null;
 	}
@@ -184,37 +195,35 @@ public class StudentCapabilitiesRepository {
 		// Get the grade where the studentId equal to the Grade's table student_no
 		return dslContext.selectFrom(GRADES).where(GRADES.STUDENT_NO.eq(studentNo)).fetchOneInto(Grades.class);
 	}
-	
+
 	public List<Map<String, Object>> selectAllStudentSubjectEnrolledByStudentNo(Integer studentNo) {
 		return dslContext
-				.select(STUDENT_SUBJECT_ENROLLED.ENROLL_SUBJECT_ID.as("enrollSubjectId"), STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"),
-						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"))
-				.from(STUDENT_SUBJECT_ENROLLED)
-				.innerJoin(STUDENT_ENROLLMENT).on(STUDENT_SUBJECT_ENROLLED.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.select(STUDENT_SUBJECT_ENROLLED.ENROLL_SUBJECT_ID.as("enrollSubjectId"),
+						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.SUBJECT_CODE.as("subjectCode"),
+						SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"))
+				.from(STUDENT_SUBJECT_ENROLLED).innerJoin(STUDENT_ENROLLMENT)
+				.on(STUDENT_SUBJECT_ENROLLED.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
 				.innerJoin(PROFESSOR_LOAD).on(STUDENT_SUBJECT_ENROLLED.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID))
 				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo))
-				.orderBy(SUBJECT.SUBJECT_CODE)
-				.fetchMaps();
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)).orderBy(SUBJECT.SUBJECT_CODE).fetchMaps();
 	}
-	
+
 //	List of students attendance
-	public List<Map<String, Object>> selectStudentAttendanceByAndSubjectAndStudentNo(
-			String subjectTitle, Integer studentNo) {
-		
-		return dslContext.select(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID.as("studentAttendanceId"), USERS.LAST_NAME.as("lastName"), 
-								 USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"), STUDENT_ATTENDANCE.STATUS, 
-								 STUDENT_ATTENDANCE.ATTENDANCE_DATE.as("attendanceDate"))
-						 .from(STUDENT_ATTENDANCE)
-						 .innerJoin(STUDENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT.STUDENT_NO))
-						 .innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
-						 .innerJoin(PROFESSOR_LOAD).on(STUDENT_ATTENDANCE.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID))
-						 .innerJoin(SECTION).on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID))
-						 .innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))	
-						 .where(SUBJECT.SUBJECT_TITLE.eq(subjectTitle)
-						 .and(STUDENT.STUDENT_NO.eq(studentNo)))
-						 .orderBy(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID)
-						 .fetchMaps();
+	public List<Map<String, Object>> selectStudentAttendanceByAndSubjectAndStudentNo(String subjectTitle,
+			Integer studentNo) {
+
+		return dslContext
+				.select(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID.as("studentAttendanceId"),
+						USERS.LAST_NAME.as("lastName"), USERS.FIRST_NAME.as("firstName"),
+						USERS.MIDDLE_NAME.as("middleName"), STUDENT_ATTENDANCE.STATUS,
+						STUDENT_ATTENDANCE.ATTENDANCE_DATE.as("attendanceDate"))
+				.from(STUDENT_ATTENDANCE).innerJoin(STUDENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID)).innerJoin(PROFESSOR_LOAD)
+				.on(STUDENT_ATTENDANCE.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID)).innerJoin(SECTION)
+				.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(SUBJECT)
+				.on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(SUBJECT.SUBJECT_TITLE.eq(subjectTitle).and(STUDENT.STUDENT_NO.eq(studentNo)))
+				.orderBy(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID).fetchMaps();
 	}
 
 	// ------------ FOR GRADES
@@ -223,47 +232,51 @@ public class StudentCapabilitiesRepository {
 				.selectDistinct(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
 						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
 						USERS.LAST_NAME.as("lastName"), USERS.EMAIL, GRADES.PRELIM_GRADE.as("prelimGrade"),
-						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.TOTAL_GRADE.as("totalGrade"), 
-						GRADES.COMMENT, GRADES.REMARKS, T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
+						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.TOTAL_GRADE.as("totalGrade"), GRADES.COMMENT,
+						GRADES.REMARKS, T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.ABBREVATION, SUBJECT.UNITS,
 						ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER)
-				.from(GRADES)
-				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
-				.innerJoin(ACADEMIC_YEAR).on(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
-				.innerJoin(SUBJECT).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-				.innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
-				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
-				.where(GRADES.STUDENT_NO.eq(studentNo))
-				.orderBy(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE).fetchMaps();
+				.from(GRADES).innerJoin(T_SUBJECT_DETAIL_HISTORY)
+				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
+				.innerJoin(ACADEMIC_YEAR)
+				.on(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)).innerJoin(SUBJECT)
+				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(STUDENT)
+				.on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO)).innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
+				.where(GRADES.STUDENT_NO.eq(studentNo)).orderBy(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE).fetchMaps();
 	}
-	
+
 	// ------------ FOR GRADES
 	public List<Map<String, Object>> selectEnrolledSchoolYearOfStudent(Integer studentNo) {
-		return dslContext.select(STUDENT_ENROLLMENT.ENROLLMENT_ID.as("enrollmentId"), ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), 
-								 ACADEMIC_YEAR.SEMESTER, STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.as("academicYearId"))
-				.from(STUDENT_ENROLLMENT)
-				.innerJoin(ACADEMIC_YEAR).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
-				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)).orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.SEMESTER)
-				.fetchMaps();
+		return dslContext
+				.select(STUDENT_ENROLLMENT.ENROLLMENT_ID.as("enrollmentId"),
+						ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER,
+						STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.as("academicYearId"))
+				.from(STUDENT_ENROLLMENT).innerJoin(ACADEMIC_YEAR)
+				.on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo))
+				.orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.SEMESTER).fetchMaps();
 	}
-	
-	// ------------ FOR Student Schedule	
+
+	// ------------ FOR Student Schedule
 	public List<Map<String, Object>> selectScheduleOfStudent(Integer studentNo, Integer academicYearId) {
-		return dslContext.select(STUDENT_SCHEDULE.STUDENT_NO.as("studentNo"), STUDENT_SCHEDULE.LOAD_ID.as("loadId"),
-								 SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
-								 PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.START_TIME.as("startTime"), PROFESSOR_LOAD.END_TIME.as("endTime"),
-								 ROOM.ROOM_NO.as("roomNo"), USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
-								 USERS.LAST_NAME.as("lastName"))
-				.from(STUDENT_SCHEDULE)
-				.innerJoin(PROFESSOR_LOAD).on(STUDENT_SCHEDULE.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID))
-				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-				.innerJoin(ROOM).on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID))
-				.innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
-				.innerJoin(USERS).on(PROFESSOR.USER_ID.eq(USERS.USER_ID))
-				.where(STUDENT_SCHEDULE.STUDENT_NO.eq(studentNo).and(STUDENT_SCHEDULE.ACADEMIC_YEAR_ID.eq(academicYearId)))
+		return dslContext
+				.select(STUDENT_SCHEDULE.STUDENT_NO.as("studentNo"), STUDENT_SCHEDULE.LOAD_ID.as("loadId"),
+						SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+						PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.START_TIME.as("startTime"),
+						PROFESSOR_LOAD.END_TIME.as("endTime"), ROOM.ROOM_NO.as("roomNo"),
+						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
+						USERS.LAST_NAME.as("lastName"))
+				.from(STUDENT_SCHEDULE).innerJoin(PROFESSOR_LOAD)
+				.on(STUDENT_SCHEDULE.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID)).innerJoin(SUBJECT)
+				.on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).innerJoin(ROOM)
+				.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(PROFESSOR)
+				.on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO)).innerJoin(USERS)
+				.on(PROFESSOR.USER_ID.eq(USERS.USER_ID))
+				.where(STUDENT_SCHEDULE.STUDENT_NO.eq(studentNo)
+						.and(STUDENT_SCHEDULE.ACADEMIC_YEAR_ID.eq(academicYearId)))
 				.orderBy(SUBJECT.SUBJECT_TITLE).fetchMaps();
 	}
-	
+
 	// ------------ FOR Major Subject (for curriculum display)
 	public List<Map<String, Object>> selectAllMajorSubjectsInACurriculumOfStudent(Integer studentNo) {
 		org.ssglobal.training.codes.tables.Subject SUBJECT2 = org.ssglobal.training.codes.tables.Subject.SUBJECT
@@ -286,7 +299,7 @@ public class StudentCapabilitiesRepository {
 	public List<Map<String, Object>> selectAllMinorSubjectsInACurriculumOfStudent(Integer studentNo) {
 		org.ssglobal.training.codes.tables.Subject SUBJECT2 = org.ssglobal.training.codes.tables.Subject.SUBJECT
 				.as("SUBJECT2");
-		
+
 		return dslContext
 				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
@@ -296,7 +309,7 @@ public class StudentCapabilitiesRepository {
 				.join(SUBJECT2).on(MINOR_SUBJECT.PRE_REQUISITES.eq(SUBJECT2.SUBJECT_CODE))
 				.orderBy(MINOR_SUBJECT.YEAR_LEVEL, MINOR_SUBJECT.SEM).fetchMaps();
 	}
-	
+
 	// ------------ FOR Student Enrollment
 	public Map<String, Object> selectStudentEnrollmentData(Integer studentNo) {
 		return dslContext
@@ -305,17 +318,14 @@ public class StudentCapabilitiesRepository {
 						STUDENT.CURRICULUM_CODE.as("curriculumCode"), STUDENT.YEAR_LEVEL.as("yearLevel"),
 						CURRICULUM.CURRICULUM_NAME.as("curriculumName"),
 						ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER)
-				.from(STUDENT_ENROLLMENT)
-				.innerJoin(ACADEMIC_YEAR).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
-				.innerJoin(STUDENT).on(STUDENT_ENROLLMENT.STUDENT_NO.eq(STUDENT.STUDENT_NO))
-				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
-				.innerJoin(CURRICULUM).on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE))
-				.where(ACADEMIC_YEAR.STATUS.eq("Process")
-					  .and(STUDENT.STUDENT_NO.eq(studentNo))
-				)
-				.fetchOneMap();
+				.from(STUDENT_ENROLLMENT).innerJoin(ACADEMIC_YEAR)
+				.on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)).innerJoin(STUDENT)
+				.on(STUDENT_ENROLLMENT.STUDENT_NO.eq(STUDENT.STUDENT_NO)).innerJoin(USERS)
+				.on(STUDENT.USER_ID.eq(USERS.USER_ID)).innerJoin(CURRICULUM)
+				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE))
+				.where(ACADEMIC_YEAR.STATUS.eq("Process").and(STUDENT.STUDENT_NO.eq(studentNo))).fetchOneMap();
 	}
-	
+
 	// ------------ FOR Major Subject (for curriculum display)
 	public List<Map<String, Object>> selectAllMajorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
 		return dslContext
@@ -323,10 +333,9 @@ public class StudentCapabilitiesRepository {
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
 				.from(MAJOR_SUBJECT).innerJoin(SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(MAJOR_SUBJECT.YEAR_LEVEL.eq(yearLevel).and(MAJOR_SUBJECT.SEM.eq(sem)))
-				.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM)
-				.fetchMaps();
+				.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM).fetchMaps();
 	}
-	
+
 	// ------------ FOR Minor Subject (for curriculum display)
 	public List<Map<String, Object>> selectAllMinorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
 		return dslContext
@@ -334,8 +343,7 @@ public class StudentCapabilitiesRepository {
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
 				.from(MINOR_SUBJECT).innerJoin(SUBJECT).on(MINOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(MINOR_SUBJECT.YEAR_LEVEL.eq(yearLevel).and(MINOR_SUBJECT.SEM.eq(sem)))
-				.orderBy(MINOR_SUBJECT.YEAR_LEVEL, MINOR_SUBJECT.SEM)
-				.fetchMaps();
+				.orderBy(MINOR_SUBJECT.YEAR_LEVEL, MINOR_SUBJECT.SEM).fetchMaps();
 	}
-	
+
 }
