@@ -204,8 +204,7 @@ create table subject (
     units float,
     price float,
     active_deactive boolean,
-    active_status boolean,
-    price float
+    active_status boolean
 );
 
 insert into subject(subject_code, abbrevation, subject_title, units, active_deactive, active_status, price) 
