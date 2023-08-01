@@ -20,10 +20,10 @@ import org.ssglobal.training.codes.tables.pojos.Grades;
 @RestController
 @RequestMapping(value = "/api/parent")
 public class ParentCapabilitiesController {
-	
+
 	@Autowired
 	private ParentCapabilitiesService service;
-	
+
 	@GetMapping(value = "/get/{parentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserAndParent> selectParent(@PathVariable(name = "parentNo") Integer parentNo) {
 		try {
@@ -37,8 +37,8 @@ public class ParentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
-	@PutMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE})
+
+	@PutMapping(value = "/update", consumes = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserAndParent> updateParent(@RequestBody UserAndParent userAndParent) {
 		try {
 			UserAndParent updatedParentInfo = service.updateParentInfo(userAndParent);
@@ -51,7 +51,7 @@ public class ParentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	@GetMapping(value = "/get/children/{parentNo}")
 	public ResponseEntity<List<UserAndStudent>> selectAllChildren(@PathVariable(name = "parentNo") Integer parentNo) {
 		try {
@@ -65,9 +65,10 @@ public class ParentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
-	@GetMapping(value = "/get/grades/{studentNo}")
-	public ResponseEntity<List<Grades>> selectAllGradesByStudentNo(@PathVariable(name = "studentNo") Integer studentNo) {
+
+	@GetMapping(value = "/get/grades/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Grades>> selectAllGradesByStudentNo(
+			@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
 			List<Grades> gradesOfStudent = service.selectAllGrades(studentNo);
 			if (gradesOfStudent != null) {
