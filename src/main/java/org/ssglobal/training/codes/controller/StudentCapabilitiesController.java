@@ -279,12 +279,12 @@ public class StudentCapabilitiesController {
 	@GetMapping(value = "/get/subjectstoenroll/{yearLevel}/{sem}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity selectAllSubjectsToEnrollPerYearAndSem(@PathVariable(name = "yearLevel") Integer yearLevel, @PathVariable(name = "sem") Integer sem) {
 		try {
-			List<Map<String, Object>> subjects = new ArrayList<>();
 			List<Map<String, Object>> minor = service.selectAllMajorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
 			List<Map<String, Object>> major = service.selectAllMinorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
+			List<Map<String, Object>> subjects = new ArrayList<>();
 			subjects.addAll(minor);
 			subjects.addAll(major);
-			if (subjects != null) {
+			if (!subjects.isEmpty()) {
 				return ResponseEntity.ok(subjects);
 			}
 		} catch (Exception e) {

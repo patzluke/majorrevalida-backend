@@ -320,7 +320,7 @@ public class StudentCapabilitiesRepository {
 	public List<Map<String, Object>> selectAllMajorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
 		return dslContext
 				.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
-						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE)
 				.from(MAJOR_SUBJECT).innerJoin(SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(MAJOR_SUBJECT.YEAR_LEVEL.eq(yearLevel).and(MAJOR_SUBJECT.SEM.eq(sem)))
 				.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM)
@@ -331,7 +331,7 @@ public class StudentCapabilitiesRepository {
 	public List<Map<String, Object>> selectAllMinorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
 		return dslContext
 				.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
-						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE)
 				.from(MINOR_SUBJECT).innerJoin(SUBJECT).on(MINOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(MINOR_SUBJECT.YEAR_LEVEL.eq(yearLevel).and(MINOR_SUBJECT.SEM.eq(sem)))
 				.orderBy(MINOR_SUBJECT.YEAR_LEVEL, MINOR_SUBJECT.SEM)

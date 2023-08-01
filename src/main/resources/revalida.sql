@@ -202,6 +202,7 @@ create table subject (
 	abbrevation varchar(50),
     subject_title varchar(100),
     units float,
+    price float,
     active_deactive boolean,
     active_status boolean,
     price float
