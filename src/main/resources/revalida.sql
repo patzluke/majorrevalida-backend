@@ -350,26 +350,11 @@ create table student_attendance (
 --insert into academic_year table
 INSERT INTO academic_year (academic_year, start_date, end_date, semester, status)
 VALUES
-  (2017, '2017-08-14', '2017-12-31', 1, 'Finished'),
-  (2017, '2017-01-16', '2017-06-11', 2,'Finished'),
-
-  (2018, '2018-08-13', '2018-12-31', 1, 'Finished'),
-  (2018, '2018-01-15', '2018-06-10', 2, 'Finished'),
-
-  (2019, '2019-08-12', '2019-12-31', 1, 'Finished'),
-  (2019, '2019-01-21', '2019-06-09', 2, 'Finished'),
-
-  (2020, '2020-08-10', '2020-12-31', 1, 'Finished'),
-  (2020, '2020-01-20', '2020-06-14', 2, 'Finished'),
-
-  (2021, '2021-08-09', '2021-12-31', 1, 'Finished'),
-  (2021, '2021-01-18', '2021-06-13', 2, 'Finished'),
-
   (2022, '2022-08-15', '2022-12-31', 1, 'Finished'),
-  (2022, '2022-01-17', '2022-06-12', 2, 'Finished'),
-
-  (2023, '2023-08-14', '2023-12-31', '1', 'On-going'),
-  (2023, '2023-01-16', '2023-06-11', '2', 'Process');
+  (2023, '2023-01-17', '2023-06-12', 2, 'Finished'),
+  
+  (2023, '2023-08-15', '2023-12-31', 1, 'On-going');
+  --(2024, '2024-01-17', '2024-06-12', 2, 'Process');
 
 
 --insert into program table
@@ -540,6 +525,102 @@ insert into curriculum(major_code, curriculum_name, active_deactive) values(4003
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9026, 9000, 2, 2);
 	
+	--for information technology major in web and mobile major subjects (THIRD year 1st SEM)
+	--major subjs
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ELE 1', 'Professional Elective 1 (Specialization)', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9027, 9000, 5001, 3, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 26010', 'Software Engineering 1', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9028, 9018, 5001, 3, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 26011', 'Applications Development and Emerging Technologies 3 (Mobile Programming)', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9029, 9022, 5001, 3, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 26012', 'Operating Systems', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9030, 9023, 5001, 3, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('IT 2625', 'Alternative Operating System', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9031, 9023, 5001, 3, 1);
+	
+	--minor subjs
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('LIWORIZ', 'Life and Works of Rizal', 2, 'true', 'true', 1000);
+	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
+	values(9032, 9000, 3, 1);
+	
+	--for information technology major in web and mobile major subjects (THIRD year 2nd SEM)
+	--major subjs
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ELE 2', 'Professional Elective 2 (Specialization)', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9033, 9000, 5001, 3, 2);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 26013', 'Software Engineering II', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9034, 9029, 5001, 3, 2);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('IT 2627', 'Quantitative Models', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9035, 9012, 5001, 3, 2);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('IT 2629', 'Information Technology Capstone Project I', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9036, 9000, 5001, 3, 2);
+	
+	--for information technology major in web and mobile major subjects (FOURTH year 1st SEM)
+	--major subjs
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ELE 3', 'Professional Elective 3 (Specialization)', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9037, 9033, 5001, 4, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('F-ELEC', 'Free Elective', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9038, 9000, 5001, 4, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 26016', 'Technopreneurship', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9039, 9036, 5001, 4, 1);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('IT 26211', 'Information Technology Capstone Project II', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9040, 9036, 5001, 4, 1);
+	
+	--for information technology major in web and mobile major subjects (FOURTH year 2nd SEM)
+	--major subjs
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ELE 4', 'Professional Elective 4 (Specialization)', 3, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9041, 9033, 5001, 4, 2);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('ICS 26015', 'Emerging Technologies', 1, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9042, 9000, 5001, 4, 2);
+	
+	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
+	values('IT 26212', 'Practicum (500 hours)', 6, 'true', 'true', 1000);
+	insert into major_subject(subject_code, pre_requisites, curriculum_code, year_level, sem)
+	values(9043, 9040, 5001, 4, 2);
+	
+	
+	
 --insert into Room table
 insert into room(room_no) values(101);insert into room(room_no) values(102);insert into room(room_no) values(103);insert into room(room_no) values(104);insert into room(room_no) values(105);
 insert into room(room_no) values(201);insert into room(room_no) values(202);insert into room(room_no) values(203);insert into room(room_no) values(204);insert into room(room_no) values(205);
@@ -592,58 +673,272 @@ values('jackson', '123456', 'jackson@gmail.com', '9055261278', 'Jackson', 'Norma
 insert into professor(user_id, work) values(8, 'Teacher');
 
 --insert into Professor Load table
+-----------------------------------------8001
+--1st year
 --1st sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
 values(8001, 9001, 1, 1, 2001, 'M', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
 values(8001, 9002, 1, 1, 2001, 'M', '11:00', '14:00', 't');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9003, 1, 1, 2001, 'M', '16:00', '18:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9004, 1, 1, 2001, 'T', '08:00', '11:00', 't');
+values(8001, 9001, 2, 1, 2001, 'M', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9005, 1, 1, 2001, 'T', '11:00', '14:00', 't');
+values(8001, 9002, 2, 1, 2001, 'M', '17:00', '20:00', 't');
+--2nd sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9006, 1, 1, 2001, 'T', '16:00', '18:00', 't');
+values(8001, 9009, 1, 1, 2001, 'T', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9010, 1, 1, 2001, 'T', '11:00', '14:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8004, 9007, 1, 1, 2001, 'W', '08:00', '11:00', 't');
+values(8001, 9009, 2, 1, 2001, 'T', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8004, 9008, 1, 1, 2001, 'W', '11:00', '14:00', 't');
+values(8001, 9010, 2, 1, 2001, 'T', '17:00', '20:00', 't');
+
+--2nd year
+--1st sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9016, 1, 1, 2001, 'W', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9017, 1, 1, 2001, 'W', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9016, 2, 1, 2001, 'W', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9017, 2, 1, 2001, 'W', '11:00', '14:00', 't');
+--2nd sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9018, 1, 1, 2001, 'Th', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9019, 1, 1, 2001, 'Th', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9018, 2, 1, 2001, 'Th', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9019, 2, 1, 2001, 'Th', '11:00', '14:00', 't');
+
+--3rd year
+--1st sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9027, 1, 1, 2001, 'F', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9028, 1, 1, 2001, 'F', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9027, 2, 1, 2001, 'F', '14:00', '17:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8001, 9028, 2, 1, 2001, 'F', '17:00', '20:00', 't');
+
+--4th year
+--1st sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9039, 1, 2, 2001, 'S', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9040, 1, 2, 2001, 'S', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9039, 2, 2, 2001, 'S', '14:00', '17:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9040, 2, 2, 2001, 'S', '17:00', '20:00', 't');
+
+-----------------------------------------8002
+--1st year
+--1st sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9003, 1, 2, 2001, 'M', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9004, 1, 2, 2001, 'M', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9003, 2, 2, 2001, 'M', '14:00', '17:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9004, 2, 2, 2001, 'M', '17:00', '20:00', 't');
+--2nd sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9011, 1, 2, 2001, 'T', '09:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9012, 1, 2, 2001, 'T', '12:00', '15:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9011, 2, 2, 2001, 'T', '16:00', '18:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9012, 2, 2, 2001, 'T', '18:00', '20:00', 't');
+
+--2nd year
+--1st sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9020, 1, 2, 2001, 'W', '09:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9021, 1, 2, 2001, 'W', '12:00', '15:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9020, 2, 2, 2001, 'W', '16:00', '18:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9021, 2, 2, 2001, 'W', '18:00', '20:00', 't');
+
+--3rd year
+--1st sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9029, 1, 2, 2001, 'Th', '09:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9030, 1, 2, 2001, 'Th', '12:00', '15:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9029, 2, 2, 2001, 'Th', '16:00', '18:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9030, 2, 2, 2001, 'Th', '18:00', '20:00', 't');
+
+--4th year
+--1st sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9037, 1, 2, 2001, 'F', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9038, 1, 2, 2001, 'F', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9037, 2, 2, 2001, 'F', '14:00', '17:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9038, 2, 2, 2001, 'F', '17:00', '20:00', 't');
+
+--4th year
+--2nd sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9041, 1, 2, 2001, 'S', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9042, 1, 2, 2001, 'S', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9041, 2, 2, 2001, 'S', '14:00', '17:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9042, 2, 2, 2001, 'S', '17:00', '20:00', 't');
+
+
+-----------------------------------------8003
+--1st year
+--1st sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9005, 1, 3, 2001, 'M', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9006, 1, 3, 2001, 'M', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9005, 2, 3, 2001, 'M', '14:00', '17:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9006, 2, 3, 2001, 'M', '17:00', '20:00', 't');
+--2nd sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9013, 1, 3, 2001, 'T', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9014, 1, 3, 2001, 'T', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9013, 2, 3, 2001, 'T', '14:00', '17:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9014, 2, 3, 2001, 'T', '17:00', '20:00', 't');
+
+--2nd year
+--2nd sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9022, 1, 3, 2001, 'W', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9023, 1, 3, 2001, 'W', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9022, 2, 3, 2001, 'W', '14:00', '17:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8003, 9023, 2, 3, 2001, 'W', '17:00', '20:00', 't');
+
+--3rd year
+--1st sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9031, 1, 2, 2001, 'Th', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9031, 2, 2, 2001, 'Th', '11:00', '14:00', 't');
 
 --2nd sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9009, 2, 1, 2001, 'M', '11:00', '14:00', 't');
+values(8002, 9033, 1, 2, 2001, 'Th', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9010, 2, 1, 2001, 'M', '16:00', '19:00', 't');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9011, 2, 1, 2001, 'T', '09:00', '11:00', 't');
+values(8002, 9033, 2, 2, 2001, 'Th', '17:00', '20:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9012, 3, 1, 2001, 'T', '13:00', '16:00', 't');
+values(8002, 9034, 1, 2, 2001, 'F', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9013, 4, 1, 2001, 'T', '13:00', '16:00', 't');
-insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9014, 4, 1, 2001, 'T', '17:00', '19:00', 't');
+values(8002, 9035, 1, 2, 2001, 'F', '11:00', '14:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8004, 9015, 5, 1, 2001, 'W', '08:00', '11:00', 't');
+values(8002, 9034, 2, 2, 2001, 'F', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8004, 9016, 5, 1, 2001, 'W', '11:00', '14:00', 't');
+values(8002, 9035, 2, 2, 2001, 'F', '17:00', '20:00', 't');
+
+
+-----------------------------------------8004
+--1st year
+--1st sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9007, 1, 4, 2001, 'M', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9008, 1, 4, 2001, 'M', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9007, 2, 4, 2001, 'M', '14:00', '17:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9008, 2, 4, 2001, 'M', '17:00', '20:00', 't');
+--2nd sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9015, 1, 4, 2001, 'T', '08:00', '11:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9015, 2, 4, 2001, 'T', '17:00', '20:00', 't');
+
+--2nd year
+--2nd sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9024, 1, 4, 2001, 'W', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9025, 1, 4, 2001, 'W', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9024, 2, 4, 2001, 'W', '14:00', '17:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9025, 2, 4, 2001, 'W', '17:00', '20:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9026, 1, 4, 2001, 'Th', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9026, 2, 4, 2001, 'Th', '14:00', '17:00', 't');
+
+--3rd year
+--2nd sem
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9032, 1, 4, 2001, 'Th', '14:00', '17:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8004, 9032, 2, 4, 2001, 'Th', '17:00', '20:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9036, 1, 2, 2001, 'F', '08:00', '11:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9036, 2, 2, 2001, 'F', '11:00', '14:00', 't');
+
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9043, 1, 2, 2001, 'F', '14:00', '17:00', 't');
+insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
+values(8002, 9043, 2, 2, 2001, 'F', '17:00', '20:00', 't');
+
 
 --insert into users and Student table
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('cachuela', '123456', 'Cachuela@gmail.com', '9188192721', 'Cachuela', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'Cachuela.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(9, 5001, 1, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(9, 5001, 3, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('george', '123456', 'george@gmail.com', '9188192721', 'George', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'george.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(10, 5001, 2, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(10, 5001, 3, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('steven', '123456', 'steven@gmail.com', '9188192721', 'Steven', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'steven.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(11, 5001, 2, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(11, 5001, 3, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('zephania', '123456', 'zephania@gmail.com', '9188192721', 'Zephania', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'zephania.jpeg');
@@ -651,62 +946,66 @@ insert into student(user_id, curriculum_code, academic_year_id, year_level) valu
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('eoin', '123456', 'eoin@gmail.com', '9188192721', 'Eoin', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'eoin.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(13, 5001, 4, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(13, 5001, 3, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('norbin', '123456', 'norbin@gmail.com', '9188192721', 'Norbin', 'Fernando', 'Astrero', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'norbin.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(14, 5001, 4, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(14, 5001, 3, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('vanlester', '123456', 'vanlester@gmail.com', '9188192721', 'Lester', 'Astros', 'Artuz', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'vanlester.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(15, 5001, 5, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(15, 5001, 3, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('johnpaul', '123456', 'johnpaul@gmail.com', '9188192721', 'John', 'Paul', 'Artuz', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'johnpaul.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(16, 5001, 6, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(16, 5001, 3, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('linda', '123456', 'linda@gmail.com', '9188192721', 'Linda', 'Gabriel', 'Artuz', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'linda.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(17, 5001, 6, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(17, 5001, 3, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('robgerson', '123456', 'robgerson@gmail.com', '9188192721', 'Robert', 'Paul', 'Artuz', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'robgerson.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(18, 5001, 7, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(18, 5001, 3, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('aluz', '123456', 'aluz@gmail.com', '9188192721', 'Luz', 'nina', 'Artuz', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'aluz.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(19, 5001, 7, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(19, 5001, 3, 1);
 
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 values('christopher', '123456', 'christopher@gmail.com', '9188192721', 'Christof', 'Paul', 'Labastos', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'christopher.jpeg');
-insert into student(user_id, curriculum_code, academic_year_id, year_level) values(20, 5001, 7, 1);
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(20, 5001, 3, 1);
 
 
 ----------------1st sem
 --insert into student_enrollment
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77001, 13, 1, 'Full', 'Enrolled');
+values(77001, 3, 1, 'Full', 'Enrolled');
+
+--sample data for next enrollment
+--insert into student_enrollment(student_no, academic_year_id) 
+--values(77001, 4);
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 1),
 (2, 1),
-(3, 1),
-(4, 1),
-(5, 1),
-(6, 1),
-(7, 1),
-(8, 1);
+(25, 1),
+(26, 1),
+(49, 1),
+(50, 1),
+(69, 1),
+(70, 1);
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 13),
-(8001, 9002, 13),
-(8002, 9003, 13),
-(8002, 9004, 13),
-(8003, 9005, 13),
-(8003, 9006, 13),
-(8004, 9007, 13),
-(8004, 9008, 13)
+(8001, 9001, 3),
+(8001, 9002, 3),
+(8002, 9003, 3),
+(8002, 9004, 3),
+(8003, 9005, 3),
+(8003, 9006, 3),
+(8004, 9007, 3),
+(8004, 9008, 3)
 ;
 
 --insert into grades
@@ -722,28 +1021,28 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77002, 13, 1, 'Full', 'Enrolled');
+values(77002, 3, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 2),
 (2, 2),
-(3, 2),
-(4, 2),
-(5, 2),
-(6, 2),
-(7, 2),
-(8, 2);
+(25, 2),
+(26, 2),
+(49, 2),
+(50, 2),
+(69, 2),
+(70, 2);
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 13),
-(8001, 9002, 13),
-(8002, 9003, 13),
-(8002, 9004, 13),
-(8003, 9005, 13),
-(8003, 9006, 13),
-(8004, 9007, 13),
-(8004, 9008, 13)
+(8001, 9001, 3),
+(8001, 9002, 3),
+(8002, 9003, 3),
+(8002, 9004, 3),
+(8003, 9005, 3),
+(8003, 9006, 3),
+(8004, 9007, 3),
+(8004, 9008, 3)
 ;
 
 --insert into grades
@@ -759,28 +1058,28 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77003, 13, 1, 'Full', 'Enrolled');
+values(77003, 3, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 3),
 (2, 3),
-(3, 3),
-(4, 3),
-(5, 3),
-(6, 3),
-(7, 3),
-(8, 3);
+(25, 3),
+(26, 3),
+(49, 3),
+(50, 3),
+(69, 3),
+(70, 3);
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 13),
-(8001, 9002, 13),
-(8002, 9003, 13),
-(8002, 9004, 13),
-(8003, 9005, 13),
-(8003, 9006, 13),
-(8004, 9007, 13),
-(8004, 9008, 13)
+(8001, 9001, 3),
+(8001, 9002, 3),
+(8002, 9003, 3),
+(8002, 9004, 3),
+(8003, 9005, 3),
+(8003, 9006, 3),
+(8004, 9007, 3),
+(8004, 9008, 3)
 ;
 
 --insert into grades
@@ -796,28 +1095,28 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77004, 13, 1, 'Partial', 'Not Enrolled');
+values(77004, 3, 1, 'Partial', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 4),
 (2, 4),
-(3, 4),
-(4, 4),
-(5, 4),
-(6, 4),
-(7, 4),
-(8, 4);
+(25, 4),
+(26, 4),
+(49, 4),
+(50, 4),
+(69, 4),
+(70, 4);
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 13),
-(8001, 9002, 13),
-(8002, 9003, 13),
-(8002, 9004, 13),
-(8003, 9005, 13),
-(8003, 9006, 13),
-(8004, 9007, 13),
-(8004, 9008, 13)
+(8001, 9001, 3),
+(8001, 9002, 3),
+(8002, 9003, 3),
+(8002, 9004, 3),
+(8003, 9005, 3),
+(8003, 9006, 3),
+(8004, 9007, 3),
+(8004, 9008, 3)
 ;
 
 --insert into grades
@@ -834,28 +1133,28 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77005, 13, 1, 'Full', 'Enrolled');
+values(77005, 3, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 5),
 (2, 5),
-(3, 5),
-(4, 5),
-(5, 5),
-(6, 5),
-(7, 5),
-(8, 5);
+(25, 5),
+(26, 5),
+(49, 5),
+(50, 5),
+(69, 5),
+(70, 5);
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 13),
-(8001, 9002, 13),
-(8002, 9003, 13),
-(8002, 9004, 13),
-(8003, 9005, 13),
-(8003, 9006, 13),
-(8004, 9007, 13),
-(8004, 9008, 13)
+(8001, 9001, 3),
+(8001, 9002, 3),
+(8002, 9003, 3),
+(8002, 9004, 3),
+(8003, 9005, 3),
+(8003, 9006, 3),
+(8004, 9007, 3),
+(8004, 9008, 3)
 ;
 
 --insert into grades
@@ -872,28 +1171,28 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77006, 13, 1, 'Partial', 'Not Enrolled');
+values(77006, 3, 1, 'Partial', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 6),
 (2, 6),
-(3, 6),
-(4, 6),
-(5, 6),
-(6, 6),
-(7, 6),
-(8, 6);
+(25, 6),
+(26, 6),
+(49, 6),
+(50, 6),
+(69, 6),
+(70, 6);
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 13),
-(8001, 9002, 13),
-(8002, 9003, 13),
-(8002, 9004, 13),
-(8003, 9005, 13),
-(8003, 9006, 13),
-(8004, 9007, 13),
-(8004, 9008, 13)
+(8001, 9001, 3),
+(8001, 9002, 3),
+(8002, 9003, 3),
+(8002, 9004, 3),
+(8003, 9005, 3),
+(8003, 9006, 3),
+(8004, 9007, 3),
+(8004, 9008, 3)
 ;
 
 --insert into grades
@@ -909,28 +1208,28 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77007, 13, 1, 'Full', 'Enrolled');
+values(77007, 3, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 7),
 (2, 7),
-(3, 7),
-(4, 7),
-(5, 7),
-(6, 7),
-(7, 7),
-(8, 7);
+(25, 7),
+(26, 7),
+(49, 7),
+(50, 7),
+(69, 7),
+(70, 7);
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 13),
-(8001, 9002, 13),
-(8002, 9003, 13),
-(8002, 9004, 13),
-(8003, 9005, 13),
-(8003, 9006, 13),
-(8004, 9007, 13),
-(8004, 9008, 13)
+(8001, 9001, 3),
+(8001, 9002, 3),
+(8002, 9003, 3),
+(8002, 9004, 3),
+(8003, 9005, 3),
+(8003, 9006, 3),
+(8004, 9007, 3),
+(8004, 9008, 3)
 ;
 
 --insert into grades
@@ -946,28 +1245,28 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77008, 13, 1, 'Full', 'Enrolled');
+values(77008, 3, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 8),
 (2, 8),
-(3, 8),
-(4, 8),
-(5, 8),
-(6, 8),
-(7, 8),
-(8, 8);
+(25, 8),
+(26, 8),
+(49, 8),
+(50, 8),
+(69, 8),
+(70, 8);
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 13),
-(8001, 9002, 13),
-(8002, 9003, 13),
-(8002, 9004, 13),
-(8003, 9005, 13),
-(8003, 9006, 13),
-(8004, 9007, 13),
-(8004, 9008, 13)
+(8001, 9001, 3),
+(8001, 9002, 3),
+(8002, 9003, 3),
+(8002, 9004, 3),
+(8003, 9005, 3),
+(8003, 9006, 3),
+(8004, 9007, 3),
+(8004, 9008, 3)
 ;
 
 --insert into grades
@@ -983,28 +1282,28 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77009, 13, 1, 'Full', 'Enrolled');
+values(77009, 3, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 9),
 (2, 9),
-(3, 9),
-(4, 9),
-(5, 9),
-(6, 9),
-(7, 9),
-(8, 9);
+(25, 9),
+(26, 9),
+(49, 9),
+(50, 9),
+(69, 9),
+(70, 9);
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 13),
-(8001, 9002, 13),
-(8002, 9003, 13),
-(8002, 9004, 13),
-(8003, 9005, 13),
-(8003, 9006, 13),
-(8004, 9007, 13),
-(8004, 9008, 13)
+(8001, 9001, 3),
+(8001, 9002, 3),
+(8002, 9003, 3),
+(8002, 9004, 3),
+(8003, 9005, 3),
+(8003, 9006, 3),
+(8004, 9007, 3),
+(8004, 9008, 3)
 ;
 
 --insert into grades
@@ -1020,28 +1319,28 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77010, 13, 1, 'Partial', 'Not Enrolled');
+values(77010, 3, 1, 'Partial', 'Not Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 10),
 (2, 10),
-(3, 10),
-(4, 10),
-(5, 10),
-(6, 10),
-(7, 10),
-(8, 10);
+(25, 10),
+(26, 10),
+(49, 10),
+(50, 10),
+(69, 10),
+(70, 10);
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 13),
-(8001, 9002, 13),
-(8002, 9003, 13),
-(8002, 9004, 13),
-(8003, 9005, 13),
-(8003, 9006, 13),
-(8004, 9007, 13),
-(8004, 9008, 13)
+(8001, 9001, 3),
+(8001, 9002, 3),
+(8002, 9003, 3),
+(8002, 9004, 3),
+(8003, 9005, 3),
+(8003, 9006, 3),
+(8004, 9007, 3),
+(8004, 9008, 3)
 ;
 
 --insert into grades
@@ -1058,28 +1357,28 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77011, 13, 1, 'Full', 'Enrolled');
+values(77011, 3, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 11),
 (2, 11),
-(3, 11),
-(4, 11),	
-(5, 11),
-(6, 11),
-(7, 11),
-(8, 11);
+(25, 11),
+(26, 11),
+(49, 11),
+(50, 11),
+(69, 11),
+(70, 11);
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 13),
-(8001, 9002, 13),
-(8002, 9003, 13),
-(8002, 9004, 13),
-(8003, 9005, 13),
-(8003, 9006, 13),
-(8004, 9007, 13),
-(8004, 9008, 13)
+(8001, 9001, 3),
+(8001, 9002, 3),
+(8002, 9003, 3),
+(8002, 9004, 3),
+(8003, 9005, 3),
+(8003, 9006, 3),
+(8004, 9007, 3),
+(8004, 9008, 3)
 ;
 
 --insert into grades
@@ -1095,28 +1394,28 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77012, 13, 1, 'Full', 'Enrolled');
+values(77012, 3, 1, 'Full', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 12),
 (2, 12),
-(3, 12),
-(4, 12),
-(5, 12),
-(6, 12),
-(7, 12),
-(8, 12);
+(25, 12),
+(26, 12),
+(49, 12),
+(50, 12),
+(69, 12),
+(70, 12);
 
 --insert into t_subject_detail_history
 insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
-(8001, 9001, 13),
-(8001, 9002, 13),
-(8002, 9003, 13),
-(8002, 9004, 13),
-(8003, 9005, 13),
-(8003, 9006, 13),
-(8004, 9007, 13),
-(8004, 9008, 13)
+(8001, 9001, 3),
+(8001, 9002, 3),
+(8002, 9003, 3),
+(8002, 9004, 3),
+(8003, 9005, 3),
+(8003, 9006, 3),
+(8004, 9007, 3),
+(8004, 9008, 3)
 ;
 
 --insert into grades
@@ -1134,124 +1433,124 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 --insert into student_schedule
 --1st sem
 insert into student_schedule(student_no, load_id, academic_year_id) values
-(77001, 1, 13),
-(77001, 2, 13),
-(77001, 3, 13),
-(77001, 4, 13),
-(77001, 5, 13),
-(77001, 6, 13),
-(77001, 7, 13),
-(77001, 8, 13);
+(77001, 1, 3),
+(77001, 2, 3),
+(77001, 25, 3),
+(77001, 26, 3),
+(77001, 49, 3),
+(77001, 50, 3),
+(77001, 69, 3),
+(77001, 70, 3);
 
 insert into student_schedule(student_no, load_id, academic_year_id) values
-(77002, 1, 13),
-(77002, 2, 13),
-(77002, 3, 13),
-(77002, 4, 13),
-(77002, 5, 13),
-(77002, 6, 13),
-(77002, 7, 13),
-(77002, 8, 13);
+(77002, 1, 3),
+(77002, 2, 3),
+(77002, 25, 3),
+(77002, 26, 3),
+(77002, 49, 3),
+(77002, 50, 3),
+(77002, 69, 3),
+(77002, 70, 3);
 
 insert into student_schedule(student_no, load_id, academic_year_id) values
-(77003, 1, 13),
-(77003, 2, 13),
-(77003, 3, 13),
-(77003, 4, 13),
-(77003, 5, 13),
-(77003, 6, 13),
-(77003, 7, 13),
-(77003, 8, 13);
+(77003, 1, 3),
+(77003, 2, 3),
+(77003, 25, 3),
+(77003, 26, 3),
+(77003, 49, 3),
+(77003, 50, 3),
+(77003, 69, 3),
+(77003, 70, 3);
 
 insert into student_schedule(student_no, load_id, academic_year_id) values
-(77004, 1, 13),
-(77004, 2, 13),
-(77004, 3, 13),
-(77004, 4, 13),
-(77004, 5, 13),
-(77004, 6, 13),
-(77004, 7, 13),
-(77004, 8, 13);
+(77004, 1, 3),
+(77004, 2, 3),
+(77004, 25, 3),
+(77004, 26, 3),
+(77004, 49, 3),
+(77004, 50, 3),
+(77004, 69, 3),
+(77004, 70, 3);
 
 insert into student_schedule(student_no, load_id, academic_year_id) values
-(77005, 1, 13),
-(77005, 2, 13),
-(77005, 3, 13),
-(77005, 4, 13),
-(77005, 5, 13),
-(77005, 6, 13),
-(77005, 7, 13),
-(77005, 8, 13);
+(77005, 1, 3),
+(77005, 2, 3),
+(77005, 25, 3),
+(77005, 26, 3),
+(77005, 49, 3),
+(77005, 50, 3),
+(77005, 69, 3),
+(77005, 70, 3);
 
 insert into student_schedule(student_no, load_id, academic_year_id) values
-(77006, 1, 13),
-(77006, 2, 13),
-(77006, 3, 13),
-(77006, 4, 13),
-(77006, 5, 13),
-(77006, 6, 13),
-(77006, 7, 13),
-(77006, 8, 13);
+(77006, 1, 3),
+(77006, 2, 3),
+(77006, 25, 3),
+(77006, 26, 3),
+(77006, 49, 3),
+(77006, 50, 3),
+(77006, 69, 3),
+(77006, 70, 3);
 
 insert into student_schedule(student_no, load_id, academic_year_id) values
-(77007, 1, 13),
-(77007, 2, 13),
-(77007, 3, 13),
-(77007, 4, 13),
-(77007, 5, 13),
-(77007, 6, 13),
-(77007, 7, 13),
-(77007, 8, 13);
+(77007, 1, 3),
+(77007, 2, 3),
+(77007, 25, 3),
+(77007, 26, 3),
+(77007, 49, 3),
+(77007, 50, 3),
+(77007, 69, 3),
+(77007, 70, 3);
 
 insert into student_schedule(student_no, load_id, academic_year_id) values
-(77008, 1, 13),
-(77008, 2, 13),
-(77008, 3, 13),
-(77008, 4, 13),
-(77008, 5, 13),
-(77008, 6, 13),
-(77008, 7, 13),
-(77008, 8, 13);
+(77008, 1, 3),
+(77008, 2, 3),
+(77008, 25, 3),
+(77008, 26, 3),
+(77008, 49, 3),
+(77008, 50, 3),
+(77008, 69, 3),
+(77008, 70, 3);
 
 insert into student_schedule(student_no, load_id, academic_year_id) values
-(77009, 1, 13),
-(77009, 2, 13),
-(77009, 3, 13),
-(77009, 4, 13),
-(77009, 5, 13),
-(77009, 6, 13),
-(77009, 7, 13),
-(77009, 8, 13);
+(77009, 1, 3),
+(77009, 2, 3),
+(77009, 25, 3),
+(77009, 26, 3),
+(77009, 49, 3),
+(77009, 50, 3),
+(77009, 69, 3),
+(77009, 70, 3);
 
 insert into student_schedule(student_no, load_id, academic_year_id) values
-(77010, 1, 13),
-(77010, 2, 13),
-(77010, 3, 13),
-(77010, 4, 13),
-(77010, 5, 13),
-(77010, 6, 13),
-(77010, 7, 13),
-(77010, 8, 13);
+(77010, 1, 3),
+(77010, 2, 3),
+(77010, 25, 3),
+(77010, 26, 3),
+(77010, 49, 3),
+(77010, 50, 3),
+(77010, 69, 3),
+(77010, 70, 3);
 
 insert into student_schedule(student_no, load_id, academic_year_id) values
-(77011, 1, 13),
-(77011, 2, 13),
-(77011, 3, 13),
-(77011, 4, 13),
-(77011, 5, 13),
-(77011, 6, 13),
-(77011, 7, 13),
-(77011, 8, 13);
+(77011, 1, 3),
+(77011, 2, 3),
+(77011, 25, 3),
+(77011, 26, 3),
+(77011, 49, 3),
+(77011, 50, 3),
+(77011, 69, 3),
+(77011, 70, 3);
 
 insert into student_schedule(student_no, load_id, academic_year_id) values
-(77012, 1, 13),
-(77012, 2, 13),
-(77012, 3, 13),
-(77012, 4, 13),
-(77012, 5, 13),
-(77012, 6, 13),
-(77012, 7, 13),
-(77012, 8, 13);
+(77012, 1, 3),
+(77012, 2, 3),
+(77012, 25, 3),
+(77012, 26, 3),
+(77012, 49, 3),
+(77012, 50, 3),
+(77012, 69, 3),
+(77012, 70, 3);
 
 --insert into student_attendance
 --1st sem
@@ -1270,105 +1569,47 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77001, 2, '2023-08-14'),
 (77001, 2, '2023-08-15'),
 
-(77001, 3, '2023-07-11'),
-(77001, 3, '2023-08-11'),
-(77001, 3, '2023-08-12'),
-(77001, 3, '2023-08-13'),
-(77001, 3, '2023-08-14'),
-(77001, 3, '2023-08-15'),
+(77001, 25, '2023-07-11'),
+(77001, 25, '2023-08-11'),
+(77001, 25, '2023-08-12'),
+(77001, 25, '2023-08-13'),
+(77001, 25, '2023-08-14'),
+(77001, 25, '2023-08-15'),
 
-(77001, 4, '2023-07-11'),
-(77001, 4, '2023-08-11'),
-(77001, 4, '2023-08-12'),
-(77001, 4, '2023-08-13'),
-(77001, 4, '2023-08-14'),
-(77001, 4, '2023-08-15'),
+(77001, 26, '2023-07-11'),
+(77001, 26, '2023-08-11'),
+(77001, 26, '2023-08-12'),
+(77001, 26, '2023-08-13'),
+(77001, 26, '2023-08-14'),
+(77001, 26, '2023-08-15'),
 
-(77001, 5, '2023-07-11'),
-(77001, 5, '2023-08-11'),
-(77001, 5, '2023-08-12'),
-(77001, 5, '2023-08-13'),
-(77001, 5, '2023-08-14'),
-(77001, 5, '2023-08-15'),
+(77001, 49, '2023-07-11'),
+(77001, 49, '2023-08-11'),
+(77001, 49, '2023-08-12'),
+(77001, 49, '2023-08-13'),
+(77001, 49, '2023-08-14'),
+(77001, 49, '2023-08-15'),
 
-(77001, 6, '2023-07-11'),
-(77001, 6, '2023-08-11'),
-(77001, 6, '2023-08-12'),
-(77001, 6, '2023-08-13'),
-(77001, 6, '2023-08-14'),
-(77001, 6, '2023-08-15'),
+(77001, 50, '2023-07-11'),
+(77001, 50, '2023-08-11'),
+(77001, 50, '2023-08-12'),
+(77001, 50, '2023-08-13'),
+(77001, 50, '2023-08-14'),
+(77001, 50, '2023-08-15'),
 
-(77001, 7, '2023-07-11'),
-(77001, 7, '2023-08-11'),
-(77001, 7, '2023-08-12'),
-(77001, 7, '2023-08-13'),
-(77001, 7, '2023-08-14'),
-(77001, 7, '2023-08-15'),
+(77001, 69, '2023-07-11'),
+(77001, 69, '2023-08-11'),
+(77001, 69, '2023-08-12'),
+(77001, 69, '2023-08-13'),
+(77001, 69, '2023-08-14'),
+(77001, 69, '2023-08-15'),
 
-(77001, 8, '2023-07-11'),
-(77001, 8, '2023-08-11'),
-(77001, 8, '2023-08-12'),
-(77001, 8, '2023-08-13'),
-(77001, 8, '2023-08-14'),
-(77001, 8, '2023-08-15');
-
-----2nd sem
---insert into student_attendance(student_no, load_id, attendance_date) values
---(77001, 9, '2023-01-16'),
---(77001, 9, '2023-01-17'),
---(77001, 9, '2023-01-18'),
---(77001, 9, '2023-01-19'),
---(77001, 9, '2023-01-20'),
---(77001, 9, '2023-01-21'),
---
---(77001, 10, '2023-07-11'),
---(77001, 10, '2023-08-11'),
---(77001, 10, '2023-08-12'),
---(77001, 10, '2023-08-13'),
---(77001, 10, '2023-08-14'),
---(77001, 10, '2023-08-15'),
---
---(77001, 11, '2023-07-11'),
---(77001, 11, '2023-08-11'),
---(77001, 11, '2023-08-12'),
---(77001, 11, '2023-08-13'),
---(77001, 11, '2023-08-14'),
---(77001, 11, '2023-08-15'),
---
---(77001, 12, '2023-07-11'),
---(77001, 12, '2023-08-11'),
---(77001, 12, '2023-08-12'),
---(77001, 12, '2023-08-13'),
---(77001, 12, '2023-08-14'),
---(77001, 12, '2023-08-15'),
---
---(77001, 13, '2023-07-11'),
---(77001, 13, '2023-08-11'),
---(77001, 13, '2023-08-12'),
---(77001, 13, '2023-08-13'),
---(77001, 13, '2023-08-14'),
---(77001, 13, '2023-08-15'),
---
---(77001, 14, '2023-07-11'),
---(77001, 14, '2023-08-11'),
---(77001, 14, '2023-08-12'),
---(77001, 14, '2023-08-13'),
---(77001, 14, '2023-08-14'),
---(77001, 14, '2023-08-15'),
---
---(77001, 15, '2023-07-11'),
---(77001, 15, '2023-08-11'),
---(77001, 15, '2023-08-12'),
---(77001, 15, '2023-08-13'),
---(77001, 15, '2023-08-14'),
---(77001, 15, '2023-08-15'),
---
---(77001, 16, '2023-07-11'),
---(77001, 16, '2023-08-11'),
---(77001, 16, '2023-08-12'),
---(77001, 16, '2023-08-13'),
---(77001, 16, '2023-08-14'),
---(77001, 16, '2023-08-15');
+(77001, 70, '2023-07-11'),
+(77001, 70, '2023-08-11'),
+(77001, 70, '2023-08-12'),
+(77001, 70, '2023-08-13'),
+(77001, 70, '2023-08-14'),
+(77001, 70, '2023-08-15');
 
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77002, 1, '2023-07-11'),
@@ -1385,47 +1626,47 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77002, 2, '2023-08-14'),
 (77002, 2, '2023-08-15'),
 
-(77002, 3, '2023-07-11'),
-(77002, 3, '2023-08-11'),
-(77002, 3, '2023-08-12'),
-(77002, 3, '2023-08-13'),
-(77002, 3, '2023-08-14'),
-(77002, 3, '2023-08-15'),
+(77002, 25, '2023-07-11'),
+(77002, 25, '2023-08-11'),
+(77002, 25, '2023-08-12'),
+(77002, 25, '2023-08-13'),
+(77002, 25, '2023-08-14'),
+(77002, 25, '2023-08-15'),
 
-(77002, 4, '2023-07-11'),
-(77002, 4, '2023-08-11'),
-(77002, 4, '2023-08-12'),
-(77002, 4, '2023-08-13'),
-(77002, 4, '2023-08-14'),
-(77002, 4, '2023-08-15'),
+(77002, 26, '2023-07-11'),
+(77002, 26, '2023-08-11'),
+(77002, 26, '2023-08-12'),
+(77002, 26, '2023-08-13'),
+(77002, 26, '2023-08-14'),
+(77002, 26, '2023-08-15'),
 
-(77002, 5, '2023-07-11'),
-(77002, 5, '2023-08-11'),
-(77002, 5, '2023-08-12'),
-(77002, 5, '2023-08-13'),
-(77002, 5, '2023-08-14'),
-(77002, 5, '2023-08-15'),
+(77002, 49, '2023-07-11'),
+(77002, 49, '2023-08-11'),
+(77002, 49, '2023-08-12'),
+(77002, 49, '2023-08-13'),
+(77002, 49, '2023-08-14'),
+(77002, 49, '2023-08-15'),
 
-(77002, 6, '2023-07-11'),
-(77002, 6, '2023-08-11'),
-(77002, 6, '2023-08-12'),
-(77002, 6, '2023-08-13'),
-(77002, 6, '2023-08-14'),
-(77002, 6, '2023-08-15'),
+(77002, 50, '2023-07-11'),
+(77002, 50, '2023-08-11'),
+(77002, 50, '2023-08-12'),
+(77002, 50, '2023-08-13'),
+(77002, 50, '2023-08-14'),
+(77002, 50, '2023-08-15'),
 
-(77002, 7, '2023-07-11'),
-(77002, 7, '2023-08-11'),
-(77002, 7, '2023-08-12'),
-(77002, 7, '2023-08-13'),
-(77002, 7, '2023-08-14'),
-(77002, 7, '2023-08-15'),
+(77002, 69, '2023-07-11'),
+(77002, 69, '2023-08-11'),
+(77002, 69, '2023-08-12'),
+(77002, 69, '2023-08-13'),
+(77002, 69, '2023-08-14'),
+(77002, 69, '2023-08-15'),
 
-(77002, 8, '2023-07-11'),
-(77002, 8, '2023-08-11'),
-(77002, 8, '2023-08-12'),
-(77002, 8, '2023-08-13'),
-(77002, 8, '2023-08-14'),
-(77002, 8, '2023-08-15');
+(77002, 70, '2023-07-11'),
+(77002, 70, '2023-08-11'),
+(77002, 70, '2023-08-12'),
+(77002, 70, '2023-08-13'),
+(77002, 70, '2023-08-14'),
+(77002, 70, '2023-08-15');
 
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77003, 1, '2023-07-11'),
@@ -1442,47 +1683,47 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77003, 2, '2023-08-14'),
 (77003, 2, '2023-08-15'),
 
-(77003, 3, '2023-07-11'),
-(77003, 3, '2023-08-11'),
-(77003, 3, '2023-08-12'),
-(77003, 3, '2023-08-13'),
-(77003, 3, '2023-08-14'),
-(77003, 3, '2023-08-15'),
+(77003, 25, '2023-07-11'),
+(77003, 25, '2023-08-11'),
+(77003, 25, '2023-08-12'),
+(77003, 25, '2023-08-13'),
+(77003, 25, '2023-08-14'),
+(77003, 25, '2023-08-15'),
 
-(77003, 4, '2023-07-11'),
-(77003, 4, '2023-08-11'),
-(77003, 4, '2023-08-12'),
-(77003, 4, '2023-08-13'),
-(77003, 4, '2023-08-14'),
-(77003, 4, '2023-08-15'),
+(77003, 26, '2023-07-11'),
+(77003, 26, '2023-08-11'),
+(77003, 26, '2023-08-12'),
+(77003, 26, '2023-08-13'),
+(77003, 26, '2023-08-14'),
+(77003, 26, '2023-08-15'),
 
-(77003, 5, '2023-07-11'),
-(77003, 5, '2023-08-11'),
-(77003, 5, '2023-08-12'),
-(77003, 5, '2023-08-13'),
-(77003, 5, '2023-08-14'),
-(77003, 5, '2023-08-15'),
+(77003, 49, '2023-07-11'),
+(77003, 49, '2023-08-11'),
+(77003, 49, '2023-08-12'),
+(77003, 49, '2023-08-13'),
+(77003, 49, '2023-08-14'),
+(77003, 49, '2023-08-15'),
 
-(77003, 6, '2023-07-11'),
-(77003, 6, '2023-08-11'),
-(77003, 6, '2023-08-12'),
-(77003, 6, '2023-08-13'),
-(77003, 6, '2023-08-14'),
-(77003, 6, '2023-08-15'),
+(77003, 50, '2023-07-11'),
+(77003, 50, '2023-08-11'),
+(77003, 50, '2023-08-12'),
+(77003, 50, '2023-08-13'),
+(77003, 50, '2023-08-14'),
+(77003, 50, '2023-08-15'),
 
-(77003, 7, '2023-07-11'),
-(77003, 7, '2023-08-11'),
-(77003, 7, '2023-08-12'),
-(77003, 7, '2023-08-13'),
-(77003, 7, '2023-08-14'),
-(77003, 7, '2023-08-15'),
+(77003, 69, '2023-07-11'),
+(77003, 69, '2023-08-11'),
+(77003, 69, '2023-08-12'),
+(77003, 69, '2023-08-13'),
+(77003, 69, '2023-08-14'),
+(77003, 69, '2023-08-15'),
 
-(77003, 8, '2023-07-11'),
-(77003, 8, '2023-08-11'),
-(77003, 8, '2023-08-12'),
-(77003, 8, '2023-08-13'),
-(77003, 8, '2023-08-14'),
-(77003, 8, '2023-08-15');
+(77003, 70, '2023-07-11'),
+(77003, 70, '2023-08-11'),
+(77003, 70, '2023-08-12'),
+(77003, 70, '2023-08-13'),
+(77003, 70, '2023-08-14'),
+(77003, 70, '2023-08-15');
 
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77004, 1, '2023-07-11'),
@@ -1499,47 +1740,47 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77004, 2, '2023-08-14'),
 (77004, 2, '2023-08-15'),
 
-(77004, 3, '2023-07-11'),
-(77004, 3, '2023-08-11'),
-(77004, 3, '2023-08-12'),
-(77004, 3, '2023-08-13'),
-(77004, 3, '2023-08-14'),
-(77004, 3, '2023-08-15'),
+(77004, 25, '2023-07-11'),
+(77004, 25, '2023-08-11'),
+(77004, 25, '2023-08-12'),
+(77004, 25, '2023-08-13'),
+(77004, 25, '2023-08-14'),
+(77004, 25, '2023-08-15'),
 
-(77004, 4, '2023-07-11'),
-(77004, 4, '2023-08-11'),
-(77004, 4, '2023-08-12'),
-(77004, 4, '2023-08-13'),
-(77004, 4, '2023-08-14'),
-(77004, 4, '2023-08-15'),
+(77004, 26, '2023-07-11'),
+(77004, 26, '2023-08-11'),
+(77004, 26, '2023-08-12'),
+(77004, 26, '2023-08-13'),
+(77004, 26, '2023-08-14'),
+(77004, 26, '2023-08-15'),
 
-(77004, 5, '2023-07-11'),
-(77004, 5, '2023-08-11'),
-(77004, 5, '2023-08-12'),
-(77004, 5, '2023-08-13'),
-(77004, 5, '2023-08-14'),
-(77004, 5, '2023-08-15'),
+(77004, 49, '2023-07-11'),
+(77004, 49, '2023-08-11'),
+(77004, 49, '2023-08-12'),
+(77004, 49, '2023-08-13'),
+(77004, 49, '2023-08-14'),
+(77004, 49, '2023-08-15'),
 
-(77004, 6, '2023-07-11'),
-(77004, 6, '2023-08-11'),
-(77004, 6, '2023-08-12'),
-(77004, 6, '2023-08-13'),
-(77004, 6, '2023-08-14'),
-(77004, 6, '2023-08-15'),
+(77004, 50, '2023-07-11'),
+(77004, 50, '2023-08-11'),
+(77004, 50, '2023-08-12'),
+(77004, 50, '2023-08-13'),
+(77004, 50, '2023-08-14'),
+(77004, 50, '2023-08-15'),
 
-(77004, 7, '2023-07-11'),
-(77004, 7, '2023-08-11'),
-(77004, 7, '2023-08-12'),
-(77004, 7, '2023-08-13'),
-(77004, 7, '2023-08-14'),
-(77004, 7, '2023-08-15'),
+(77004, 69, '2023-07-11'),
+(77004, 69, '2023-08-11'),
+(77004, 69, '2023-08-12'),
+(77004, 69, '2023-08-13'),
+(77004, 69, '2023-08-14'),
+(77004, 69, '2023-08-15'),
 
-(77004, 8, '2023-07-11'),
-(77004, 8, '2023-08-11'),
-(77004, 8, '2023-08-12'),
-(77004, 8, '2023-08-13'),
-(77004, 8, '2023-08-14'),
-(77004, 8, '2023-08-15');
+(77004, 70, '2023-07-11'),
+(77004, 70, '2023-08-11'),
+(77004, 70, '2023-08-12'),
+(77004, 70, '2023-08-13'),
+(77004, 70, '2023-08-14'),
+(77004, 70, '2023-08-15');
 
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77005, 1, '2023-07-11'),
@@ -1556,47 +1797,47 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77005, 2, '2023-08-14'),
 (77005, 2, '2023-08-15'),
 
-(77005, 3, '2023-07-11'),
-(77005, 3, '2023-08-11'),
-(77005, 3, '2023-08-12'),
-(77005, 3, '2023-08-13'),
-(77005, 3, '2023-08-14'),
-(77005, 3, '2023-08-15'),
+(77005, 25, '2023-07-11'),
+(77005, 25, '2023-08-11'),
+(77005, 25, '2023-08-12'),
+(77005, 25, '2023-08-13'),
+(77005, 25, '2023-08-14'),
+(77005, 25, '2023-08-15'),
 
-(77005, 4, '2023-07-11'),
-(77005, 4, '2023-08-11'),
-(77005, 4, '2023-08-12'),
-(77005, 4, '2023-08-13'),
-(77005, 4, '2023-08-14'),
-(77005, 4, '2023-08-15'),
+(77005, 26, '2023-07-11'),
+(77005, 26, '2023-08-11'),
+(77005, 26, '2023-08-12'),
+(77005, 26, '2023-08-13'),
+(77005, 26, '2023-08-14'),
+(77005, 26, '2023-08-15'),
 
-(77005, 5, '2023-07-11'),
-(77005, 5, '2023-08-11'),
-(77005, 5, '2023-08-12'),
-(77005, 5, '2023-08-13'),
-(77005, 5, '2023-08-14'),
-(77005, 5, '2023-08-15'),
+(77005, 49, '2023-07-11'),
+(77005, 49, '2023-08-11'),
+(77005, 49, '2023-08-12'),
+(77005, 49, '2023-08-13'),
+(77005, 49, '2023-08-14'),
+(77005, 49, '2023-08-15'),
 
-(77005, 6, '2023-07-11'),
-(77005, 6, '2023-08-11'),
-(77005, 6, '2023-08-12'),
-(77005, 6, '2023-08-13'),
-(77005, 6, '2023-08-14'),
-(77005, 6, '2023-08-15'),
+(77005, 50, '2023-07-11'),
+(77005, 50, '2023-08-11'),
+(77005, 50, '2023-08-12'),
+(77005, 50, '2023-08-13'),
+(77005, 50, '2023-08-14'),
+(77005, 50, '2023-08-15'),
 
-(77005, 7, '2023-07-11'),
-(77005, 7, '2023-08-11'),
-(77005, 7, '2023-08-12'),
-(77005, 7, '2023-08-13'),
-(77005, 7, '2023-08-14'),
-(77005, 7, '2023-08-15'),
+(77005, 69, '2023-07-11'),
+(77005, 69, '2023-08-11'),
+(77005, 69, '2023-08-12'),
+(77005, 69, '2023-08-13'),
+(77005, 69, '2023-08-14'),
+(77005, 69, '2023-08-15'),
 
-(77005, 8, '2023-07-11'),
-(77005, 8, '2023-08-11'),
-(77005, 8, '2023-08-12'),
-(77005, 8, '2023-08-13'),
-(77005, 8, '2023-08-14'),
-(77005, 8, '2023-08-15');
+(77005, 70, '2023-07-11'),
+(77005, 70, '2023-08-11'),
+(77005, 70, '2023-08-12'),
+(77005, 70, '2023-08-13'),
+(77005, 70, '2023-08-14'),
+(77005, 70, '2023-08-15');
 
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77006, 1, '2023-07-11'),
@@ -1613,47 +1854,47 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77006, 2, '2023-08-14'),
 (77006, 2, '2023-08-15'),
 
-(77006, 3, '2023-07-11'),
-(77006, 3, '2023-08-11'),
-(77006, 3, '2023-08-12'),
-(77006, 3, '2023-08-13'),
-(77006, 3, '2023-08-14'),
-(77006, 3, '2023-08-15'),
+(77006, 25, '2023-07-11'),
+(77006, 25, '2023-08-11'),
+(77006, 25, '2023-08-12'),
+(77006, 25, '2023-08-13'),
+(77006, 25, '2023-08-14'),
+(77006, 25, '2023-08-15'),
 
-(77006, 4, '2023-07-11'),
-(77006, 4, '2023-08-11'),
-(77006, 4, '2023-08-12'),
-(77006, 4, '2023-08-13'),
-(77006, 4, '2023-08-14'),
-(77006, 4, '2023-08-15'),
+(77006, 26, '2023-07-11'),
+(77006, 26, '2023-08-11'),
+(77006, 26, '2023-08-12'),
+(77006, 26, '2023-08-13'),
+(77006, 26, '2023-08-14'),
+(77006, 26, '2023-08-15'),
 
-(77006, 5, '2023-07-11'),
-(77006, 5, '2023-08-11'),
-(77006, 5, '2023-08-12'),
-(77006, 5, '2023-08-13'),
-(77006, 5, '2023-08-14'),
-(77006, 5, '2023-08-15'),
+(77006, 49, '2023-07-11'),
+(77006, 49, '2023-08-11'),
+(77006, 49, '2023-08-12'),
+(77006, 49, '2023-08-13'),
+(77006, 49, '2023-08-14'),
+(77006, 49, '2023-08-15'),
 
-(77006, 6, '2023-07-11'),
-(77006, 6, '2023-08-11'),
-(77006, 6, '2023-08-12'),
-(77006, 6, '2023-08-13'),
-(77006, 6, '2023-08-14'),
-(77006, 6, '2023-08-15'),
+(77006, 50, '2023-07-11'),
+(77006, 50, '2023-08-11'),
+(77006, 50, '2023-08-12'),
+(77006, 50, '2023-08-13'),
+(77006, 50, '2023-08-14'),
+(77006, 50, '2023-08-15'),
 
-(77006, 7, '2023-07-11'),
-(77006, 7, '2023-08-11'),
-(77006, 7, '2023-08-12'),
-(77006, 7, '2023-08-13'),
-(77006, 7, '2023-08-14'),
-(77006, 7, '2023-08-15'),
+(77006, 69, '2023-07-11'),
+(77006, 69, '2023-08-11'),
+(77006, 69, '2023-08-12'),
+(77006, 69, '2023-08-13'),
+(77006, 69, '2023-08-14'),
+(77006, 69, '2023-08-15'),
 
-(77006, 8, '2023-07-11'),
-(77006, 8, '2023-08-11'),
-(77006, 8, '2023-08-12'),
-(77006, 8, '2023-08-13'),
-(77006, 8, '2023-08-14'),
-(77006, 8, '2023-08-15');
+(77006, 70, '2023-07-11'),
+(77006, 70, '2023-08-11'),
+(77006, 70, '2023-08-12'),
+(77006, 70, '2023-08-13'),
+(77006, 70, '2023-08-14'),
+(77006, 70, '2023-08-15');
 
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77007, 1, '2023-07-11'),
@@ -1670,53 +1911,53 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77007, 2, '2023-08-14'),
 (77007, 2, '2023-08-15'),
 
-(77007, 3, '2023-07-11'),
-(77007, 3, '2023-08-11'),
-(77007, 3, '2023-08-12'),
-(77007, 3, '2023-08-13'),
-(77007, 3, '2023-08-14'),
-(77007, 3, '2023-08-15'),
+(77007, 25, '2023-07-11'),
+(77007, 25, '2023-08-11'),
+(77007, 25, '2023-08-12'),
+(77007, 25, '2023-08-13'),
+(77007, 25, '2023-08-14'),
+(77007, 25, '2023-08-15'),
 
-(77007, 4, '2023-07-11'),
-(77007, 4, '2023-08-11'),
-(77007, 4, '2023-08-12'),
-(77007, 4, '2023-08-13'),
-(77007, 4, '2023-08-14'),
-(77007, 4, '2023-08-15'),
+(77007, 26, '2023-07-11'),
+(77007, 26, '2023-08-11'),
+(77007, 26, '2023-08-12'),
+(77007, 26, '2023-08-13'),
+(77007, 26, '2023-08-14'),
+(77007, 26, '2023-08-15'),
 
-(77007, 5, '2023-07-11'),
-(77007, 5, '2023-08-11'),
-(77007, 5, '2023-08-12'),
-(77007, 5, '2023-08-13'),
-(77007, 5, '2023-08-14'),
-(77007, 5, '2023-08-15'),
+(77007, 49, '2023-07-11'),
+(77007, 49, '2023-08-11'),
+(77007, 49, '2023-08-12'),
+(77007, 49, '2023-08-13'),
+(77007, 49, '2023-08-14'),
+(77007, 49, '2023-08-15'),
 
-(77007, 6, '2023-07-11'),
-(77007, 6, '2023-08-11'),
-(77007, 6, '2023-08-12'),
-(77007, 6, '2023-08-13'),
-(77007, 6, '2023-08-14'),
-(77007, 6, '2023-08-15'),
+(77007, 50, '2023-07-11'),
+(77007, 50, '2023-08-11'),
+(77007, 50, '2023-08-12'),
+(77007, 50, '2023-08-13'),
+(77007, 50, '2023-08-14'),
+(77007, 50, '2023-08-15'),
 
-(77007, 7, '2023-07-11'),
-(77007, 7, '2023-08-11'),
-(77007, 7, '2023-08-12'),
-(77007, 7, '2023-08-13'),
-(77007, 7, '2023-08-14'),
-(77007, 7, '2023-08-15'),
+(77007, 69, '2023-07-11'),
+(77007, 69, '2023-08-11'),
+(77007, 69, '2023-08-12'),
+(77007, 69, '2023-08-13'),
+(77007, 69, '2023-08-14'),
+(77007, 69, '2023-08-15'),
 
-(77007, 8, '2023-07-11'),
-(77007, 8, '2023-08-11'),
-(77007, 8, '2023-08-12'),
-(77007, 8, '2023-08-13'),
-(77007, 8, '2023-08-14'),
-(77007, 8, '2023-08-15');
+(77007, 70, '2023-07-11'),
+(77007, 70, '2023-08-11'),
+(77007, 70, '2023-08-12'),
+(77007, 70, '2023-08-13'),
+(77007, 70, '2023-08-14'),
+(77007, 70, '2023-08-15');
 
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77008, 1, '2023-07-11'),
 (77008, 1, '2023-08-11'),
 (77008, 1, '2023-08-12'),
-(77008, 1, '2023-08-13'),	 
+(77008, 1, '2023-08-13'),
 (77008, 1, '2023-08-14'),
 (77008, 1, '2023-08-15'),
 
@@ -1727,47 +1968,47 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77008, 2, '2023-08-14'),
 (77008, 2, '2023-08-15'),
 
-(77008, 3, '2023-07-11'),
-(77008, 3, '2023-08-11'),
-(77008, 3, '2023-08-12'),
-(77008, 3, '2023-08-13'),
-(77008, 3, '2023-08-14'),
-(77008, 3, '2023-08-15'),
+(77008, 25, '2023-07-11'),
+(77008, 25, '2023-08-11'),
+(77008, 25, '2023-08-12'),
+(77008, 25, '2023-08-13'),
+(77008, 25, '2023-08-14'),
+(77008, 25, '2023-08-15'),
 
-(77008, 4, '2023-07-11'),
-(77008, 4, '2023-08-11'),
-(77008, 4, '2023-08-12'),
-(77008, 4, '2023-08-13'),
-(77008, 4, '2023-08-14'),
-(77008, 4, '2023-08-15'),
+(77008, 26, '2023-07-11'),
+(77008, 26, '2023-08-11'),
+(77008, 26, '2023-08-12'),
+(77008, 26, '2023-08-13'),
+(77008, 26, '2023-08-14'),
+(77008, 26, '2023-08-15'),
 
-(77008, 5, '2023-07-11'),
-(77008, 5, '2023-08-11'),
-(77008, 5, '2023-08-12'),
-(77008, 5, '2023-08-13'),
-(77008, 5, '2023-08-14'),
-(77008, 5, '2023-08-15'),
+(77008, 49, '2023-07-11'),
+(77008, 49, '2023-08-11'),
+(77008, 49, '2023-08-12'),
+(77008, 49, '2023-08-13'),
+(77008, 49, '2023-08-14'),
+(77008, 49, '2023-08-15'),
 
-(77008, 6, '2023-07-11'),
-(77008, 6, '2023-08-11'),
-(77008, 6, '2023-08-12'),
-(77008, 6, '2023-08-13'),
-(77008, 6, '2023-08-14'),
-(77008, 6, '2023-08-15'),
+(77008, 50, '2023-07-11'),
+(77008, 50, '2023-08-11'),
+(77008, 50, '2023-08-12'),
+(77008, 50, '2023-08-13'),
+(77008, 50, '2023-08-14'),
+(77008, 50, '2023-08-15'),
 
-(77008, 7, '2023-07-11'),
-(77008, 7, '2023-08-11'),
-(77008, 7, '2023-08-12'),
-(77008, 7, '2023-08-13'),
-(77008, 7, '2023-08-14'),
-(77008, 7, '2023-08-15'),
+(77008, 69, '2023-07-11'),
+(77008, 69, '2023-08-11'),
+(77008, 69, '2023-08-12'),
+(77008, 69, '2023-08-13'),
+(77008, 69, '2023-08-14'),
+(77008, 69, '2023-08-15'),
 
-(77008, 8, '2023-07-11'),
-(77008, 8, '2023-08-11'),
-(77008, 8, '2023-08-12'),
-(77008, 8, '2023-08-13'),
-(77008, 8, '2023-08-14'),
-(77008, 8, '2023-08-15');
+(77008, 70, '2023-07-11'),
+(77008, 70, '2023-08-11'),
+(77008, 70, '2023-08-12'),
+(77008, 70, '2023-08-13'),
+(77008, 70, '2023-08-14'),
+(77008, 70, '2023-08-15');
 
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77009, 1, '2023-07-11'),
@@ -1784,47 +2025,47 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77009, 2, '2023-08-14'),
 (77009, 2, '2023-08-15'),
 
-(77009, 3, '2023-07-11'),
-(77009, 3, '2023-08-11'),
-(77009, 3, '2023-08-12'),
-(77009, 3, '2023-08-13'),
-(77009, 3, '2023-08-14'),
-(77009, 3, '2023-08-15'),
+(77009, 25, '2023-07-11'),
+(77009, 25, '2023-08-11'),
+(77009, 25, '2023-08-12'),
+(77009, 25, '2023-08-13'),
+(77009, 25, '2023-08-14'),
+(77009, 25, '2023-08-15'),
 
-(77009, 4, '2023-07-11'),
-(77009, 4, '2023-08-11'),
-(77009, 4, '2023-08-12'),
-(77009, 4, '2023-08-13'),
-(77009, 4, '2023-08-14'),
-(77009, 4, '2023-08-15'),
+(77009, 26, '2023-07-11'),
+(77009, 26, '2023-08-11'),
+(77009, 26, '2023-08-12'),
+(77009, 26, '2023-08-13'),
+(77009, 26, '2023-08-14'),
+(77009, 26, '2023-08-15'),
 
-(77009, 5, '2023-07-11'),
-(77009, 5, '2023-08-11'),
-(77009, 5, '2023-08-12'),
-(77009, 5, '2023-08-13'),
-(77009, 5, '2023-08-14'),
-(77009, 5, '2023-08-15'),
+(77009, 49, '2023-07-11'),
+(77009, 49, '2023-08-11'),
+(77009, 49, '2023-08-12'),
+(77009, 49, '2023-08-13'),
+(77009, 49, '2023-08-14'),
+(77009, 49, '2023-08-15'),
 
-(77009, 6, '2023-07-11'),
-(77009, 6, '2023-08-11'),
-(77009, 6, '2023-08-12'),
-(77009, 6, '2023-08-13'),
-(77009, 6, '2023-08-14'),
-(77009, 6, '2023-08-15'),
+(77009, 50, '2023-07-11'),
+(77009, 50, '2023-08-11'),
+(77009, 50, '2023-08-12'),
+(77009, 50, '2023-08-13'),
+(77009, 50, '2023-08-14'),
+(77009, 50, '2023-08-15'),
 
-(77009, 7, '2023-07-11'),
-(77009, 7, '2023-08-11'),
-(77009, 7, '2023-08-12'),
-(77009, 7, '2023-08-13'),
-(77009, 7, '2023-08-14'),
-(77009, 7, '2023-08-15'),
+(77009, 69, '2023-07-11'),
+(77009, 69, '2023-08-11'),
+(77009, 69, '2023-08-12'),
+(77009, 69, '2023-08-13'),
+(77009, 69, '2023-08-14'),
+(77009, 69, '2023-08-15'),
 
-(77009, 8, '2023-07-11'),
-(77009, 8, '2023-08-11'),
-(77009, 8, '2023-08-12'),
-(77009, 8, '2023-08-13'),
-(77009, 8, '2023-08-14'),
-(77009, 8, '2023-08-15');
+(77009, 70, '2023-07-11'),
+(77009, 70, '2023-08-11'),
+(77009, 70, '2023-08-12'),
+(77009, 70, '2023-08-13'),
+(77009, 70, '2023-08-14'),
+(77009, 70, '2023-08-15');
 
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77010, 1, '2023-07-11'),
@@ -1841,47 +2082,47 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77010, 2, '2023-08-14'),
 (77010, 2, '2023-08-15'),
 
-(77010, 3, '2023-07-11'),
-(77010, 3, '2023-08-11'),
-(77010, 3, '2023-08-12'),
-(77010, 3, '2023-08-13'),
-(77010, 3, '2023-08-14'),
-(77010, 3, '2023-08-15'),
+(77010, 25, '2023-07-11'),
+(77010, 25, '2023-08-11'),
+(77010, 25, '2023-08-12'),
+(77010, 25, '2023-08-13'),
+(77010, 25, '2023-08-14'),
+(77010, 25, '2023-08-15'),
 
-(77010, 4, '2023-07-11'),
-(77010, 4, '2023-08-11'),
-(77010, 4, '2023-08-12'),
-(77010, 4, '2023-08-13'),
-(77010, 4, '2023-08-14'),
-(77010, 4, '2023-08-15'),
+(77010, 26, '2023-07-11'),
+(77010, 26, '2023-08-11'),
+(77010, 26, '2023-08-12'),
+(77010, 26, '2023-08-13'),
+(77010, 26, '2023-08-14'),
+(77010, 26, '2023-08-15'),
 
-(77010, 5, '2023-07-11'),
-(77010, 5, '2023-08-11'),
-(77010, 5, '2023-08-12'),
-(77010, 5, '2023-08-13'),
-(77010, 5, '2023-08-14'),
-(77010, 5, '2023-08-15'),
+(77010, 49, '2023-07-11'),
+(77010, 49, '2023-08-11'),
+(77010, 49, '2023-08-12'),
+(77010, 49, '2023-08-13'),
+(77010, 49, '2023-08-14'),
+(77010, 49, '2023-08-15'),
 
-(77010, 6, '2023-07-11'),
-(77010, 6, '2023-08-11'),
-(77010, 6, '2023-08-12'),
-(77010, 6, '2023-08-13'),
-(77010, 6, '2023-08-14'),
-(77010, 6, '2023-08-15'),
+(77010, 50, '2023-07-11'),
+(77010, 50, '2023-08-11'),
+(77010, 50, '2023-08-12'),
+(77010, 50, '2023-08-13'),
+(77010, 50, '2023-08-14'),
+(77010, 50, '2023-08-15'),
 
-(77010, 7, '2023-07-11'),
-(77010, 7, '2023-08-11'),
-(77010, 7, '2023-08-12'),
-(77010, 7, '2023-08-13'),
-(77010, 7, '2023-08-14'),
-(77010, 7, '2023-08-15'),
+(77010, 69, '2023-07-11'),
+(77010, 69, '2023-08-11'),
+(77010, 69, '2023-08-12'),
+(77010, 69, '2023-08-13'),
+(77010, 69, '2023-08-14'),
+(77010, 69, '2023-08-15'),
 
-(77010, 8, '2023-07-11'),
-(77010, 8, '2023-08-11'),
-(77010, 8, '2023-08-12'),
-(77010, 8, '2023-08-13'),
-(77010, 8, '2023-08-14'),
-(77010, 8, '2023-08-15');
+(77010, 70, '2023-07-11'),
+(77010, 70, '2023-08-11'),
+(77010, 70, '2023-08-12'),
+(77010, 70, '2023-08-13'),
+(77010, 70, '2023-08-14'),
+(77010, 70, '2023-08-15');
 
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77011, 1, '2023-07-11'),
@@ -1898,47 +2139,47 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77011, 2, '2023-08-14'),
 (77011, 2, '2023-08-15'),
 
-(77011, 3, '2023-07-11'),
-(77011, 3, '2023-08-11'),
-(77011, 3, '2023-08-12'),
-(77011, 3, '2023-08-13'),
-(77011, 3, '2023-08-14'),
-(77011, 3, '2023-08-15'),
+(77011, 25, '2023-07-11'),
+(77011, 25, '2023-08-11'),
+(77011, 25, '2023-08-12'),
+(77011, 25, '2023-08-13'),
+(77011, 25, '2023-08-14'),
+(77011, 25, '2023-08-15'),
 
-(77011, 4, '2023-07-11'),
-(77011, 4, '2023-08-11'),
-(77011, 4, '2023-08-12'),
-(77011, 4, '2023-08-13'),
-(77011, 4, '2023-08-14'),
-(77011, 4, '2023-08-15'),
+(77011, 26, '2023-07-11'),
+(77011, 26, '2023-08-11'),
+(77011, 26, '2023-08-12'),
+(77011, 26, '2023-08-13'),
+(77011, 26, '2023-08-14'),
+(77011, 26, '2023-08-15'),
 
-(77011, 5, '2023-07-11'),
-(77011, 5, '2023-08-11'),
-(77011, 5, '2023-08-12'),
-(77011, 5, '2023-08-13'),
-(77011, 5, '2023-08-14'),
-(77011, 5, '2023-08-15'),
+(77011, 49, '2023-07-11'),
+(77011, 49, '2023-08-11'),
+(77011, 49, '2023-08-12'),
+(77011, 49, '2023-08-13'),
+(77011, 49, '2023-08-14'),
+(77011, 49, '2023-08-15'),
 
-(77011, 6, '2023-07-11'),
-(77011, 6, '2023-08-11'),
-(77011, 6, '2023-08-12'),
-(77011, 6, '2023-08-13'),
-(77011, 6, '2023-08-14'),
-(77011, 6, '2023-08-15'),
+(77011, 50, '2023-07-11'),
+(77011, 50, '2023-08-11'),
+(77011, 50, '2023-08-12'),
+(77011, 50, '2023-08-13'),
+(77011, 50, '2023-08-14'),
+(77011, 50, '2023-08-15'),
 
-(77011, 7, '2023-07-11'),
-(77011, 7, '2023-08-11'),
-(77011, 7, '2023-08-12'),
-(77011, 7, '2023-08-13'),
-(77011, 7, '2023-08-14'),
-(77011, 7, '2023-08-15'),
+(77011, 69, '2023-07-11'),
+(77011, 69, '2023-08-11'),
+(77011, 69, '2023-08-12'),
+(77011, 69, '2023-08-13'),
+(77011, 69, '2023-08-14'),
+(77011, 69, '2023-08-15'),
 
-(77011, 8, '2023-07-11'),
-(77011, 8, '2023-08-11'),
-(77011, 8, '2023-08-12'),
-(77011, 8, '2023-08-13'),
-(77011, 8, '2023-08-14'),
-(77011, 8, '2023-08-15');
+(77011, 70, '2023-07-11'),
+(77011, 70, '2023-08-11'),
+(77011, 70, '2023-08-12'),
+(77011, 70, '2023-08-13'),
+(77011, 70, '2023-08-14'),
+(77011, 70, '2023-08-15');
 
 insert into student_attendance(student_no, load_id, attendance_date) values
 (77012, 1, '2023-07-11'),
@@ -1955,47 +2196,47 @@ insert into student_attendance(student_no, load_id, attendance_date) values
 (77012, 2, '2023-08-14'),
 (77012, 2, '2023-08-15'),
 
-(77012, 3, '2023-07-11'),
-(77012, 3, '2023-08-11'),
-(77012, 3, '2023-08-12'),
-(77012, 3, '2023-08-13'),
-(77012, 3, '2023-08-14'),
-(77012, 3, '2023-08-15'),
+(77012, 25, '2023-07-11'),
+(77012, 25, '2023-08-11'),
+(77012, 25, '2023-08-12'),
+(77012, 25, '2023-08-13'),
+(77012, 25, '2023-08-14'),
+(77012, 25, '2023-08-15'),
 
-(77012, 4, '2023-07-11'),
-(77012, 4, '2023-08-11'),
-(77012, 4, '2023-08-12'),
-(77012, 4, '2023-08-13'),
-(77012, 4, '2023-08-14'),
-(77012, 4, '2023-08-15'),
+(77012, 26, '2023-07-11'),
+(77012, 26, '2023-08-11'),
+(77012, 26, '2023-08-12'),
+(77012, 26, '2023-08-13'),
+(77012, 26, '2023-08-14'),
+(77012, 26, '2023-08-15'),
 
-(77012, 5, '2023-07-11'),
-(77012, 5, '2023-08-11'),
-(77012, 5, '2023-08-12'),
-(77012, 5, '2023-08-13'),
-(77012, 5, '2023-08-14'),
-(77012, 5, '2023-08-15'),
+(77012, 49, '2023-07-11'),
+(77012, 49, '2023-08-11'),
+(77012, 49, '2023-08-12'),
+(77012, 49, '2023-08-13'),
+(77012, 49, '2023-08-14'),
+(77012, 49, '2023-08-15'),
 
-(77012, 6, '2023-07-11'),
-(77012, 6, '2023-08-11'),
-(77012, 6, '2023-08-12'),
-(77012, 6, '2023-08-13'),
-(77012, 6, '2023-08-14'),
-(77012, 6, '2023-08-15'),
+(77012, 50, '2023-07-11'),
+(77012, 50, '2023-08-11'),
+(77012, 50, '2023-08-12'),
+(77012, 50, '2023-08-13'),
+(77012, 50, '2023-08-14'),
+(77012, 50, '2023-08-15'),
 
-(77012, 7, '2023-07-11'),
-(77012, 7, '2023-08-11'),
-(77012, 7, '2023-08-12'),
-(77012, 7, '2023-08-13'),
-(77012, 7, '2023-08-14'),
-(77012, 7, '2023-08-15'),
+(77012, 69, '2023-07-11'),
+(77012, 69, '2023-08-11'),
+(77012, 69, '2023-08-12'),
+(77012, 69, '2023-08-13'),
+(77012, 69, '2023-08-14'),
+(77012, 69, '2023-08-15'),
 
-(77012, 8, '2023-07-11'),
-(77012, 8, '2023-08-11'),
-(77012, 8, '2023-08-12'),
-(77012, 8, '2023-08-13'),
-(77012, 8, '2023-08-14'),
-(77012, 8, '2023-08-15');
+(77012, 70, '2023-07-11'),
+(77012, 70, '2023-08-11'),
+(77012, 70, '2023-08-12'),
+(77012, 70, '2023-08-13'),
+(77012, 70, '2023-08-14'),
+(77012, 70, '2023-08-15');
 
 
 --Insert value to student_applicant
@@ -2033,35 +2274,24 @@ INSERT INTO student_applicant (
     acceptance_status
 ) VALUES
     -- First row
-    ('New', 3001, 4001, 1, 2023, 2, 'John', 'Doe', 'Smith', 'Jr.', 'Male', 'Single', 'US', '1990-01-01', 'New York', 'Christian', '123 Main St', '123456789', '987654321', 'john.doe@example.com', 'Father', 'Father Middle', 'Father Last', 'Sr.', '123456789', 'father1@example.com', 'Engineer', 'Father', NOW(), NULL, 'Pending'),
+    ('New', 3001, 4001, 1, 2023, 1, 'John', 'Doe', 'Smith', 'Jr.', 'Male', 'Single', 'US', '1990-01-01', 'New York', 'Christian', '123 Main St', '123456789', '987654321', 'john.doe@example.com', 'Father', 'Father Middle', 'Father Last', 'Sr.', '123456789', 'father1@example.com', 'Engineer', 'Father', NOW(), NULL, 'Pending'),
     -- Second row
-    ('New', 3001, 4001, 2, 2023, 2, 'Jane', 'Doe', 'Johnson', NULL, 'Female', 'Married', 'UK', '1992-05-15', 'London', 'Catholic', '456 Elm St', '987654321', '123456789', 'jane.doe@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '987654321', 'father2@example.com', 'Teacher', 'Mother', NOW(), NULL, 'Pending'),
+    ('New', 3001, 4001, 1, 2023, 1, 'Jane', 'Doe', 'Johnson', NULL, 'Female', 'Married', 'UK', '1992-05-15', 'London', 'Catholic', '456 Elm St', '987654321', '123456789', 'jane.doe@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '987654321', 'father2@example.com', 'Teacher', 'Mother', NOW(), NULL, 'Pending'),
     -- Third row
-    ('New', 3001, 4001, 1, 2023, 2, 'Michael', 'Brown', 'Johnson', NULL, 'Male', 'Single', 'Canada', '1991-07-20', 'Toronto', 'Protestant', '789 Oak St', '555555555', '999999999', 'michael.brown@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '555555555', 'father3@example.com', 'Architect', 'Mother',  NOW(), NULL, 'Pending'),
+    ('New', 3001, 4001, 1, 2023, 1, 'Michael', 'Brown', 'Johnson', NULL, 'Male', 'Single', 'Canada', '1991-07-20', 'Toronto', 'Protestant', '789 Oak St', '555555555', '999999999', 'michael.brown@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '555555555', 'father3@example.com', 'Architect', 'Mother',  NOW(), NULL, 'Pending'),
     -- Fourth row
-    ('New', 3001, 4001, 3, 2023, 2, 'Emily', 'Smith', 'Wilson', 'Jr.', 'Female', 'Single', 'Australia', '1993-09-10', 'Sydney', 'Buddhist', '234 Pine St', '222222222', '888888888', 'emily.smith@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '222222222', 'father4@example.com', 'Lawyer', 'Mother', NOW(), NULL, 'Pending'),
+    ('New', 3001, 4001, 1, 2023, 1, 'Emily', 'Smith', 'Wilson', 'Jr.', 'Female', 'Single', 'Australia', '1993-09-10', 'Sydney', 'Buddhist', '234 Pine St', '222222222', '888888888', 'emily.smith@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '222222222', 'father4@example.com', 'Lawyer', 'Mother', NOW(), NULL, 'Pending'),
     -- Fifth row
-    ('New', 3001, 4001, 2, 2023, 2, 'David', 'Johnson', 'Taylor', NULL, 'Male', 'Married', 'France', '1992-04-05', 'Paris', 'Jewish', '345 Walnut St', '333333333', '777777777', 'david.johnson@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '333333333', 'father5@example.com', 'Entrepreneur', 'Mother', NOW(), NULL, 'Pending');
-    
---select g.grade_id, g.student_no, use.first_name, use.middle_name, 
---use.last_name, use.email, g.prelim_grade, g.finals_grade, g.total_grade,
---g.comment, g.remarks, sub.subject_code, sub.subject_title,
---sub.abbrevation, sub.units, ay.academic_year, ay.semester
---from grades g
---
---inner join T_SUBJECT_DETAIL_HISTORY tsdh on g.SUBJECT_DETAIL_HIS_ID = tsdh.SUBJECT_DETAIL_HIS_ID
---inner join academic_year ay on tsdh.academic_year_id = ay.academic_year_id
---inner join SUBJECT sub on tsdh.SUBJECT_CODE = sub.SUBJECT_CODE
---inner join student stu on g.STUDENT_NO = stu.STUDENT_NO
---inner join users use on stu.USER_ID = use.USER_ID
---
---where g.student_no = 77001 and ay.academic_year = 2017 and ay.semester = 2;
+    ('New', 3001, 4001, 1, 2023, 1, 'David', 'Johnson', 'Taylor', NULL, 'Male', 'Married', 'France', '1992-04-05', 'Paris', 'Jewish', '345 Walnut St', '333333333', '777777777', 'david.johnson@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '333333333', 'father5@example.com', 'Entrepreneur', 'Mother', NOW(), NULL, 'Pending');
 
 
+select pl.*, msub.year_level, msub.sem, sub.abbrevation from professor_load pl
+inner join subject sub on pl.subject_code = sub.subject_code
+inner join major_subject msub on sub.subject_code = msub.subject_code
+where msub.year_level = 1 and msub.sem = 1 and pl.section_id = 1;
 
-
-
-
-
-
+select pl.*, msub.year_level, msub.sem, sub.abbrevation from professor_load pl
+inner join subject sub on pl.subject_code = sub.subject_code
+inner join minor_subject msub on sub.subject_code = msub.subject_code
+where msub.year_level = 1 and msub.sem = 1 and pl.section_id = 1;
 
