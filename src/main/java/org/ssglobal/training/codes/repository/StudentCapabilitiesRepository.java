@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.StudentCourseData;
@@ -193,7 +194,9 @@ public class StudentCapabilitiesRepository {
 				.innerJoin(STUDENT_ENROLLMENT).on(STUDENT_SUBJECT_ENROLLED.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
 				.innerJoin(PROFESSOR_LOAD).on(STUDENT_SUBJECT_ENROLLED.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID))
 				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
+						.and(STUDENT_SUBJECT_ENROLLED.ENROLLMENT_ID.eq(dslContext.select(DSL.max(STUDENT_SUBJECT_ENROLLED.ENROLLMENT_ID)).from(STUDENT_SUBJECT_ENROLLED)))
+					  )
 				.orderBy(SUBJECT.SUBJECT_CODE)
 				.fetchMaps();
 	}
