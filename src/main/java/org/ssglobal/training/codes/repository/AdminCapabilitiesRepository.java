@@ -1432,6 +1432,7 @@ public class AdminCapabilitiesRepository {
 		List<Map<String, Object>> query = dslContext
 				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+						SUBJECT.PRICE.as("price"),
 						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 						MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
 						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
@@ -1461,6 +1462,7 @@ public class AdminCapabilitiesRepository {
 						.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 						.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 						.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+						.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 						.set(SUBJECT.ACTIVE_STATUS, Boolean.valueOf(payload.get("activeStatus").toString()))
 						.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString()))
 						.returning().fetchOne().into(Subject.class);
@@ -1473,6 +1475,7 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+								SUBJECT.PRICE.as("price"),
 								MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 								MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
@@ -1490,6 +1493,7 @@ public class AdminCapabilitiesRepository {
 					.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 					.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 					.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+					.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 					.set(SUBJECT.ACTIVE_STATUS, Boolean.valueOf(payload.get("activeStatus").toString()))
 					.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString())).returning()
 					.fetchOne().into(Subject.class);
@@ -1502,6 +1506,7 @@ public class AdminCapabilitiesRepository {
 			Map<String, Object> query = dslContext
 					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+							SUBJECT.PRICE.as("price"),
 							MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 							MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
@@ -1531,6 +1536,7 @@ public class AdminCapabilitiesRepository {
 					.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 					.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 					.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+					.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 					.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString()))).returning()
 					.fetchOne().into(Subject.class);
 
@@ -1544,6 +1550,7 @@ public class AdminCapabilitiesRepository {
 			Map<String, Object> query = dslContext
 					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+							SUBJECT.PRICE.as("price"),
 							MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 							MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
@@ -1561,6 +1568,7 @@ public class AdminCapabilitiesRepository {
 						.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 						.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 						.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+						.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 						.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
 						.returning().fetchOne().into(Subject.class);
 				;
@@ -1575,6 +1583,7 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+								SUBJECT.PRICE.as("price"),
 								MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 								MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
@@ -1602,6 +1611,7 @@ public class AdminCapabilitiesRepository {
 							.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 							.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 							.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+							.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 							.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
 							.returning().fetchOne().into(Subject.class);
 
@@ -1615,6 +1625,7 @@ public class AdminCapabilitiesRepository {
 					Map<String, Object> query = dslContext
 							.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 									SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+									SUBJECT.PRICE.as("price"),
 									MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 									MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 									SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
@@ -1642,6 +1653,7 @@ public class AdminCapabilitiesRepository {
 						.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 						.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 						.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+						.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 						.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
 						.returning().fetchOne().into(Subject.class);
 
@@ -1655,6 +1667,7 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+								SUBJECT.PRICE.as("price"),
 								MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 								MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
@@ -1715,7 +1728,7 @@ public class AdminCapabilitiesRepository {
 				.select(MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
 						MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.SUBJECT_CODE.as("subjectCode"),
 						SUBJECT.ABBREVATION.as("abbreviation"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
-						SUBJECT.UNITS.as("units"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+						SUBJECT.UNITS.as("units"), SUBJECT.PRICE.as("price"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
 						SUBJECT.ACTIVE_STATUS.as("activeStatus"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"))
 				.from(SUBJECT).join(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
 				.where(MAJOR_SUBJECT.SUBJECT_CODE.in(dslContext.select(MAJOR_SUBJECT.SUBJECT_CODE).from(MAJOR_SUBJECT)
@@ -1732,7 +1745,7 @@ public class AdminCapabilitiesRepository {
 				.select(MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
 						MAJOR_SUBJECT.SEM.as("sem"), SUBJECT.SUBJECT_CODE.as("subjectCode"),
 						SUBJECT.ABBREVATION.as("abbreviation"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
-						SUBJECT.UNITS.as("units"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+						SUBJECT.UNITS.as("units"), SUBJECT.PRICE.as("price"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
 						SUBJECT.ACTIVE_STATUS.as("activeStatus"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"))
 				.from(SUBJECT).join(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
 				.groupBy(MAJOR_SUBJECT.CURRICULUM_CODE, MAJOR_SUBJECT.SUBJECT_CODE, MAJOR_SUBJECT.YEAR_LEVEL,
@@ -1754,7 +1767,7 @@ public class AdminCapabilitiesRepository {
 				.selectDistinct(MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
 						MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 						MAJOR_SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
-						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"), SUBJECT.PRICE.as("price"),
 						SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
 						MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), MAJOR.COURSE_CODE.as("courseCode"))
 				.from(SUBJECT).join(MAJOR_SUBJECT).on(
@@ -1846,6 +1859,7 @@ public class AdminCapabilitiesRepository {
 						.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 						.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 						.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+						.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 						.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString()))
 						.set(SUBJECT.ACTIVE_STATUS, Boolean.valueOf(payload.get("activeStatus").toString())).returning()
 						.fetchOne().into(Subject.class);
@@ -1861,6 +1875,7 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+								SUBJECT.PRICE.as("price"),
 								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 								MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
 								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
@@ -1883,6 +1898,7 @@ public class AdminCapabilitiesRepository {
 					.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 					.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 					.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+					.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 					.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString()))
 					.set(SUBJECT.ACTIVE_STATUS, Boolean.valueOf(payload.get("activeStatus").toString())).returning()
 					.fetchOne().into(Subject.class);
@@ -1898,6 +1914,7 @@ public class AdminCapabilitiesRepository {
 			Map<String, Object> query = dslContext
 					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+							SUBJECT.PRICE.as("price"),
 							MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 							MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
 							MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
@@ -1935,6 +1952,7 @@ public class AdminCapabilitiesRepository {
 						.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 						.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 						.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+						.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 						.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
 						.returning().fetchOne().into(Subject.class);
 				dslContext.update(MAJOR_SUBJECT)
@@ -1947,6 +1965,7 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+								SUBJECT.PRICE.as("price"),
 								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
@@ -1962,6 +1981,7 @@ public class AdminCapabilitiesRepository {
 					.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 					.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 					.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+					.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 					.set(SUBJECT.ACTIVE_STATUS, Boolean.valueOf(payload.get("activeStatus").toString()))
 					.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString())).returning()
 					.fetchOne().into(Subject.class);
@@ -1975,6 +1995,7 @@ public class AdminCapabilitiesRepository {
 			Map<String, Object> query = dslContext
 					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+							SUBJECT.PRICE.as("price"),
 							MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 							MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
@@ -2044,6 +2065,7 @@ public class AdminCapabilitiesRepository {
 						.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 						.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 						.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+						.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 						.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString()))
 						.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
 						.returning().fetchOne().into(Subject.class);
@@ -2055,6 +2077,7 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+								SUBJECT.PRICE.as("price"),
 								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
@@ -2093,6 +2116,7 @@ public class AdminCapabilitiesRepository {
 							.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 							.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 							.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+							.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 							.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString()))
 							.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
 							.returning().fetchOne().into(Subject.class);
@@ -2104,7 +2128,7 @@ public class AdminCapabilitiesRepository {
 
 					Map<String, Object> query = dslContext.select(SUBJECT.SUBJECT_CODE.as("subjectCode"),
 							SUBJECT.ABBREVATION.as("abbreviation"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
-							SUBJECT.UNITS.as("units"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+							SUBJECT.UNITS.as("units"), SUBJECT.PRICE.as("price"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
 							MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
 							MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"), MAJOR.COURSE_CODE.as("courseCode"))
@@ -2122,10 +2146,12 @@ public class AdminCapabilitiesRepository {
 							.formatted(subSubject.get("subjectTitle").toString(), preYear, preSem));
 				}
 			} else {
+				
 				Subject updatedSubject = dslContext.update(SUBJECT)
 						.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 						.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 						.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+						.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 						.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString()))
 						.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
 						.returning().fetchOne().into(Subject.class);
@@ -2138,6 +2164,7 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+								SUBJECT.PRICE,
 								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
@@ -2149,6 +2176,7 @@ public class AdminCapabilitiesRepository {
 										.and(MAJOR_SUBJECT.CURRICULUM_CODE
 												.eq(Integer.valueOf(payload.get("curriculumCode").toString()))))
 						.fetchOneMap();
+				System.out.println(query + "return val");
 				return query;
 			}
 		}
@@ -2176,6 +2204,7 @@ public class AdminCapabilitiesRepository {
 						.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 						.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 						.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+						.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 						.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString()))
 						.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
 						.returning().fetchOne().into(Subject.class);
@@ -2189,6 +2218,7 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+								SUBJECT.PRICE.as("price"),
 								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
@@ -2221,6 +2251,7 @@ public class AdminCapabilitiesRepository {
 							.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 							.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 							.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+							.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 							.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString()))
 							.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
 							.returning().fetchOne().into(Subject.class);
@@ -2234,6 +2265,7 @@ public class AdminCapabilitiesRepository {
 					Map<String, Object> query = dslContext
 							.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 									SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+									SUBJECT.PRICE.as("price"),
 									MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 									MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 									SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
@@ -2252,6 +2284,7 @@ public class AdminCapabilitiesRepository {
 						.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 						.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
 						.set(SUBJECT.UNITS, Double.valueOf(payload.get("units").toString()))
+						.set(SUBJECT.PRICE, Double.valueOf(payload.get("price").toString()))
 						.set(SUBJECT.ACTIVE_DEACTIVE, Boolean.valueOf(payload.get("activeDeactive").toString()))
 						.where(SUBJECT.SUBJECT_CODE.eq(Integer.valueOf(payload.get("subjectCode").toString())))
 						.returning().fetchOne().into(Subject.class);
@@ -2265,6 +2298,7 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+								SUBJECT.PRICE.as("price"),
 								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
