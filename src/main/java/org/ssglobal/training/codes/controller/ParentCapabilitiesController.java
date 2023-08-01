@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +24,7 @@ public class ParentCapabilitiesController {
 	@Autowired
 	private ParentCapabilitiesService service;
 	
-	@GetMapping(value = "/get/parent/{parentNo}")
+	@GetMapping(value = "/get/{parentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserAndParent> selectParent(@PathVariable(name = "parentNo") Integer parentNo) {
 		try {
 			UserAndParent parentInfo = service.selectParent(parentNo);
@@ -37,7 +38,7 @@ public class ParentCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 	
-	@PostMapping
+	@PutMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<UserAndParent> updateParent(@RequestBody UserAndParent userAndParent) {
 		try {
 			UserAndParent updatedParentInfo = service.updateParentInfo(userAndParent);

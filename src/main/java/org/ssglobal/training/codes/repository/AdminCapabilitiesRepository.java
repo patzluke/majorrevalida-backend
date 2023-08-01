@@ -29,6 +29,7 @@ import org.ssglobal.training.codes.tables.pojos.Professor;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
+import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
@@ -420,8 +421,6 @@ public class AdminCapabilitiesRepository {
 						.eq(studentApplicant.getSchoolYear()).and(ACADEMIC_YEAR.STATUS.eq("Process"))))
 				.fetchOneInto(AcademicYear.class);
 
-		// NOTE: Implement the BCrypt in the impl
-
 		LocalDate birthDate = studentApplicant.getBirthDate();
 		String formattedBirthDate = null;
 
@@ -439,7 +438,7 @@ public class AdminCapabilitiesRepository {
 
 		// Combine formatted birthdate and last name with an underscore
 		String password = "%s%s".formatted(formattedBirthDate, applicantLastName);
-		System.out.println(password);
+		System.out.println("User Password: %s".formatted(password));
 
 		// Secure the password using bcrypt
 		String bcryptPassword = passwordEncoder.encode(password);
@@ -480,22 +479,16 @@ public class AdminCapabilitiesRepository {
 				.fetchOneInto(Users.class);
 
 		Users parentUserId = null;
-		
 		Curriculum curriculumCode = null;
 
 		if (userParent == null) {
 
 			// default password
-			String parentPassword = "123456";
-
-			BCryptPasswordEncoder parentPasswordEncoder = new BCryptPasswordEncoder();
-
-			// Secure the password using bcrypt
-			String bcryptParentPassword = parentPasswordEncoder.encode(parentPassword);
+			String defaultParentPassword = "123456";
 
 			// Create User Parent
 			dslContext.insertInto(USERS).set(USERS.USERNAME, "pendingParentUsername")
-					.set(USERS.PASSWORD, bcryptParentPassword)
+					.set(USERS.PASSWORD, defaultParentPassword)
 					.set(USERS.EMAIL, studentApplicant.getGuardianEmail())
 					.set(USERS.CONTACT_NO, studentApplicant.getGuardianMobileNo())
 					.set(USERS.FIRST_NAME, studentApplicant.getGuardianFirstName())
@@ -539,11 +532,26 @@ public class AdminCapabilitiesRepository {
 					.set(STUDENT.YEAR_LEVEL, studentApplicant.getYearLevel()).returning().fetchOne()
 					.into(Student.class);
 			
+			// Select the Student and get the studentNo
+			Student studentNo = dslContext.select(STUDENT.STUDENT_NO.as("studentNo")).from(STUDENT)
+					.where(STUDENT.USER_ID.eq(userId.getUserId())).fetchOneInto(Student.class);
+			
 			// Update the Username of the Parent
-			String parentUsername = "%s%s".formatted(String.valueOf(parentId.getParentNo()),
-					parentUserId.getLastName().replace(" ", "_"));
+			String parentUsername = "%s_%s".formatted(String.valueOf(studentNo.getStudentNo()),
+					"Parent");
+			
+			String parentPassword = "%s%s".formatted(String.valueOf(parentId.getParentNo()), parentUserId.getLastName().replace(" ", "_"));
+			
+			System.out.println("Parent Password: %s".formatted(parentPassword));
+			
+			BCryptPasswordEncoder parentPasswordEncoder = new BCryptPasswordEncoder();
 
-			dslContext.update(USERS).set(USERS.USERNAME, parentUsername).where(USERS.USER_ID.eq(parentId.getUserId()))
+			// Secure the password using bcrypt
+			String bcryptParentPassword = parentPasswordEncoder.encode(parentPassword);
+
+			dslContext.update(USERS).set(USERS.USERNAME, parentUsername)
+			.set(USERS.PASSWORD, bcryptParentPassword)
+			.where(USERS.USER_ID.eq(parentId.getUserId()))
 					.returning().fetchOne().into(Users.class);
 
 		} else {
@@ -1006,6 +1014,30 @@ public class AdminCapabilitiesRepository {
 	}
 
 	// -------------------------- FOR ACADEMIC YEAR
+	public List<AcademicYear> selectAllAcademicYear() {
+		return dslContext.selectFrom(ACADEMIC_YEAR).orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_.desc()).fetchInto(AcademicYear.class);
+	}
+	
+	public AcademicYear addNewAcademicYear(AcademicYear academicYear) {
+		return dslContext.insertInto(ACADEMIC_YEAR)
+				.set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
+				.set(ACADEMIC_YEAR.START_DATE, academicYear.getStartDate())
+				.set(ACADEMIC_YEAR.END_DATE, academicYear.getEndDate())
+				.set(ACADEMIC_YEAR.SEMESTER, academicYear.getSemester())
+				.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus())
+				.returning().fetchOne().into(AcademicYear.class);
+	}
+	
+	public AcademicYear updateNewAcademicYear(AcademicYear academicYear) {
+		return dslContext.update(ACADEMIC_YEAR)
+				.set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
+				.set(ACADEMIC_YEAR.START_DATE, academicYear.getStartDate())
+				.set(ACADEMIC_YEAR.END_DATE, academicYear.getEndDate())
+				.set(ACADEMIC_YEAR.SEMESTER, academicYear.getSemester())
+				.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus()).where(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(academicYear.getAcademicYearId()))
+				.returning().fetchOne().into(AcademicYear.class);
+	}
+	
 	public AcademicYear addAcademicYear(AcademicYear academicYear) {
 		/*
 		 * The academic data added is limited to: academic_year and status
@@ -1295,11 +1327,53 @@ public class AdminCapabilitiesRepository {
 	public List<Map<String, Object>> selectAllSection() {
 		List<Map<String, Object>> query = dslContext
 				.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
-						SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"))
-				.from(SECTION).innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).orderBy(SECTION.SECTION_ID)
+						SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
+						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_TITLE.as("courseTitle")
+						)
+				.from(SECTION)
+				.innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+				.join(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+				.orderBy(SECTION.SECTION_ID)
 				.fetchMaps();
 		return !query.isEmpty() ? query : null;
 	}
+	
+	public Map<String, Object> addSection(Section section) {
+		Section addSection = dslContext.insertInto(SECTION)
+				.set(SECTION.SECTION_NAME, section.getSectionName())
+				.set(SECTION.MAJOR_CODE, section.getMajorCode())
+				.returning().fetchOne().into(Section.class);
+		Map<String, Object> query = dslContext.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
+				SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
+				MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_TITLE.as("courseTitle")
+				)
+		.from(SECTION)
+		.innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+		.join(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+		.where(SECTION.SECTION_ID.eq(addSection.getSectionId()))
+		.fetchOneMap();
+		return !query.isEmpty() ? query : null;
+	}
+	
+	public Map<String, Object> updateSection(Section section) {
+		Section addSection = dslContext.update(SECTION)
+				.set(SECTION.SECTION_NAME, section.getSectionName())
+				.set(SECTION.MAJOR_CODE, section.getMajorCode())
+				.where(SECTION.SECTION_ID.eq(section.getSectionId()))
+				.returning().fetchOne().into(Section.class);
+		Map<String, Object> query = dslContext.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
+				SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
+				MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_TITLE.as("courseTitle")
+				)
+		.from(SECTION)
+		.innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
+		.join(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
+		.where(SECTION.SECTION_ID.eq(addSection.getSectionId()))
+		.fetchOneMap();
+		return !query.isEmpty() ? query : null;
+	}
+	
+	
 
 	// -------------------------- FOR ROOM
 	public List<Room> selectAllRoom() {
@@ -1323,6 +1397,15 @@ public class AdminCapabilitiesRepository {
 				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
 				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).where(GRADES.IS_SUBMITTED.eq(true))
 				.orderBy(GRADES.GRADE_ID).fetchMaps();
+	}
+	
+	public List<Map<String, Object>> selectAllBatchYearBySection(Integer sectionId) {
+		return dslContext.select(ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER.as("semester"))
+						 .from(ACADEMIC_YEAR)
+						 .whereExists(DSL.selectOne().from(STUDENT_ENROLLMENT)
+								 .where(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)
+										 .and(STUDENT_ENROLLMENT.SECTION_ID.eq(sectionId))))
+						 .fetchMaps();
 	}
 
 	public boolean insertGradesAndt_subject_detail_history(Integer professorNo, Integer subjectCode,

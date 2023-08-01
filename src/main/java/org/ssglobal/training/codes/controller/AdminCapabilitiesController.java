@@ -29,6 +29,7 @@ import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
+import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
@@ -504,6 +505,51 @@ public class AdminCapabilitiesController {
 	}
 
 	// -------- For Academic Year
+	@GetMapping(value = "/get/academicYear", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<AcademicYear>> selectAllAcademicYear() {
+		try {
+			List<AcademicYear> list = service.selectAllAcademicYear();
+			if (list != null) {
+				return ResponseEntity.ok(list);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@PostMapping(value = "/add/academicYear", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<AcademicYear> addAcademicYear(@RequestBody AcademicYear academicYear) {
+		try {
+			AcademicYear addedAcademicYear = service.addNewAcademicYear(academicYear);
+			if (addedAcademicYear != null) {
+				return ResponseEntity.ok(addedAcademicYear);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@PutMapping(value = "/update/academicYear", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<AcademicYear> updateAcademicYear(@RequestBody AcademicYear academicYear) {
+		try {
+			System.out.println(academicYear);
+			AcademicYear addedAcademicYear = service.updateNewAcademicYear(academicYear);
+			if (addedAcademicYear != null) {
+				return ResponseEntity.ok(addedAcademicYear);
+			}
+		} catch (Exception e) {
+			System.out.println("%s".formatted(e));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
 	@PostMapping(value = "/insert/academic-year", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<AcademicYear> insertAcademicYear(@RequestBody AcademicYear academicYear) {
@@ -773,6 +819,36 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+	
+	@PostMapping(value = "/add/section", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Map<String, Object>> insertSection(@RequestBody Section section) {
+		try {
+			Map<String, Object> sections = service.addSection(section);
+			System.out.println(sections);
+			if (!sections.isEmpty()) {
+				return ResponseEntity.ok(sections);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@PutMapping(value = "/update/section", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Map<String, Object>> updateSection(@RequestBody Section section) {
+		try {
+			Map<String, Object> sections = service.updateSection(section);
+			System.out.println(sections);
+			if (!sections.isEmpty()) {
+				return ResponseEntity.ok(sections);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
 
 	// -------- For Room
 	@GetMapping(value = "/get/room", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -798,6 +874,23 @@ public class AdminCapabilitiesController {
 			System.out.println(rooms);
 			if (!rooms.isEmpty()) {
 				return ResponseEntity.ok(rooms);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/academicYearBySection/{sectionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity selectAllBatchYearBySection(@PathVariable(name = "sectionId") Integer sectionId) {
+		try {
+			List<Map<String, Object>> sectionsBatch = service.selectAllBatchYearBySection(sectionId);
+
+			System.out.println(sectionsBatch);
+			if (!sectionsBatch.isEmpty()) {
+				return ResponseEntity.ok(sectionsBatch);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

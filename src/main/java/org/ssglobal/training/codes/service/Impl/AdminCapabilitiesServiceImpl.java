@@ -27,6 +27,7 @@ import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Room;
+import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.StudentSubjectEnrolled;
@@ -292,6 +293,21 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	
 	// ------------------------FOR academic_year
 	@Override
+	public List<AcademicYear> selectAllAcademicYear() {
+		return repository.selectAllAcademicYear();
+	}
+	
+	@Override
+	public AcademicYear addNewAcademicYear(AcademicYear academicYear) {
+		return repository.addNewAcademicYear(academicYear);
+	}
+	
+	@Override
+	public AcademicYear updateNewAcademicYear(AcademicYear academicYear) {
+		return repository.updateNewAcademicYear(academicYear);
+	}
+	
+	@Override
 	public AcademicYear addAcademicYear(AcademicYear academicYear) {
 		return repository.addAcademicYear(academicYear);
 	}
@@ -395,16 +411,31 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 		return repository.selectAllSection();
 	}
 	
+	@Override
+	public Map<String, Object> addSection(Section section) {
+		return repository.addSection(section);
+	}
+	
+	@Override
+	public Map<String, Object> updateSection(Section section) {
+		return repository.updateSection(section);
+	}
+	
 	// ------------------------FOR Room
 	@Override
 	public List<Room> selectAllRoom() {
 		return repository.selectAllRoom();
 	}
 	
-	// ------------------------FOR Room
+	// ------------------------FOR GRADES
 	@Override
 	public List<Map<String, Object>> selectAllStudentsBySection() {
 		return repository.selectAllStudentsBySection();
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectAllBatchYearBySection(Integer sectionId) {
+		return repository.selectAllBatchYearBySection(sectionId);
 	}
 
 	// ------------------------FOR Minor Subjects
