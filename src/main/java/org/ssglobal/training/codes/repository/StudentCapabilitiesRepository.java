@@ -296,4 +296,46 @@ public class StudentCapabilitiesRepository {
 				.join(SUBJECT2).on(MINOR_SUBJECT.PRE_REQUISITES.eq(SUBJECT2.SUBJECT_CODE))
 				.orderBy(MINOR_SUBJECT.YEAR_LEVEL, MINOR_SUBJECT.SEM).fetchMaps();
 	}
+	
+	// ------------ FOR Student Enrollment
+	public Map<String, Object> selectStudentEnrollmentData(Integer studentNo) {
+		return dslContext
+				.select(STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), USERS.FIRST_NAME.as("firstName"),
+						USERS.MIDDLE_NAME.as("middleName"), USERS.LAST_NAME.as("lastName"),
+						STUDENT.CURRICULUM_CODE.as("curriculumCode"), STUDENT.YEAR_LEVEL.as("yearLevel"),
+						CURRICULUM.CURRICULUM_NAME.as("curriculumName"),
+						ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER)
+				.from(STUDENT_ENROLLMENT)
+				.innerJoin(ACADEMIC_YEAR).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+				.innerJoin(STUDENT).on(STUDENT_ENROLLMENT.STUDENT_NO.eq(STUDENT.STUDENT_NO))
+				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
+				.innerJoin(CURRICULUM).on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE))
+				.where(ACADEMIC_YEAR.STATUS.eq("Process")
+					  .and(STUDENT.STUDENT_NO.eq(studentNo))
+				)
+				.fetchOneMap();
+	}
+	
+	// ------------ FOR Major Subject (for curriculum display)
+	public List<Map<String, Object>> selectAllMajorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
+		return dslContext
+				.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
+				.from(MAJOR_SUBJECT).innerJoin(SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(MAJOR_SUBJECT.YEAR_LEVEL.eq(yearLevel).and(MAJOR_SUBJECT.SEM.eq(sem)))
+				.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM)
+				.fetchMaps();
+	}
+	
+	// ------------ FOR Minor Subject (for curriculum display)
+	public List<Map<String, Object>> selectAllMinorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
+		return dslContext
+				.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
+				.from(MINOR_SUBJECT).innerJoin(SUBJECT).on(MINOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(MINOR_SUBJECT.YEAR_LEVEL.eq(yearLevel).and(MINOR_SUBJECT.SEM.eq(sem)))
+				.orderBy(MINOR_SUBJECT.YEAR_LEVEL, MINOR_SUBJECT.SEM)
+				.fetchMaps();
+	}
+	
 }

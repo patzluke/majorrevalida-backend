@@ -235,8 +235,7 @@ public class StudentCapabilitiesController {
 	// -------- For Student grades
 	@SuppressWarnings("rawtypes")
 	@GetMapping(value = "/get/curriculumsubject/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity selectAllMajorSubjectsInACurriculumOfStudent(
-			@PathVariable(name = "studentNo") Integer studentNo) {
+	public ResponseEntity selectAllMajorSubjectsInACurriculumOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
 			List<Map<String, Object>> curriculumSubjects = new ArrayList<>();
 			List<Map<String, Object>> minor = service.selectAllMajorSubjectsInACurriculumOfStudent(studentNo);
@@ -252,6 +251,41 @@ public class StudentCapabilitiesController {
 			});		
 			if (!curriculumSubjects.isEmpty()) {
 				return ResponseEntity.ok(curriculumSubjects);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	// -------- For Curriculum
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/curriculum/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity selectStudentEnrollmentData(@PathVariable(name = "studentNo") Integer studentNo) {
+		try {
+			Map<String, Object> curriculum = service.selectStudentEnrollmentData(studentNo);
+			if (curriculum != null) {
+				return ResponseEntity.ok(curriculum);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/subjectstoenroll/{yearLevel}/{sem}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity selectAllSubjectsToEnrollPerYearAndSem(@PathVariable(name = "yearLevel") Integer yearLevel, @PathVariable(name = "sem") Integer sem) {
+		try {
+			List<Map<String, Object>> subjects = new ArrayList<>();
+			List<Map<String, Object>> minor = service.selectAllMajorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
+			List<Map<String, Object>> major = service.selectAllMinorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
+			subjects.addAll(minor);
+			subjects.addAll(major);
+			if (subjects != null) {
+				return ResponseEntity.ok(subjects);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

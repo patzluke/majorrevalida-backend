@@ -123,4 +123,19 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	public List<Map<String, Object>> selectAllMinorSubjectsInACurriculumOfStudent(Integer studentNo) {
 		return repository.selectAllMinorSubjectsInACurriculumOfStudent(studentNo);
 	}
+	
+	@Override
+	public Map<String, Object> selectStudentEnrollmentData(Integer studentNo) {
+		return repository.selectStudentEnrollmentData(studentNo);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectAllMajorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
+		return repository.selectAllMajorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectAllMinorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
+		return repository.selectAllMinorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
+	}
 }
