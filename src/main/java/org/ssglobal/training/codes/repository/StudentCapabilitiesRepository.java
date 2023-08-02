@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
+import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,7 @@ import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.records.SubmittedSubjectsForEnrollmentRecord;
 
 @Repository
 public class StudentCapabilitiesRepository {
@@ -44,7 +46,7 @@ public class StudentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
 	private final org.ssglobal.training.codes.tables.Professor PROFESSOR = org.ssglobal.training.codes.tables.Professor.PROFESSOR;
 	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
-
+	
 	public List<Users> selectAllUsers() {
 		return dslContext.selectFrom(USERS).fetchInto(Users.class);
 	}
@@ -315,7 +317,8 @@ public class StudentCapabilitiesRepository {
 	// ------------ FOR Student Enrollment
 	public Map<String, Object> selectStudentEnrollmentData(Integer studentNo) {
 		return dslContext
-				.select(STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), USERS.FIRST_NAME.as("firstName"),
+				.select(STUDENT_ENROLLMENT.ENROLLMENT_ID.as("enrollmentId"),
+						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), USERS.FIRST_NAME.as("firstName"),
 						USERS.MIDDLE_NAME.as("middleName"), USERS.LAST_NAME.as("lastName"),
 						STUDENT.CURRICULUM_CODE.as("curriculumCode"), STUDENT.YEAR_LEVEL.as("yearLevel"),
 						CURRICULUM.CURRICULUM_NAME.as("curriculumName"),
@@ -347,5 +350,15 @@ public class StudentCapabilitiesRepository {
 				.where(MINOR_SUBJECT.YEAR_LEVEL.eq(yearLevel).and(MINOR_SUBJECT.SEM.eq(sem)))
 				.orderBy(MINOR_SUBJECT.YEAR_LEVEL, MINOR_SUBJECT.SEM).fetchMaps();
 	}
-
+	
+	// ------------ FOR Submitted subjects for enrollment
+	public boolean insertIntoSubmittedSubjectsForEnrollment(List<SubmittedSubjectsForEnrollmentRecord> submittedSubjectsForEnrollment) {
+		 try {
+			 dslContext.batchInsert(submittedSubjectsForEnrollment).execute();
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			return false;
+		}
+		 return true;
+	}
 }

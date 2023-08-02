@@ -1,8 +1,10 @@
 package org.ssglobal.training.codes.service.Impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,11 +18,17 @@ import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
+import org.ssglobal.training.codes.tables.pojos.SubmittedSubjectsForEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.records.SubmittedSubjectsForEnrollmentRecord;
 
 @Service
 public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesService {
+	private final org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment SUBMITTED_SUBJECTS_FOR_ENROLLMENT = org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment.SUBMITTED_SUBJECTS_FOR_ENROLLMENT;
 
+	@Autowired
+	private DSLContext dslContext;
+	
 	@Autowired
 	private StudentCapabilitiesRepository repository;
 	
@@ -137,5 +145,18 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	@Override
 	public List<Map<String, Object>> selectAllMinorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
 		return repository.selectAllMinorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
+	}
+	
+	@Override
+	public boolean insertIntoSubmittedSubjectsForEnrollment(List<SubmittedSubjectsForEnrollment> submittedSubjectsForEnrollment) {
+		List<SubmittedSubjectsForEnrollmentRecord> subjectsForEnrollmentRecords = new ArrayList<>();
+		submittedSubjectsForEnrollment.forEach(subject -> {
+			SubmittedSubjectsForEnrollmentRecord subjectRecord = dslContext.newRecord(SUBMITTED_SUBJECTS_FOR_ENROLLMENT);
+			subjectRecord.setSubjectCode(subject.getSubjectCode());
+			subjectRecord.setEnrollmentId(subject.getEnrollmentId());
+			subjectsForEnrollmentRecords.add(subjectRecord);
+		});
+		
+		return repository.insertIntoSubmittedSubjectsForEnrollment(subjectsForEnrollmentRecords);
 	}
 }

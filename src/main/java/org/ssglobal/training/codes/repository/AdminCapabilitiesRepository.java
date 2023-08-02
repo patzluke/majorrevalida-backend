@@ -69,6 +69,7 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.MajorSubject MAJOR_SUBJECT = org.ssglobal.training.codes.tables.MajorSubject.MAJOR_SUBJECT;
 	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
 	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
+	private final org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment SUBMITTED_SUBJECTS_FOR_ENROLLMENT = org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment.SUBMITTED_SUBJECTS_FOR_ENROLLMENT;
 
 	// ------------------------FOR ALL
 	public List<Users> selectAllUsers() {
@@ -2504,5 +2505,25 @@ public class AdminCapabilitiesRepository {
 				.fetchMaps();
 		return student;
 	}
+	
+	// ------------ FOR Submitted Subjects for enrollment of students
+		public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollment(Integer studentNo, Integer sectionId) {
+			return dslContext
+					.select(STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.ABBREVATION,
+							PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
+							SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
+					.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
+					.innerJoin(STUDENT_ENROLLMENT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+					.innerJoin(PROFESSOR_LOAD).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(PROFESSOR_LOAD.SUBJECT_CODE))
+					.innerJoin(SUBJECT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+					.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
+							.and(PROFESSOR_LOAD.SECTION_ID.eq(sectionId))
+							.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(dslContext.select(DSL.max(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID))
+																							  .from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
+																				    )
+							)
+					)
+					.orderBy(SUBJECT.SUBJECT_CODE).fetchMaps();
+		}
 
 }

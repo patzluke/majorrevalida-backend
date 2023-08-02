@@ -294,6 +294,15 @@ create table t_subject_detail_history (
     foreign key(academic_year_id) references academic_year(academic_year_id) on delete cascade
 ); 
 
+drop table if exists submitted_subjects_for_enrollment cascade;
+create table submitted_subjects_for_enrollment (
+    submitted_subjects_id serial primary key,
+    subject_code int,
+    enrollment_id int,
+    foreign key(subject_code) references subject(subject_code) on delete cascade,
+    foreign key(enrollment_id) references student_enrollment(enrollment_id) on delete cascade
+); 
+
 drop table if exists student_subject_enrolled cascade;
 create table student_subject_enrolled (
     enroll_subject_id serial primary key,
@@ -1318,7 +1327,7 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 ;
 
 insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
-values(77010, 3, 1, 'Partial', 'Not Enrolled');
+values(77010, 3, 1, 'Partial', 'Enrolled');
 
 insert into student_subject_enrolled(load_id, enrollment_id) values
 (1, 10),
@@ -2294,3 +2303,9 @@ inner join subject sub on pl.subject_code = sub.subject_code
 inner join minor_subject msub on sub.subject_code = msub.subject_code
 where msub.year_level = 2 and msub.sem = 1 and pl.section_id = 1;
 
+select se.student_no, sub.abbrevation, pl.* from submitted_subjects_for_enrollment ssfe
+inner join student_enrollment se on ssfe.enrollment_id = se.enrollment_id
+inner join professor_load pl on ssfe.subject_code = pl.subject_code
+inner join subject sub on ssfe.subject_code = sub.subject_code
+
+where se.student_no = 77001 and pl.section_id = 1 and ssfe.enrollment_id = (select max(enrollment_id) from submitted_subjects_for_enrollment);

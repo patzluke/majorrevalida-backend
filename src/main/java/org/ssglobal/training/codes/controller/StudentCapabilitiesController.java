@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
+import org.ssglobal.training.codes.tables.pojos.SubmittedSubjectsForEnrollment;
 
 @RestController
 @RequestMapping(value = "/api/student")
@@ -286,6 +288,23 @@ public class StudentCapabilitiesController {
 			subjects.addAll(major);
 			if (!subjects.isEmpty()) {
 				return ResponseEntity.ok(subjects);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	// -------- For Submitted Subjects For enrollment
+	@SuppressWarnings("rawtypes")
+	@PostMapping(value = "/insert/submittedsubjectsforenrollment", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity insertIntoSubmittedSubjectsForEnrollment(@RequestBody List<SubmittedSubjectsForEnrollment> submittedSubjectsForEnrollment) {
+		try {
+			boolean subjectsForEnrollment = service
+					.insertIntoSubmittedSubjectsForEnrollment(submittedSubjectsForEnrollment);
+			if (subjectsForEnrollment) {
+				return ResponseEntity.ok(subjectsForEnrollment);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

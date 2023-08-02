@@ -10,6 +10,7 @@ import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
+import org.ssglobal.training.codes.tables.pojos.SubmittedSubjectsForEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
 public interface StudentCapabilitiesService {
@@ -51,4 +52,6 @@ public interface StudentCapabilitiesService {
 	List<Map<String, Object>> selectAllMajorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem);
 	
 	List<Map<String, Object>> selectAllMinorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem);
+	
+	boolean insertIntoSubmittedSubjectsForEnrollment(List<SubmittedSubjectsForEnrollment> submittedSubjectsForEnrollment);
 }

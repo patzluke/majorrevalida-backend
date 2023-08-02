@@ -553,38 +553,12 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 		List<StudentScheduleRecord> studentScheduleRecords = new ArrayList<>();
 
 		EnrollmentData enrolledStudent = repository.fullyEnrollStudent(student);
-		selectProfessorLoadWithMajorSubjectBySectionAndCurriculumCode(enrolledStudent.getSectionId(),
-				enrolledStudent.getCurriculumCode(), enrolledStudent.getYearLevel(), enrolledStudent.getSemester()).forEach(data -> {
-					
+		
+		repository.selectSubmittedSubjectsOfstudentPerEnrollment(enrolledStudent.getStudentNo(), enrolledStudent.getSectionId()).forEach(data -> {
 					StudentSubjectEnrolled studentSubjectEnrolled = repository.fullyEnrollStudentSubjects(Integer.valueOf(data.get("loadId").toString()), 
 														  enrolledStudent.getEnrollmentId());
 					repository.insertGradesAndt_subject_detail_history(Integer.valueOf(data.get("professorNo").toString()), Integer.valueOf(data.get("subjectCode").toString()), 
 																	   enrolledStudent.getAcademicYearId(), enrolledStudent.getStudentNo(), studentSubjectEnrolled.getEnrollSubjectId());
-					
-					AcademicYear enrolledAcademicYear = selectEnrolledSchoolYearOfStudent(enrolledStudent.getStudentNo());
-					LocalDate startDate = enrolledAcademicYear.getStartDate();
-			        LocalDate endDate = enrolledAcademicYear.getEndDate();
-			        LocalDate currentDate = startDate;
-					while (!currentDate.equals(endDate)) {
-						StudentAttendanceRecord record = dslContext.newRecord(STUDENT_ATTENDANCE);
-						record.setStudentNo(enrolledStudent.getStudentNo());
-						record.setLoadId(Integer.valueOf(data.get("loadId").toString()));
-						record.setAttendanceDate(currentDate);
-						studentAttendanceRecords.add(record);
-			            currentDate = currentDate.plusDays(1);
-					}
-					StudentScheduleRecord record = dslContext.newRecord(STUDENT_SCHEDULE);
-					record.setStudentNo(enrolledStudent.getStudentNo());
-					record.setLoadId(Integer.valueOf(data.get("loadId").toString()));
-					record.setAcademicYearId(enrolledStudent.getAcademicYearId());
-					studentScheduleRecords.add(record);
-				});
-		selectProfessorLoadWithMinorSubjectBySectionAndCurriculumCode(enrolledStudent.getSectionId(),
-				enrolledStudent.getYearLevel(), enrolledStudent.getSemester()).forEach(data -> {
-					StudentSubjectEnrolled studentSubjectEnrolled = repository.fullyEnrollStudentSubjects(Integer.valueOf(data.get("loadId").toString()), 
-							  							  enrolledStudent.getEnrollmentId());
-					repository.insertGradesAndt_subject_detail_history(Integer.valueOf(data.get("professorNo").toString()), Integer.valueOf(data.get("subjectCode").toString()), 
-							   enrolledStudent.getAcademicYearId(), enrolledStudent.getStudentNo(), studentSubjectEnrolled.getEnrollSubjectId());
 					
 					AcademicYear enrolledAcademicYear = selectEnrolledSchoolYearOfStudent(enrolledStudent.getStudentNo());
 					LocalDate startDate = enrolledAcademicYear.getStartDate();
