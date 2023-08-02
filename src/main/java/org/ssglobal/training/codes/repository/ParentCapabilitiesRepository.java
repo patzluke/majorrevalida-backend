@@ -1,14 +1,15 @@
 package org.ssglobal.training.codes.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.ssglobal.training.codes.model.StudentGrades;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndStudent;
-import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Parent;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
@@ -25,6 +26,10 @@ public class ParentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Curriculum CURRICULUM = org.ssglobal.training.codes.tables.Curriculum.CURRICULUM;
 	private final org.ssglobal.training.codes.tables.Major MAJOR = org.ssglobal.training.codes.tables.Major.MAJOR;
 	private final org.ssglobal.training.codes.tables.Course COURSE = org.ssglobal.training.codes.tables.Course.COURSE;
+	private final org.ssglobal.training.codes.tables.StudentEnrollment STUDENT_ENROLLMENT = org.ssglobal.training.codes.tables.StudentEnrollment.STUDENT_ENROLLMENT;
+	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
+	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
+	private final org.ssglobal.training.codes.tables.TSubjectDetailHistory T_SUBJECT_DETAIL_HISTORY = org.ssglobal.training.codes.tables.TSubjectDetailHistory.T_SUBJECT_DETAIL_HISTORY;
 
 	public UserAndParent selectParent(Integer parentNo) {
 		return dslContext
@@ -63,8 +68,7 @@ public class ParentCapabilitiesRepository {
 					.where(USERS.USER_ID.eq(updatedUser.getUserId())).execute();
 		}
 
-		Parent updatedParent = dslContext.selectFrom(PARENT)
-				.where(PARENT.USER_ID.eq(updatedUser.getUserId()))
+		Parent updatedParent = dslContext.selectFrom(PARENT).where(PARENT.USER_ID.eq(updatedUser.getUserId()))
 				.fetchOne().into(Parent.class);
 
 		if (updatedUser != null && updatedParent != null) {
@@ -103,10 +107,28 @@ public class ParentCapabilitiesRepository {
 		return null;
 	}
 
-	public List<Grades> selectAllGrades(Integer studentNo) {
-		return dslContext.selectFrom(GRADES)
-				.where(GRADES.STUDENT_NO.eq(studentNo))
-				.fetchInto(Grades.class);
+	public List<StudentGrades> selectAllGrades(Integer studentNo) {
+		return dslContext
+				.select(GRADES.GRADE_ID, GRADES.STUDENT_NO, GRADES.SUBJECT_DETAIL_HIS_ID, GRADES.ENROLL_SUBJECT_ID,
+						GRADES.PRELIM_GRADE, GRADES.FINALS_GRADE, GRADES.TOTAL_GRADE, GRADES.TOTAL_GRADE,
+						GRADES.COMMENT, GRADES.DATE_PRELIM_GRADE_INSERTED, GRADES.DATE_FINALS_GRADE_INSERTED,
+						GRADES.DATE_PRELIM_GRADE_MODIFIED, GRADES.DATE_FINALS_GRADE_MODIFIED, GRADES.REMARKS,
+						GRADES.IS_SUBMITTED, SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE, SUBJECT.UNITS)
+				.from(GRADES).innerJoin(T_SUBJECT_DETAIL_HISTORY)
+				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
+				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(GRADES.STUDENT_NO.eq(studentNo)).fetchInto(StudentGrades.class);
+	}
+
+	public List<Map<String, Object>> selectEnrolledSchoolYearOfStudent(Integer studentNo) {
+		return dslContext
+				.select(STUDENT_ENROLLMENT.ENROLLMENT_ID.as("enrollmentId"),
+						ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER,
+						STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.as("academicYearId"))
+				.from(STUDENT_ENROLLMENT).innerJoin(ACADEMIC_YEAR)
+				.on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo).and(STUDENT_ENROLLMENT.STATUS.eq("Enrolled")))
+				.orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.SEMESTER).fetchMaps();
 	}
 
 }

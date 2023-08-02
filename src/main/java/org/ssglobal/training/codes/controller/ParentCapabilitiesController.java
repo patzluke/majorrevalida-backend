@@ -1,6 +1,7 @@
 package org.ssglobal.training.codes.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.ssglobal.training.codes.model.StudentGrades;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.ParentCapabilitiesService;
-import org.ssglobal.training.codes.tables.pojos.Grades;
 
 @RestController
 @RequestMapping(value = "/api/parent")
@@ -66,11 +67,27 @@ public class ParentCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
-	@GetMapping(value = "/get/grades/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<Grades>> selectAllGradesByStudentNo(
+	// -------- For Student grades
+	@GetMapping(value = "/get/academicyear/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectEnrolledSchoolYearOfStudent(
 			@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
-			List<Grades> gradesOfStudent = service.selectAllGrades(studentNo);
+			List<Map<String, Object>> rooms = service.selectEnrolledSchoolYearOfStudent(studentNo);
+			if (!rooms.isEmpty()) {
+				return ResponseEntity.ok(rooms);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@GetMapping(value = "/get/grades/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<StudentGrades>> selectAllGradesByStudentNo(
+			@PathVariable(name = "studentNo") Integer studentNo) {
+		try {
+			List<StudentGrades> gradesOfStudent = service.selectAllGrades(studentNo);
 			if (gradesOfStudent != null) {
 				return ResponseEntity.ok(gradesOfStudent);
 			}
