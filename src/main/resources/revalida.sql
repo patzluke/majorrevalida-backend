@@ -985,6 +985,9 @@ insert into users(username, password, email, contact_no, first_name, middle_name
 values('christopher', '123456', 'christopher@gmail.com', '9188192721', 'Christof', 'Paul', 'Labastos', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'christopher.jpeg');
 insert into student(user_id, curriculum_code, academic_year_id, year_level) values(20, 5001, 3, 1);
 
+insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
+values('oogway', '123456', 'oogway@gmail.com', '9188192756', 'Oogway', 'WayOgg', 'Og', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'oogway.jpeg');
+insert into student(user_id, curriculum_code, academic_year_id, year_level) values(21, 5001, 3, 3);
 
 ----------------1st sem
 --insert into student_enrollment
@@ -1438,6 +1441,9 @@ insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_
 (77012, 95, 95, 0.00, 0.00),
 (77012, 96, 96, 0.00, 0.00)
 ;
+
+insert into student_enrollment(student_no, academic_year_id, status) 
+values(77013, 3, 'Not Enrolled');
 
 --insert into student_schedule
 --1st sem
