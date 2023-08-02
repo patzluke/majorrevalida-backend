@@ -2303,9 +2303,9 @@ inner join subject sub on pl.subject_code = sub.subject_code
 inner join minor_subject msub on sub.subject_code = msub.subject_code
 where msub.year_level = 2 and msub.sem = 1 and pl.section_id = 1;
 
-select se.student_no, sub.abbrevation, pl.* from submitted_subjects_for_enrollment ssfe
+select se.student_no, sub.abbrevation from submitted_subjects_for_enrollment ssfe
 inner join student_enrollment se on ssfe.enrollment_id = se.enrollment_id
 inner join professor_load pl on ssfe.subject_code = pl.subject_code
 inner join subject sub on ssfe.subject_code = sub.subject_code
 
-where se.student_no = 77001 and pl.section_id = 1 and ssfe.enrollment_id = (select max(enrollment_id) from submitted_subjects_for_enrollment);
+where se.student_no = 77015 and ssfe.enrollment_id = (select max(enrollment_id) from submitted_subjects_for_enrollment);

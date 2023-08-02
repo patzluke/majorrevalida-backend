@@ -592,4 +592,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public boolean batchInsertStudentAttendanceBySubject(List<StudentAttendanceRecord> studentAttendanceRecords) {
 		return repository.batchInsertStudentAttendanceBySubject(studentAttendanceRecords);
 	}
+	
+	@Override
+	public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollment(Integer studentNo) {
+		return repository.selectSubmittedSubjectsOfstudentPerEnrollment(studentNo);
+	}
 }

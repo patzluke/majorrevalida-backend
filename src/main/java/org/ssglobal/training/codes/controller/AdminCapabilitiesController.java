@@ -1234,4 +1234,19 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+	
+	@GetMapping(value = "/get/submittedsubjectsofstudent/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectSubmittedSubjectsOfstudentPerEnrollment(@PathVariable(name = "studentNo") Integer studentNo) {
+		try {
+			List<Map<String, Object>> subjectList = service.selectSubmittedSubjectsOfstudentPerEnrollment(studentNo);
+			System.out.println(subjectList);
+			if (!subjectList.isEmpty()) {
+				return ResponseEntity.ok(subjectList);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.notFound().build();
+	}
 }

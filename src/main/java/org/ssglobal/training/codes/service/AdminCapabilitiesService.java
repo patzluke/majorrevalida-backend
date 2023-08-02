@@ -213,4 +213,7 @@ public interface AdminCapabilitiesService {
 
 	// ---------------------- FOR THE FRESHMAN MINOR SUBJECTS
 	public List<Map<String, Object>> selectFreshManStudentMinorSubject(Integer studentNo);
+	
+	// ---------------------- FOR Submitted Subjects for enrollment of students
+	List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollment(Integer studentNo);
 }
