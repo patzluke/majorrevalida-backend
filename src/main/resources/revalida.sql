@@ -299,6 +299,7 @@ create table submitted_subjects_for_enrollment (
     submitted_subjects_id serial primary key,
     subject_code int,
     enrollment_id int,
+    status varchar(20) default 'Approved',
     foreign key(subject_code) references subject(subject_code) on delete cascade,
     foreign key(enrollment_id) references student_enrollment(enrollment_id) on delete cascade
 ); 

@@ -597,4 +597,10 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollment(Integer studentNo) {
 		return repository.selectSubmittedSubjectsOfstudentPerEnrollment(studentNo);
 	}
+	
+	@Override
+	public Map<String, Object> updateSubmittedSubjectsOfstudentPerEnrollmentStatus(Integer submittedSubjectsId,
+			String status) {
+		return repository.updateSubmittedSubjectsOfstudentPerEnrollmentStatus(submittedSubjectsId, status);
+	}
 }

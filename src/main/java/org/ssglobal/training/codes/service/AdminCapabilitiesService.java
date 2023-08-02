@@ -216,4 +216,6 @@ public interface AdminCapabilitiesService {
 	
 	// ---------------------- FOR Submitted Subjects for enrollment of students
 	List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollment(Integer studentNo);
+	
+	Map<String, Object> updateSubmittedSubjectsOfstudentPerEnrollmentStatus(Integer submittedSubjectsId, String status);
 }
