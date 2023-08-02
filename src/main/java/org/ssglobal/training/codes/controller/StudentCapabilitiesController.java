@@ -312,4 +312,19 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+	
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/submittedsubjectsforenrollment/{enrollmentId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity checkIfThereIsSubmittedSubjectsForEnrollment(@PathVariable(name = "enrollmentId") Integer enrollmentId) {
+		try {
+			List<SubmittedSubjectsForEnrollment> subjects = service.checkIfThereIsSubmittedSubjectsForEnrollment(enrollmentId);
+			if (!subjects.isEmpty()) {
+				return ResponseEntity.ok(subjects);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
 }
