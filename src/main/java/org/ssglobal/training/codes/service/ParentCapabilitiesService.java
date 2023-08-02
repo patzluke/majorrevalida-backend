@@ -1,10 +1,11 @@
 package org.ssglobal.training.codes.service;
 
 import java.util.List;
+import java.util.Map;
 
+import org.ssglobal.training.codes.model.StudentGrades;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndStudent;
-import org.ssglobal.training.codes.tables.pojos.Grades;
 
 public interface ParentCapabilitiesService {
 	
@@ -14,5 +15,7 @@ public interface ParentCapabilitiesService {
 	
 	List<UserAndStudent> selectAllChildren(Integer parentNo);
 	
-	List<Grades> selectAllGrades(Integer studentNo);
+	List<StudentGrades> selectAllGrades(Integer studentNo);
+	
+	List<Map<String, Object>> selectEnrolledSchoolYearOfStudent(Integer studentNo);
 }

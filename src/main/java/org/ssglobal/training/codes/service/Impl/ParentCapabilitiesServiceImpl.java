@@ -1,14 +1,15 @@
 package org.ssglobal.training.codes.service.Impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.ssglobal.training.codes.model.StudentGrades;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.repository.ParentCapabilitiesRepository;
 import org.ssglobal.training.codes.service.ParentCapabilitiesService;
-import org.ssglobal.training.codes.tables.pojos.Grades;
 
 @Service
 public class ParentCapabilitiesServiceImpl implements ParentCapabilitiesService{
@@ -32,8 +33,13 @@ public class ParentCapabilitiesServiceImpl implements ParentCapabilitiesService{
 	}
 
 	@Override
-	public List<Grades> selectAllGrades(Integer studentNo) {
+	public List<StudentGrades> selectAllGrades(Integer studentNo) {
 		return repository.selectAllGrades(studentNo);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectEnrolledSchoolYearOfStudent(Integer studentNo) {
+		return repository.selectEnrolledSchoolYearOfStudent(studentNo);
 	}
 
 }
