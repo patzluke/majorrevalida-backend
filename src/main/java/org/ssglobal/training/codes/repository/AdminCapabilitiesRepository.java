@@ -411,6 +411,24 @@ public class AdminCapabilitiesRepository {
 	}
 
 	// ------------------------FOR STUDENT_ENROLLMENT
+	public UserAndStudent selectStudent(Integer studentNo) {
+		return dslContext.select(STUDENT.STUDENT_NO.as("studentNo"), USERS.EMAIL.as("email"))
+						 .from(STUDENT)
+						 .join(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
+						 .where(STUDENT.STUDENT_NO.eq(studentNo))
+						 .fetchOneInto(UserAndStudent.class);
+	}
+	public Map<String, Object> selectParentByStudent(Integer studentNo) {
+		Map<String, Object> parentNo = dslContext.select(STUDENT.PARENT_NO.as("parentNo")).from(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo))
+												 .fetchOneMap();
+		Map<String, Object> parentInfo = dslContext.select(PARENT.PARENT_NO.as("parentNo"), USERS.EMAIL.as("email"))
+											 .from(PARENT)
+											 .join(USERS).on(PARENT.USER_ID.eq(USERS.USER_ID))
+											 .where(PARENT.PARENT_NO.eq(Integer.valueOf(parentNo.get("parentNo").toString())))
+								.fetchOneMap();
+		return parentInfo;
+	}
+	
 	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {
 
 		// Get the academic_year_id
@@ -840,6 +858,7 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public Map<String, Object> insertProfessorLoad(ProfessorLoad professorLoad) {
+		System.out.println(professorLoad);
 		ProfessorLoad insertProfessorLoad = dslContext.insertInto(PROFESSOR_LOAD)
 				.set(PROFESSOR_LOAD.PROFESSOR_NO, professorLoad.getProfessorNo())
 				.set(PROFESSOR_LOAD.SUBJECT_CODE, professorLoad.getSubjectCode())
@@ -2517,11 +2536,10 @@ public class AdminCapabilitiesRepository {
 						SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS, PROFESSOR_LOAD.LOAD_ID.as("loadId"),
 						PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
 						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
-				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT).innerJoin(STUDENT_ENROLLMENT)
-				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
-				.innerJoin(PROFESSOR_LOAD)
-				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(PROFESSOR_LOAD.SUBJECT_CODE)).innerJoin(SUBJECT)
-				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
+				.innerJoin(STUDENT_ENROLLMENT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.innerJoin(PROFESSOR_LOAD).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(PROFESSOR_LOAD.SUBJECT_CODE))
+				.innerJoin(SUBJECT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo).and(PROFESSOR_LOAD.SECTION_ID.eq(sectionId))
 						.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS.eq("Approved"))
 						.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(enrollmentId)))

@@ -538,6 +538,16 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<Map<String, Object>> getAllStudentWithAcademicYear() {
 		return repository.getAllStudentWithAcademicYear();
 	}
+	
+	@Override
+	public Map<String, Object> selectParentByStudent(Integer studentNo) {
+		return repository.selectParentByStudent(studentNo);
+	}
+	
+	@Override
+	public UserAndStudent selectStudent(Integer studentNo) {
+		return repository.selectStudent(studentNo);
+	}
 
 	@Override
 	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {		
@@ -553,7 +563,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public EnrollmentData fullyEnrollStudent(EnrollmentData student) {
 		List<StudentAttendanceRecord> studentAttendanceRecords = new ArrayList<>();
 		List<StudentScheduleRecord> studentScheduleRecords = new ArrayList<>();
-
+		
 		EnrollmentData enrolledStudent = repository.fullyEnrollStudent(student);
 		System.out.println(enrolledStudent.getEnrollmentId());
 		repository.selectSubmittedSubjectsOfstudentPerEnrollment(enrolledStudent.getStudentNo(), enrolledStudent.getSectionId(), enrolledStudent.getEnrollmentId()).forEach(data -> {
@@ -568,9 +578,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 			        LocalDate currentDate = startDate;
 			        
 					while (!currentDate.equals(endDate)) {
-						System.out.println(data.get("day").toString());
 						if (currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault()).equals(data.get("day").toString())) {
-							System.out.println(data.get("day").toString() + " inner if");
 							StudentAttendanceRecord record = dslContext.newRecord(STUDENT_ATTENDANCE);
 							record.setStudentNo(enrolledStudent.getStudentNo());
 							record.setLoadId(Integer.valueOf(data.get("loadId").toString()));

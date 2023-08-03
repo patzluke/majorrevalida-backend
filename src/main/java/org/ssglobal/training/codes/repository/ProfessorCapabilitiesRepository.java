@@ -253,19 +253,17 @@ public class ProfessorCapabilitiesRepository {
 	}
 	
 //	List of students attendance
-	public List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct(Integer studentNo) {
+	public List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct(Integer loadId) {
 		AcademicYear academicYear = dslContext.select(ACADEMIC_YEAR.START_DATE, ACADEMIC_YEAR.END_DATE)
-											  .from(STUDENT_ENROLLMENT)
-											  .innerJoin(ACADEMIC_YEAR).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
-											  .where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
-													 .and(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)).from(STUDENT_ENROLLMENT)))
+											  .from(ACADEMIC_YEAR)
+											  .where(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)).from(ACADEMIC_YEAR))
 												)
 											  .fetchOneInto(AcademicYear.class);
-		
 		return dslContext.selectDistinct(STUDENT_ATTENDANCE.ATTENDANCE_DATE)
 						 .from(STUDENT_ATTENDANCE)
 						 .rightJoin(STUDENT_ENROLLMENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
-						 .where(STUDENT_ATTENDANCE.ATTENDANCE_DATE.between(academicYear.getStartDate(), academicYear.getEndDate()))
+						 .where(STUDENT_ATTENDANCE.ATTENDANCE_DATE.between(academicYear.getStartDate(), academicYear.getEndDate())
+								 .and(STUDENT_ATTENDANCE.LOAD_ID.eq(loadId)))
 						 .orderBy(STUDENT_ATTENDANCE.ATTENDANCE_DATE)
 						 .fetchInto(StudentAttendance.class);
 	}

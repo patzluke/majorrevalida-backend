@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.ssglobal.training.codes.model.EmailDetails;
 import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndProfessor;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.AdminCapabilitiesService;
+import org.ssglobal.training.codes.service.Impl.EmailServiceImpl;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Department;
@@ -40,6 +42,9 @@ public class AdminCapabilitiesController {
 
 	@Autowired
 	private AdminCapabilitiesService service;
+	
+	@Autowired
+	private EmailServiceImpl emailService;
 
 	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/password", consumes = { MediaType.APPLICATION_JSON_VALUE })
@@ -1197,7 +1202,23 @@ public class AdminCapabilitiesController {
 	public ResponseEntity<StudentEnrollment> insertStudentEnrollmentData(@RequestBody StudentApplicant studentApplicant) {
 		try {
 			StudentEnrollment applicant = service.insertStudentEnrollmentData(studentApplicant);
-			if (applicant != null) {
+			Map<String, Object> parent = service.selectParentByStudent(applicant.getStudentNo());
+			UserAndStudent student = service.selectStudent(applicant.getStudentNo());
+			if (applicant != null && parent != null) {
+				EmailDetails emailToStudent = new EmailDetails();
+				emailToStudent.setRecipient(student.getEmail());
+				emailToStudent.setSubject("Colegio De Seven Seven Portal Account");
+				emailToStudent.setMsgBody("Your Application is accepted, here's your School Portal Account Info"
+						+ "username: %s".formatted(student.getStudentNo().toString())
+						+ "password: bithdate + last name example (19990715Cortez)");
+				emailService.sendSimpleMail(emailToStudent);
+				EmailDetails emailToParent = new EmailDetails();
+				emailToParent.setRecipient(parent.get("email").toString());
+				emailToParent.setSubject("Colegio De Seven Seven Portal Account");
+				emailToParent.setMsgBody("Your child's application is accepted, here's your School Portal Account Info"
+						+ "username: %s"
+						+ "password: bithdate + last name example (19990715Cortez)".formatted(parent.get("parentNo").toString()));
+				emailService.sendSimpleMail(emailToParent);
 				return ResponseEntity.ok(applicant);
 			}
 		} catch (Exception e) {

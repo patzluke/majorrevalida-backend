@@ -139,12 +139,11 @@ public class ProfessorCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-
-	@GetMapping(value = "/get/studentattendance/attendancedate/{studentNo}")
-	public ResponseEntity<List<StudentAttendance>> selectStudentAttendanceByAttendanceDateDistinct(
-			@PathVariable(name = "studentNo") Integer studentNo) {
+	
+	@GetMapping(value = "/get/studentattendance/attendancedate/{loadId}")
+	public ResponseEntity<List<StudentAttendance>> selectStudentAttendanceByAttendanceDateDistinct(@PathVariable(name = "loadId") Integer loadId) {
 		try {
-			List<StudentAttendance> students = service.selectStudentAttendanceByAttendanceDateDistinct(studentNo);
+			List<StudentAttendance> students = service.selectStudentAttendanceByAttendanceDateDistinct(loadId);
 			if (students != null) {
 				return ResponseEntity.ok(students);
 			}
