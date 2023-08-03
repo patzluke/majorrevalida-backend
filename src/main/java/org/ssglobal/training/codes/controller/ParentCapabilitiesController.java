@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.ssglobal.training.codes.model.ParentStudentAttendanceCopy;
 import org.ssglobal.training.codes.model.StudentGrades;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndStudent;
@@ -82,7 +83,7 @@ public class ParentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	@GetMapping(value = "/get/grades/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<StudentGrades>> selectAllGradesByStudentNo(
 			@PathVariable(name = "studentNo") Integer studentNo) {
@@ -97,4 +98,20 @@ public class ParentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
+
+	@GetMapping(value = "/get/studentattendance/attendancedate/{studentNo}")
+	public ResponseEntity<List<ParentStudentAttendanceCopy>> selectStudentAttendanceByAttendanceDateDistinct(
+			@PathVariable(name = "studentNo") Integer studentNo) {
+		try {
+			List<ParentStudentAttendanceCopy> students = service.selectStudentAttendanceByAttendanceDateDistinct(studentNo);
+			if (students != null) {
+				return ResponseEntity.ok(students);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 }
