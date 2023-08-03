@@ -2,8 +2,10 @@ package org.ssglobal.training.codes.service.Impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.jooq.DSLContext;
@@ -566,12 +568,16 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 			        LocalDate currentDate = startDate;
 			        
 					while (!currentDate.equals(endDate)) {
-						StudentAttendanceRecord record = dslContext.newRecord(STUDENT_ATTENDANCE);
-						record.setStudentNo(enrolledStudent.getStudentNo());
-						record.setLoadId(Integer.valueOf(data.get("loadId").toString()));
-						record.setAttendanceDate(currentDate);
-						studentAttendanceRecords.add(record);
-			            currentDate = currentDate.plusDays(1);
+						System.out.println(data.get("day").toString());
+						if (currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault()).equals(data.get("day").toString())) {
+							System.out.println(data.get("day").toString() + " inner if");
+							StudentAttendanceRecord record = dslContext.newRecord(STUDENT_ATTENDANCE);
+							record.setStudentNo(enrolledStudent.getStudentNo());
+							record.setLoadId(Integer.valueOf(data.get("loadId").toString()));
+							record.setAttendanceDate(currentDate);
+							studentAttendanceRecords.add(record);
+						}
+			            currentDate = currentDate.plusDays(1);					
 					}
 					StudentScheduleRecord record = dslContext.newRecord(STUDENT_SCHEDULE);
 					record.setStudentNo(enrolledStudent.getStudentNo());
