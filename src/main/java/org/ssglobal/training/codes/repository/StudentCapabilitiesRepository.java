@@ -17,6 +17,7 @@ import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.Student;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
+import org.ssglobal.training.codes.tables.pojos.SubmittedSubjectsForEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Users;
 import org.ssglobal.training.codes.tables.records.SubmittedSubjectsForEnrollmentRecord;
 
@@ -46,7 +47,8 @@ public class StudentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
 	private final org.ssglobal.training.codes.tables.Professor PROFESSOR = org.ssglobal.training.codes.tables.Professor.PROFESSOR;
 	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
-	
+	private final org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment SUBMITTED_SUBJECTS_FOR_ENROLLMENT = org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment.SUBMITTED_SUBJECTS_FOR_ENROLLMENT;
+
 	public List<Users> selectAllUsers() {
 		return dslContext.selectFrom(USERS).fetchInto(Users.class);
 	}
@@ -360,5 +362,13 @@ public class StudentCapabilitiesRepository {
 			return false;
 		}
 		 return true;
+	}
+	
+	public List<SubmittedSubjectsForEnrollment>  checkIfThereIsSubmittedSubjectsForEnrollment(Integer enrollmentId) {
+		return dslContext.selectFrom(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
+				.where(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(enrollmentId))
+				.fetchInto(SubmittedSubjectsForEnrollment.class);
+						 
+						 
 	}
 }

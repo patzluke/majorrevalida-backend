@@ -154,9 +154,8 @@ public class StudentCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
-	@SuppressWarnings("rawtypes")
 	@GetMapping(value = "/get/studentsubjectenrolled/{studentNo}")
-	public ResponseEntity selectAllStudentSubjectEnrolledByStudentNo(@PathVariable("studentNo") Integer studentNo) {
+	public ResponseEntity<List<Map<String, Object>>> selectAllStudentSubjectEnrolledByStudentNo(@PathVariable("studentNo") Integer studentNo) {
 		try {
 			List<Map<String, Object>> studentGrades = service.selectAllStudentSubjectEnrolledByStudentNo(studentNo);
 			if (studentGrades != null) {
@@ -168,12 +167,13 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
-	@SuppressWarnings("rawtypes")
+
 	@GetMapping(value = "/get/studentattendance")
-	public ResponseEntity selectStudentAttendanceByAndSubjectAndSectionAndProfessorNoAndDate(@RequestParam("subjectTitle") String subjectTitle, @RequestParam("studentNo") Integer studentNo) {
+	public ResponseEntity<List<Map<String, Object>>> selectStudentAttendanceByAndSubjectAndSectionAndProfessorNoAndDate(
+			@RequestParam("subjectTitle") String subjectTitle, @RequestParam("studentNo") Integer studentNo) {
 		try {
-			List<Map<String, Object>> studentGrades = service.selectStudentAttendanceByAndSubjectAndStudentNo(subjectTitle, studentNo);
+			List<Map<String, Object>> studentGrades = service
+					.selectStudentAttendanceByAndSubjectAndStudentNo(subjectTitle, studentNo);
 			if (studentGrades != null) {
 				return ResponseEntity.ok(studentGrades);
 			}
@@ -183,11 +183,10 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	// -------- For Student grades
-	@SuppressWarnings("rawtypes")
 	@GetMapping(value = "/get/studentgrades/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity selectAllSubjectGradesOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
+	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectGradesOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
 			List<Map<String, Object>> rooms = service.selectAllSubjectGradesOfStudent(studentNo);
 			if (!rooms.isEmpty()) {
@@ -199,11 +198,11 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	// -------- For Student grades
-	@SuppressWarnings("rawtypes")
 	@GetMapping(value = "/get/academicyear/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity selectEnrolledSchoolYearOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
+	public ResponseEntity<List<Map<String, Object>>> selectEnrolledSchoolYearOfStudent(
+			@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
 			List<Map<String, Object>> rooms = service.selectEnrolledSchoolYearOfStudent(studentNo);
 			if (!rooms.isEmpty()) {
@@ -215,14 +214,15 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	// -------- For Student Schedule
-	@SuppressWarnings("rawtypes")
-	@GetMapping(value = "/get/studentschedule/{studentNo}/{academicYearId}", produces = {MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity selectEnrolledSchoolYearOfStudent(@PathVariable(name = "studentNo") Integer studentNo,
-															@PathVariable(name = "academicYearId") Integer academicYearId) {
+	@GetMapping(value = "/get/studentschedule/{studentNo}/{academicYearId}", produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectEnrolledSchoolYearOfStudent(
+			@PathVariable(name = "studentNo") Integer studentNo,
+			@PathVariable(name = "academicYearId") Integer academicYearId) {
 		try {
-			
+
 			List<Map<String, Object>> schedule = service.selectScheduleOfStudent(studentNo, academicYearId);
 			if (!schedule.isEmpty()) {
 				return ResponseEntity.ok(schedule);
@@ -233,24 +233,25 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	// -------- For Student grades
-	@SuppressWarnings("rawtypes")
 	@GetMapping(value = "/get/curriculumsubject/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity selectAllMajorSubjectsInACurriculumOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
+	public ResponseEntity<List<Map<String, Object>>> selectAllMajorSubjectsInACurriculumOfStudent(
+			@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
 			List<Map<String, Object>> curriculumSubjects = new ArrayList<>();
 			List<Map<String, Object>> minor = service.selectAllMajorSubjectsInACurriculumOfStudent(studentNo);
 			List<Map<String, Object>> major = service.selectAllMinorSubjectsInACurriculumOfStudent(studentNo);
 			curriculumSubjects.addAll(minor);
 			curriculumSubjects.addAll(major);
-			
+
 			Collections.sort(curriculumSubjects, (o1, o2) -> {
-					if (Integer.parseInt(o2.get("subjectCode").toString()) < Integer.parseInt(o1.get("subjectCode").toString())) {
-						return 1;
-					}
-					return -1;
-			});		
+				if (Integer.parseInt(o2.get("subjectCode").toString()) < Integer
+						.parseInt(o1.get("subjectCode").toString())) {
+					return 1;
+				}
+				return -1;
+			});
 			if (!curriculumSubjects.isEmpty()) {
 				return ResponseEntity.ok(curriculumSubjects);
 			}
@@ -260,11 +261,10 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	// -------- For Curriculum
-	@SuppressWarnings("rawtypes")
 	@GetMapping(value = "/get/curriculum/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity selectStudentEnrollmentData(@PathVariable(name = "studentNo") Integer studentNo) {
+	public ResponseEntity<Map<String, Object>> selectStudentEnrollmentData(@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
 			Map<String, Object> curriculum = service.selectStudentEnrollmentData(studentNo);
 			if (curriculum != null) {
@@ -276,10 +276,10 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
-	@SuppressWarnings("rawtypes")
+
 	@GetMapping(value = "/get/subjectstoenroll/{yearLevel}/{sem}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity selectAllSubjectsToEnrollPerYearAndSem(@PathVariable(name = "yearLevel") Integer yearLevel, @PathVariable(name = "sem") Integer sem) {
+	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsToEnrollPerYearAndSem(@PathVariable(name = "yearLevel") Integer yearLevel,
+			@PathVariable(name = "sem") Integer sem) {
 		try {
 			List<Map<String, Object>> minor = service.selectAllMajorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
 			List<Map<String, Object>> major = service.selectAllMinorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
@@ -305,6 +305,21 @@ public class StudentCapabilitiesController {
 					.insertIntoSubmittedSubjectsForEnrollment(submittedSubjectsForEnrollment);
 			if (subjectsForEnrollment) {
 				return ResponseEntity.ok(subjectsForEnrollment);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/submittedsubjectsforenrollment/{enrollmentId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity checkIfThereIsSubmittedSubjectsForEnrollment(@PathVariable(name = "enrollmentId") Integer enrollmentId) {
+		try {
+			List<SubmittedSubjectsForEnrollment> subjects = service.checkIfThereIsSubmittedSubjectsForEnrollment(enrollmentId);
+			if (!subjects.isEmpty()) {
+				return ResponseEntity.ok(subjects);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

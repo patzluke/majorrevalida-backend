@@ -35,6 +35,7 @@ import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.StudentSubjectEnrolled;
 import org.ssglobal.training.codes.tables.pojos.Subject;
+import org.ssglobal.training.codes.tables.pojos.SubmittedSubjectsForEnrollment;
 import org.ssglobal.training.codes.tables.pojos.TSubjectDetailHistory;
 import org.ssglobal.training.codes.tables.pojos.Users;
 import org.ssglobal.training.codes.tables.records.StudentAttendanceRecord;
@@ -393,11 +394,12 @@ public class AdminCapabilitiesRepository {
 	 */
 	public List<Map<String, Object>> getAllEnrollmentData() {
 		return dslContext
-				.select(STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), USERS.FIRST_NAME.as("firstName"),
+				.select(STUDENT_ENROLLMENT.ENROLLMENT_ID.as("enrollmentId"),
+						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), USERS.FIRST_NAME.as("firstName"),
 						USERS.MIDDLE_NAME.as("middleName"), USERS.LAST_NAME.as("lastName"),
 						MAJOR.MAJOR_CODE.as("majorCode"), MAJOR.MAJOR_TITLE.as("majorTitle"),
 						COURSE.COURSE_CODE.as("courseCode"), COURSE.COURSE_TITLE.as("courseTitle"),
-						STUDENT.YEAR_LEVEL.as("yearLevel"), ACADEMIC_YEAR.SEMESTER, 
+						STUDENT.YEAR_LEVEL.as("yearLevel"), ACADEMIC_YEAR.SEMESTER,
 						STUDENT_ENROLLMENT.STATUS.as("status"))
 				.from(STUDENT_ENROLLMENT)
 				.innerJoin(ACADEMIC_YEAR).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
@@ -2525,23 +2527,59 @@ public class AdminCapabilitiesRepository {
 	}
 	
 	// ------------ FOR Submitted Subjects for enrollment of students
-		public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollment(Integer studentNo, Integer sectionId) {
-			return dslContext
-					.select(STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.ABBREVATION,
-							PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
-							SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
-					.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
-					.innerJoin(STUDENT_ENROLLMENT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
-					.innerJoin(PROFESSOR_LOAD).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(PROFESSOR_LOAD.SUBJECT_CODE))
-					.innerJoin(SUBJECT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-					.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
-							.and(PROFESSOR_LOAD.SECTION_ID.eq(sectionId))
-							.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(dslContext.select(DSL.max(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID))
-																							  .from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
-																				    )
-							)
-					)
-					.orderBy(SUBJECT.SUBJECT_CODE).fetchMaps();
-		}
+	public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollment(Integer studentNo,
+			Integer sectionId, Integer enrollmentId) {
+		return dslContext
+				.select(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.as("submittedSubjectsId"),
+						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.ABBREVATION,
+						SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS, PROFESSOR_LOAD.LOAD_ID.as("loadId"),
+						PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
+						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
+				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT).innerJoin(STUDENT_ENROLLMENT)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.innerJoin(PROFESSOR_LOAD)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(PROFESSOR_LOAD.SUBJECT_CODE)).innerJoin(SUBJECT)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo).and(PROFESSOR_LOAD.SECTION_ID.eq(sectionId))
+						.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS.eq("Approved"))
+						.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(enrollmentId)))
+				.orderBy(SUBJECT.SUBJECT_CODE).fetchMaps();
+	}
+
+	public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollmentId(Integer studentNo, Integer enrollmentId) {
+		return dslContext
+				.selectDistinct(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.as("submittedSubjectsId"),
+						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.ABBREVATION,
+						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+						SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS)
+				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
+				.innerJoin(STUDENT_ENROLLMENT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.innerJoin(SUBJECT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
+						.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(enrollmentId)))
+				.orderBy(SUBJECT.SUBJECT_CODE).fetchMaps();
+	}
+	
+	public Map<String, Object> updateSubmittedSubjectsOfstudentPerEnrollmentStatus(Integer submittedSubjectsId, String status) {
+		SubmittedSubjectsForEnrollment subjectsForEnrollment = dslContext.update(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
+																		 .set(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS, status)
+																		 .where(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.eq(submittedSubjectsId))
+																		 .returning()
+																		 .fetchOne()
+																		 .into(SubmittedSubjectsForEnrollment.class);
+		
+		return dslContext
+				.selectDistinct(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.as("submittedSubjectsId"),
+						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.ABBREVATION,
+						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+						SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS)
+				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT).innerJoin(STUDENT_ENROLLMENT)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.innerJoin(PROFESSOR_LOAD)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(PROFESSOR_LOAD.SUBJECT_CODE)).innerJoin(SUBJECT)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.eq(subjectsForEnrollment.getSubmittedSubjectsId()))
+				.fetchOneMap();
+	}
 
 }

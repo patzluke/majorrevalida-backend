@@ -2,8 +2,10 @@ package org.ssglobal.training.codes.service.Impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.jooq.DSLContext;
@@ -563,8 +565,8 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 		List<StudentScheduleRecord> studentScheduleRecords = new ArrayList<>();
 
 		EnrollmentData enrolledStudent = repository.fullyEnrollStudent(student);
-		
-		repository.selectSubmittedSubjectsOfstudentPerEnrollment(enrolledStudent.getStudentNo(), enrolledStudent.getSectionId()).forEach(data -> {
+		System.out.println(enrolledStudent.getEnrollmentId());
+		repository.selectSubmittedSubjectsOfstudentPerEnrollment(enrolledStudent.getStudentNo(), enrolledStudent.getSectionId(), enrolledStudent.getEnrollmentId()).forEach(data -> {
 					StudentSubjectEnrolled studentSubjectEnrolled = repository.fullyEnrollStudentSubjects(Integer.valueOf(data.get("loadId").toString()), 
 														  enrolledStudent.getEnrollmentId());
 					repository.insertGradesAndt_subject_detail_history(Integer.valueOf(data.get("professorNo").toString()), Integer.valueOf(data.get("subjectCode").toString()), 
@@ -574,13 +576,18 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 					LocalDate startDate = enrolledAcademicYear.getStartDate();
 			        LocalDate endDate = enrolledAcademicYear.getEndDate();
 			        LocalDate currentDate = startDate;
+			        
 					while (!currentDate.equals(endDate)) {
-						StudentAttendanceRecord record = dslContext.newRecord(STUDENT_ATTENDANCE);
-						record.setStudentNo(enrolledStudent.getStudentNo());
-						record.setLoadId(Integer.valueOf(data.get("loadId").toString()));
-						record.setAttendanceDate(currentDate);
-						studentAttendanceRecords.add(record);
-			            currentDate = currentDate.plusDays(1);
+						System.out.println(data.get("day").toString());
+						if (currentDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault()).equals(data.get("day").toString())) {
+							System.out.println(data.get("day").toString() + " inner if");
+							StudentAttendanceRecord record = dslContext.newRecord(STUDENT_ATTENDANCE);
+							record.setStudentNo(enrolledStudent.getStudentNo());
+							record.setLoadId(Integer.valueOf(data.get("loadId").toString()));
+							record.setAttendanceDate(currentDate);
+							studentAttendanceRecords.add(record);
+						}
+			            currentDate = currentDate.plusDays(1);					
 					}
 					StudentScheduleRecord record = dslContext.newRecord(STUDENT_SCHEDULE);
 					record.setStudentNo(enrolledStudent.getStudentNo());
@@ -601,5 +608,16 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public boolean batchInsertStudentAttendanceBySubject(List<StudentAttendanceRecord> studentAttendanceRecords) {
 		return repository.batchInsertStudentAttendanceBySubject(studentAttendanceRecords);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollmentId(Integer studentNo, Integer enrollmentId) {
+		return repository.selectSubmittedSubjectsOfstudentPerEnrollmentId(studentNo, enrollmentId);
+	}
+	
+	@Override
+	public Map<String, Object> updateSubmittedSubjectsOfstudentPerEnrollmentStatus(Integer submittedSubjectsId,
+			String status) {
+		return repository.updateSubmittedSubjectsOfstudentPerEnrollmentStatus(submittedSubjectsId, status);
 	}
 }

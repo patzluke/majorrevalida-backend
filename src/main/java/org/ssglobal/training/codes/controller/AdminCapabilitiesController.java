@@ -1255,4 +1255,35 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
+	
+	@GetMapping(value = "/get/submittedsubjectsofstudent/{studentNo}/{enrollmentId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> selectSubmittedSubjectsOfstudentPerEnrollment(@PathVariable(name = "studentNo") Integer studentNo,
+																								   @PathVariable(name = "enrollmentId") Integer enrollmentId) {
+		try {
+			List<Map<String, Object>> subjectList = service.selectSubmittedSubjectsOfstudentPerEnrollmentId(studentNo, enrollmentId);
+			if (!subjectList.isEmpty()) {
+				return ResponseEntity.ok(subjectList);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.notFound().build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update/submittedsubjectsofstudent", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity updateSubmittedSubjectsOfstudentPerEnrollmentStatus(@RequestBody Map<String, Object> subject){
+		try {
+			Map<String, Object> enrollee = service.updateSubmittedSubjectsOfstudentPerEnrollmentStatus(Integer.valueOf(subject.get("submittedSubjectsId").toString()), 
+																								  subject.get("status").toString());
+			if (enrollee != null) {
+				return ResponseEntity.ok(enrollee);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
 }

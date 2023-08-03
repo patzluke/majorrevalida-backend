@@ -159,4 +159,9 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 		
 		return repository.insertIntoSubmittedSubjectsForEnrollment(subjectsForEnrollmentRecords);
 	}
+	
+	@Override
+	public List<SubmittedSubjectsForEnrollment> checkIfThereIsSubmittedSubjectsForEnrollment(Integer enrollmentId) {
+		return repository.checkIfThereIsSubmittedSubjectsForEnrollment(enrollmentId);
+	}
 }
