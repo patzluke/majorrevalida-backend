@@ -26,6 +26,6 @@ public interface ProfessorCapabilitiesService {
 	List<Grades> updateStudentGradesIsSubmitted(List<Grades> studentGrades);
 	List<Map<String, Object>> updateStudentGrades(List<Grades> studentGrades);
 	
-	List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct();
+	List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct(Integer studentNo);
 	
 }

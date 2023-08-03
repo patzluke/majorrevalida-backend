@@ -6,9 +6,11 @@ import java.util.Map;
 
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.model.UserAndProfessor;
+import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Professor;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
@@ -33,6 +35,7 @@ public class ProfessorCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
 	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
 	private final org.ssglobal.training.codes.tables.Department DEPARTMENT = org.ssglobal.training.codes.tables.Department.DEPARTMENT;
+	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
 
 	public List<Users> selectAllUsers() {
 		return dslContext.selectFrom(USERS).fetchInto(Users.class);
@@ -130,13 +133,6 @@ public class ProfessorCapabilitiesRepository {
 		.fetchMaps();
 	}
 	
-//	List of Students Attendance in that particular Professor's Load
-	public List<Map<String, Object>> selectAllAttendance(Integer loadId) {
-		return dslContext.select(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID, STUDENT_ATTENDANCE.STUDENT_NO, STUDENT_ATTENDANCE.LOAD_ID, 
-								 STUDENT_ATTENDANCE.ATTENDANCE_DATE, STUDENT_ATTENDANCE.STATUS)
-				.from(STUDENT_ATTENDANCE).innerJoin(STUDENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT.STUDENT_NO))
-				.where(STUDENT_ATTENDANCE.LOAD_ID.eq(loadId)).fetchMaps();
-	}
 	
 //	List of students that is enrolled in professor's load subject
 	public List<Map<String, Object>> selectAllStudentsBySection() {
@@ -147,7 +143,7 @@ public class ProfessorCapabilitiesRepository {
 						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.TOTAL_GRADE.as("totalGrade"), GRADES.COMMENT,
 						GRADES.REMARKS, SECTION.SECTION_NAME.as("sectionName"),
 						T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
-						SUBJECT.SUBJECT_TITLE.as("subjectTitle"))
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.as("academicYearId"))
 				.from(GRADES)
 				.innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO))
 				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
@@ -155,6 +151,7 @@ public class ProfessorCapabilitiesRepository {
 				.innerJoin(SECTION).on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID))
 				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
 				.innerJoin(SUBJECT).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)).from(STUDENT_ENROLLMENT)))
 				.orderBy(USERS.LAST_NAME)
 				.fetchMaps();
 	}
@@ -256,9 +253,19 @@ public class ProfessorCapabilitiesRepository {
 	}
 	
 //	List of students attendance
-	public List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct() {
+	public List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct(Integer studentNo) {
+		AcademicYear academicYear = dslContext.select(ACADEMIC_YEAR.START_DATE, ACADEMIC_YEAR.END_DATE)
+											  .from(STUDENT_ENROLLMENT)
+											  .innerJoin(ACADEMIC_YEAR).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+											  .where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
+													 .and(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)).from(STUDENT_ENROLLMENT)))
+												)
+											  .fetchOneInto(AcademicYear.class);
+		
 		return dslContext.selectDistinct(STUDENT_ATTENDANCE.ATTENDANCE_DATE)
 						 .from(STUDENT_ATTENDANCE)
+						 .rightJoin(STUDENT_ENROLLMENT).on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
+						 .where(STUDENT_ATTENDANCE.ATTENDANCE_DATE.between(academicYear.getStartDate(), academicYear.getEndDate()))
 						 .orderBy(STUDENT_ATTENDANCE.ATTENDANCE_DATE)
 						 .fetchInto(StudentAttendance.class);
 	}

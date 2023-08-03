@@ -106,7 +106,7 @@ public class ProfessorCapabilitiesServiceImpl implements ProfessorCapabilitiesSe
 	}
 	
 	@Override
-	public List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct() {
-		return repository.selectStudentAttendanceByAttendanceDateDistinct();
+	public List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct(Integer studentNo) {
+		return repository.selectStudentAttendanceByAttendanceDateDistinct(studentNo);
 	}
 }

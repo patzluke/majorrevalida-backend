@@ -553,8 +553,8 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 		List<StudentScheduleRecord> studentScheduleRecords = new ArrayList<>();
 
 		EnrollmentData enrolledStudent = repository.fullyEnrollStudent(student);
-		
-		repository.selectSubmittedSubjectsOfstudentPerEnrollment(enrolledStudent.getStudentNo(), enrolledStudent.getSectionId()).forEach(data -> {
+		System.out.println(enrolledStudent.getEnrollmentId());
+		repository.selectSubmittedSubjectsOfstudentPerEnrollment(enrolledStudent.getStudentNo(), enrolledStudent.getSectionId(), enrolledStudent.getEnrollmentId()).forEach(data -> {
 					StudentSubjectEnrolled studentSubjectEnrolled = repository.fullyEnrollStudentSubjects(Integer.valueOf(data.get("loadId").toString()), 
 														  enrolledStudent.getEnrollmentId());
 					repository.insertGradesAndt_subject_detail_history(Integer.valueOf(data.get("professorNo").toString()), Integer.valueOf(data.get("subjectCode").toString()), 
@@ -564,6 +564,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 					LocalDate startDate = enrolledAcademicYear.getStartDate();
 			        LocalDate endDate = enrolledAcademicYear.getEndDate();
 			        LocalDate currentDate = startDate;
+			        
 					while (!currentDate.equals(endDate)) {
 						StudentAttendanceRecord record = dslContext.newRecord(STUDENT_ATTENDANCE);
 						record.setStudentNo(enrolledStudent.getStudentNo());
@@ -594,8 +595,8 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 	
 	@Override
-	public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollment(Integer studentNo) {
-		return repository.selectSubmittedSubjectsOfstudentPerEnrollment(studentNo);
+	public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollmentId(Integer studentNo, Integer enrollmentId) {
+		return repository.selectSubmittedSubjectsOfstudentPerEnrollmentId(studentNo, enrollmentId);
 	}
 	
 	@Override

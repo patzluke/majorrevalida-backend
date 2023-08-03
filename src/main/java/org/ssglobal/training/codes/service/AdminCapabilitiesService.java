@@ -215,7 +215,7 @@ public interface AdminCapabilitiesService {
 	public List<Map<String, Object>> selectFreshManStudentMinorSubject(Integer studentNo);
 	
 	// ---------------------- FOR Submitted Subjects for enrollment of students
-	List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollment(Integer studentNo);
+	List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollmentId(Integer studentNo, Integer enrollmentId);
 	
 	Map<String, Object> updateSubmittedSubjectsOfstudentPerEnrollmentStatus(Integer submittedSubjectsId, String status);
 }

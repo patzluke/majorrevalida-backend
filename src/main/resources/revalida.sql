@@ -421,7 +421,7 @@ insert into curriculum(major_code, curriculum_name, active_deactive) values(4003
 	values(9005, 9000, 1, 1);
 	
 	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
-	values('PATH-FIT', 'Physical Activities Towards Health and Fitness Sports', 2, 'true', 'true', 1000);
+	values('PATH-FIT I', 'Physical Activities Towards Health and Fitness Sports', 2, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9006, 9000, 1, 1);
 	
@@ -459,7 +459,7 @@ insert into curriculum(major_code, curriculum_name, active_deactive) values(4003
 	
 	--minor subjs
 	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
-	values('PATH-FIT', 'Physical Activities Towards Health and Fitness in Dance', 2, 'true', 'true', 1000);
+	values('PATH-FIT II', 'Physical Activities Towards Health and Fitness in Dance', 2, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9013, 9006, 1, 2);
 	
@@ -497,7 +497,7 @@ insert into curriculum(major_code, curriculum_name, active_deactive) values(4003
 	
 	--minor subjs
 	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
-	values('PATH-FIT', 'Fitness Exercises for Specific Sports', 2, 'true', 'true', 1000);
+	values('PATH-FIT III', 'Fitness Exercises for Specific Sports', 2, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9020, 9000, 2, 1);
 	
@@ -525,7 +525,7 @@ insert into curriculum(major_code, curriculum_name, active_deactive) values(4003
 	
 	--minor subjs
 	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
-	values('PATH-FIT', 'Human Enhancement', 2, 'true', 'true', 1000);
+	values('PATH-FIT IV', 'Human Enhancement', 2, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
 	values(9025, 9000, 2, 2);
 	
@@ -708,48 +708,48 @@ values(8001, 9010, 2, 1, 2001, 'T', '17:00', '20:00', 't');
 --2nd year
 --1st sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9016, 1, 3, 2001, 'M', '08:00', '11:00', 't');
+values(8001, 9016, 5, 3, 2001, 'M', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9017, 1, 3, 2001, 'M', '11:00', '14:00', 't');
+values(8001, 9017, 5, 3, 2001, 'M', '11:00', '14:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9016, 2, 3, 2001, 'M', '14:00', '17:00', 't');
+values(8001, 9016, 6, 3, 2001, 'M', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9017, 2, 3, 2001, 'M', '17:00', '20:00', 't');
+values(8001, 9017, 6, 3, 2001, 'M', '17:00', '20:00', 't');
 --2nd sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9018, 1, 4, 2001, 'M', '08:00', '11:00', 't');
+values(8001, 9018, 5, 4, 2001, 'M', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9019, 1, 4, 2001, 'M', '11:00', '14:00', 't');
+values(8001, 9019, 5, 4, 2001, 'M', '11:00', '14:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9018, 2, 4, 2001, 'T', '08:00', '11:00', 't');
+values(8001, 9018, 6, 4, 2001, 'T', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9019, 2, 4, 2001, 'T', '11:00', '14:00', 't');
+values(8001, 9019, 6, 4, 2001, 'T', '11:00', '14:00', 't');
 
 --3rd year
 --1st sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9027, 1, 1, 2001, 'F', '08:00', '11:00', 't');
+values(8001, 9027, 9, 1, 2001, 'F', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9028, 1, 1, 2001, 'F', '11:00', '14:00', 't');
+values(8001, 9028, 9, 1, 2001, 'F', '11:00', '14:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9027, 2, 1, 2001, 'F', '14:00', '17:00', 't');
+values(8001, 9027, 10, 1, 2001, 'F', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9028, 2, 1, 2001, 'F', '17:00', '20:00', 't');
+values(8001, 9028, 10, 1, 2001, 'F', '17:00', '20:00', 't');
 
 --4th year
 --1st sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9039, 1, 2, 2001, 'S', '08:00', '11:00', 't');
+values(8001, 9039, 13, 2, 2001, 'S', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9040, 1, 2, 2001, 'S', '11:00', '14:00', 't');
+values(8001, 9040, 13, 2, 2001, 'S', '11:00', '14:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9039, 2, 2, 2001, 'S', '14:00', '17:00', 't');
+values(8001, 9039, 14, 2, 2001, 'S', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8001, 9040, 2, 2, 2001, 'S', '17:00', '20:00', 't');
+values(8001, 9040, 14, 2, 2001, 'S', '17:00', '20:00', 't');
 
 -----------------------------------------8002
 --1st year
@@ -777,50 +777,50 @@ values(8002, 9012, 2, 2, 2001, 'T', '18:00', '20:00', 't');
 --2nd year
 --1st sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9020, 1, 3, 2001, 'T', '09:00', '11:00', 't');
+values(8002, 9020, 5, 3, 2001, 'T', '09:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9021, 1, 3, 2001, 'T', '12:00', '15:00', 't');
+values(8002, 9021, 5, 3, 2001, 'T', '12:00', '15:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9020, 2, 3, 2001, 'T', '16:00', '18:00', 't');
+values(8002, 9020, 6, 3, 2001, 'T', '16:00', '18:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9021, 2, 3, 2001, 'T', '18:00', '20:00', 't');
+values(8002, 9021, 6, 3, 2001, 'T', '18:00', '20:00', 't');
 
 --3rd year
 --1st sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9029, 1, 2, 2001, 'Th', '09:00', '11:00', 't');
+values(8002, 9029, 9, 2, 2001, 'Th', '09:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9030, 1, 2, 2001, 'Th', '12:00', '15:00', 't');
+values(8002, 9030, 9, 2, 2001, 'Th', '12:00', '15:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9029, 2, 2, 2001, 'Th', '16:00', '18:00', 't');
+values(8002, 9029, 10, 2, 2001, 'Th', '16:00', '18:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9030, 2, 2, 2001, 'Th', '18:00', '20:00', 't');
+values(8002, 9030, 10, 2, 2001, 'Th', '18:00', '20:00', 't');
 
 --4th year
 --1st sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9037, 1, 2, 2001, 'F', '08:00', '11:00', 't');
+values(8002, 9037, 13, 2, 2001, 'F', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9038, 1, 2, 2001, 'F', '11:00', '14:00', 't');
+values(8002, 9038, 13, 2, 2001, 'F', '11:00', '14:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9037, 2, 2, 2001, 'F', '14:00', '17:00', 't');
+values(8002, 9037, 14, 2, 2001, 'F', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9038, 2, 2, 2001, 'F', '17:00', '20:00', 't');
+values(8002, 9038, 14, 2, 2001, 'F', '17:00', '20:00', 't');
 
 --4th year
 --2nd sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9041, 1, 2, 2001, 'S', '08:00', '11:00', 't');
+values(8002, 9041, 13, 2, 2001, 'S', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9042, 1, 2, 2001, 'S', '11:00', '14:00', 't');
+values(8002, 9042, 13, 2, 2001, 'S', '11:00', '14:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9041, 2, 2, 2001, 'S', '14:00', '17:00', 't');
+values(8002, 9041, 14, 2, 2001, 'S', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8002, 9042, 2, 2, 2001, 'S', '17:00', '20:00', 't');
+values(8002, 9042, 14, 2, 2001, 'S', '17:00', '20:00', 't');
 
 
 -----------------------------------------8003
@@ -849,37 +849,37 @@ values(8003, 9014, 2, 3, 2001, 'W', '17:00', '20:00', 't');
 --2nd year
 --2nd sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9022, 1, 3, 2001, 'W', '08:00', '11:00', 't');
+values(8003, 9022, 5, 3, 2001, 'W', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9023, 1, 3, 2001, 'W', '11:00', '14:00', 't');
+values(8003, 9023, 5, 3, 2001, 'W', '11:00', '14:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9022, 2, 3, 2001, 'W', '14:00', '17:00', 't');
+values(8003, 9022, 6, 3, 2001, 'W', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9023, 2, 3, 2001, 'W', '17:00', '20:00', 't');
+values(8003, 9023, 6, 3, 2001, 'W', '17:00', '20:00', 't');
 
 --3rd year
 --1st sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9031, 1, 2, 2001, 'Th', '08:00', '11:00', 't');
+values(8003, 9031, 9, 2, 2001, 'Th', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9031, 2, 2, 2001, 'Th', '11:00', '14:00', 't');
+values(8003, 9031, 10, 2, 2001, 'Th', '11:00', '14:00', 't');
 
 --2nd sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9033, 1, 2, 2001, 'Th', '14:00', '17:00', 't');
+values(8003, 9033, 9, 2, 2001, 'Th', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9033, 2, 2, 2001, 'Th', '17:00', '20:00', 't');
+values(8003, 9033, 10, 2, 2001, 'Th', '17:00', '20:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9034, 1, 2, 2001, 'F', '08:00', '11:00', 't');
+values(8003, 9034, 9, 2, 2001, 'F', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9035, 1, 2, 2001, 'F', '11:00', '14:00', 't');
+values(8003, 9035, 9, 2, 2001, 'F', '11:00', '14:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9034, 2, 2, 2001, 'F', '14:00', '17:00', 't');
+values(8003, 9034, 10, 2, 2001, 'F', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8003, 9035, 2, 2, 2001, 'F', '17:00', '20:00', 't');
+values(8003, 9035, 10, 2, 2001, 'F', '17:00', '20:00', 't');
 
 
 -----------------------------------------8004
@@ -921,19 +921,19 @@ values(8004, 9026, 2, 4, 2001, 'Th', '14:00', '17:00', 't');
 --3rd year
 --2nd sem
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8004, 9032, 1, 4, 2001, 'Th', '14:00', '17:00', 't');
+values(8004, 9032, 9, 4, 2001, 'Th', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8004, 9032, 2, 4, 2001, 'Th', '17:00', '20:00', 't');
+values(8004, 9032, 10, 4, 2001, 'Th', '17:00', '20:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8004, 9036, 1, 2, 2001, 'F', '08:00', '11:00', 't');
+values(8004, 9036, 9, 2, 2001, 'F', '08:00', '11:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8004, 9036, 2, 2, 2001, 'F', '11:00', '14:00', 't');
+values(8004, 9036, 10, 2, 2001, 'F', '11:00', '14:00', 't');
 
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8004, 9043, 1, 2, 2001, 'F', '14:00', '17:00', 't');
+values(8004, 9043, 9, 2, 2001, 'F', '14:00', '17:00', 't');
 insert into professor_load(professor_no, subject_code, section_id, room_id, dept_code, day, start_time, end_time, active_deactive) 
-values(8004, 9043, 2, 2, 2001, 'F', '17:00', '20:00', 't');
+values(8004, 9043, 10, 2, 2001, 'F', '17:00', '20:00', 't');
 
 
 --insert into users and Student table
@@ -2300,19 +2300,14 @@ INSERT INTO student_applicant (
     ('New', 3001, 4001, 1, 2023, 1, 'David', 'Johnson', 'Taylor', NULL, 'Male', 'Married', 'France', '1992-04-05', 'Paris', 'Jewish', '345 Walnut St', '333333333', '777777777', 'david.johnson@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '333333333', 'father5@example.com', 'Entrepreneur', 'Mother', NOW(), NULL, 'Pending');
 
 
-select sub.abbrevation, pl.*, msub.sem from professor_load pl
-inner join subject sub on pl.subject_code = sub.subject_code
-inner join major_subject msub on sub.subject_code = msub.subject_code
-where msub.year_level = 2 and msub.sem = 1 and pl.section_id = 1;
-
-select sub.abbrevation, pl.*, msub.sem from professor_load pl
-inner join subject sub on pl.subject_code = sub.subject_code
-inner join minor_subject msub on sub.subject_code = msub.subject_code
-where msub.year_level = 2 and msub.sem = 1 and pl.section_id = 1;
-
 select se.student_no, sub.abbrevation from submitted_subjects_for_enrollment ssfe
 inner join student_enrollment se on ssfe.enrollment_id = se.enrollment_id
 inner join professor_load pl on ssfe.subject_code = pl.subject_code
 inner join subject sub on ssfe.subject_code = sub.subject_code
 
 where se.student_no = 77015 and ssfe.enrollment_id = (select max(enrollment_id) from submitted_subjects_for_enrollment);
+
+select distinct sa.attendance_date from student_attendance sa
+right join student_enrollment se on sa.student_no = se.student_no
+where sa.attendance_date between '2023-08-11' and '2023-08-15' and sa.student_no = 77001
+order by sa.attendance_date;
