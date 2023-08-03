@@ -2309,5 +2309,5 @@ where se.student_no = 77015 and ssfe.enrollment_id = (select max(enrollment_id) 
 
 select distinct sa.attendance_date from student_attendance sa
 right join student_enrollment se on sa.student_no = se.student_no
-where sa.attendance_date between '2023-08-11' and '2023-08-15' and sa.student_no = 77001
+where sa.attendance_date between '2023-08-15' and '2023-12-31' and sa.load_id = 1
 order by sa.attendance_date;
