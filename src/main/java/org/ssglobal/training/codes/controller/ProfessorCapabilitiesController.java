@@ -27,8 +27,8 @@ public class ProfessorCapabilitiesController {
 
 	@Autowired
 	private ProfessorCapabilitiesService service;
-	
-	@GetMapping(value = "/get/{professorNo}", produces = {MediaType.APPLICATION_JSON_VALUE})
+
+	@GetMapping(value = "/get/{professorNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserAndProfessor> selectProfessor(@PathVariable(name = "professorNo") Integer professorNo) {
 		try {
 			UserAndProfessor selectedProfessor = service.selectProfessor(professorNo);
@@ -41,9 +41,10 @@ public class ProfessorCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	@SuppressWarnings("rawtypes")
-	@PutMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+	@PutMapping(value = "/update", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity updateProfessor(@RequestBody UserAndProfessor userAndProfessor) {
 		try {
 			UserAndProfessor updatedProfessor = service.updateProfessor(userAndProfessor);
@@ -58,7 +59,7 @@ public class ProfessorCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
+
 	@GetMapping(value = "/get/loads/{professorNo}")
 	public ResponseEntity<List<ProfessorLoad>> selecAllLoad(@PathVariable(name = "professorNo") Integer professorNo) {
 		try {
@@ -72,9 +73,10 @@ public class ProfessorCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	@GetMapping(value = "/get/loads/subject/{professorNo}")
-	public ResponseEntity<List<Map<String, Object>>> selecAllLoads(@PathVariable(name = "professorNo") Integer professorNo) {
+	public ResponseEntity<List<Map<String, Object>>> selecAllLoads(
+			@PathVariable(name = "professorNo") Integer professorNo) {
 		try {
 			List<Map<String, Object>> selectedLoads = service.selectAllLoads(professorNo);
 			if (selectedLoads != null) {
@@ -86,13 +88,15 @@ public class ProfessorCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	@GetMapping(value = "/get/section/subject/{professorNo}")
-	public ResponseEntity<List<Map<String, Object>>> selectProfessorLoadByProfessorNoAndSubjectCodeAndSection(@RequestParam(name = "professorNo") Integer professorNo,
-																											  @RequestParam(name = "subjectCode") Integer subjectCode,
-																											  @RequestParam(name = "sectionName") String sectionName) {
+	public ResponseEntity<List<Map<String, Object>>> selectProfessorLoadByProfessorNoAndSubjectCodeAndSection(
+			@RequestParam(name = "professorNo") Integer professorNo,
+			@RequestParam(name = "subjectCode") Integer subjectCode,
+			@RequestParam(name = "sectionName") String sectionName) {
 		try {
-			List<Map<String, Object>> selectedLoads = service.selectProfessorLoadByProfessorNoAndSubjectCodeAndSection(professorNo, subjectCode, sectionName);
+			List<Map<String, Object>> selectedLoads = service
+					.selectProfessorLoadByProfessorNoAndSubjectCodeAndSection(professorNo, subjectCode, sectionName);
 			if (selectedLoads != null) {
 				return ResponseEntity.ok(selectedLoads);
 			}
@@ -116,15 +120,16 @@ public class ProfessorCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
+
 	@GetMapping(value = "/get/studentattendance")
-	public ResponseEntity<List<Map<String, Object>>> selectStudentAttendanceByStudentNoAndSubjectAndSectionAndProfessorNo(@RequestParam(name = "subjectTitle") String subjectTitle,
-																			 											@RequestParam(name = "sectionName") String sectionName,
-																			 											@RequestParam(name = "professorNo") Integer professorNo,
-																			 											@RequestParam(name = "date") String date) {
+	public ResponseEntity<List<Map<String, Object>>> selectStudentAttendanceByStudentNoAndSubjectAndSectionAndProfessorNo(
+			@RequestParam(name = "subjectTitle") String subjectTitle,
+			@RequestParam(name = "sectionName") String sectionName,
+			@RequestParam(name = "professorNo") Integer professorNo, @RequestParam(name = "date") String date) {
 		try {
-			List<Map<String, Object>> students = 
-					service.selectStudentAttendanceByStudentNoAndSubjectAndSectionAndProfessorNo(subjectTitle, sectionName, professorNo, date);
+			List<Map<String, Object>> students = service
+					.selectStudentAttendanceByStudentNoAndSubjectAndSectionAndProfessorNo(subjectTitle, sectionName,
+							professorNo, date);
 			if (students != null) {
 				return ResponseEntity.ok(students);
 			}
@@ -148,7 +153,7 @@ public class ProfessorCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/studentattendance", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
@@ -167,7 +172,7 @@ public class ProfessorCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/studentgrades", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
@@ -186,7 +191,7 @@ public class ProfessorCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/studentgrades/submit", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
@@ -205,5 +210,5 @@ public class ProfessorCapabilitiesController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
-	
-}	
+
+}
