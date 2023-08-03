@@ -538,6 +538,16 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<Map<String, Object>> getAllStudentWithAcademicYear() {
 		return repository.getAllStudentWithAcademicYear();
 	}
+	
+	@Override
+	public Map<String, Object> selectParentByStudent(Integer studentNo) {
+		return repository.selectParentByStudent(studentNo);
+	}
+	
+	@Override
+	public UserAndStudent selectStudent(Integer studentNo) {
+		return repository.selectStudent(studentNo);
+	}
 
 	@Override
 	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {		
