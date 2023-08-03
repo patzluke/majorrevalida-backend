@@ -98,6 +98,8 @@ public interface AdminCapabilitiesService {
 	StudentApplicant updateStudentApplicantStatus(StudentApplicant studentApplicant);
 
 	// ------------------------FOR StudentEnrollment
+	UserAndStudent selectStudent(Integer studentNo);
+	Map<String, Object> selectParentByStudent(Integer studentNo);
 	StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant);
 
 	List<Map<String, Object>> getAllEnrollmentData();

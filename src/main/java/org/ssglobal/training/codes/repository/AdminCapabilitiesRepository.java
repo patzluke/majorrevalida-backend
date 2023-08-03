@@ -409,6 +409,24 @@ public class AdminCapabilitiesRepository {
 	}
 
 	// ------------------------FOR STUDENT_ENROLLMENT
+	public UserAndStudent selectStudent(Integer studentNo) {
+		return dslContext.select(STUDENT.STUDENT_NO.as("studentNo"), USERS.EMAIL.as("email"))
+						 .from(STUDENT)
+						 .join(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
+						 .where(STUDENT.STUDENT_NO.eq(studentNo))
+						 .fetchOneInto(UserAndStudent.class);
+	}
+	public Map<String, Object> selectParentByStudent(Integer studentNo) {
+		Map<String, Object> parentNo = dslContext.select(STUDENT.PARENT_NO.as("parentNo")).from(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo))
+												 .fetchOneMap();
+		Map<String, Object> parentInfo = dslContext.select(PARENT.PARENT_NO.as("parentNo"), USERS.EMAIL.as("email"))
+											 .from(PARENT)
+											 .join(USERS).on(PARENT.USER_ID.eq(USERS.USER_ID))
+											 .where(PARENT.PARENT_NO.eq(Integer.valueOf(parentNo.get("parentNo").toString())))
+								.fetchOneMap();
+		return parentInfo;
+	}
+	
 	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {
 
 		// Get the academic_year_id
