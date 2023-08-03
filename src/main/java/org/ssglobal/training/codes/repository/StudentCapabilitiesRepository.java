@@ -202,8 +202,7 @@ public class StudentCapabilitiesRepository {
 
 	public List<Map<String, Object>> selectAllStudentSubjectEnrolledByStudentNo(Integer studentNo) {
 		return dslContext
-				.select(STUDENT_SUBJECT_ENROLLED.ENROLL_SUBJECT_ID.as("enrollSubjectId"),
-						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.SUBJECT_CODE.as("subjectCode"),
+				.selectDistinct(STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.SUBJECT_CODE.as("subjectCode"),
 						SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"))
 				.from(STUDENT_SUBJECT_ENROLLED).innerJoin(STUDENT_ENROLLMENT)
 				.on(STUDENT_SUBJECT_ENROLLED.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
@@ -229,7 +228,7 @@ public class StudentCapabilitiesRepository {
 				.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(SUBJECT)
 				.on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(SUBJECT.SUBJECT_TITLE.eq(subjectTitle).and(STUDENT.STUDENT_NO.eq(studentNo)))
-				.orderBy(STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID).fetchMaps();
+				.orderBy(STUDENT_ATTENDANCE.ATTENDANCE_DATE).fetchMaps();
 	}
 
 	// ------------ FOR GRADES
