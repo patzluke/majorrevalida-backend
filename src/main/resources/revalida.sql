@@ -936,7 +936,7 @@ insert into professor_load(professor_no, subject_code, section_id, room_id, dept
 values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 
 
---insert into users and Student table
+----insert into users and Student table
 --insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 --values('cachuela', '123456', 'Cachuela@gmail.com', '9188192721', 'Cachuela', 'Astros', 'Angelo', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'Cachuela.jpeg');
 --insert into student(user_id, curriculum_code, academic_year_id, year_level) values(9, 5001, 3, 1);
@@ -988,16 +988,16 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
 --values('oogway', '123456', 'oogway@gmail.com', '9188192756', 'Oogway', 'WayOgg', 'Og', 'Student', '1980-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true', 'oogway.jpeg');
 --insert into student(user_id, curriculum_code, academic_year_id, year_level) values(21, 5001, 3, 3);
-
-----------------1st sem
---insert into student_enrollment
+--
+------------------1st sem
+----insert into student_enrollment
 --insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
 --values(77001, 3, 1, 'Full', 'Enrolled');
-
---sample data for next enrollment
---insert into student_enrollment(student_no, academic_year_id) 
---values(77001, 4);
-
+--
+----sample data for next enrollment
+----insert into student_enrollment(student_no, academic_year_id) 
+----values(77001, 4);
+--
 --insert into student_subject_enrolled(load_id, enrollment_id) values
 --(1, 1),
 --(2, 1),
@@ -1007,8 +1007,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(50, 1),
 --(69, 1),
 --(70, 1);
-
---insert into t_subject_detail_history
+--
+----insert into t_subject_detail_history
 --insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 --(8001, 9001, 3),
 --(8001, 9002, 3),
@@ -1019,8 +1019,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(8004, 9007, 3),
 --(8004, 9008, 3)
 --;
-
---insert into grades
+--
+----insert into grades
 --insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
 --(77001, 1, 1, 0.00, 0.00),
 --(77001, 2, 2, 0.00, 0.00),
@@ -1044,8 +1044,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(50, 2),
 --(69, 2),
 --(70, 2);
-
---insert into t_subject_detail_history
+--
+----insert into t_subject_detail_history
 --insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 --(8001, 9001, 3),
 --(8001, 9002, 3),
@@ -1056,8 +1056,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(8004, 9007, 3),
 --(8004, 9008, 3)
 --;
-
---insert into grades
+--
+----insert into grades
 --insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
 --(77002, 9, 9, 0.00, 0.00),
 --(77002, 10, 10, 0.00, 0.00),
@@ -1068,7 +1068,7 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77002, 15, 15, 0.00, 0.00),
 --(77002, 16, 16, 0.00, 0.00)
 --;
-
+--
 --insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
 --values(77003, 3, 1, 'Full', 'Enrolled');
 --
@@ -1081,8 +1081,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(50, 3),
 --(69, 3),
 --(70, 3);
-
---insert into t_subject_detail_history
+--
+----insert into t_subject_detail_history
 --insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 --(8001, 9001, 3),
 --(8001, 9002, 3),
@@ -1093,8 +1093,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(8004, 9007, 3),
 --(8004, 9008, 3)
 --;
-
---insert into grades
+--
+----insert into grades
 --insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
 --(77003, 17, 17, 0.00, 0.00),
 --(77003, 18, 18, 0.00, 0.00),
@@ -1105,7 +1105,7 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77003, 23, 23, 0.00, 0.00),
 --(77003, 24, 24, 0.00, 0.00)
 --;
-
+--
 --insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
 --values(77004, 3, 1, 'Partial', 'Enrolled');
 --
@@ -1118,8 +1118,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(50, 4),
 --(69, 4),
 --(70, 4);
-
---insert into t_subject_detail_history
+--
+----insert into t_subject_detail_history
 --insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 --(8001, 9001, 3),
 --(8001, 9002, 3),
@@ -1130,8 +1130,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(8004, 9007, 3),
 --(8004, 9008, 3)
 --;
-
---insert into grades
+--
+----insert into grades
 --insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
 --(77004, 25, 25, 0.00, 0.00),
 --(77004, 26, 26, 0.00, 0.00),
@@ -1142,8 +1142,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77004, 31, 31, 0.00, 0.00),
 --(77004, 32, 32, 0.00, 0.00)
 --;
-
-
+--
+--
 --insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
 --values(77005, 3, 1, 'Full', 'Enrolled');
 --
@@ -1156,8 +1156,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(50, 5),
 --(69, 5),
 --(70, 5);
-
---insert into t_subject_detail_history
+--
+----insert into t_subject_detail_history
 --insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 --(8001, 9001, 3),
 --(8001, 9002, 3),
@@ -1168,8 +1168,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(8004, 9007, 3),
 --(8004, 9008, 3)
 --;
-
---insert into grades
+--
+----insert into grades
 --insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
 --(77005, 33, 33, 0.00, 0.00),
 --(77005, 34, 34, 0.00, 0.00),
@@ -1180,8 +1180,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77005, 39, 39, 0.00, 0.00),
 --(77005, 40, 40, 0.00, 0.00)
 --;
-
-
+--
+--
 --insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
 --values(77006, 3, 1, 'Partial', 'Enrolled');
 --
@@ -1194,8 +1194,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(50, 6),
 --(69, 6),
 --(70, 6);
-
---insert into t_subject_detail_history
+--
+----insert into t_subject_detail_history
 --insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 --(8001, 9001, 3),
 --(8001, 9002, 3),
@@ -1206,8 +1206,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(8004, 9007, 3),
 --(8004, 9008, 3)
 --;
-
---insert into grades
+--
+----insert into grades
 --insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
 --(77006, 41, 41, 0.00, 0.00),
 --(77006, 42, 42, 0.00, 0.00),
@@ -1218,7 +1218,7 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77006, 47, 47, 0.00, 0.00),
 --(77006, 48, 48, 0.00, 0.00)
 --;
-
+--
 --insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
 --values(77007, 3, 1, 'Full', 'Enrolled');
 --
@@ -1231,8 +1231,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(50, 7),
 --(69, 7),
 --(70, 7);
-
---insert into t_subject_detail_history
+--
+----insert into t_subject_detail_history
 --insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 --(8001, 9001, 3),
 --(8001, 9002, 3),
@@ -1243,8 +1243,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(8004, 9007, 3),
 --(8004, 9008, 3)
 --;
-
---insert into grades
+--
+----insert into grades
 --insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
 --(77007, 49, 49, 0.00, 0.00),
 --(77007, 50, 50, 0.00, 0.00),
@@ -1255,7 +1255,7 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77007, 55, 55, 0.00, 0.00),
 --(77007, 56, 56, 0.00, 0.00)
 --;
-
+--
 --insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
 --values(77008, 3, 1, 'Full', 'Enrolled');
 --
@@ -1268,8 +1268,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(50, 8),
 --(69, 8),
 --(70, 8);
-
---insert into t_subject_detail_history
+--
+----insert into t_subject_detail_history
 --insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 --(8001, 9001, 3),
 --(8001, 9002, 3),
@@ -1280,8 +1280,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(8004, 9007, 3),
 --(8004, 9008, 3)
 --;
-
---insert into grades
+--
+----insert into grades
 --insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
 --(77008, 57, 57, 0.00, 0.00),
 --(77008, 58, 58, 0.00, 0.00),
@@ -1292,7 +1292,7 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77008, 63, 63, 0.00, 0.00),
 --(77008, 64, 64, 0.00, 0.00)
 --;
-
+--
 --insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
 --values(77009, 3, 1, 'Full', 'Enrolled');
 --
@@ -1305,8 +1305,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(50, 9),
 --(69, 9),
 --(70, 9);
-
---insert into t_subject_detail_history
+--
+----insert into t_subject_detail_history
 --insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 --(8001, 9001, 3),
 --(8001, 9002, 3),
@@ -1317,8 +1317,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(8004, 9007, 3),
 --(8004, 9008, 3)
 --;
-
---insert into grades
+--
+----insert into grades
 --insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
 --(77009, 65, 65, 0.00, 0.00),
 --(77009, 66, 66, 0.00, 0.00),
@@ -1329,7 +1329,7 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77009, 71, 71, 0.00, 0.00),
 --(77009, 72, 72, 0.00, 0.00)
 --;
-
+--
 --insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
 --values(77010, 3, 1, 'Partial', 'Enrolled');
 --
@@ -1342,8 +1342,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(50, 10),
 --(69, 10),
 --(70, 10);
-
---insert into t_subject_detail_history
+--
+----insert into t_subject_detail_history
 --insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 --(8001, 9001, 3),
 --(8001, 9002, 3),
@@ -1354,8 +1354,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(8004, 9007, 3),
 --(8004, 9008, 3)
 --;
-
---insert into grades
+--
+----insert into grades
 --insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
 --(77010, 73, 73, 0.00, 0.00),
 --(77010, 74, 74, 0.00, 0.00),
@@ -1366,8 +1366,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77010, 79, 79, 0.00, 0.00),
 --(77010, 80, 80, 0.00, 0.00)
 --;
-
-
+--
+--
 --insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
 --values(77011, 3, 1, 'Full', 'Enrolled');
 --
@@ -1380,8 +1380,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(50, 11),
 --(69, 11),
 --(70, 11);
-
---insert into t_subject_detail_history
+--
+----insert into t_subject_detail_history
 --insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 --(8001, 9001, 3),
 --(8001, 9002, 3),
@@ -1392,8 +1392,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(8004, 9007, 3),
 --(8004, 9008, 3)
 --;
-
---insert into grades
+--
+----insert into grades
 --insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
 --(77011, 81, 81, 0.00, 0.00),
 --(77011, 82, 82, 0.00, 0.00),
@@ -1404,7 +1404,7 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77011, 87, 87, 0.00, 0.00),
 --(77011, 88, 88, 0.00, 0.00)
 --;
-
+--
 --insert into student_enrollment(student_no, academic_year_id, section_id, payment_status, status) 
 --values(77012, 3, 1, 'Full', 'Enrolled');
 --
@@ -1417,8 +1417,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(50, 12),
 --(69, 12),
 --(70, 12);
-
---insert into t_subject_detail_history
+--
+----insert into t_subject_detail_history
 --insert into t_subject_detail_history(professor_no, subject_code, academic_year_id) values
 --(8001, 9001, 3),
 --(8001, 9002, 3),
@@ -1429,8 +1429,8 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(8004, 9007, 3),
 --(8004, 9008, 3)
 --;
-
---insert into grades
+--
+----insert into grades
 --insert into grades(student_no, subject_detail_his_id, enroll_subject_id, prelim_grade, finals_grade) values
 --(77012, 89, 89, 0.00, 0.00),
 --(77012, 90, 90, 0.00, 0.00),
@@ -1441,12 +1441,12 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77012, 95, 95, 0.00, 0.00),
 --(77012, 96, 96, 0.00, 0.00)
 --;
-
+--
 --insert into student_enrollment(student_no, academic_year_id, status) 
 --values(77013, 3, 'Not Enrolled');
-
---insert into student_schedule
---1st sem
+--
+----insert into student_schedule
+----1st sem
 --insert into student_schedule(student_no, load_id, academic_year_id) values
 --(77001, 1, 3),
 --(77001, 2, 3),
@@ -1456,7 +1456,7 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77001, 50, 3),
 --(77001, 69, 3),
 --(77001, 70, 3);
-
+--
 --insert into student_schedule(student_no, load_id, academic_year_id) values
 --(77002, 1, 3),
 --(77002, 2, 3),
@@ -1466,7 +1466,7 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77002, 50, 3),
 --(77002, 69, 3),
 --(77002, 70, 3);
-
+--
 --insert into student_schedule(student_no, load_id, academic_year_id) values
 --(77003, 1, 3),
 --(77003, 2, 3),
@@ -1566,9 +1566,9 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77012, 50, 3),
 --(77012, 69, 3),
 --(77012, 70, 3);
-
---insert into student_attendance
---1st sem
+--
+----insert into student_attendance
+----1st sem
 --insert into student_attendance(student_no, load_id, attendance_date) values
 --(77001, 1, '2023-07-11'),
 --(77001, 1, '2023-08-11'),
@@ -1625,7 +1625,7 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77001, 70, '2023-08-13'),
 --(77001, 70, '2023-08-14'),
 --(77001, 70, '2023-08-15');
-
+--
 --insert into student_attendance(student_no, load_id, attendance_date) values
 --(77002, 1, '2023-07-11'),
 --(77002, 1, '2023-08-11'),
@@ -1682,7 +1682,7 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --(77002, 70, '2023-08-13'),
 --(77002, 70, '2023-08-14'),
 --(77002, 70, '2023-08-15');
-
+--
 --insert into student_attendance(student_no, load_id, attendance_date) values
 --(77003, 1, '2023-07-11'),
 --(77003, 1, '2023-08-11'),
@@ -2300,14 +2300,15 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 --    ('New', 3001, 4001, 1, 2023, 1, 'David', 'Johnson', 'Taylor', NULL, 'Male', 'Married', 'France', '1992-04-05', 'Paris', 'Jewish', '345 Walnut St', '333333333', '777777777', 'david.johnson@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '333333333', 'father5@example.com', 'Entrepreneur', 'Mother', NOW(), NULL, 'Pending');
 --
 
---select se.student_no, sub.abbrevation from submitted_subjects_for_enrollment ssfe
---inner join student_enrollment se on ssfe.enrollment_id = se.enrollment_id
---inner join professor_load pl on ssfe.subject_code = pl.subject_code
---inner join subject sub on ssfe.subject_code = sub.subject_code
---
---where se.student_no = 77015 and ssfe.enrollment_id = (select max(enrollment_id) from submitted_subjects_for_enrollment);
---
---select distinct sa.attendance_date from student_attendance sa
---right join student_enrollment se on sa.student_no = se.student_no
---where sa.attendance_date between '2023-08-15' and '2023-12-31' and sa.load_id = 1
---order by sa.attendance_date;
+
+select se.student_no, sub.abbrevation from submitted_subjects_for_enrollment ssfe
+inner join student_enrollment se on ssfe.enrollment_id = se.enrollment_id
+inner join professor_load pl on ssfe.subject_code = pl.subject_code
+inner join subject sub on ssfe.subject_code = sub.subject_code
+
+where se.student_no = 77015 and ssfe.enrollment_id = (select max(enrollment_id) from submitted_subjects_for_enrollment);
+
+select distinct sa.attendance_date, sa.load_id from student_attendance sa
+right join student_enrollment se on sa.student_no = se.student_no
+where sa.load_id = 1
+order by sa.attendance_date;
