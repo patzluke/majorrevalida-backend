@@ -2,6 +2,7 @@ package org.ssglobal.training.codes.repository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -1405,9 +1406,20 @@ public class AdminCapabilitiesRepository {
 				.fetchMaps();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean insertGradesAndt_subject_detail_history(Integer professorNo, Integer subjectCode,
 			Integer academicYearId, Integer studentNo, Integer enrollSubjectId) {
-
+		
+		List<Map<String, Object>> gradesAndSubjectHistory = selectSubjectDetailHistoryInnerjoinGradesByStudentNoAndAcademicYear(academicYearId, studentNo);
+		if (gradesAndSubjectHistory != null) {
+			for (Iterator iterator = gradesAndSubjectHistory.iterator(); iterator.hasNext();) {
+				Map<String, Object> data = (Map<String, Object>) iterator.next();
+				if (Integer.valueOf(data.get("subjectCode").toString()).equals(subjectCode)) {
+					return false;
+				}
+			}
+		}
+		
 		TSubjectDetailHistory insertedTSubjectDetailHistory = dslContext.insertInto(T_SUBJECT_DETAIL_HISTORY)
 				.set(T_SUBJECT_DETAIL_HISTORY.PROFESSOR_NO, professorNo)
 				.set(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE, subjectCode)
@@ -1422,6 +1434,19 @@ public class AdminCapabilitiesRepository {
 			return true;
 		}
 		return false;
+	}
+	
+	public List<Map<String, Object>> selectSubjectDetailHistoryInnerjoinGradesByStudentNoAndAcademicYear(Integer academicYearId, Integer studentNo) {
+		List<Map<String, Object>> query = dslContext
+				.select(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID.as("subjectDetailHisId"), T_SUBJECT_DETAIL_HISTORY.PROFESSOR_NO.as("professorNo"),
+						T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"), T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID.as("academicYearId"),
+						GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"))
+				.from(GRADES)
+				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
+				.where(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID.eq(academicYearId)
+						.and(GRADES.STUDENT_NO.eq(studentNo)))
+				.fetchMaps();
+		return !query.isEmpty() ? query : null;
 	}
 
 	// -------------------------- Get All Minor Subject
@@ -2497,9 +2522,9 @@ public class AdminCapabilitiesRepository {
 	public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollment(Integer studentNo, Integer sectionId,
 			Integer enrollmentId) {
 		return dslContext
-				.select(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.as("submittedSubjectsId"),
+				.selectDistinct(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.as("submittedSubjectsId"),
 						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.ABBREVATION,
-						SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS, PROFESSOR_LOAD.LOAD_ID.as("loadId"),
+						SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS, PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.SECTION_ID.as("sectionId"),
 						PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
 						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
 				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT).innerJoin(STUDENT_ENROLLMENT)
