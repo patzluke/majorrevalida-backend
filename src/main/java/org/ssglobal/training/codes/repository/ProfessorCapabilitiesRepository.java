@@ -109,7 +109,7 @@ public class ProfessorCapabilitiesRepository {
 		.on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(ROOM)
 		.on(PROFESSOR_LOAD.ROOM_ID.eq(ROOM.ROOM_ID)).innerJoin(DEPARTMENT)
 		.on(PROFESSOR_LOAD.DEPT_CODE.eq(DEPARTMENT.DEPT_CODE))
-		.where(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo))
+		.where(PROFESSOR_LOAD.PROFESSOR_NO.eq(professorNo).and(PROFESSOR_LOAD.ACTIVE_DEACTIVE.eq(true)))
 		.fetchMaps();
 	}
 	
@@ -208,7 +208,9 @@ public class ProfessorCapabilitiesRepository {
 			
 			if (totalGrade >= 75) {
 				remarks = "Passed";
-			} else if (totalGrade < 75) {
+			} else if (totalGrade > 70 && totalGrade <= 74 || student.getFinalsGrade() == 0) {
+				remarks = "Conditional";
+			} else if (totalGrade < 70) {
 				remarks = "Failed";
 			}
 			System.out.println(student);
