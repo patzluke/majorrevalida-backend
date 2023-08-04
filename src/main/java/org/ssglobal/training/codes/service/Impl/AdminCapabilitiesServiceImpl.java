@@ -25,6 +25,7 @@ import org.ssglobal.training.codes.service.AdminCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Department;
+import org.ssglobal.training.codes.tables.pojos.EvaluationQuestion;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
@@ -617,5 +618,35 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public Map<String, Object> updateSubmittedSubjectsOfstudentPerEnrollmentStatus(Integer submittedSubjectsId,
 			String status) {
 		return repository.updateSubmittedSubjectsOfstudentPerEnrollmentStatus(submittedSubjectsId, status);
+	}
+	
+	@Override
+	public List<EvaluationQuestion> selectAllEvaluationQuestions() {
+		return repository.selectAllEvaluationQuestions();
+	}
+	
+	@Override
+	public EvaluationQuestion insertIntoEvaluationQuestions(EvaluationQuestion question) throws  DuplicateKeyException, Exception {
+		selectAllEvaluationQuestions().forEach(evaluationQuestion -> {
+			if (evaluationQuestion.getQuestion().equals(question.getQuestion())) {
+				throw new DuplicateKeyException("Question already exists");
+			}
+		});
+		return repository.insertIntoEvaluationQuestions(question);
+	}
+	
+	@Override
+	public EvaluationQuestion updateEvaluationQuestion(EvaluationQuestion question) throws  DuplicateKeyException, Exception {
+		selectAllEvaluationQuestions().forEach(evaluationQuestion -> {
+			if (evaluationQuestion.getQuestion().equals(question.getQuestion())) {
+				throw new DuplicateKeyException("Question already exists");
+			}
+		});
+		return repository.updateEvaluationQuestion(question);
+	}
+	
+	@Override
+	public EvaluationQuestion deleteEvaluationQuestion(Integer evaluationQuestionId) {
+		return repository.deleteEvaluationQuestion(evaluationQuestionId);
 	}
 }

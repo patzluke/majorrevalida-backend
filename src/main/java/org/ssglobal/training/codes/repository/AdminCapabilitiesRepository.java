@@ -21,6 +21,7 @@ import org.ssglobal.training.codes.tables.pojos.Admin;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Department;
+import org.ssglobal.training.codes.tables.pojos.EvaluationQuestion;
 import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.MajorSubject;
@@ -72,6 +73,7 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Section SECTION = org.ssglobal.training.codes.tables.Section.SECTION;
 	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
 	private final org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment SUBMITTED_SUBJECTS_FOR_ENROLLMENT = org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment.SUBMITTED_SUBJECTS_FOR_ENROLLMENT;
+	private final org.ssglobal.training.codes.tables.EvaluationQuestion EVALUATION_QUESTION = org.ssglobal.training.codes.tables.EvaluationQuestion.EVALUATION_QUESTION;
 
 	// ------------------------FOR ALL
 	public List<Users> selectAllUsers() {
@@ -2573,6 +2575,41 @@ public class AdminCapabilitiesRepository {
 				.where(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID
 						.eq(subjectsForEnrollment.getSubmittedSubjectsId()))
 				.fetchOneMap();
+	}
+	
+	// ------------ FOR Evaluation Question
+	public List<EvaluationQuestion> selectAllEvaluationQuestions() {
+		return dslContext.selectFrom(EVALUATION_QUESTION).fetchInto(EvaluationQuestion.class);
+	}
+	
+	public EvaluationQuestion insertIntoEvaluationQuestions(EvaluationQuestion question) {
+		EvaluationQuestion evaluationQuestion = dslContext.insertInto(EVALUATION_QUESTION)
+												.set(EVALUATION_QUESTION.QUESTION, question.getQuestion())
+												.set(EVALUATION_QUESTION.ACTIVE_DEACTIVE, true)
+												.returning()
+												.fetchOne()
+												.into(EvaluationQuestion.class);
+		return evaluationQuestion;
+	}
+	
+	public EvaluationQuestion updateEvaluationQuestion(EvaluationQuestion question) {
+		EvaluationQuestion evaluationQuestion = dslContext.update(EVALUATION_QUESTION)
+												.set(EVALUATION_QUESTION.QUESTION, question.getQuestion())
+												.where(EVALUATION_QUESTION.EVALUATION_QUESTION_ID.eq(question.getEvaluationQuestionId()))
+												.returning()
+												.fetchOne()
+												.into(EvaluationQuestion.class);
+		return evaluationQuestion;
+	}
+	
+	public EvaluationQuestion deleteEvaluationQuestion(Integer evaluationQuestionId) {
+		EvaluationQuestion evaluationQuestion = dslContext.update(EVALUATION_QUESTION)
+												.set(EVALUATION_QUESTION.ACTIVE_DEACTIVE, false)
+												.where(EVALUATION_QUESTION.EVALUATION_QUESTION_ID.eq(evaluationQuestionId))
+												.returning()
+												.fetchOne()
+												.into(EvaluationQuestion.class);
+		return evaluationQuestion;
 	}
 
 }
