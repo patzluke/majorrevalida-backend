@@ -2307,7 +2307,7 @@ inner join subject sub on ssfe.subject_code = sub.subject_code
 
 where se.student_no = 77015 and ssfe.enrollment_id = (select max(enrollment_id) from submitted_subjects_for_enrollment);
 
-select distinct sa.attendance_date from student_attendance sa
+select distinct sa.attendance_date, sa.load_id from student_attendance sa
 right join student_enrollment se on sa.student_no = se.student_no
-where sa.attendance_date between '2023-08-15' and '2023-12-31' and sa.load_id = 1
+where sa.load_id = 1
 order by sa.attendance_date;
