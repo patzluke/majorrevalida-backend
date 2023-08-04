@@ -401,34 +401,31 @@ public class AdminCapabilitiesRepository {
 						COURSE.COURSE_CODE.as("courseCode"), COURSE.COURSE_TITLE.as("courseTitle"),
 						STUDENT.YEAR_LEVEL.as("yearLevel"), ACADEMIC_YEAR.SEMESTER,
 						STUDENT_ENROLLMENT.STATUS.as("status"))
-				.from(STUDENT_ENROLLMENT)
-				.innerJoin(ACADEMIC_YEAR).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
-				.innerJoin(STUDENT).on(STUDENT_ENROLLMENT.STUDENT_NO.eq(STUDENT.STUDENT_NO))
-				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
-				.innerJoin(CURRICULUM).on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE))
-				.innerJoin(MAJOR).on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
-				.innerJoin(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).fetchMaps();
+				.from(STUDENT_ENROLLMENT).innerJoin(ACADEMIC_YEAR)
+				.on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)).innerJoin(STUDENT)
+				.on(STUDENT_ENROLLMENT.STUDENT_NO.eq(STUDENT.STUDENT_NO)).innerJoin(USERS)
+				.on(STUDENT.USER_ID.eq(USERS.USER_ID)).innerJoin(CURRICULUM)
+				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
+				.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).fetchMaps();
 	}
 
 	// ------------------------FOR STUDENT_ENROLLMENT
 	public UserAndStudent selectStudent(Integer studentNo) {
-		return dslContext.select(STUDENT.STUDENT_NO.as("studentNo"), USERS.EMAIL.as("email"))
-						 .from(STUDENT)
-						 .join(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
-						 .where(STUDENT.STUDENT_NO.eq(studentNo))
-						 .fetchOneInto(UserAndStudent.class);
+		return dslContext.select(STUDENT.STUDENT_NO.as("studentNo"), USERS.EMAIL.as("email")).from(STUDENT).join(USERS)
+				.on(STUDENT.USER_ID.eq(USERS.USER_ID)).where(STUDENT.STUDENT_NO.eq(studentNo))
+				.fetchOneInto(UserAndStudent.class);
 	}
+
 	public Map<String, Object> selectParentByStudent(Integer studentNo) {
-		Map<String, Object> parentNo = dslContext.select(STUDENT.PARENT_NO.as("parentNo")).from(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo))
-												 .fetchOneMap();
+		Map<String, Object> parentNo = dslContext.select(STUDENT.PARENT_NO.as("parentNo")).from(STUDENT)
+				.where(STUDENT.STUDENT_NO.eq(studentNo)).fetchOneMap();
 		Map<String, Object> parentInfo = dslContext.select(PARENT.PARENT_NO.as("parentNo"), USERS.EMAIL.as("email"))
-											 .from(PARENT)
-											 .join(USERS).on(PARENT.USER_ID.eq(USERS.USER_ID))
-											 .where(PARENT.PARENT_NO.eq(Integer.valueOf(parentNo.get("parentNo").toString())))
-								.fetchOneMap();
+				.from(PARENT).join(USERS).on(PARENT.USER_ID.eq(USERS.USER_ID))
+				.where(PARENT.PARENT_NO.eq(Integer.valueOf(parentNo.get("parentNo").toString()))).fetchOneMap();
 		return parentInfo;
 	}
-	
+
 	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {
 
 		// Get the academic_year_id
@@ -509,8 +506,7 @@ public class AdminCapabilitiesRepository {
 
 			// Create User Parent
 			dslContext.insertInto(USERS).set(USERS.USERNAME, "pendingParentUsername")
-					.set(USERS.PASSWORD, defaultParentPassword)
-					.set(USERS.EMAIL, studentApplicant.getGuardianEmail())
+					.set(USERS.PASSWORD, defaultParentPassword).set(USERS.EMAIL, studentApplicant.getGuardianEmail())
 					.set(USERS.CONTACT_NO, studentApplicant.getGuardianMobileNo())
 					.set(USERS.FIRST_NAME, studentApplicant.getGuardianFirstName())
 					.set(USERS.MIDDLE_NAME, studentApplicant.getGuardianMiddleName())
@@ -552,34 +548,31 @@ public class AdminCapabilitiesRepository {
 					.set(STUDENT.ACADEMIC_YEAR_ID, applicantAcademicYear.getAcademicYearId())
 					.set(STUDENT.YEAR_LEVEL, studentApplicant.getYearLevel()).returning().fetchOne()
 					.into(Student.class);
-			
+
 			// Select the Student and get the studentNo
 			Student studentNo = dslContext.select(STUDENT.STUDENT_NO.as("studentNo")).from(STUDENT)
 					.where(STUDENT.USER_ID.eq(userId.getUserId())).fetchOneInto(Student.class);
-			
+
 			// Update the Username of the Parent
-			String parentUsername = "%s_%s".formatted(String.valueOf(studentNo.getStudentNo()),
-					"Parent");
-			
-			String parentPassword = "%s%s".formatted(String.valueOf(parentId.getParentNo()), parentUserId.getLastName().replace(" ", "_"));
-			
+			String parentUsername = "%s_%s".formatted(String.valueOf(studentNo.getStudentNo()), "Parent");
+
+			String parentPassword = "%s%s".formatted(String.valueOf(parentId.getParentNo()),
+					parentUserId.getLastName().replace(" ", "_"));
+
 			System.out.println("Parent Password: %s".formatted(parentPassword));
-			
+
 			BCryptPasswordEncoder parentPasswordEncoder = new BCryptPasswordEncoder();
 
 			// Secure the password using bcrypt
 			String bcryptParentPassword = parentPasswordEncoder.encode(parentPassword);
 
-			dslContext.update(USERS).set(USERS.USERNAME, parentUsername)
-			.set(USERS.PASSWORD, bcryptParentPassword)
-			.where(USERS.USER_ID.eq(parentId.getUserId()))
-					.returning().fetchOne().into(Users.class);
+			dslContext.update(USERS).set(USERS.USERNAME, parentUsername).set(USERS.PASSWORD, bcryptParentPassword)
+					.where(USERS.USER_ID.eq(parentId.getUserId())).returning().fetchOne().into(Users.class);
 
 		} else {
 			Parent checkParent = dslContext.select(PARENT.PARENT_NO).from(PARENT)
-					.where(PARENT.USER_ID.eq(userParent.getUserId()))
-					.fetchOneInto(Parent.class);
-			
+					.where(PARENT.USER_ID.eq(userParent.getUserId())).fetchOneInto(Parent.class);
+
 			// Select Curriculum code
 			curriculumCode = dslContext.select(CURRICULUM.CURRICULUM_CODE.as("curriculumCode")).from(CURRICULUM)
 					.where(CURRICULUM.MAJOR_CODE.eq(studentApplicant.getSelectedMajorCode()))
@@ -602,7 +595,6 @@ public class AdminCapabilitiesRepository {
 		dslContext.update(USERS).set(USERS.USERNAME, String.valueOf(studentNo.getStudentNo()))
 				.where(USERS.USER_ID.eq(userId.getUserId())).returning().fetchOne().into(Users.class);
 
-		
 		// From pending application to Not Enrolled
 		studentApplicant.setAcceptanceStatus("Not Enrolled");
 
@@ -1036,29 +1028,28 @@ public class AdminCapabilitiesRepository {
 
 	// -------------------------- FOR ACADEMIC YEAR
 	public List<AcademicYear> selectAllAcademicYear() {
-		return dslContext.selectFrom(ACADEMIC_YEAR).orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_.desc()).fetchInto(AcademicYear.class);
+		return dslContext.selectFrom(ACADEMIC_YEAR).orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_.desc())
+				.fetchInto(AcademicYear.class);
 	}
-	
+
 	public AcademicYear addNewAcademicYear(AcademicYear academicYear) {
-		return dslContext.insertInto(ACADEMIC_YEAR)
-				.set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
+		return dslContext.insertInto(ACADEMIC_YEAR).set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
+				.set(ACADEMIC_YEAR.START_DATE, academicYear.getStartDate())
+				.set(ACADEMIC_YEAR.END_DATE, academicYear.getEndDate())
+				.set(ACADEMIC_YEAR.SEMESTER, academicYear.getSemester())
+				.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus()).returning().fetchOne().into(AcademicYear.class);
+	}
+
+	public AcademicYear updateNewAcademicYear(AcademicYear academicYear) {
+		return dslContext.update(ACADEMIC_YEAR).set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
 				.set(ACADEMIC_YEAR.START_DATE, academicYear.getStartDate())
 				.set(ACADEMIC_YEAR.END_DATE, academicYear.getEndDate())
 				.set(ACADEMIC_YEAR.SEMESTER, academicYear.getSemester())
 				.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus())
-				.returning().fetchOne().into(AcademicYear.class);
+				.where(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(academicYear.getAcademicYearId())).returning().fetchOne()
+				.into(AcademicYear.class);
 	}
-	
-	public AcademicYear updateNewAcademicYear(AcademicYear academicYear) {
-		return dslContext.update(ACADEMIC_YEAR)
-				.set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
-				.set(ACADEMIC_YEAR.START_DATE, academicYear.getStartDate())
-				.set(ACADEMIC_YEAR.END_DATE, academicYear.getEndDate())
-				.set(ACADEMIC_YEAR.SEMESTER, academicYear.getSemester())
-				.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus()).where(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(academicYear.getAcademicYearId()))
-				.returning().fetchOne().into(AcademicYear.class);
-	}
-	
+
 	public AcademicYear addAcademicYear(AcademicYear academicYear) {
 		/*
 		 * The academic data added is limited to: academic_year and status
@@ -1349,52 +1340,38 @@ public class AdminCapabilitiesRepository {
 		List<Map<String, Object>> query = dslContext
 				.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
 						SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
-						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_TITLE.as("courseTitle")
-						)
-				.from(SECTION)
-				.innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
-				.join(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-				.orderBy(SECTION.SECTION_ID)
-				.fetchMaps();
+						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_TITLE.as("courseTitle"))
+				.from(SECTION).innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).join(COURSE)
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).orderBy(SECTION.SECTION_ID).fetchMaps();
 		return !query.isEmpty() ? query : null;
 	}
-	
+
 	public Map<String, Object> addSection(Section section) {
-		Section addSection = dslContext.insertInto(SECTION)
-				.set(SECTION.SECTION_NAME, section.getSectionName())
-				.set(SECTION.MAJOR_CODE, section.getMajorCode())
-				.returning().fetchOne().into(Section.class);
-		Map<String, Object> query = dslContext.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
-				SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
-				MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_TITLE.as("courseTitle")
-				)
-		.from(SECTION)
-		.innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
-		.join(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-		.where(SECTION.SECTION_ID.eq(addSection.getSectionId()))
-		.fetchOneMap();
+		Section addSection = dslContext.insertInto(SECTION).set(SECTION.SECTION_NAME, section.getSectionName())
+				.set(SECTION.MAJOR_CODE, section.getMajorCode()).returning().fetchOne().into(Section.class);
+		Map<String, Object> query = dslContext
+				.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
+						SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
+						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_TITLE.as("courseTitle"))
+				.from(SECTION).innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).join(COURSE)
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).where(SECTION.SECTION_ID.eq(addSection.getSectionId()))
+				.fetchOneMap();
 		return !query.isEmpty() ? query : null;
 	}
-	
+
 	public Map<String, Object> updateSection(Section section) {
-		Section addSection = dslContext.update(SECTION)
-				.set(SECTION.SECTION_NAME, section.getSectionName())
-				.set(SECTION.MAJOR_CODE, section.getMajorCode())
-				.where(SECTION.SECTION_ID.eq(section.getSectionId()))
+		Section addSection = dslContext.update(SECTION).set(SECTION.SECTION_NAME, section.getSectionName())
+				.set(SECTION.MAJOR_CODE, section.getMajorCode()).where(SECTION.SECTION_ID.eq(section.getSectionId()))
 				.returning().fetchOne().into(Section.class);
-		Map<String, Object> query = dslContext.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
-				SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
-				MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_TITLE.as("courseTitle")
-				)
-		.from(SECTION)
-		.innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE))
-		.join(COURSE).on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-		.where(SECTION.SECTION_ID.eq(addSection.getSectionId()))
-		.fetchOneMap();
+		Map<String, Object> query = dslContext
+				.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
+						SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
+						MAJOR.MAJOR_TITLE.as("majorTitle"), COURSE.COURSE_TITLE.as("courseTitle"))
+				.from(SECTION).innerJoin(MAJOR).on(SECTION.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).join(COURSE)
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).where(SECTION.SECTION_ID.eq(addSection.getSectionId()))
+				.fetchOneMap();
 		return !query.isEmpty() ? query : null;
 	}
-	
-	
 
 	// -------------------------- FOR ROOM
 	public List<Room> selectAllRoom() {
@@ -1419,14 +1396,13 @@ public class AdminCapabilitiesRepository {
 				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).where(GRADES.IS_SUBMITTED.eq(true))
 				.orderBy(GRADES.GRADE_ID).fetchMaps();
 	}
-	
+
 	public List<Map<String, Object>> selectAllBatchYearBySection(Integer sectionId) {
 		return dslContext.select(ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER.as("semester"))
-						 .from(ACADEMIC_YEAR)
-						 .whereExists(DSL.selectOne().from(STUDENT_ENROLLMENT)
-								 .where(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)
-										 .and(STUDENT_ENROLLMENT.SECTION_ID.eq(sectionId))))
-						 .fetchMaps();
+				.from(ACADEMIC_YEAR)
+				.whereExists(DSL.selectOne().from(STUDENT_ENROLLMENT).where(ACADEMIC_YEAR.ACADEMIC_YEAR_ID
+						.eq(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID).and(STUDENT_ENROLLMENT.SECTION_ID.eq(sectionId))))
+				.fetchMaps();
 	}
 
 	public boolean insertGradesAndt_subject_detail_history(Integer professorNo, Integer subjectCode,
@@ -1452,8 +1428,7 @@ public class AdminCapabilitiesRepository {
 	public List<Map<String, Object>> selectAllMinorSubjects() {
 		List<Map<String, Object>> query = dslContext
 				.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
-						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-						SUBJECT.PRICE.as("price"),
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"), SUBJECT.PRICE.as("price"),
 						MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
 						MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
 						SUBJECT.ACTIVE_STATUS.as("activeStatus"))
@@ -1496,9 +1471,8 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-								SUBJECT.PRICE.as("price"),
-								MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
-								MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+								SUBJECT.PRICE.as("price"), MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+								MINOR_SUBJECT.SEM.as("sem"), MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
 						.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
 						.where(SUBJECT.SUBJECT_CODE.eq(minorQuery.getSubjectCode())).fetchOneMap();
@@ -1527,9 +1501,8 @@ public class AdminCapabilitiesRepository {
 			Map<String, Object> query = dslContext
 					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-							SUBJECT.PRICE.as("price"),
-							MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
-							MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+							SUBJECT.PRICE.as("price"), MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+							MINOR_SUBJECT.SEM.as("sem"), MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
 					.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
 					.where(SUBJECT.SUBJECT_CODE.eq(minorQuery.getSubjectCode())).fetchOneMap();
@@ -1571,9 +1544,8 @@ public class AdminCapabilitiesRepository {
 			Map<String, Object> query = dslContext
 					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-							SUBJECT.PRICE.as("price"),
-							MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
-							MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+							SUBJECT.PRICE.as("price"), MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+							MINOR_SUBJECT.SEM.as("sem"), MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
 					.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
 					.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).fetchOneMap();
@@ -1604,9 +1576,8 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-								SUBJECT.PRICE.as("price"),
-								MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
-								MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+								SUBJECT.PRICE.as("price"), MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+								MINOR_SUBJECT.SEM.as("sem"), MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
 						.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
 						.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).fetchOneMap();
@@ -1646,9 +1617,8 @@ public class AdminCapabilitiesRepository {
 					Map<String, Object> query = dslContext
 							.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 									SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-									SUBJECT.PRICE.as("price"),
-									MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
-									MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+									SUBJECT.PRICE.as("price"), MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+									MINOR_SUBJECT.SEM.as("sem"), MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 									SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
 									SUBJECT.ACTIVE_STATUS.as("activeStatus"))
 							.from(SUBJECT).innerJoin(MINOR_SUBJECT)
@@ -1688,9 +1658,8 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-								SUBJECT.PRICE.as("price"),
-								MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
-								MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+								SUBJECT.PRICE.as("price"), MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+								MINOR_SUBJECT.SEM.as("sem"), MINOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
 						.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
 						.where(SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).fetchOneMap();
@@ -1713,7 +1682,8 @@ public class AdminCapabilitiesRepository {
 					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
 							MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM.as("sem"),
-							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
+							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.PRICE.as("price"),
+							SUBJECT.ACTIVE_STATUS.as("activeStatus"))
 					.from(SUBJECT).innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
 					.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).fetchOneMap();
 			return !query.isEmpty() ? query : null;
@@ -1749,8 +1719,9 @@ public class AdminCapabilitiesRepository {
 				.select(MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
 						MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.SUBJECT_CODE.as("subjectCode"),
 						SUBJECT.ABBREVATION.as("abbreviation"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
-						SUBJECT.UNITS.as("units"), SUBJECT.PRICE.as("price"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
-						SUBJECT.ACTIVE_STATUS.as("activeStatus"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"))
+						SUBJECT.UNITS.as("units"), SUBJECT.PRICE.as("price"),
+						SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
+						MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"))
 				.from(SUBJECT).join(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
 				.where(MAJOR_SUBJECT.SUBJECT_CODE.in(dslContext.select(MAJOR_SUBJECT.SUBJECT_CODE).from(MAJOR_SUBJECT)
 						.groupBy(MAJOR_SUBJECT.SUBJECT_CODE).having(DSL.count(MAJOR_SUBJECT.SUBJECT_CODE).eq(1)))
@@ -1766,8 +1737,9 @@ public class AdminCapabilitiesRepository {
 				.select(MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
 						MAJOR_SUBJECT.SEM.as("sem"), SUBJECT.SUBJECT_CODE.as("subjectCode"),
 						SUBJECT.ABBREVATION.as("abbreviation"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
-						SUBJECT.UNITS.as("units"), SUBJECT.PRICE.as("price"), SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
-						SUBJECT.ACTIVE_STATUS.as("activeStatus"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"))
+						SUBJECT.UNITS.as("units"), SUBJECT.PRICE.as("price"),
+						SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
+						MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"))
 				.from(SUBJECT).join(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
 				.groupBy(MAJOR_SUBJECT.CURRICULUM_CODE, MAJOR_SUBJECT.SUBJECT_CODE, MAJOR_SUBJECT.YEAR_LEVEL,
 						MAJOR_SUBJECT.SEM, MAJOR_SUBJECT.PRE_REQUISITES, SUBJECT.SUBJECT_CODE, SUBJECT.ABBREVATION,
@@ -1815,7 +1787,7 @@ public class AdminCapabilitiesRepository {
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
 							MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 							MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
-							MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+							MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.PRICE.as("price"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"))
 					.from(SUBJECT).innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
 					.where(SUBJECT.SUBJECT_CODE.eq(subjectCode)).fetchOneMap();
@@ -1839,7 +1811,7 @@ public class AdminCapabilitiesRepository {
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
 							MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 							MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
-							MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+							MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"), SUBJECT.PRICE.as("price"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
 							MAJOR.COURSE_CODE.as("courseCode"))
 					.from(SUBJECT).innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
@@ -1896,9 +1868,8 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-								SUBJECT.PRICE.as("price"),
-								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
-								MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
+								SUBJECT.PRICE.as("price"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+								MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
 								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
 								MAJOR.COURSE_CODE.as("courseCode"))
@@ -1935,9 +1906,8 @@ public class AdminCapabilitiesRepository {
 			Map<String, Object> query = dslContext
 					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-							SUBJECT.PRICE.as("price"),
-							MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
-							MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
+							SUBJECT.PRICE.as("price"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+							MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
 							MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
 							MAJOR.COURSE_CODE.as("courseCode"))
@@ -1986,9 +1956,8 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-								SUBJECT.PRICE.as("price"),
-								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
-								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+								SUBJECT.PRICE.as("price"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+								MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
 								MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"))
 						.from(SUBJECT).innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
@@ -2016,9 +1985,8 @@ public class AdminCapabilitiesRepository {
 			Map<String, Object> query = dslContext
 					.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 							SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-							SUBJECT.PRICE.as("price"),
-							MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
-							MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+							SUBJECT.PRICE.as("price"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+							MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
 							MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"))
 					.from(SUBJECT).innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
@@ -2098,9 +2066,8 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-								SUBJECT.PRICE.as("price"),
-								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
-								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+								SUBJECT.PRICE.as("price"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+								MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
 								MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"), MAJOR.COURSE_CODE.as("courseCode"))
 						.from(SUBJECT).innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
@@ -2147,12 +2114,15 @@ public class AdminCapabilitiesRepository {
 							.set(MAJOR_SUBJECT.SEM, Integer.valueOf(payload.get("sem").toString()))
 							.where(MAJOR_SUBJECT.SUBJECT_CODE.eq(updatedSubject.getSubjectCode())).returning().fetch();
 
-					Map<String, Object> query = dslContext.select(SUBJECT.SUBJECT_CODE.as("subjectCode"),
-							SUBJECT.ABBREVATION.as("abbreviation"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"),
-							SUBJECT.UNITS.as("units"), SUBJECT.PRICE.as("price"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
-							MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
-							SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
-							MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"), MAJOR.COURSE_CODE.as("courseCode"))
+					Map<String, Object> query = dslContext
+							.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
+									SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
+									SUBJECT.PRICE.as("price"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+									MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+									SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
+									SUBJECT.ACTIVE_STATUS.as("activeStatus"),
+									MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"),
+									MAJOR.COURSE_CODE.as("courseCode"))
 							.from(SUBJECT).innerJoin(MAJOR_SUBJECT)
 							.on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE)).join(CURRICULUM)
 							.on(MAJOR_SUBJECT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).join(MAJOR)
@@ -2167,7 +2137,7 @@ public class AdminCapabilitiesRepository {
 							.formatted(subSubject.get("subjectTitle").toString(), preYear, preSem));
 				}
 			} else {
-				
+
 				Subject updatedSubject = dslContext.update(SUBJECT)
 						.set(SUBJECT.ABBREVATION, payload.get("abbreviation").toString())
 						.set(SUBJECT.SUBJECT_TITLE, payload.get("subjectTitle").toString())
@@ -2184,8 +2154,7 @@ public class AdminCapabilitiesRepository {
 
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
-								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-								SUBJECT.PRICE,
+								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"), SUBJECT.PRICE,
 								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
 								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
@@ -2239,9 +2208,8 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-								SUBJECT.PRICE.as("price"),
-								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
-								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+								SUBJECT.PRICE.as("price"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+								MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
 								MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"))
 						.from(SUBJECT).innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
@@ -2286,9 +2254,8 @@ public class AdminCapabilitiesRepository {
 					Map<String, Object> query = dslContext
 							.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 									SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-									SUBJECT.PRICE.as("price"),
-									MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
-									MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+									SUBJECT.PRICE.as("price"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+									MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 									SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"),
 									SUBJECT.ACTIVE_STATUS.as("activeStatus"),
 									MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"))
@@ -2319,9 +2286,8 @@ public class AdminCapabilitiesRepository {
 				Map<String, Object> query = dslContext
 						.select(SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION.as("abbreviation"),
 								SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS.as("units"),
-								SUBJECT.PRICE.as("price"),
-								MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM.as("sem"),
-								MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+								SUBJECT.PRICE.as("price"), MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"),
+								MAJOR_SUBJECT.SEM.as("sem"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
 								SUBJECT.ACTIVE_DEACTIVE.as("activeDeactive"), SUBJECT.ACTIVE_STATUS.as("activeStatus"),
 								MAJOR_SUBJECT.CURRICULUM_CODE.as("curriculumCode"))
 						.from(SUBJECT).innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
@@ -2526,48 +2492,49 @@ public class AdminCapabilitiesRepository {
 				.fetchMaps();
 		return student;
 	}
-	
+
 	// ------------ FOR Submitted Subjects for enrollment of students
-	public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollment(Integer studentNo,
-			Integer sectionId, Integer enrollmentId) {
+	public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollment(Integer studentNo, Integer sectionId,
+			Integer enrollmentId) {
 		return dslContext
 				.select(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.as("submittedSubjectsId"),
 						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.ABBREVATION,
 						SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS, PROFESSOR_LOAD.LOAD_ID.as("loadId"),
 						PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
 						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
-				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
-				.innerJoin(STUDENT_ENROLLMENT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
-				.innerJoin(PROFESSOR_LOAD).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(PROFESSOR_LOAD.SUBJECT_CODE))
-				.innerJoin(SUBJECT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT).innerJoin(STUDENT_ENROLLMENT)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.innerJoin(PROFESSOR_LOAD)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(PROFESSOR_LOAD.SUBJECT_CODE)).innerJoin(SUBJECT)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo).and(PROFESSOR_LOAD.SECTION_ID.eq(sectionId))
 						.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS.eq("Approved"))
 						.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(enrollmentId)))
 				.orderBy(SUBJECT.SUBJECT_CODE).fetchMaps();
 	}
 
-	public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollmentId(Integer studentNo, Integer enrollmentId) {
+	public List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollmentId(Integer studentNo,
+			Integer enrollmentId) {
 		return dslContext
 				.selectDistinct(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.as("submittedSubjectsId"),
 						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.ABBREVATION,
 						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
 						SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS)
-				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
-				.innerJoin(STUDENT_ENROLLMENT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT).innerJoin(STUDENT_ENROLLMENT)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
 				.innerJoin(SUBJECT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
 						.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(enrollmentId)))
 				.orderBy(SUBJECT.SUBJECT_CODE).fetchMaps();
 	}
-	
-	public Map<String, Object> updateSubmittedSubjectsOfstudentPerEnrollmentStatus(Integer submittedSubjectsId, String status) {
+
+	public Map<String, Object> updateSubmittedSubjectsOfstudentPerEnrollmentStatus(Integer submittedSubjectsId,
+			String status) {
 		SubmittedSubjectsForEnrollment subjectsForEnrollment = dslContext.update(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
-																		 .set(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS, status)
-																		 .where(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.eq(submittedSubjectsId))
-																		 .returning()
-																		 .fetchOne()
-																		 .into(SubmittedSubjectsForEnrollment.class);
-		
+				.set(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS, status)
+				.where(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.eq(submittedSubjectsId)).returning()
+				.fetchOne().into(SubmittedSubjectsForEnrollment.class);
+
 		return dslContext
 				.selectDistinct(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.as("submittedSubjectsId"),
 						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.ABBREVATION,
@@ -2578,7 +2545,8 @@ public class AdminCapabilitiesRepository {
 				.innerJoin(PROFESSOR_LOAD)
 				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(PROFESSOR_LOAD.SUBJECT_CODE)).innerJoin(SUBJECT)
 				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-				.where(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.eq(subjectsForEnrollment.getSubmittedSubjectsId()))
+				.where(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID
+						.eq(subjectsForEnrollment.getSubmittedSubjectsId()))
 				.fetchOneMap();
 	}
 
