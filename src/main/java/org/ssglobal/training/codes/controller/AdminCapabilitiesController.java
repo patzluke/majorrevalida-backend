@@ -1209,8 +1209,8 @@ public class AdminCapabilitiesController {
 				emailToStudent.setRecipient(student.getEmail());
 				emailToStudent.setSubject("Colegio De Seven Seven Portal Account");
 				emailToStudent.setMsgBody("Your Application is accepted, here's your School Portal Account Info"
-						+ "username: %s"
-						+ "password: bithdate + last name example (19990715Cortez)".formatted(student.getStudentNo().toString()));
+						+ "username: %s".formatted(student.getStudentNo().toString())
+						+ "password: bithdate + last name example (19990715Cortez)");
 				emailService.sendSimpleMail(emailToStudent);
 				EmailDetails emailToParent = new EmailDetails();
 				emailToParent.setRecipient(parent.get("email").toString());

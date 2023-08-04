@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.ssglobal.training.codes.model.ParentStudentAttendanceCopy;
 import org.ssglobal.training.codes.model.StudentGrades;
 import org.ssglobal.training.codes.model.UserAndParent;
 import org.ssglobal.training.codes.model.UserAndStudent;
+import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Parent;
 import org.ssglobal.training.codes.tables.pojos.Users;
 
@@ -30,6 +33,8 @@ public class ParentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
 	private final org.ssglobal.training.codes.tables.Subject SUBJECT = org.ssglobal.training.codes.tables.Subject.SUBJECT;
 	private final org.ssglobal.training.codes.tables.TSubjectDetailHistory T_SUBJECT_DETAIL_HISTORY = org.ssglobal.training.codes.tables.TSubjectDetailHistory.T_SUBJECT_DETAIL_HISTORY;
+	private final org.ssglobal.training.codes.tables.StudentAttendance STUDENT_ATTENDANCE = org.ssglobal.training.codes.tables.StudentAttendance.STUDENT_ATTENDANCE;
+	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
 
 	public UserAndParent selectParent(Integer parentNo) {
 		return dslContext
@@ -129,6 +134,33 @@ public class ParentCapabilitiesRepository {
 				.on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
 				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo).and(STUDENT_ENROLLMENT.STATUS.eq("Enrolled")))
 				.orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.SEMESTER).fetchMaps();
+	}
+
+	public List<ParentStudentAttendanceCopy> selectStudentAttendanceByAttendanceDateDistinct(Integer studentNo) {
+		AcademicYear academicYear = dslContext.select(ACADEMIC_YEAR.START_DATE, ACADEMIC_YEAR.END_DATE)
+				.from(STUDENT_ENROLLMENT).innerJoin(ACADEMIC_YEAR)
+				.on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
+						.and(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(dslContext
+								.select(DSL.max(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)).from(STUDENT_ENROLLMENT))))
+				.fetchOneInto(AcademicYear.class);
+
+		return dslContext
+				.selectDistinct(STUDENT_ATTENDANCE.ATTENDANCE_DATE, STUDENT_ATTENDANCE.STUDENT_ATTENDANCE_ID,
+						STUDENT_ATTENDANCE.STUDENT_NO, STUDENT_ATTENDANCE.LOAD_ID, STUDENT_ATTENDANCE.STATUS,
+						PROFESSOR_LOAD.PROFESSOR_NO, PROFESSOR_LOAD.SUBJECT_CODE, PROFESSOR_LOAD.SECTION_ID,
+						PROFESSOR_LOAD.ROOM_ID, PROFESSOR_LOAD.DEPT_CODE, PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.START_TIME,
+						PROFESSOR_LOAD.END_TIME, PROFESSOR_LOAD.ACTIVE_DEACTIVE, SUBJECT.SUBJECT_ID,
+						SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE, SUBJECT.UNITS, SUBJECT.PRICE)
+				.from(STUDENT_ATTENDANCE).rightJoin(STUDENT_ENROLLMENT)
+				.on(STUDENT_ATTENDANCE.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO)).innerJoin(PROFESSOR_LOAD)
+				.on(STUDENT_ATTENDANCE.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID)).innerJoin(SUBJECT)
+				.on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(STUDENT_ATTENDANCE.ATTENDANCE_DATE
+						.between(academicYear.getStartDate(), academicYear.getEndDate())
+						.and(STUDENT_ATTENDANCE.STUDENT_NO.eq(studentNo)))
+				.orderBy(STUDENT_ATTENDANCE.ATTENDANCE_DATE).fetchInto(ParentStudentAttendanceCopy.class);
+
 	}
 
 }

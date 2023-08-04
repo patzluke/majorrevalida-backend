@@ -155,7 +155,8 @@ public class StudentCapabilitiesController {
 	}
 
 	@GetMapping(value = "/get/studentsubjectenrolled/{studentNo}")
-	public ResponseEntity<List<Map<String, Object>>> selectAllStudentSubjectEnrolledByStudentNo(@PathVariable("studentNo") Integer studentNo) {
+	public ResponseEntity<List<Map<String, Object>>> selectAllStudentSubjectEnrolledByStudentNo(
+			@PathVariable("studentNo") Integer studentNo) {
 		try {
 			List<Map<String, Object>> studentGrades = service.selectAllStudentSubjectEnrolledByStudentNo(studentNo);
 			if (studentGrades != null) {
@@ -186,7 +187,8 @@ public class StudentCapabilitiesController {
 
 	// -------- For Student grades
 	@GetMapping(value = "/get/studentgrades/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectGradesOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
+	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectGradesOfStudent(
+			@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
 			List<Map<String, Object>> rooms = service.selectAllSubjectGradesOfStudent(studentNo);
 			if (!rooms.isEmpty()) {
@@ -264,7 +266,8 @@ public class StudentCapabilitiesController {
 
 	// -------- For Curriculum
 	@GetMapping(value = "/get/curriculum/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Map<String, Object>> selectStudentEnrollmentData(@PathVariable(name = "studentNo") Integer studentNo) {
+	public ResponseEntity<Map<String, Object>> selectStudentEnrollmentData(
+			@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
 			Map<String, Object> curriculum = service.selectStudentEnrollmentData(studentNo);
 			if (curriculum != null) {
@@ -278,8 +281,8 @@ public class StudentCapabilitiesController {
 	}
 
 	@GetMapping(value = "/get/subjectstoenroll/{yearLevel}/{sem}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsToEnrollPerYearAndSem(@PathVariable(name = "yearLevel") Integer yearLevel,
-			@PathVariable(name = "sem") Integer sem) {
+	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsToEnrollPerYearAndSem(
+			@PathVariable(name = "yearLevel") Integer yearLevel, @PathVariable(name = "sem") Integer sem) {
 		try {
 			List<Map<String, Object>> minor = service.selectAllMajorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
 			List<Map<String, Object>> major = service.selectAllMinorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
@@ -295,11 +298,13 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	// -------- For Submitted Subjects For enrollment
 	@SuppressWarnings("rawtypes")
-	@PostMapping(value = "/insert/submittedsubjectsforenrollment", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity insertIntoSubmittedSubjectsForEnrollment(@RequestBody List<SubmittedSubjectsForEnrollment> submittedSubjectsForEnrollment) {
+	@PostMapping(value = "/insert/submittedsubjectsforenrollment", produces = {
+			MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity insertIntoSubmittedSubjectsForEnrollment(
+			@RequestBody List<SubmittedSubjectsForEnrollment> submittedSubjectsForEnrollment) {
 		try {
 			boolean subjectsForEnrollment = service
 					.insertIntoSubmittedSubjectsForEnrollment(submittedSubjectsForEnrollment);
@@ -312,12 +317,15 @@ public class StudentCapabilitiesController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	@SuppressWarnings("rawtypes")
-	@GetMapping(value = "/get/submittedsubjectsforenrollment/{enrollmentId}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity checkIfThereIsSubmittedSubjectsForEnrollment(@PathVariable(name = "enrollmentId") Integer enrollmentId) {
+	@GetMapping(value = "/get/submittedsubjectsforenrollment/{enrollmentId}", produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity checkIfThereIsSubmittedSubjectsForEnrollment(
+			@PathVariable(name = "enrollmentId") Integer enrollmentId) {
 		try {
-			List<SubmittedSubjectsForEnrollment> subjects = service.checkIfThereIsSubmittedSubjectsForEnrollment(enrollmentId);
+			List<SubmittedSubjectsForEnrollment> subjects = service
+					.checkIfThereIsSubmittedSubjectsForEnrollment(enrollmentId);
 			if (!subjects.isEmpty()) {
 				return ResponseEntity.ok(subjects);
 			}
