@@ -164,4 +164,10 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	public List<SubmittedSubjectsForEnrollment> checkIfThereIsSubmittedSubjectsForEnrollment(Integer enrollmentId) {
 		return repository.checkIfThereIsSubmittedSubjectsForEnrollment(enrollmentId);
 	}
+	
+	@Override
+	public List<Map<String, Object>> selectAllEvaluationQuestionAnswerStudentNoAndSubjectCode(Integer studentNo,
+			Integer subjectCode) {
+		return repository.selectAllEvaluationQuestionAnswerStudentNoAndSubjectCode(studentNo, subjectCode);
+	}
 }
