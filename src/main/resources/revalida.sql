@@ -384,6 +384,9 @@ create table website_activation_toggle (
     is_professor_grading_time boolean
 ); 
 
+INSERT INTO website_activation_toggle (is_evaluation_time, is_professor_grading_time)
+values ('f', 'f');
+
 --insert into academic_year table
 INSERT INTO academic_year (academic_year, start_date, end_date, semester, status)
 VALUES

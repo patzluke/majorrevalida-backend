@@ -22,6 +22,7 @@ import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.pojos.WebsiteActivationToggle;
 import org.ssglobal.training.codes.tables.records.StudentAttendanceRecord;
 
 public interface AdminCapabilitiesService {
@@ -230,4 +231,9 @@ public interface AdminCapabilitiesService {
 	EvaluationQuestion updateEvaluationQuestion(EvaluationQuestion question) throws DuplicateKeyException, Exception;
 	
 	EvaluationQuestion deleteEvaluationQuestion(Integer evaluationQuestionId);
+	
+	// ------------ FOR WEBSITE ACTIVATION TOGGLE
+	WebsiteActivationToggle selectWebsiteActivationToggle();
+	
+	WebsiteActivationToggle toggleEvaluationOrProfessorGradingTime(WebsiteActivationToggle toggle);
 }

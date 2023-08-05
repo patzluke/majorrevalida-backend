@@ -36,6 +36,7 @@ import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.StudentSubjectEnrolled;
 import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.pojos.WebsiteActivationToggle;
 import org.ssglobal.training.codes.tables.records.StudentAttendanceRecord;
 import org.ssglobal.training.codes.tables.records.StudentScheduleRecord;
 
@@ -570,8 +571,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 					
 			StudentSubjectEnrolled studentSubjectEnrolled = repository.fullyEnrollStudentSubjects(Integer.valueOf(data.get("loadId").toString()), 
 														  enrolledStudent.getEnrollmentId());
-					repository.insertGradesAndt_subject_detail_history(Integer.valueOf(data.get("professorNo").toString()), Integer.valueOf(data.get("subjectCode").toString()), 
-																	   enrolledStudent.getAcademicYearId(), enrolledStudent.getStudentNo(), studentSubjectEnrolled.getEnrollSubjectId());
+					repository.insertGradesAndt_subject_detail_historyAndEvaluationAnswers(Integer.valueOf(data.get("professorNo").toString()), Integer.valueOf(data.get("subjectCode").toString()), 
+																	   enrolledStudent.getAcademicYearId(), enrolledStudent.getStudentNo(), studentSubjectEnrolled.getEnrollSubjectId(),
+																	   enrolledStudent.getEnrollmentId());
 					
 					AcademicYear enrolledAcademicYear = selectEnrolledSchoolYearOfStudent(enrolledStudent.getStudentNo());
 					LocalDate startDate = enrolledAcademicYear.getStartDate();
@@ -648,5 +650,15 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	@Override
 	public EvaluationQuestion deleteEvaluationQuestion(Integer evaluationQuestionId) {
 		return repository.deleteEvaluationQuestion(evaluationQuestionId);
+	}
+	
+	@Override
+	public WebsiteActivationToggle selectWebsiteActivationToggle() {
+		return repository.selectWebsiteActivationToggle();
+	}
+	
+	@Override
+	public WebsiteActivationToggle toggleEvaluationOrProfessorGradingTime(WebsiteActivationToggle toggle) {
+		return repository.toggleEvaluationOrProfessorGradingTime(toggle);
 	}
 }

@@ -2,7 +2,6 @@ package org.ssglobal.training.codes.repository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +21,7 @@ import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
 import org.ssglobal.training.codes.tables.pojos.Department;
 import org.ssglobal.training.codes.tables.pojos.EvaluationQuestion;
+import org.ssglobal.training.codes.tables.pojos.EvaluationQuestionAnswer;
 import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.MajorSubject;
@@ -40,6 +40,7 @@ import org.ssglobal.training.codes.tables.pojos.Subject;
 import org.ssglobal.training.codes.tables.pojos.SubmittedSubjectsForEnrollment;
 import org.ssglobal.training.codes.tables.pojos.TSubjectDetailHistory;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.pojos.WebsiteActivationToggle;
 import org.ssglobal.training.codes.tables.records.StudentAttendanceRecord;
 import org.ssglobal.training.codes.tables.records.StudentScheduleRecord;
 
@@ -74,6 +75,8 @@ public class AdminCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
 	private final org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment SUBMITTED_SUBJECTS_FOR_ENROLLMENT = org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment.SUBMITTED_SUBJECTS_FOR_ENROLLMENT;
 	private final org.ssglobal.training.codes.tables.EvaluationQuestion EVALUATION_QUESTION = org.ssglobal.training.codes.tables.EvaluationQuestion.EVALUATION_QUESTION;
+	private final org.ssglobal.training.codes.tables.EvaluationQuestionAnswer EVALUATION_QUESTION_ANSWER = org.ssglobal.training.codes.tables.EvaluationQuestionAnswer.EVALUATION_QUESTION_ANSWER;
+	private final org.ssglobal.training.codes.tables.WebsiteActivationToggle WEBSITE_ACTIVATION_TOGGLE = org.ssglobal.training.codes.tables.WebsiteActivationToggle.WEBSITE_ACTIVATION_TOGGLE;
 
 	// ------------------------FOR ALL
 	public List<Users> selectAllUsers() {
@@ -1031,7 +1034,7 @@ public class AdminCapabilitiesRepository {
 
 	// -------------------------- FOR ACADEMIC YEAR
 	public List<AcademicYear> selectAllAcademicYear() {
-		return dslContext.selectFrom(ACADEMIC_YEAR).orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_.desc())
+		return dslContext.selectFrom(ACADEMIC_YEAR).orderBy(ACADEMIC_YEAR.START_DATE.desc(), ACADEMIC_YEAR.END_DATE.desc())
 				.fetchInto(AcademicYear.class);
 	}
 
@@ -1408,19 +1411,25 @@ public class AdminCapabilitiesRepository {
 				.fetchMaps();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public boolean insertGradesAndt_subject_detail_history(Integer professorNo, Integer subjectCode,
-			Integer academicYearId, Integer studentNo, Integer enrollSubjectId) {
+	public boolean insertGradesAndt_subject_detail_historyAndEvaluationAnswers(Integer professorNo, Integer subjectCode,
+			Integer academicYearId, Integer studentNo, Integer enrollSubjectId, Integer enrollmentId) {
 		
-		List<Map<String, Object>> gradesAndSubjectHistory = selectSubjectDetailHistoryInnerjoinGradesByStudentNoAndAcademicYear(academicYearId, studentNo);
+		Map<String, Object> gradesAndSubjectHistory = selectSubjectDetailHistoryInnerjoinGradesByStudentNoAndAcademicYear(academicYearId, studentNo, subjectCode);
 		if (gradesAndSubjectHistory != null) {
-			for (Iterator iterator = gradesAndSubjectHistory.iterator(); iterator.hasNext();) {
-				Map<String, Object> data = (Map<String, Object>) iterator.next();
-				if (Integer.valueOf(data.get("subjectCode").toString()).equals(subjectCode)) {
-					return false;
-				}
-			}
+			return false;
 		}
+		
+		selectAllEvaluationQuestions().forEach(question -> {
+			dslContext.insertInto(EVALUATION_QUESTION_ANSWER)
+					.set(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID, question.getEvaluationQuestionId())
+					.set(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO, professorNo)
+					.set(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE, subjectCode)
+					.set(EVALUATION_QUESTION_ANSWER.ENROLLMENT_ID, enrollmentId)
+					.set(EVALUATION_QUESTION_ANSWER.RATING, "")
+					.returning()
+					.fetchOne()
+					.into(EvaluationQuestionAnswer.class);
+		});
 		
 		TSubjectDetailHistory insertedTSubjectDetailHistory = dslContext.insertInto(T_SUBJECT_DETAIL_HISTORY)
 				.set(T_SUBJECT_DETAIL_HISTORY.PROFESSOR_NO, professorNo)
@@ -1428,7 +1437,8 @@ public class AdminCapabilitiesRepository {
 				.set(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID, academicYearId).returning().fetchOne()
 				.into(TSubjectDetailHistory.class);
 
-		Grades grade = dslContext.insertInto(GRADES).set(GRADES.STUDENT_NO, studentNo)
+		Grades grade = dslContext.insertInto(GRADES)
+				.set(GRADES.STUDENT_NO, studentNo)
 				.set(GRADES.SUBJECT_DETAIL_HIS_ID, insertedTSubjectDetailHistory.getSubjectDetailHisId())
 				.set(GRADES.ENROLL_SUBJECT_ID, enrollSubjectId).returning().fetchOne().into(Grades.class);
 
@@ -1438,17 +1448,19 @@ public class AdminCapabilitiesRepository {
 		return false;
 	}
 	
-	public List<Map<String, Object>> selectSubjectDetailHistoryInnerjoinGradesByStudentNoAndAcademicYear(Integer academicYearId, Integer studentNo) {
-		List<Map<String, Object>> query = dslContext
+	public Map<String, Object> selectSubjectDetailHistoryInnerjoinGradesByStudentNoAndAcademicYear(Integer academicYearId, Integer studentNo, Integer subjectCode) {
+		Map<String, Object> query = dslContext
 				.select(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID.as("subjectDetailHisId"), T_SUBJECT_DETAIL_HISTORY.PROFESSOR_NO.as("professorNo"),
 						T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"), T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID.as("academicYearId"),
 						GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"))
 				.from(GRADES)
 				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
 				.where(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID.eq(academicYearId)
-						.and(GRADES.STUDENT_NO.eq(studentNo)))
-				.fetchMaps();
-		return !query.isEmpty() ? query : null;
+						.and(GRADES.STUDENT_NO.eq(studentNo))
+						.and(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(subjectCode))
+				)
+				.fetchOneMap();
+		return query;
 	}
 
 	// -------------------------- Get All Minor Subject
@@ -2611,5 +2623,19 @@ public class AdminCapabilitiesRepository {
 												.into(EvaluationQuestion.class);
 		return evaluationQuestion;
 	}
-
+	
+	// ------------ FOR WEBSITE ACTIVATION TOGGLE
+	public WebsiteActivationToggle selectWebsiteActivationToggle() {
+		return dslContext.selectFrom(WEBSITE_ACTIVATION_TOGGLE).fetchOneInto(WebsiteActivationToggle.class);
+	}
+	
+	public WebsiteActivationToggle toggleEvaluationOrProfessorGradingTime(WebsiteActivationToggle toggle) {
+		WebsiteActivationToggle websiteActivationToggle = dslContext.update(WEBSITE_ACTIVATION_TOGGLE)
+												.set(WEBSITE_ACTIVATION_TOGGLE.IS_EVALUATION_TIME, toggle.getIsEvaluationTime())
+												.set(WEBSITE_ACTIVATION_TOGGLE.IS_PROFESSOR_GRADING_TIME, toggle.getIsProfessorGradingTime())
+												.returning()
+												.fetchOne()
+												.into(WebsiteActivationToggle.class);
+		return websiteActivationToggle;
+	}
 }

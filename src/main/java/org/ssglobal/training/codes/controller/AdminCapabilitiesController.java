@@ -36,6 +36,7 @@ import org.ssglobal.training.codes.tables.pojos.Section;
 import org.ssglobal.training.codes.tables.pojos.StudentApplicant;
 import org.ssglobal.training.codes.tables.pojos.StudentEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Subject;
+import org.ssglobal.training.codes.tables.pojos.WebsiteActivationToggle;
 
 @RestController
 @RequestMapping(value = "/api/admin")
@@ -1283,16 +1284,15 @@ public class AdminCapabilitiesController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		return ResponseEntity.notFound().build();
 	}
 	
 	@GetMapping(value = "/get/evaluationquestions", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<EvaluationQuestion>> selectAllEvaluationQuestions() {
 		try {
 			List<EvaluationQuestion> questions = service.selectAllEvaluationQuestions();
-			System.out.println(questions);
 			if (!questions.isEmpty()) {
 				return ResponseEntity.ok(questions);
 			}
@@ -1315,9 +1315,9 @@ public class AdminCapabilitiesController {
 			return ResponseEntity.badRequest().body(e1.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		return ResponseEntity.notFound().build();
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -1332,9 +1332,9 @@ public class AdminCapabilitiesController {
 			return ResponseEntity.badRequest().body(e1.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		return ResponseEntity.notFound().build();
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -1347,8 +1347,38 @@ public class AdminCapabilitiesController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		return ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping(value = "/get/websiteactivationtoggle", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<WebsiteActivationToggle> selectWebsiteActivationToggle() {
+		try {
+			WebsiteActivationToggle toggle = service.selectWebsiteActivationToggle();
+			if (toggle != null) {
+				return ResponseEntity.ok(toggle);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.notFound().build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update/websiteactivationtoggle", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = {MediaType.APPLICATION_JSON_VALUE} )
+	public ResponseEntity toggleEvaluationOrProfessorGradingTime(@RequestBody WebsiteActivationToggle toggle){
+		System.out.println(toggle);
+		try {
+			WebsiteActivationToggle activationToggle = service.toggleEvaluationOrProfessorGradingTime(toggle);
+			if (activationToggle != null) {
+				return ResponseEntity.ok(activationToggle);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.notFound().build();
 	}
 }
