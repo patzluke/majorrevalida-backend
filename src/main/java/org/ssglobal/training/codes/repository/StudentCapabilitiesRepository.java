@@ -48,6 +48,9 @@ public class StudentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Professor PROFESSOR = org.ssglobal.training.codes.tables.Professor.PROFESSOR;
 	private final org.ssglobal.training.codes.tables.ProfessorLoad PROFESSOR_LOAD = org.ssglobal.training.codes.tables.ProfessorLoad.PROFESSOR_LOAD;
 	private final org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment SUBMITTED_SUBJECTS_FOR_ENROLLMENT = org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment.SUBMITTED_SUBJECTS_FOR_ENROLLMENT;
+	private final org.ssglobal.training.codes.tables.EvaluationQuestion EVALUATION_QUESTION = org.ssglobal.training.codes.tables.EvaluationQuestion.EVALUATION_QUESTION;
+	private final org.ssglobal.training.codes.tables.EvaluationQuestionAnswer EVALUATION_QUESTION_ANSWER = org.ssglobal.training.codes.tables.EvaluationQuestionAnswer.EVALUATION_QUESTION_ANSWER;
+	private final org.ssglobal.training.codes.tables.WebsiteActivationToggle WEBSITE_ACTIVATION_TOGGLE = org.ssglobal.training.codes.tables.WebsiteActivationToggle.WEBSITE_ACTIVATION_TOGGLE;
 
 	public List<Users> selectAllUsers() {
 		return dslContext.selectFrom(USERS).fetchInto(Users.class);
@@ -203,10 +206,14 @@ public class StudentCapabilitiesRepository {
 	public List<Map<String, Object>> selectAllStudentSubjectEnrolledByStudentNo(Integer studentNo) {
 		return dslContext
 				.selectDistinct(STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.SUBJECT_CODE.as("subjectCode"),
-						SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"))
-				.from(STUDENT_SUBJECT_ENROLLED).innerJoin(STUDENT_ENROLLMENT)
-				.on(STUDENT_SUBJECT_ENROLLED.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+						SUBJECT.ABBREVATION, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), PROFESSOR_LOAD.LOAD_ID.as("loadId"),
+						PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"), USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
+						USERS.LAST_NAME.as("lastName"), USERS.IMAGE)
+				.from(STUDENT_SUBJECT_ENROLLED)
+				.innerJoin(STUDENT_ENROLLMENT).on(STUDENT_SUBJECT_ENROLLED.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
 				.innerJoin(PROFESSOR_LOAD).on(STUDENT_SUBJECT_ENROLLED.LOAD_ID.eq(PROFESSOR_LOAD.LOAD_ID))
+				.innerJoin(PROFESSOR).on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO))
+				.innerJoin(USERS).on(PROFESSOR.USER_ID.eq(USERS.USER_ID))
 				.innerJoin(SUBJECT).on(PROFESSOR_LOAD.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
 						.and(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)).from(STUDENT_ENROLLMENT)))
@@ -370,8 +377,26 @@ public class StudentCapabilitiesRepository {
 	public List<SubmittedSubjectsForEnrollment>  checkIfThereIsSubmittedSubjectsForEnrollment(Integer enrollmentId) {
 		return dslContext.selectFrom(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
 				.where(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(enrollmentId))
-				.fetchInto(SubmittedSubjectsForEnrollment.class);
-						 
-						 
+				.fetchInto(SubmittedSubjectsForEnrollment.class);		 
 	}
+	
+	public List<Map<String, Object>> selectAllEvaluationQuestionAnswerStudentNoAndSubjectCode(Integer studentNo, Integer subjectCode) {
+		return dslContext
+				.select(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ANSWER_ID.as("evaluationQuestionAnswerId"),
+						EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.as("evaluationQuestionId"),
+						EVALUATION_QUESTION.QUESTION, EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.as("professorNo"),
+						EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.as("subjectCode"),
+						EVALUATION_QUESTION_ANSWER.ENROLLMENT_ID.as("enrollmentId"),
+						EVALUATION_QUESTION_ANSWER.RATING)
+				.from(EVALUATION_QUESTION_ANSWER)
+				.innerJoin(EVALUATION_QUESTION).on(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EVALUATION_QUESTION.EVALUATION_QUESTION_ID))
+				.innerJoin(STUDENT_ENROLLMENT).on(EVALUATION_QUESTION_ANSWER.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
+						.and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode))
+						.and(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)).from(STUDENT_ENROLLMENT)))
+				)
+				.orderBy(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID)
+				.fetchMaps();
+	}
+	
 }

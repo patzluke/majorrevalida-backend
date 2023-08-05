@@ -661,4 +661,9 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public WebsiteActivationToggle toggleEvaluationOrProfessorGradingTime(WebsiteActivationToggle toggle) {
 		return repository.toggleEvaluationOrProfessorGradingTime(toggle);
 	}
+
+	@Override
+	public List<Map<String, Object>> enrollStudentToNextSemester() {
+		return repository.enrollStudentToNextSemester();
+	}
 }
