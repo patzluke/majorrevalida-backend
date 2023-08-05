@@ -1,5 +1,6 @@
 package org.ssglobal.training.codes.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.jooq.DSLContext;
@@ -83,7 +84,7 @@ public class StudentApplicantCapabilitiesRepository {
 			.where(ACADEMIC_YEAR.STATUS.eq("Process"))
 			.fetchOneInto(AcademicYear.class);
 			
-		return availableSchoolYear;
+		return availableSchoolYear == null ? new AcademicYear(1, 1, LocalDate.now(), LocalDate.now(), 1, "Close") : availableSchoolYear;
 	} 
 		
 }

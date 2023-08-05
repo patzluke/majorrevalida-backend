@@ -94,7 +94,7 @@ public class StudentApplicantCapabilitiesController {
 			AcademicYear academicYear = service.getAvailableAcademicYear();
 			if (academicYear != null) {
 				return ResponseEntity.ok(academicYear);
-			}
+			} 
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.notFound().build();
