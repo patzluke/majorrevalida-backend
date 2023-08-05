@@ -20,8 +20,38 @@ public class StudentGrades {
 	private String abbrevation;
 	private String subjectTitle;
 	private Integer units;
+	
+	private Integer academicYear;
+	private Integer semester;
 
 	public StudentGrades() {
+	}
+
+	public StudentGrades(Integer gradeId, Integer studentNo, Integer subjectDetailHisId, Integer enrollSubjectId,
+			Double prelimGrade, Double finalsGrade, Double totalGrade, String comment,
+			LocalDate datePrelimGradeInserted, LocalDate dateFinalsGradeInserted, LocalDate datePrelimGradeModified,
+			LocalDate dateFinalsGradeModified, String remarks, boolean isSubmitted, String abbrevation,
+			String subjectTitle, Integer units, Integer academicYear, Integer semester) {
+		super();
+		this.gradeId = gradeId;
+		this.studentNo = studentNo;
+		this.subjectDetailHisId = subjectDetailHisId;
+		this.enrollSubjectId = enrollSubjectId;
+		this.prelimGrade = prelimGrade;
+		this.finalsGrade = finalsGrade;
+		this.totalGrade = totalGrade;
+		this.comment = comment;
+		this.datePrelimGradeInserted = datePrelimGradeInserted;
+		this.dateFinalsGradeInserted = dateFinalsGradeInserted;
+		this.datePrelimGradeModified = datePrelimGradeModified;
+		this.dateFinalsGradeModified = dateFinalsGradeModified;
+		this.remarks = remarks;
+		this.isSubmitted = isSubmitted;
+		this.abbrevation = abbrevation;
+		this.subjectTitle = subjectTitle;
+		this.units = units;
+		this.academicYear = academicYear;
+		this.semester = semester;
 	}
 
 	public StudentGrades(Integer gradeId, Integer studentNo, Integer subjectDetailHisId, Integer enrollSubjectId,
@@ -184,6 +214,22 @@ public class StudentGrades {
 		this.units = units;
 	}
 
+	public Integer getAcademicYear() {
+		return academicYear;
+	}
+
+	public void setAcademicYear(Integer academicYear) {
+		this.academicYear = academicYear;
+	}
+
+	public Integer getSemester() {
+		return semester;
+	}
+
+	public void setSemester(Integer semester) {
+		this.semester = semester;
+	}
+
 	@Override
 	public String toString() {
 		return "StudentGrades [gradeId=" + gradeId + ", studentNo=" + studentNo + ", subjectDetailHisId="
@@ -193,7 +239,7 @@ public class StudentGrades {
 				+ dateFinalsGradeInserted + ", datePrelimGradeModified=" + datePrelimGradeModified
 				+ ", dateFinalsGradeModified=" + dateFinalsGradeModified + ", remarks=" + remarks + ", isSubmitted="
 				+ isSubmitted + ", abbrevation=" + abbrevation + ", subjectTitle=" + subjectTitle + ", units=" + units
-				+ "]";
+				+ ", academicYear=" + academicYear + ", semester=" + semester + "]";
 	}
 
 }
