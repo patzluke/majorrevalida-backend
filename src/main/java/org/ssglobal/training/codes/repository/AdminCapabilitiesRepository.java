@@ -1348,8 +1348,10 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public Map<String, Object> addSection(Section section) {
-		Section addSection = dslContext.insertInto(SECTION).set(SECTION.SECTION_NAME, section.getSectionName())
-				.set(SECTION.MAJOR_CODE, section.getMajorCode()).returning().fetchOne().into(Section.class);
+		Section addSection = dslContext.insertInto(SECTION)
+				.set(SECTION.SECTION_NAME, section.getSectionName())
+				.set(SECTION.MAJOR_CODE, section.getMajorCode())
+				.returning().fetchOne().into(Section.class);
 		Map<String, Object> query = dslContext
 				.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
 						SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
