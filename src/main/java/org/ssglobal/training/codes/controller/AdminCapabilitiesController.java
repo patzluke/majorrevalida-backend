@@ -27,6 +27,7 @@ import org.ssglobal.training.codes.service.Impl.EmailServiceImpl;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Department;
+import org.ssglobal.training.codes.tables.pojos.EvaluationQuestion;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
@@ -1277,6 +1278,70 @@ public class AdminCapabilitiesController {
 		try {
 			Map<String, Object> enrollee = service.updateSubmittedSubjectsOfstudentPerEnrollmentStatus(Integer.valueOf(subject.get("submittedSubjectsId").toString()), 
 																								  subject.get("status").toString());
+			if (enrollee != null) {
+				return ResponseEntity.ok(enrollee);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@GetMapping(value = "/get/evaluationquestions", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<EvaluationQuestion>> selectAllEvaluationQuestions() {
+		try {
+			List<EvaluationQuestion> questions = service.selectAllEvaluationQuestions();
+			System.out.println(questions);
+			if (!questions.isEmpty()) {
+				return ResponseEntity.ok(questions);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.notFound().build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PostMapping(value = "/insert/evaluationquestions", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity insertIntoEvaluationQuestions(@RequestBody EvaluationQuestion question){
+		try {
+			EvaluationQuestion enrollee = service.insertIntoEvaluationQuestions(question);
+			if (enrollee != null) {
+				return ResponseEntity.ok(enrollee);
+			}
+		} catch (DuplicateKeyException e1) {
+			return ResponseEntity.badRequest().body(e1.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update/evaluationquestions", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity updateEvaluationQuestion(@RequestBody EvaluationQuestion question){
+		try {
+			EvaluationQuestion enrollee = service.updateEvaluationQuestion(question);
+			if (enrollee != null) {
+				return ResponseEntity.ok(enrollee);
+			}
+		} catch (DuplicateKeyException e1) {
+			return ResponseEntity.badRequest().body(e1.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@DeleteMapping(value = "/delete/evaluationquestions/{evaluationQuestionId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity deleteEvaluationQuestion(@PathVariable(name = "evaluationQuestionId") Integer evaluationQuestionId){
+		try {
+			EvaluationQuestion enrollee = service.deleteEvaluationQuestion(evaluationQuestionId);
 			if (enrollee != null) {
 				return ResponseEntity.ok(enrollee);
 			}

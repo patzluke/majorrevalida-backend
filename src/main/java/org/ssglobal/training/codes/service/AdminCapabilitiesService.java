@@ -12,6 +12,7 @@ import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.AcademicYear;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Department;
+import org.ssglobal.training.codes.tables.pojos.EvaluationQuestion;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.Program;
@@ -220,4 +221,13 @@ public interface AdminCapabilitiesService {
 	List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollmentId(Integer studentNo, Integer enrollmentId);
 	
 	Map<String, Object> updateSubmittedSubjectsOfstudentPerEnrollmentStatus(Integer submittedSubjectsId, String status);
+	
+	// ---------------------- FOR Evaluation Questions
+	List<EvaluationQuestion> selectAllEvaluationQuestions();
+	
+	EvaluationQuestion insertIntoEvaluationQuestions(EvaluationQuestion question) throws Exception;
+	
+	EvaluationQuestion updateEvaluationQuestion(EvaluationQuestion question) throws DuplicateKeyException, Exception;
+	
+	EvaluationQuestion deleteEvaluationQuestion(Integer evaluationQuestionId);
 }

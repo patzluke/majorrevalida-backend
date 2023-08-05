@@ -357,12 +357,38 @@ create table student_attendance (
     foreign key(load_id) references professor_load(load_id) on delete cascade    
 ); 
 
+drop table if exists evaluation_question cascade;
+create table evaluation_question (
+    evaluation_question_id serial primary key,
+    question text,
+    active_deactive boolean
+); 
+
+drop table if exists evaluation_question_answer cascade;
+create table evaluation_question_answer (
+    evaluation_question_answer_id serial primary key,
+    evaluation_question_id int,
+    professor_no int,
+    subject_code int,
+    enrollment_id int,
+    rating varchar(40),
+    foreign key(evaluation_question_id) references evaluation_question(evaluation_question_id) on delete cascade,
+    foreign key(professor_no) references professor(professor_no) on delete cascade,    
+    foreign key(subject_code) references subject(subject_code) on delete cascade,    
+    foreign key(enrollment_id) references student_enrollment(enrollment_id) on delete cascade
+); 
+
+drop table if exists website_activation_toggle cascade;
+create table website_activation_toggle (
+    is_evaluation_time boolean,
+    is_professor_grading_time boolean
+); 
+
 --insert into academic_year table
 INSERT INTO academic_year (academic_year, start_date, end_date, semester, status)
 VALUES
   (2022, '2022-08-15', '2022-12-31', 1, 'Finished'),
   (2023, '2023-01-17', '2023-06-12', 2, 'Finished'),
-  
   (2023, '2023-08-15', '2023-12-31', 1, 'Process');
 
 
@@ -652,17 +678,6 @@ insert into users(username, password, email, contact_no, first_name, middle_name
 values('nikaastrero', '123456', 'nikaastrero@gmail.com', '9055261295', 'Nika', 'Artuz', 'Astrero', 'Admin', '2013-07-25', 'Vista Verde, Cainta', 'Single', 'Female', 'Filipino', 'true', 'true', 'nika.jpeg');
 
 insert into admin(user_id) values(2);
-
---insert into users and Parent table
---insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
---values('maribelastrero', '123456', 'maribelastrero@gmail.com', '9188192726', 'Maribel', 'Astros', 'Artuz', 'Parent', '1975-07-08', 'Vista Verde, Cainta', 'Married', 'Female', 'Filipino', 'true', 'true', 'maribel.jpeg');
---
---insert into parent(user_id) values(3);
---
---insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
---values('norbinastrero', '123456', 'norbinastrero@gmail.com', '9055261278', 'Norbin', 'Fernando', 'Astrero', 'Parent', '1975-07-25', 'Vista Verde, Cainta', 'Married', 'Male', 'Filipino', 'true', 'true', 'norbin.jpeg');
---
---insert into parent(user_id) values(4);
 
 --insert into users and Professor table
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive, image) 
@@ -2255,50 +2270,50 @@ values(8004, 9043, 10, 2, 2001, 'Friday', '17:00', '20:00', 't');
 
 
 --Insert value to student_applicant
---INSERT INTO student_applicant (
---    student_type,
---    selected_course_code,
---    selected_major_code,
---    year_level,
---    school_year,
---    semester,
---    first_name,
---    middle_name,
---    last_name,
---    suffix_name,
---    gender,
---    civil_status,
---    citizenship,
---    birth_date,
---    birth_place,
---    religion,
---    address,
---    telephone_no,
---    mobile_no,
---    email,
---    guardian_first_name,
---    guardian_middle_name,
---    guardian_last_name,
---    guardian_suffix_name,
---    guardian_mobile_no,
---    guardian_email,
---    guardian_occupation,
---    guardian_relation,
---    date_applied,
---    date_accepted,
---    acceptance_status
---) VALUES
---    -- First row
---    ('New', 3001, 4001, 1, 2023, 1, 'John', 'Doe', 'Smith', 'Jr.', 'Male', 'Single', 'US', '1990-01-01', 'New York', 'Christian', '123 Main St', '123456789', '987654321', 'john.doe@example.com', 'Father', 'Father Middle', 'Father Last', 'Sr.', '123456789', 'father1@example.com', 'Engineer', 'Father', NOW(), NULL, 'Pending'),
---    -- Second row
---    ('New', 3001, 4001, 1, 2023, 1, 'Jane', 'Doe', 'Johnson', NULL, 'Female', 'Married', 'UK', '1992-05-15', 'London', 'Catholic', '456 Elm St', '987654321', '123456789', 'jane.doe@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '987654321', 'father2@example.com', 'Teacher', 'Mother', NOW(), NULL, 'Pending'),
---    -- Third row
---    ('New', 3001, 4001, 1, 2023, 1, 'Michael', 'Brown', 'Johnson', NULL, 'Male', 'Single', 'Canada', '1991-07-20', 'Toronto', 'Protestant', '789 Oak St', '555555555', '999999999', 'michael.brown@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '555555555', 'father3@example.com', 'Architect', 'Mother',  NOW(), NULL, 'Pending'),
---    -- Fourth row
---    ('New', 3001, 4001, 1, 2023, 1, 'Emily', 'Smith', 'Wilson', 'Jr.', 'Female', 'Single', 'Australia', '1993-09-10', 'Sydney', 'Buddhist', '234 Pine St', '222222222', '888888888', 'emily.smith@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '222222222', 'father4@example.com', 'Lawyer', 'Mother', NOW(), NULL, 'Pending'),
---    -- Fifth row
---    ('New', 3001, 4001, 1, 2023, 1, 'David', 'Johnson', 'Taylor', NULL, 'Male', 'Married', 'France', '1992-04-05', 'Paris', 'Jewish', '345 Walnut St', '333333333', '777777777', 'david.johnson@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '333333333', 'father5@example.com', 'Entrepreneur', 'Mother', NOW(), NULL, 'Pending');
---
+INSERT INTO student_applicant (
+    student_type,
+    selected_course_code,
+    selected_major_code,
+    year_level,
+    school_year,
+    semester,
+    first_name,
+    middle_name,
+    last_name,
+    suffix_name,
+    gender,
+    civil_status,
+    citizenship,
+    birth_date,
+    birth_place,
+    religion,
+    address,
+    telephone_no,
+    mobile_no,
+    email,
+    guardian_first_name,
+    guardian_middle_name,
+    guardian_last_name,
+    guardian_suffix_name,
+    guardian_mobile_no,
+    guardian_email,
+    guardian_occupation,
+    guardian_relation,
+    date_applied,
+    date_accepted,
+    acceptance_status
+) VALUES
+    -- First row
+    ('New', 3001, 4001, 1, 2023, 1, 'John', 'Doe', 'Smith', 'Jr.', 'Male', 'Single', 'US', '1990-01-01', 'New York', 'Christian', '123 Main St', '123456789', '987654321', 'john.doe@example.com', 'Father', 'Father Middle', 'Father Last', 'Sr.', '123456789', 'father1@example.com', 'Engineer', 'Father', NOW(), NULL, 'Pending'),
+    -- Second row
+    ('New', 3001, 4001, 1, 2023, 1, 'Jane', 'Doe', 'Johnson', NULL, 'Female', 'Married', 'UK', '1992-05-15', 'London', 'Catholic', '456 Elm St', '987654321', '123456789', 'jane.doe@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '987654321', 'father2@example.com', 'Teacher', 'Mother', NOW(), NULL, 'Pending'),
+    -- Third row
+    ('New', 3001, 4001, 1, 2023, 1, 'Michael', 'Brown', 'Johnson', NULL, 'Male', 'Single', 'Canada', '1991-07-20', 'Toronto', 'Protestant', '789 Oak St', '555555555', '999999999', 'michael.brown@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '555555555', 'father3@example.com', 'Architect', 'Mother',  NOW(), NULL, 'Pending'),
+    -- Fourth row
+    ('New', 3001, 4001, 1, 2023, 1, 'Emily', 'Smith', 'Wilson', 'Jr.', 'Female', 'Single', 'Australia', '1993-09-10', 'Sydney', 'Buddhist', '234 Pine St', '222222222', '888888888', 'emily.smith@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '222222222', 'father4@example.com', 'Lawyer', 'Mother', NOW(), NULL, 'Pending'),
+    -- Fifth row
+    ('New', 3001, 4001, 1, 2023, 1, 'David', 'Johnson', 'Taylor', NULL, 'Male', 'Married', 'France', '1992-04-05', 'Paris', 'Jewish', '345 Walnut St', '333333333', '777777777', 'david.johnson@example.com', 'Father', 'Father Middle', 'Father Last', NULL, '333333333', 'father5@example.com', 'Entrepreneur', 'Mother', NOW(), NULL, 'Pending');
+
 
 
 select se.student_no, sub.abbrevation from submitted_subjects_for_enrollment ssfe
