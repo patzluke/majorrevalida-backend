@@ -1381,4 +1381,19 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.notFound().build();
 	}
+	
+	@GetMapping(value = "/enroll/student/next-semester", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> enrollStudentToNextSemester() {
+		try {
+			List<Map<String, Object>> student = service.enrollStudentToNextSemester();
+			if (student != null) {
+				return ResponseEntity.ok(student);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.notFound().build();
+	}
+	
 }

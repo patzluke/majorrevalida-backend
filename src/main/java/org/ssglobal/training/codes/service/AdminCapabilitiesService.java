@@ -236,4 +236,8 @@ public interface AdminCapabilitiesService {
 	WebsiteActivationToggle selectWebsiteActivationToggle();
 	
 	WebsiteActivationToggle toggleEvaluationOrProfessorGradingTime(WebsiteActivationToggle toggle);
+	
+	
+	// FOR STUDENT ENROLLMENT NEXT SEMESTER
+	List<Map<String, Object>> enrollStudentToNextSemester();
 }

@@ -224,7 +224,7 @@ public class AdminCapabilitiesRepository {
 		 * curriculumCode, and academicYearId
 		 */
 		return dslContext
-				.select(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
+				.selectDistinct(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
 						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
 						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
 						USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
@@ -616,12 +616,12 @@ public class AdminCapabilitiesRepository {
 		// update the data of the student to make them fully enrolled
 		dslContext.update(STUDENT_ENROLLMENT).set(STUDENT_ENROLLMENT.SECTION_ID, student.getSectionId())
 				.set(STUDENT_ENROLLMENT.PAYMENT_STATUS, student.getPaymentStatus())
-				.set(STUDENT_ENROLLMENT.STATUS, "Enrolled")
-				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(student.getStudentNo())).returning().fetchOne()
-				.into(EnrollmentData.class);
+				.set(STUDENT_ENROLLMENT.STATUS, "Enrolled").where(STUDENT_ENROLLMENT.STUDENT_NO
+						.eq(student.getStudentNo()).and(STUDENT_ENROLLMENT.STATUS.eq("Not Enrolled")))
+				.execute();
 
 		// return the data that is edited
-		return dslContext
+		EnrollmentData x = dslContext
 				.select(STUDENT_ENROLLMENT.ENROLLMENT_ID.as("enrollmentId"),
 						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), STUDENT.CURRICULUM_CODE.as("curriculumCode"),
 						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
@@ -630,14 +630,19 @@ public class AdminCapabilitiesRepository {
 						STUDENT.YEAR_LEVEL.as("yearLevel"), STUDENT_ENROLLMENT.STATUS.as("status"),
 						STUDENT_ENROLLMENT.SECTION_ID.as("sectionId"),
 						STUDENT_ENROLLMENT.PAYMENT_STATUS.as("paymentStatus"), STUDENT.YEAR_LEVEL.as("yearLevel"),
-						ACADEMIC_YEAR.SEMESTER, STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.as("academicYearId"))
+						ACADEMIC_YEAR.SEMESTER.as("semester"), STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.as("academicYearId"))
 				.from(STUDENT_ENROLLMENT).innerJoin(STUDENT).on(STUDENT_ENROLLMENT.STUDENT_NO.eq(STUDENT.STUDENT_NO))
 				.innerJoin(ACADEMIC_YEAR).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
 				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID)).innerJoin(CURRICULUM)
 				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
 				.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
-				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE))
-				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(student.getStudentNo())).fetchOne().into(EnrollmentData.class);
+				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).where(STUDENT_ENROLLMENT.STUDENT_NO
+						.eq(student.getStudentNo()).and(STUDENT_ENROLLMENT.STATUS.eq("Enrolled")))
+				.fetchOne().into(EnrollmentData.class);
+
+		System.out.println(x);
+
+		return x;
 	}
 
 	public StudentSubjectEnrolled fullyEnrollStudentSubjects(Integer loadId, Integer enrollmentId) {
@@ -1034,8 +1039,8 @@ public class AdminCapabilitiesRepository {
 
 	// -------------------------- FOR ACADEMIC YEAR
 	public List<AcademicYear> selectAllAcademicYear() {
-		return dslContext.selectFrom(ACADEMIC_YEAR).orderBy(ACADEMIC_YEAR.START_DATE.desc(), ACADEMIC_YEAR.END_DATE.desc())
-				.fetchInto(AcademicYear.class);
+		return dslContext.selectFrom(ACADEMIC_YEAR)
+				.orderBy(ACADEMIC_YEAR.START_DATE.desc(), ACADEMIC_YEAR.END_DATE.desc()).fetchInto(AcademicYear.class);
 	}
 
 	public AcademicYear addNewAcademicYear(AcademicYear academicYear) {
@@ -1353,10 +1358,8 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public Map<String, Object> addSection(Section section) {
-		Section addSection = dslContext.insertInto(SECTION)
-				.set(SECTION.SECTION_NAME, section.getSectionName())
-				.set(SECTION.MAJOR_CODE, section.getMajorCode())
-				.returning().fetchOne().into(Section.class);
+		Section addSection = dslContext.insertInto(SECTION).set(SECTION.SECTION_NAME, section.getSectionName())
+				.set(SECTION.MAJOR_CODE, section.getMajorCode()).returning().fetchOne().into(Section.class);
 		Map<String, Object> query = dslContext
 				.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
 						SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
@@ -1395,7 +1398,8 @@ public class AdminCapabilitiesRepository {
 						USERS.LAST_NAME.as("lastName"), USERS.EMAIL, GRADES.PRELIM_GRADE.as("prelimGrade"),
 						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.COMMENT, GRADES.REMARKS,
 						SECTION.SECTION_NAME.as("sectionName"), T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
-						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.ABBREVATION, GRADES.TOTAL_GRADE.as("totalGrade"))
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.ABBREVATION,
+						GRADES.TOTAL_GRADE.as("totalGrade"))
 				.from(GRADES).innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO)).innerJoin(USERS)
 				.on(STUDENT.USER_ID.eq(USERS.USER_ID)).innerJoin(STUDENT_ENROLLMENT)
 				.on(STUDENT.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO)).innerJoin(SECTION)
@@ -1415,32 +1419,30 @@ public class AdminCapabilitiesRepository {
 
 	public boolean insertGradesAndt_subject_detail_historyAndEvaluationAnswers(Integer professorNo, Integer subjectCode,
 			Integer academicYearId, Integer studentNo, Integer enrollSubjectId, Integer enrollmentId) {
-		
-		Map<String, Object> gradesAndSubjectHistory = selectSubjectDetailHistoryInnerjoinGradesByStudentNoAndAcademicYear(academicYearId, studentNo, subjectCode);
+
+		Map<String, Object> gradesAndSubjectHistory = selectSubjectDetailHistoryInnerjoinGradesByStudentNoAndAcademicYear(
+				academicYearId, studentNo, subjectCode);
 		if (gradesAndSubjectHistory != null) {
 			return false;
 		}
-		
+
 		selectAllEvaluationQuestions().forEach(question -> {
 			dslContext.insertInto(EVALUATION_QUESTION_ANSWER)
 					.set(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID, question.getEvaluationQuestionId())
 					.set(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO, professorNo)
 					.set(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE, subjectCode)
 					.set(EVALUATION_QUESTION_ANSWER.ENROLLMENT_ID, enrollmentId)
-					.set(EVALUATION_QUESTION_ANSWER.RATING, "")
-					.returning()
-					.fetchOne()
+					.set(EVALUATION_QUESTION_ANSWER.RATING, "").returning().fetchOne()
 					.into(EvaluationQuestionAnswer.class);
 		});
-		
+
 		TSubjectDetailHistory insertedTSubjectDetailHistory = dslContext.insertInto(T_SUBJECT_DETAIL_HISTORY)
 				.set(T_SUBJECT_DETAIL_HISTORY.PROFESSOR_NO, professorNo)
 				.set(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE, subjectCode)
 				.set(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID, academicYearId).returning().fetchOne()
 				.into(TSubjectDetailHistory.class);
 
-		Grades grade = dslContext.insertInto(GRADES)
-				.set(GRADES.STUDENT_NO, studentNo)
+		Grades grade = dslContext.insertInto(GRADES).set(GRADES.STUDENT_NO, studentNo)
 				.set(GRADES.SUBJECT_DETAIL_HIS_ID, insertedTSubjectDetailHistory.getSubjectDetailHisId())
 				.set(GRADES.ENROLL_SUBJECT_ID, enrollSubjectId).returning().fetchOne().into(Grades.class);
 
@@ -1449,18 +1451,19 @@ public class AdminCapabilitiesRepository {
 		}
 		return false;
 	}
-	
-	public Map<String, Object> selectSubjectDetailHistoryInnerjoinGradesByStudentNoAndAcademicYear(Integer academicYearId, Integer studentNo, Integer subjectCode) {
+
+	public Map<String, Object> selectSubjectDetailHistoryInnerjoinGradesByStudentNoAndAcademicYear(
+			Integer academicYearId, Integer studentNo, Integer subjectCode) {
 		Map<String, Object> query = dslContext
-				.select(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID.as("subjectDetailHisId"), T_SUBJECT_DETAIL_HISTORY.PROFESSOR_NO.as("professorNo"),
-						T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"), T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID.as("academicYearId"),
-						GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"))
-				.from(GRADES)
-				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
-				.where(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID.eq(academicYearId)
-						.and(GRADES.STUDENT_NO.eq(studentNo))
-						.and(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(subjectCode))
-				)
+				.select(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID.as("subjectDetailHisId"),
+						T_SUBJECT_DETAIL_HISTORY.PROFESSOR_NO.as("professorNo"),
+						T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
+						T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID.as("academicYearId"), GRADES.GRADE_ID.as("gradeId"),
+						GRADES.STUDENT_NO.as("studentNo"))
+				.from(GRADES).innerJoin(T_SUBJECT_DETAIL_HISTORY)
+				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
+				.where(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID.eq(academicYearId).and(GRADES.STUDENT_NO.eq(studentNo))
+						.and(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(subjectCode)))
 				.fetchOneMap();
 		return query;
 	}
@@ -2540,9 +2543,10 @@ public class AdminCapabilitiesRepository {
 		return dslContext
 				.selectDistinct(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBMITTED_SUBJECTS_ID.as("submittedSubjectsId"),
 						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.ABBREVATION,
-						SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS, PROFESSOR_LOAD.LOAD_ID.as("loadId"), PROFESSOR_LOAD.SECTION_ID.as("sectionId"),
-						PROFESSOR_LOAD.DAY, PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"),
-						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
+						SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS, PROFESSOR_LOAD.LOAD_ID.as("loadId"),
+						PROFESSOR_LOAD.SECTION_ID.as("sectionId"), PROFESSOR_LOAD.DAY,
+						PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"), SUBJECT.SUBJECT_CODE.as("subjectCode"),
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
 				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT).innerJoin(STUDENT_ENROLLMENT)
 				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
 				.innerJoin(PROFESSOR_LOAD)
@@ -2590,54 +2594,122 @@ public class AdminCapabilitiesRepository {
 						.eq(subjectsForEnrollment.getSubmittedSubjectsId()))
 				.fetchOneMap();
 	}
-	
+
 	// ------------ FOR Evaluation Question
 	public List<EvaluationQuestion> selectAllEvaluationQuestions() {
 		return dslContext.selectFrom(EVALUATION_QUESTION).fetchInto(EvaluationQuestion.class);
 	}
-	
+
 	public EvaluationQuestion insertIntoEvaluationQuestions(EvaluationQuestion question) {
 		EvaluationQuestion evaluationQuestion = dslContext.insertInto(EVALUATION_QUESTION)
-												.set(EVALUATION_QUESTION.QUESTION, question.getQuestion())
-												.set(EVALUATION_QUESTION.ACTIVE_DEACTIVE, true)
-												.returning()
-												.fetchOne()
-												.into(EvaluationQuestion.class);
+				.set(EVALUATION_QUESTION.QUESTION, question.getQuestion())
+				.set(EVALUATION_QUESTION.ACTIVE_DEACTIVE, true).returning().fetchOne().into(EvaluationQuestion.class);
 		return evaluationQuestion;
 	}
-	
+
 	public EvaluationQuestion updateEvaluationQuestion(EvaluationQuestion question) {
 		EvaluationQuestion evaluationQuestion = dslContext.update(EVALUATION_QUESTION)
-												.set(EVALUATION_QUESTION.QUESTION, question.getQuestion())
-												.where(EVALUATION_QUESTION.EVALUATION_QUESTION_ID.eq(question.getEvaluationQuestionId()))
-												.returning()
-												.fetchOne()
-												.into(EvaluationQuestion.class);
+				.set(EVALUATION_QUESTION.QUESTION, question.getQuestion())
+				.where(EVALUATION_QUESTION.EVALUATION_QUESTION_ID.eq(question.getEvaluationQuestionId())).returning()
+				.fetchOne().into(EvaluationQuestion.class);
 		return evaluationQuestion;
 	}
-	
+
 	public EvaluationQuestion deleteEvaluationQuestion(Integer evaluationQuestionId) {
 		EvaluationQuestion evaluationQuestion = dslContext.update(EVALUATION_QUESTION)
-												.set(EVALUATION_QUESTION.ACTIVE_DEACTIVE, false)
-												.where(EVALUATION_QUESTION.EVALUATION_QUESTION_ID.eq(evaluationQuestionId))
-												.returning()
-												.fetchOne()
-												.into(EvaluationQuestion.class);
+				.set(EVALUATION_QUESTION.ACTIVE_DEACTIVE, false)
+				.where(EVALUATION_QUESTION.EVALUATION_QUESTION_ID.eq(evaluationQuestionId)).returning().fetchOne()
+				.into(EvaluationQuestion.class);
 		return evaluationQuestion;
 	}
-	
+
 	// ------------ FOR WEBSITE ACTIVATION TOGGLE
 	public WebsiteActivationToggle selectWebsiteActivationToggle() {
 		return dslContext.selectFrom(WEBSITE_ACTIVATION_TOGGLE).fetchOneInto(WebsiteActivationToggle.class);
 	}
-	
+
 	public WebsiteActivationToggle toggleEvaluationOrProfessorGradingTime(WebsiteActivationToggle toggle) {
 		WebsiteActivationToggle websiteActivationToggle = dslContext.update(WEBSITE_ACTIVATION_TOGGLE)
-												.set(WEBSITE_ACTIVATION_TOGGLE.IS_EVALUATION_TIME, toggle.getIsEvaluationTime())
-												.set(WEBSITE_ACTIVATION_TOGGLE.IS_PROFESSOR_GRADING_TIME, toggle.getIsProfessorGradingTime())
-												.returning()
-												.fetchOne()
-												.into(WebsiteActivationToggle.class);
+				.set(WEBSITE_ACTIVATION_TOGGLE.IS_EVALUATION_TIME, toggle.getIsEvaluationTime())
+				.set(WEBSITE_ACTIVATION_TOGGLE.IS_PROFESSOR_GRADING_TIME, toggle.getIsProfessorGradingTime())
+				.returning().fetchOne().into(WebsiteActivationToggle.class);
 		return websiteActivationToggle;
 	}
+
+	public List<Map<String, Object>> enrollStudentToNextSemester() {
+		// Getting all the enrolled student
+		List<Map<String, Object>> student = dslContext.selectFrom(STUDENT_ENROLLMENT)
+				.where(STUDENT_ENROLLMENT.STATUS.eq("Enrolled")).fetchMaps();
+
+		student.forEach((data) -> {
+
+			// NOTE: Getting all the data of the student from the previous year
+			/*
+			 * StudentEnrollment studentEnrollment = new StudentEnrollment();
+			 * studentEnrollment.setEnrollmentId((Integer) data.get("enrollment_id"));
+			 * studentEnrollment.setStudentNo((Integer) data.get("student_no"));
+			 * studentEnrollment.setAcademicYearId((Integer) data.get("academic_year_id"));
+			 * studentEnrollment.setSectionId((Integer) data.get("section_id"));
+			 * studentEnrollment.setPaymentStatus((String) data.get("payment_status"));
+			 * studentEnrollment.setStatus((String) data.get("status"));
+			 */
+
+			// Getting the new Academic Year
+			// NOTE: The admin needs to add the a 'process' status in the academic year
+			AcademicYear newAcademicYear = dslContext.selectFrom(ACADEMIC_YEAR)
+					.where(ACADEMIC_YEAR.STATUS.eq("Process")).fetchOneInto(AcademicYear.class);
+
+			// Put all the data in a StudentEnrollment Class
+			StudentEnrollment studentEnrollment = new StudentEnrollment();
+			studentEnrollment.setEnrollmentId((Integer) data.get("enrollment_id"));
+			studentEnrollment.setStudentNo((Integer) data.get("student_no"));
+			studentEnrollment.setAcademicYearId(newAcademicYear.getAcademicYearId());
+			studentEnrollment.setStatus("Not Enrolled");
+
+			System.out.println(studentEnrollment.toString());
+
+			// Inserting new student data for the new academicYear
+			dslContext.insertInto(STUDENT_ENROLLMENT)
+					.set(STUDENT_ENROLLMENT.STUDENT_NO, studentEnrollment.getStudentNo())
+					.set(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID, studentEnrollment.getAcademicYearId())
+					.set(STUDENT_ENROLLMENT.STATUS, studentEnrollment.getStatus()).execute();
+
+			// Get the academic year table's semester
+			AcademicYear semester = dslContext.select(ACADEMIC_YEAR.SEMESTER.as("semester")).from(ACADEMIC_YEAR)
+					.where(ACADEMIC_YEAR.STATUS.eq("Process")).fetchOne().into(AcademicYear.class);
+
+			Student yearLevel = dslContext.select(STUDENT.YEAR_LEVEL.as("yearLevel")).from(STUDENT)
+					.where(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo())).fetchOne().into(Student.class);
+
+			// Have a condition for the year level
+			if (semester.getSemester() == 1) {
+				if (yearLevel.getYearLevel() == 4) {
+					dslContext.update(STUDENT).set(STUDENT.ACADEMIC_YEAR_ID, studentEnrollment.getAcademicYearId())
+							.set(STUDENT.YEAR_LEVEL, yearLevel.getYearLevel())
+							.where(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo())).execute();
+
+					// What if the student graduates? have a condition if 4th and 2 sem
+
+				} else {
+					dslContext.update(STUDENT).set(STUDENT.ACADEMIC_YEAR_ID, studentEnrollment.getAcademicYearId())
+							.set(STUDENT.YEAR_LEVEL, yearLevel.getYearLevel() + 1)
+							.where(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo())).execute();
+				}
+
+			} else if (semester.getSemester() == 2) {
+				dslContext.update(STUDENT).set(STUDENT.ACADEMIC_YEAR_ID, studentEnrollment.getAcademicYearId())
+						.set(STUDENT.YEAR_LEVEL, yearLevel.getYearLevel())
+						.where(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo())).execute();
+			}
+
+			// Updating the previous status to Finished
+			dslContext.update(STUDENT_ENROLLMENT).set(STUDENT_ENROLLMENT.STATUS, "Finished")
+					.where(STUDENT_ENROLLMENT.ENROLLMENT_ID.eq(studentEnrollment.getEnrollmentId())).execute();
+
+		});
+
+		return student;
+
+	}
+
 }
