@@ -1353,8 +1353,10 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public Map<String, Object> addSection(Section section) {
-		Section addSection = dslContext.insertInto(SECTION).set(SECTION.SECTION_NAME, section.getSectionName())
-				.set(SECTION.MAJOR_CODE, section.getMajorCode()).returning().fetchOne().into(Section.class);
+		Section addSection = dslContext.insertInto(SECTION)
+				.set(SECTION.SECTION_NAME, section.getSectionName())
+				.set(SECTION.MAJOR_CODE, section.getMajorCode())
+				.returning().fetchOne().into(Section.class);
 		Map<String, Object> query = dslContext
 				.select(SECTION.SECTION_ID.as("sectionId"), SECTION.MAJOR_CODE.as("majorCode"),
 						SECTION.SECTION_NAME.as("sectionName"), MAJOR.COURSE_CODE.as("courseCode"),
@@ -1393,7 +1395,7 @@ public class AdminCapabilitiesRepository {
 						USERS.LAST_NAME.as("lastName"), USERS.EMAIL, GRADES.PRELIM_GRADE.as("prelimGrade"),
 						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.COMMENT, GRADES.REMARKS,
 						SECTION.SECTION_NAME.as("sectionName"), T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
-						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.ABBREVATION)
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.ABBREVATION, GRADES.TOTAL_GRADE.as("totalGrade"))
 				.from(GRADES).innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO)).innerJoin(USERS)
 				.on(STUDENT.USER_ID.eq(USERS.USER_ID)).innerJoin(STUDENT_ENROLLMENT)
 				.on(STUDENT.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO)).innerJoin(SECTION)
