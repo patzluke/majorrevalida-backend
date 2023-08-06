@@ -50,7 +50,6 @@ public class StudentCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment SUBMITTED_SUBJECTS_FOR_ENROLLMENT = org.ssglobal.training.codes.tables.SubmittedSubjectsForEnrollment.SUBMITTED_SUBJECTS_FOR_ENROLLMENT;
 	private final org.ssglobal.training.codes.tables.EvaluationQuestion EVALUATION_QUESTION = org.ssglobal.training.codes.tables.EvaluationQuestion.EVALUATION_QUESTION;
 	private final org.ssglobal.training.codes.tables.EvaluationQuestionAnswer EVALUATION_QUESTION_ANSWER = org.ssglobal.training.codes.tables.EvaluationQuestionAnswer.EVALUATION_QUESTION_ANSWER;
-	private final org.ssglobal.training.codes.tables.WebsiteActivationToggle WEBSITE_ACTIVATION_TOGGLE = org.ssglobal.training.codes.tables.WebsiteActivationToggle.WEBSITE_ACTIVATION_TOGGLE;
 
 	public List<Users> selectAllUsers() {
 		return dslContext.selectFrom(USERS).fetchInto(Users.class);
