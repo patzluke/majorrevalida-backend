@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndParent;
@@ -97,12 +98,12 @@ public interface AdminCapabilitiesService {
 	// ------------------------FOR Student_applicants
 	List<StudentApplicant> selectAllStudentApplicants();
 
-	StudentApplicant updateStudentApplicantStatus(StudentApplicant studentApplicant);
+	StudentApplicant updateStudentApplicantStatus(StudentApplicant studentApplicant) throws YearLevelNotFoundException, Exception;
 
 	// ------------------------FOR StudentEnrollment
 	UserAndStudent selectStudent(Integer studentNo);
 	Map<String, Object> selectParentByStudent(Integer studentNo);
-	StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant);
+	StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) throws YearLevelNotFoundException, Exception;
 
 	List<Map<String, Object>> getAllEnrollmentData();
 
