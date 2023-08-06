@@ -382,14 +382,17 @@ public class AdminCapabilitiesRepository {
 
 	public List<Map<String, Object>> getAllStudentWithAcademicYear() {
 		List<Map<String, Object>> student = dslContext
-				.select(STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"),
+				.selectDistinct(STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"),
 						STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.as("academicYearId"),
 						ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.STATUS.as("status"))
 				.from(STUDENT_ENROLLMENT).innerJoin(ACADEMIC_YEAR)
 				.on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+				.where(STUDENT_ENROLLMENT.STATUS.eq("Enrolled").or(STUDENT_ENROLLMENT.STATUS.eq("Finished")))
 				.groupBy(STUDENT_ENROLLMENT.STUDENT_NO, STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID,
 						ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.STATUS)
 				.fetchMaps();
+		
+		//System.out.println("hey matt: " + student);
 		return student;
 	}
 
