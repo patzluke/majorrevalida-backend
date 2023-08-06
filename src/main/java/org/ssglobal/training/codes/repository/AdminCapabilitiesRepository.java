@@ -1422,22 +1422,35 @@ public class AdminCapabilitiesRepository {
 						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.COMMENT, GRADES.REMARKS,
 						SECTION.SECTION_NAME.as("sectionName"), T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.ABBREVATION,
-						GRADES.TOTAL_GRADE.as("totalGrade"))
+						GRADES.TOTAL_GRADE.as("totalGrade"),
+						ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER)
 				.from(GRADES).innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO)).innerJoin(USERS)
 				.on(STUDENT.USER_ID.eq(USERS.USER_ID)).innerJoin(STUDENT_ENROLLMENT)
 				.on(STUDENT.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO)).innerJoin(SECTION)
 				.on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(T_SUBJECT_DETAIL_HISTORY)
 				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
-				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).where(GRADES.IS_SUBMITTED.eq(true))
+				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.join(ACADEMIC_YEAR).on(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID))
+				.where(GRADES.IS_SUBMITTED.eq(false))
 				.orderBy(GRADES.GRADE_ID).fetchMaps();
 	}
 
 	public List<Map<String, Object>> selectAllBatchYearBySection(Integer sectionId) {
-		return dslContext.select(ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER.as("semester"))
+		List<Map<String, Object>> list =  dslContext.select(ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), 
+											ACADEMIC_YEAR.SEMESTER.as("semester"),
+											STUDENT_ENROLLMENT.SECTION_ID.as("sectionId"))
 				.from(ACADEMIC_YEAR)
+				.join(STUDENT_ENROLLMENT).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
 				.whereExists(DSL.selectOne().from(STUDENT_ENROLLMENT).where(ACADEMIC_YEAR.ACADEMIC_YEAR_ID
 						.eq(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID).and(STUDENT_ENROLLMENT.SECTION_ID.eq(sectionId))))
 				.fetchMaps();
+		System.out.println(list + "list");
+		return list;
+//		 return dslContext.select(ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER.as("semester"))
+//		            .from(ACADEMIC_YEAR)
+//		            .join(STUDENT_ENROLLMENT).on(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID))
+//		            .where(STUDENT_ENROLLMENT.SECTION_ID.eq(sectionId))
+//		            .fetchMaps();
 	}
 
 	public boolean insertGradesAndt_subject_detail_historyAndEvaluationAnswers(Integer professorNo, Integer subjectCode,
