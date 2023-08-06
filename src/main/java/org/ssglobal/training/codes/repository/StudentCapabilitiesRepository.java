@@ -12,6 +12,7 @@ import org.ssglobal.training.codes.model.StudentCourseData;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.Course;
 import org.ssglobal.training.codes.tables.pojos.Curriculum;
+import org.ssglobal.training.codes.tables.pojos.EvaluationQuestionAnswer;
 import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
@@ -396,6 +397,19 @@ public class StudentCapabilitiesRepository {
 				)
 				.orderBy(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID)
 				.fetchMaps();
+	}
+	
+	public boolean updateEvaluationQuestionAnswer(List<EvaluationQuestionAnswer> questionAnswers) {
+		if (!questionAnswers.isEmpty()) {
+			for (EvaluationQuestionAnswer answer : questionAnswers) {
+				dslContext.update(EVALUATION_QUESTION_ANSWER)
+				  .set(EVALUATION_QUESTION_ANSWER.RATING, answer.getRating())
+				  .where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ANSWER_ID.eq(answer.getEvaluationQuestionAnswerId()))
+				  .execute();			
+			}
+			return true;
+		}
+		return false;
 	}
 	
 }

@@ -14,6 +14,7 @@ import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.repository.StudentCapabilitiesRepository;
 import org.ssglobal.training.codes.service.StudentCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.Course;
+import org.ssglobal.training.codes.tables.pojos.EvaluationQuestionAnswer;
 import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
@@ -169,5 +170,10 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	public List<Map<String, Object>> selectAllEvaluationQuestionAnswerStudentNoAndSubjectCode(Integer studentNo,
 			Integer subjectCode) {
 		return repository.selectAllEvaluationQuestionAnswerStudentNoAndSubjectCode(studentNo, subjectCode);
+	}
+	
+	@Override
+	public boolean updateEvaluationQuestionAnswer(List<EvaluationQuestionAnswer> questionAnswers) {
+		return repository.updateEvaluationQuestionAnswer(questionAnswers);
 	}
 }

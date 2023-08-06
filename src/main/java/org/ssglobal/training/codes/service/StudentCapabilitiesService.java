@@ -6,6 +6,7 @@ import java.util.Map;
 import org.ssglobal.training.codes.model.StudentCourseData;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.tables.pojos.Course;
+import org.ssglobal.training.codes.tables.pojos.EvaluationQuestionAnswer;
 import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
@@ -58,4 +59,6 @@ public interface StudentCapabilitiesService {
 	List<SubmittedSubjectsForEnrollment> checkIfThereIsSubmittedSubjectsForEnrollment(Integer enrollmentId);
 	
 	List<Map<String, Object>> selectAllEvaluationQuestionAnswerStudentNoAndSubjectCode(Integer studentNo, Integer subjectCode);
+	
+	boolean updateEvaluationQuestionAnswer(List<EvaluationQuestionAnswer> questionAnswers);
 }

@@ -22,6 +22,7 @@ import org.ssglobal.training.codes.model.StudentCourseData;
 import org.ssglobal.training.codes.model.UserAndStudent;
 import org.ssglobal.training.codes.service.StudentCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.Course;
+import org.ssglobal.training.codes.tables.pojos.EvaluationQuestionAnswer;
 import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
@@ -352,5 +353,23 @@ public class StudentCapabilitiesController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.badRequest().build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value = "/update/evaluationquestionanswer", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity updateEvaluationQuestionAnswer(@RequestBody List<EvaluationQuestionAnswer> payload) {
+		System.out.println(payload);
+		
+		boolean updatedStudentGrades = service.updateEvaluationQuestionAnswer(payload);
+		try {
+			if (updatedStudentGrades) {
+				return ResponseEntity.ok(updatedStudentGrades);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().body("something went wrong");
 	}
 }
