@@ -1417,5 +1417,23 @@ public class AdminCapabilitiesController {
 		}
 		return ResponseEntity.notFound().build();
 	}
+	
+	// ------------ FOR SUMMARY OF PROFESSORS SUBJECT EVALUATION PER ACADEMIC YEAR
+	@GetMapping(value = "/get/evaluationquestionanswer/summary/{academicYearId}/{professorNo}/{subjectCode}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> enrollStudentToNextSemester(@PathVariable(name = "academicYearId") Integer academicYearId,
+																				 @PathVariable(name = "professorNo") Integer professorNo,
+																				 @PathVariable(name = "subjectCode") Integer subjectCode) {
+		try {
+			List<Map<String, Object>> summary = service.selectProfessorsSubjectEvaluationSummaryByAcademicYear(academicYearId, professorNo, subjectCode);
+			System.out.println(summary);
+			if (!summary.isEmpty()) {
+				return ResponseEntity.ok(summary);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.notFound().build();
+	}
 
 }

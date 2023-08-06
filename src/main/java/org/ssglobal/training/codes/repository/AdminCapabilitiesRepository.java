@@ -2734,5 +2734,59 @@ public class AdminCapabilitiesRepository {
 		return student;
 
 	}
+	
+	// ------------ FOR SUMMARY OF PROFESSORS SUBJECT EVALUATION PER ACADEMIC YEAR
+	public List<Map<String, Object>> selectProfessorsSubjectEvaluationSummaryByAcademicYear(Integer academicYearId, Integer profesorNo, Integer subjectCode) {
+		org.ssglobal.training.codes.tables.EvaluationQuestionAnswer EQA = org.ssglobal.training.codes.tables.EvaluationQuestionAnswer.EVALUATION_QUESTION_ANSWER.as("EQA");
+
+		
+		return dslContext.selectDistinct(EVALUATION_QUESTION.QUESTION,
+					  DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING))
+								  .from(EVALUATION_QUESTION_ANSWER)
+								  .where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
+										  .and(EVALUATION_QUESTION_ANSWER.RATING.eq("Strongly Disagree"))
+										  .and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
+										  .and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode))
+								  )
+								  .asField("stronglyDisagree"),
+					   DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING))
+						  .from(EVALUATION_QUESTION_ANSWER)
+						  .where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
+								  .and(EVALUATION_QUESTION_ANSWER.RATING.eq("Disagree"))
+								  .and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
+								  .and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode))
+						  )
+						  .asField("disagree"),
+				   DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING))
+					  .from(EVALUATION_QUESTION_ANSWER)
+					  .where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
+							  .and(EVALUATION_QUESTION_ANSWER.RATING.eq("Neutral"))
+							  .and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
+							  .and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode))
+					  )
+					  .asField("neutral"),
+				   DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING))
+					  .from(EVALUATION_QUESTION_ANSWER)
+					  .where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
+							  .and(EVALUATION_QUESTION_ANSWER.RATING.eq("Agree"))
+							  .and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
+							  .and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode))
+					  )
+					  .asField("agree"),
+				   DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING))
+					  .from(EVALUATION_QUESTION_ANSWER)
+					  .where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
+							  .and(EVALUATION_QUESTION_ANSWER.RATING.eq("Strongly Agree"))
+							  .and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
+							  .and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode))
+					  )
+					  .asField("stronglyAgree")
+				)
+				.from(EQA)
+				.innerJoin(EVALUATION_QUESTION).on(EQA.EVALUATION_QUESTION_ID.eq(EVALUATION_QUESTION.EVALUATION_QUESTION_ID))
+				.innerJoin(STUDENT_ENROLLMENT).on(EQA.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.where(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(academicYearId))
+				.fetchMaps();
+	}
 
 }
