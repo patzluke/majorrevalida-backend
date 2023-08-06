@@ -241,4 +241,7 @@ public interface AdminCapabilitiesService {
 	
 	// FOR STUDENT ENROLLMENT NEXT SEMESTER
 	List<Map<String, Object>> enrollStudentToNextSemester();
+	
+	// ------------ FOR SUMMARY OF PROFESSORS SUBJECT EVALUATION PER ACADEMIC YEAR
+	List<Map<String, Object>> selectProfessorsSubjectEvaluationSummaryByAcademicYear(Integer academicYearId, Integer profesorNo, Integer subjectCode);
 }

@@ -681,4 +681,10 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<Map<String, Object>> enrollStudentToNextSemester() {
 		return repository.enrollStudentToNextSemester();
 	}
+	
+	@Override
+	public List<Map<String, Object>> selectProfessorsSubjectEvaluationSummaryByAcademicYear(Integer academicYearId,
+			Integer profesorNo, Integer subjectCode) {
+		return repository.selectProfessorsSubjectEvaluationSummaryByAcademicYear(academicYearId, profesorNo, subjectCode);
+	}
 }
