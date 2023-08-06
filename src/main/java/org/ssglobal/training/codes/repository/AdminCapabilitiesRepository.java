@@ -10,6 +10,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
 import org.ssglobal.training.codes.model.UserAndParent;
@@ -391,8 +392,8 @@ public class AdminCapabilitiesRepository {
 				.groupBy(STUDENT_ENROLLMENT.STUDENT_NO, STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID,
 						ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.STATUS)
 				.fetchMaps();
-		
-		//System.out.println("hey matt: " + student);
+
+		// System.out.println("hey matt: " + student);
 		return student;
 	}
 
@@ -435,7 +436,8 @@ public class AdminCapabilitiesRepository {
 		return parentInfo;
 	}
 
-	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) {
+	public StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant)
+			throws YearLevelNotFoundException, Exception {
 
 		// Get the academic_year_id
 		// The applicant can be applied to the academic year that is on process and
@@ -447,6 +449,10 @@ public class AdminCapabilitiesRepository {
 				.where(ACADEMIC_YEAR.SEMESTER.eq(studentApplicant.getSemester()).and(ACADEMIC_YEAR.ACADEMIC_YEAR_
 						.eq(studentApplicant.getSchoolYear()).and(ACADEMIC_YEAR.STATUS.eq("Process"))))
 				.fetchOneInto(AcademicYear.class);
+
+		if (applicantAcademicYear == null) {
+			throw new YearLevelNotFoundException();
+		}
 
 		LocalDate birthDate = studentApplicant.getBirthDate();
 		String formattedBirthDate = null;
@@ -624,7 +630,7 @@ public class AdminCapabilitiesRepository {
 				.execute();
 
 		// return the data that is edited
-		EnrollmentData x = dslContext
+		EnrollmentData enrollmentData = dslContext
 				.select(STUDENT_ENROLLMENT.ENROLLMENT_ID.as("enrollmentId"),
 						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), STUDENT.CURRICULUM_CODE.as("curriculumCode"),
 						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
@@ -643,9 +649,9 @@ public class AdminCapabilitiesRepository {
 						.eq(student.getStudentNo()).and(STUDENT_ENROLLMENT.STATUS.eq("Enrolled")))
 				.fetchOne().into(EnrollmentData.class);
 
-		System.out.println(x);
+		System.out.println(enrollmentData);
 
-		return x;
+		return enrollmentData;
 	}
 
 	public StudentSubjectEnrolled fullyEnrollStudentSubjects(Integer loadId, Integer enrollmentId) {
@@ -661,7 +667,7 @@ public class AdminCapabilitiesRepository {
 		return dslContext.select(ACADEMIC_YEAR.START_DATE, ACADEMIC_YEAR.END_DATE, ACADEMIC_YEAR.ACADEMIC_YEAR_)
 				.from(STUDENT_ENROLLMENT).innerJoin(ACADEMIC_YEAR)
 				.on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
-				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo).and(STUDENT_ENROLLMENT.STATUS.eq("Enrolled")))
 				.orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.SEMESTER).fetchOneInto(AcademicYear.class);
 	}
 
@@ -1026,7 +1032,21 @@ public class AdminCapabilitiesRepository {
 		return students;
 	}
 
-	public StudentApplicant updateStudentApplicantStatus(StudentApplicant studentApplicant) {
+	public StudentApplicant updateStudentApplicantStatus(StudentApplicant studentApplicant)
+			throws YearLevelNotFoundException, Exception {
+
+		// Select first the applicant academic year if existing
+		AcademicYear applicantAcademicYear = dslContext.select(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.as("academicYearId"))
+				.from(ACADEMIC_YEAR)
+				.where(ACADEMIC_YEAR.SEMESTER.eq(studentApplicant.getSemester()).and(ACADEMIC_YEAR.ACADEMIC_YEAR_
+						.eq(studentApplicant.getSchoolYear()).and(ACADEMIC_YEAR.STATUS.eq("Process"))))
+				.fetchOneInto(AcademicYear.class);
+
+		// If no on going process enrollment throw an error
+		if (applicantAcademicYear == null) {
+			throw new YearLevelNotFoundException("Year level not found Error from updating the applicant status");
+		}
+		
 		/*
 		 * This will add the User's data limited to: username, password, first_name,
 		 * middle_name, last_name, birth_date, address, civil_status, gender,
