@@ -13,6 +13,7 @@ import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.SubmittedSubjectsForEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.pojos.WebsiteActivationToggle;
 
 public interface StudentCapabilitiesService {
 	
@@ -61,4 +62,6 @@ public interface StudentCapabilitiesService {
 	List<Map<String, Object>> selectAllEvaluationQuestionAnswerStudentNoAndSubjectCode(Integer studentNo, Integer subjectCode);
 	
 	boolean updateEvaluationQuestionAnswer(List<EvaluationQuestionAnswer> questionAnswers);
+	
+	WebsiteActivationToggle selectWebsiteActivationToggle();
 }

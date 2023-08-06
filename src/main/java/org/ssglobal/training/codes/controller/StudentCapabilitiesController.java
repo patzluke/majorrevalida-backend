@@ -28,6 +28,7 @@ import org.ssglobal.training.codes.tables.pojos.Major;
 import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.SubmittedSubjectsForEnrollment;
+import org.ssglobal.training.codes.tables.pojos.WebsiteActivationToggle;
 
 @RestController
 @RequestMapping(value = "/api/student")
@@ -358,9 +359,7 @@ public class StudentCapabilitiesController {
 	@SuppressWarnings("rawtypes")
 	@PutMapping(value = "/update/evaluationquestionanswer", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity updateEvaluationQuestionAnswer(@RequestBody List<EvaluationQuestionAnswer> payload) {
-		System.out.println(payload);
-		
+	public ResponseEntity updateEvaluationQuestionAnswer(@RequestBody List<EvaluationQuestionAnswer> payload) {		
 		boolean updatedStudentGrades = service.updateEvaluationQuestionAnswer(payload);
 		try {
 			if (updatedStudentGrades) {
@@ -371,5 +370,20 @@ public class StudentCapabilitiesController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.badRequest().body("something went wrong");
+	}
+	
+	@GetMapping(value = "/get/websiteactivationtoggle", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<WebsiteActivationToggle> selectWebsiteActivationToggle() {
+		try {
+			WebsiteActivationToggle toggle = service.selectWebsiteActivationToggle();
+			System.out.println(toggle);
+			if (toggle != null) {
+				return ResponseEntity.ok(toggle);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.notFound().build();
 	}
 }

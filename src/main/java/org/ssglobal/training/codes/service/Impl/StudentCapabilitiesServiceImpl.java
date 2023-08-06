@@ -21,6 +21,7 @@ import org.ssglobal.training.codes.tables.pojos.Program;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.SubmittedSubjectsForEnrollment;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.pojos.WebsiteActivationToggle;
 import org.ssglobal.training.codes.tables.records.SubmittedSubjectsForEnrollmentRecord;
 
 @Service
@@ -175,5 +176,10 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	@Override
 	public boolean updateEvaluationQuestionAnswer(List<EvaluationQuestionAnswer> questionAnswers) {
 		return repository.updateEvaluationQuestionAnswer(questionAnswers);
+	}
+	
+	@Override
+	public WebsiteActivationToggle selectWebsiteActivationToggle() {
+		return repository.selectWebsiteActivationToggle();
 	}
 }
