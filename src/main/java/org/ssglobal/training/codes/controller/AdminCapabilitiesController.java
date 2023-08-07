@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.ssglobal.training.codes.exception.NoEnrolledStudentFoundException;
+import org.ssglobal.training.codes.exception.RepeatedStatusException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EmailDetails;
 import org.ssglobal.training.codes.model.EnrollmentData;
@@ -538,6 +540,9 @@ public class AdminCapabilitiesController {
 			if (addedAcademicYear != null) {
 				return ResponseEntity.ok(addedAcademicYear);
 			}
+		} catch (RepeatedStatusException e1) {
+			e1.printStackTrace();
+			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			System.out.println("%s".formatted(e));
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -549,11 +554,13 @@ public class AdminCapabilitiesController {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<AcademicYear> updateAcademicYear(@RequestBody AcademicYear academicYear) {
 		try {
-			System.out.println(academicYear);
 			AcademicYear addedAcademicYear = service.updateNewAcademicYear(academicYear);
 			if (addedAcademicYear != null) {
 				return ResponseEntity.ok(addedAcademicYear);
 			}
+		} catch (RepeatedStatusException e1) {
+			e1.printStackTrace();
+			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
 			System.out.println("%s".formatted(e));
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -561,6 +568,7 @@ public class AdminCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
+	// Not used
 	@PostMapping(value = "/insert/academic-year", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<AcademicYear> insertAcademicYear(@RequestBody AcademicYear academicYear) {
@@ -1012,7 +1020,7 @@ public class AdminCapabilitiesController {
 				return ResponseEntity.ok(allSubjects);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("No Course Major Found Please Add Atleast One");
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -1411,20 +1419,25 @@ public class AdminCapabilitiesController {
 			if (student != null) {
 				return ResponseEntity.ok(student);
 			}
+		} catch (NoEnrolledStudentFoundException e1) {
+			return ResponseEntity.badRequest().build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.notFound().build();
 	}
-	
+
 	// ------------ FOR SUMMARY OF PROFESSORS SUBJECT EVALUATION PER ACADEMIC YEAR
-	@GetMapping(value = "/get/evaluationquestionanswer/summary/{academicYearId}/{professorNo}/{subjectCode}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<Map<String, Object>>> enrollStudentToNextSemester(@PathVariable(name = "academicYearId") Integer academicYearId,
-																				 @PathVariable(name = "professorNo") Integer professorNo,
-																				 @PathVariable(name = "subjectCode") Integer subjectCode) {
+	@GetMapping(value = "/get/evaluationquestionanswer/summary/{academicYearId}/{professorNo}/{subjectCode}", produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Map<String, Object>>> enrollStudentToNextSemester(
+			@PathVariable(name = "academicYearId") Integer academicYearId,
+			@PathVariable(name = "professorNo") Integer professorNo,
+			@PathVariable(name = "subjectCode") Integer subjectCode) {
 		try {
-			List<Map<String, Object>> summary = service.selectProfessorsSubjectEvaluationSummaryByAcademicYear(academicYearId, professorNo, subjectCode);
+			List<Map<String, Object>> summary = service
+					.selectProfessorsSubjectEvaluationSummaryByAcademicYear(academicYearId, professorNo, subjectCode);
 			System.out.println(summary);
 			if (!summary.isEmpty()) {
 				return ResponseEntity.ok(summary);

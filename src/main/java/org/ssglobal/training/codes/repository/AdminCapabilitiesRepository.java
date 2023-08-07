@@ -10,6 +10,8 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.ssglobal.training.codes.exception.NoEnrolledStudentFoundException;
+import org.ssglobal.training.codes.exception.RepeatedStatusException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
@@ -393,7 +395,6 @@ public class AdminCapabilitiesRepository {
 						ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.STATUS)
 				.fetchMaps();
 
-		// System.out.println("hey matt: " + student);
 		return student;
 	}
 
@@ -1046,7 +1047,7 @@ public class AdminCapabilitiesRepository {
 		if (applicantAcademicYear == null) {
 			throw new YearLevelNotFoundException("Year level not found Error from updating the applicant status");
 		}
-		
+
 		/*
 		 * This will add the User's data limited to: username, password, first_name,
 		 * middle_name, last_name, birth_date, address, civil_status, gender,
@@ -1066,15 +1067,68 @@ public class AdminCapabilitiesRepository {
 				.orderBy(ACADEMIC_YEAR.START_DATE.desc(), ACADEMIC_YEAR.END_DATE.desc()).fetchInto(AcademicYear.class);
 	}
 
-	public AcademicYear addNewAcademicYear(AcademicYear academicYear) {
+	public AcademicYear addNewAcademicYear(AcademicYear academicYear) throws RepeatedStatusException, Exception {
+		// Fetch academic year records with "On-going" and "Process" statuses
+		AcademicYear onGoingStatusExist = dslContext
+				.select(ACADEMIC_YEAR.SEMESTER.as("semester"), ACADEMIC_YEAR.STATUS.as("status")).from(ACADEMIC_YEAR)
+				.where(ACADEMIC_YEAR.STATUS.eq("On-going")).fetchOneInto(AcademicYear.class);
+
+		AcademicYear processStatusExist = dslContext
+				.select(ACADEMIC_YEAR.SEMESTER.as("semester"), ACADEMIC_YEAR.STATUS.as("status")).from(ACADEMIC_YEAR)
+				.where(ACADEMIC_YEAR.STATUS.eq("Process")).fetchOneInto(AcademicYear.class);
+
+		if (onGoingStatusExist == null && processStatusExist == null) {
+			return dslContext.insertInto(ACADEMIC_YEAR)
+					.set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
+					.set(ACADEMIC_YEAR.START_DATE, academicYear.getStartDate())
+					.set(ACADEMIC_YEAR.END_DATE, academicYear.getEndDate())
+					.set(ACADEMIC_YEAR.SEMESTER, academicYear.getSemester())
+					.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus()).returning().fetchOne()
+					.into(AcademicYear.class);
+		}
+
+		if (academicYear.getStatus().equals("On-going")) {
+			if (onGoingStatusExist != null) {
+				throw new RepeatedStatusException(
+						"An academic year with 'On-going' or 'Process' status already exists.");
+			}
+		} else if (academicYear.getStatus().equals("Process")) {
+			if (processStatusExist != null || academicYear.getSemester().equals(onGoingStatusExist.getSemester())) {
+				throw new RepeatedStatusException(
+						"An academic year with 'On-going' or 'Process' status already exists.");
+			}
+		}
+
 		return dslContext.insertInto(ACADEMIC_YEAR).set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
 				.set(ACADEMIC_YEAR.START_DATE, academicYear.getStartDate())
 				.set(ACADEMIC_YEAR.END_DATE, academicYear.getEndDate())
 				.set(ACADEMIC_YEAR.SEMESTER, academicYear.getSemester())
 				.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus()).returning().fetchOne().into(AcademicYear.class);
+
 	}
 
-	public AcademicYear updateNewAcademicYear(AcademicYear academicYear) {
+	public AcademicYear updateNewAcademicYear(AcademicYear academicYear) throws RepeatedStatusException, Exception {
+		// Fetch academic year records with "On-going" and "Process" statuses
+		AcademicYear onGoingStatusExist = dslContext.selectFrom(ACADEMIC_YEAR)
+				.where(ACADEMIC_YEAR.STATUS.eq("On-going")).fetchOneInto(AcademicYear.class);
+
+		AcademicYear processStatusExist = dslContext.selectFrom(ACADEMIC_YEAR).where(ACADEMIC_YEAR.STATUS.eq("Process"))
+				.fetchOneInto(AcademicYear.class);
+
+		// Check for existing statuses and throw exceptions if necessary
+		if (academicYear.getStatus().equals("On-going")) {
+			if (onGoingStatusExist != null) {
+				throw new RepeatedStatusException(
+						"An academic year with 'On-going' or 'Process' status already exists.");
+			}
+		} else if (academicYear.getStatus().equals("Process")) {
+			if (processStatusExist != null) {
+				throw new RepeatedStatusException(
+						"An academic year with 'On-going' or 'Process' status already exists.");
+			}
+		}
+
+		// Perform the update and return the updated AcademicYear object
 		return dslContext.update(ACADEMIC_YEAR).set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
 				.set(ACADEMIC_YEAR.START_DATE, academicYear.getStartDate())
 				.set(ACADEMIC_YEAR.END_DATE, academicYear.getEndDate())
@@ -1084,6 +1138,7 @@ public class AdminCapabilitiesRepository {
 				.into(AcademicYear.class);
 	}
 
+	// not Used
 	public AcademicYear addAcademicYear(AcademicYear academicYear) {
 		/*
 		 * The academic data added is limited to: academic_year and status
@@ -1422,25 +1477,24 @@ public class AdminCapabilitiesRepository {
 						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.COMMENT, GRADES.REMARKS,
 						SECTION.SECTION_NAME.as("sectionName"), T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.ABBREVATION,
-						GRADES.TOTAL_GRADE.as("totalGrade"),
-						ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER)
+						GRADES.TOTAL_GRADE.as("totalGrade"), ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"),
+						ACADEMIC_YEAR.SEMESTER)
 				.from(GRADES).innerJoin(STUDENT).on(GRADES.STUDENT_NO.eq(STUDENT.STUDENT_NO)).innerJoin(USERS)
 				.on(STUDENT.USER_ID.eq(USERS.USER_ID)).innerJoin(STUDENT_ENROLLMENT)
 				.on(STUDENT.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO)).innerJoin(SECTION)
 				.on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID)).innerJoin(T_SUBJECT_DETAIL_HISTORY)
 				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
-				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-				.join(ACADEMIC_YEAR).on(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID))
-				.where(GRADES.IS_SUBMITTED.eq(false))
-				.orderBy(GRADES.GRADE_ID).fetchMaps();
+				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).join(ACADEMIC_YEAR)
+				.on(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID))
+				.where(GRADES.IS_SUBMITTED.eq(false)).orderBy(GRADES.GRADE_ID).fetchMaps();
 	}
 
 	public List<Map<String, Object>> selectAllBatchYearBySection(Integer sectionId) {
-		List<Map<String, Object>> list =  dslContext.select(ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), 
-											ACADEMIC_YEAR.SEMESTER.as("semester"),
-											STUDENT_ENROLLMENT.SECTION_ID.as("sectionId"))
-				.from(ACADEMIC_YEAR)
-				.join(STUDENT_ENROLLMENT).on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
+		List<Map<String, Object>> list = dslContext
+				.select(ACADEMIC_YEAR.ACADEMIC_YEAR_.as("academicYear"), ACADEMIC_YEAR.SEMESTER.as("semester"),
+						STUDENT_ENROLLMENT.SECTION_ID.as("sectionId"))
+				.from(ACADEMIC_YEAR).join(STUDENT_ENROLLMENT)
+				.on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
 				.whereExists(DSL.selectOne().from(STUDENT_ENROLLMENT).where(ACADEMIC_YEAR.ACADEMIC_YEAR_ID
 						.eq(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID).and(STUDENT_ENROLLMENT.SECTION_ID.eq(sectionId))))
 				.fetchMaps();
@@ -1829,6 +1883,7 @@ public class AdminCapabilitiesRepository {
 		return query;
 	}
 
+	// Bugs
 	public List<Map<String, Object>> selectAllMajorSubjectsByAllCourse(Integer courseCode) {
 		List<Curriculum> allCurriculum = dslContext
 				.select(CURRICULUM.CURRICULUM_CODE, CURRICULUM.CURRICULUM_ID, CURRICULUM.CURRICULUM_NAME,
@@ -1854,7 +1909,7 @@ public class AdminCapabilitiesRepository {
 						.and(MAJOR_SUBJECT.CURRICULUM_CODE.eq(allCurriculum.get(0).getCurriculumCode()))
 						.and(SUBJECT.ACTIVE_DEACTIVE.eq(true)))
 				.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM).fetchMaps();
-
+		System.out.println(query);
 		return query;
 	}
 
@@ -2672,10 +2727,14 @@ public class AdminCapabilitiesRepository {
 		return websiteActivationToggle;
 	}
 
-	public List<Map<String, Object>> enrollStudentToNextSemester() {
+	public List<Map<String, Object>> enrollStudentToNextSemester() throws NoEnrolledStudentFoundException, Exception {
 		// Getting all the enrolled student
 		List<Map<String, Object>> student = dslContext.selectFrom(STUDENT_ENROLLMENT)
 				.where(STUDENT_ENROLLMENT.STATUS.eq("Enrolled")).fetchMaps();
+		
+		if (student.isEmpty()) {
+			throw new NoEnrolledStudentFoundException();
+		}
 
 		student.forEach((data) -> {
 
@@ -2724,8 +2783,6 @@ public class AdminCapabilitiesRepository {
 							.set(STUDENT.YEAR_LEVEL, yearLevel.getYearLevel())
 							.where(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo())).execute();
 
-					// What if the student graduates? have a condition if 4th and 2 sem
-
 				} else {
 					dslContext.update(STUDENT).set(STUDENT.ACADEMIC_YEAR_ID, studentEnrollment.getAcademicYearId())
 							.set(STUDENT.YEAR_LEVEL, yearLevel.getYearLevel() + 1)
@@ -2747,59 +2804,49 @@ public class AdminCapabilitiesRepository {
 		return student;
 
 	}
-	
-	// ------------ FOR SUMMARY OF PROFESSORS SUBJECT EVALUATION PER ACADEMIC YEAR
-	public List<Map<String, Object>> selectProfessorsSubjectEvaluationSummaryByAcademicYear(Integer academicYearId, Integer profesorNo, Integer subjectCode) {
-		org.ssglobal.training.codes.tables.EvaluationQuestionAnswer EQA = org.ssglobal.training.codes.tables.EvaluationQuestionAnswer.EVALUATION_QUESTION_ANSWER.as("EQA");
 
-		
-		return dslContext.selectDistinct(EVALUATION_QUESTION.QUESTION,
-					  DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING))
-								  .from(EVALUATION_QUESTION_ANSWER)
-								  .where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
-										  .and(EVALUATION_QUESTION_ANSWER.RATING.eq("Strongly Disagree"))
-										  .and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
-										  .and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode))
-								  )
-								  .asField("stronglyDisagree"),
-					   DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING))
-						  .from(EVALUATION_QUESTION_ANSWER)
-						  .where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
-								  .and(EVALUATION_QUESTION_ANSWER.RATING.eq("Disagree"))
-								  .and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
-								  .and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode))
-						  )
-						  .asField("disagree"),
-				   DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING))
-					  .from(EVALUATION_QUESTION_ANSWER)
-					  .where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
-							  .and(EVALUATION_QUESTION_ANSWER.RATING.eq("Neutral"))
-							  .and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
-							  .and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode))
-					  )
-					  .asField("neutral"),
-				   DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING))
-					  .from(EVALUATION_QUESTION_ANSWER)
-					  .where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
-							  .and(EVALUATION_QUESTION_ANSWER.RATING.eq("Agree"))
-							  .and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
-							  .and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode))
-					  )
-					  .asField("agree"),
-				   DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING))
-					  .from(EVALUATION_QUESTION_ANSWER)
-					  .where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
-							  .and(EVALUATION_QUESTION_ANSWER.RATING.eq("Strongly Agree"))
-							  .and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
-							  .and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode))
-					  )
-					  .asField("stronglyAgree")
-				)
-				.from(EQA)
-				.innerJoin(EVALUATION_QUESTION).on(EQA.EVALUATION_QUESTION_ID.eq(EVALUATION_QUESTION.EVALUATION_QUESTION_ID))
+	// ------------ FOR SUMMARY OF PROFESSORS SUBJECT EVALUATION PER ACADEMIC YEAR
+	public List<Map<String, Object>> selectProfessorsSubjectEvaluationSummaryByAcademicYear(Integer academicYearId,
+			Integer profesorNo, Integer subjectCode) {
+		org.ssglobal.training.codes.tables.EvaluationQuestionAnswer EQA = org.ssglobal.training.codes.tables.EvaluationQuestionAnswer.EVALUATION_QUESTION_ANSWER
+				.as("EQA");
+
+		return dslContext
+				.selectDistinct(EVALUATION_QUESTION.QUESTION,
+						DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING)).from(EVALUATION_QUESTION_ANSWER)
+								.where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
+										.and(EVALUATION_QUESTION_ANSWER.RATING.eq("Strongly Disagree"))
+										.and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
+										.and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode)))
+								.asField("stronglyDisagree"),
+						DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING)).from(EVALUATION_QUESTION_ANSWER)
+								.where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
+										.and(EVALUATION_QUESTION_ANSWER.RATING.eq("Disagree"))
+										.and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
+										.and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode)))
+								.asField("disagree"),
+						DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING)).from(EVALUATION_QUESTION_ANSWER)
+								.where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
+										.and(EVALUATION_QUESTION_ANSWER.RATING.eq("Neutral"))
+										.and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
+										.and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode)))
+								.asField("neutral"),
+						DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING)).from(EVALUATION_QUESTION_ANSWER)
+								.where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
+										.and(EVALUATION_QUESTION_ANSWER.RATING.eq("Agree"))
+										.and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
+										.and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode)))
+								.asField("agree"),
+						DSL.select(DSL.count(EVALUATION_QUESTION_ANSWER.RATING)).from(EVALUATION_QUESTION_ANSWER)
+								.where(EVALUATION_QUESTION_ANSWER.EVALUATION_QUESTION_ID.eq(EQA.EVALUATION_QUESTION_ID)
+										.and(EVALUATION_QUESTION_ANSWER.RATING.eq("Strongly Agree"))
+										.and(EVALUATION_QUESTION_ANSWER.PROFESSOR_NO.eq(profesorNo))
+										.and(EVALUATION_QUESTION_ANSWER.SUBJECT_CODE.eq(subjectCode)))
+								.asField("stronglyAgree"))
+				.from(EQA).innerJoin(EVALUATION_QUESTION)
+				.on(EQA.EVALUATION_QUESTION_ID.eq(EVALUATION_QUESTION.EVALUATION_QUESTION_ID))
 				.innerJoin(STUDENT_ENROLLMENT).on(EQA.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
-				.where(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(academicYearId))
-				.fetchMaps();
+				.where(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(academicYearId)).fetchMaps();
 	}
 
 }

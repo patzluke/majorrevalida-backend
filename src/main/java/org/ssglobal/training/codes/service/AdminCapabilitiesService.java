@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.ssglobal.training.codes.exception.NoEnrolledStudentFoundException;
+import org.ssglobal.training.codes.exception.RepeatedStatusException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
@@ -98,29 +100,35 @@ public interface AdminCapabilitiesService {
 	// ------------------------FOR Student_applicants
 	List<StudentApplicant> selectAllStudentApplicants();
 
-	StudentApplicant updateStudentApplicantStatus(StudentApplicant studentApplicant) throws YearLevelNotFoundException, Exception;
+	StudentApplicant updateStudentApplicantStatus(StudentApplicant studentApplicant)
+			throws YearLevelNotFoundException, Exception;
 
 	// ------------------------FOR StudentEnrollment
 	UserAndStudent selectStudent(Integer studentNo);
+
 	Map<String, Object> selectParentByStudent(Integer studentNo);
-	StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant) throws YearLevelNotFoundException, Exception;
+
+	StudentEnrollment insertStudentEnrollmentData(StudentApplicant studentApplicant)
+			throws YearLevelNotFoundException, Exception;
 
 	List<Map<String, Object>> getAllEnrollmentData();
 
 	EnrollmentData fullyEnrollStudent(EnrollmentData student);
-	
+
 	// ------------------------FOR Student Attendance
 	AcademicYear selectEnrolledSchoolYearOfStudent(Integer studentNo);
 
 	boolean batchInsertStudentAttendanceBySubject(List<StudentAttendanceRecord> studentAttendanceRecords);
-	
+
 	// ------------------------FOR Student Schedule
 
 	// ------------------------FOR Academic year
 	List<AcademicYear> selectAllAcademicYear();
-	AcademicYear addNewAcademicYear(AcademicYear academicYear);
-	AcademicYear updateNewAcademicYear(AcademicYear academicYear);
-	
+
+	AcademicYear addNewAcademicYear(AcademicYear academicYear) throws RepeatedStatusException, Exception;
+
+	AcademicYear updateNewAcademicYear(AcademicYear academicYear) throws RepeatedStatusException, Exception;
+
 	AcademicYear addAcademicYear(AcademicYear academicYear);
 
 	AcademicYear updateAcademicYearStatus(AcademicYear academicYear);
@@ -141,10 +149,13 @@ public interface AdminCapabilitiesService {
 
 	// ------------------------FOR Department
 	List<Department> selectAllDepartment();
+
 	public Department updateDepartment(Department department);
+
 	public Department insertDepartment(Department department);
+
 	public Department deleteDepartment(Department department);
-	
+
 	// ------------------------FOR Major
 	List<Major> selectAllMajor();
 
@@ -163,7 +174,9 @@ public interface AdminCapabilitiesService {
 
 	// ------------------------FOR Section
 	List<Map<String, Object>> selectAllSection();
+
 	Map<String, Object> addSection(Section section);
+
 	Map<String, Object> updateSection(Section section);
 
 	// ------------------------FOR Room
@@ -171,7 +184,7 @@ public interface AdminCapabilitiesService {
 
 	// ------------------------FOR Grades
 	List<Map<String, Object>> selectAllStudentsBySection();
-	
+
 	List<Map<String, Object>> selectAllBatchYearBySection(Integer sectionId);
 
 	// -------------------------FOR THE MINOR SUBJECTS
@@ -218,30 +231,30 @@ public interface AdminCapabilitiesService {
 
 	// ---------------------- FOR THE FRESHMAN MINOR SUBJECTS
 	public List<Map<String, Object>> selectFreshManStudentMinorSubject(Integer studentNo);
-	
+
 	// ---------------------- FOR Submitted Subjects for enrollment of students
 	List<Map<String, Object>> selectSubmittedSubjectsOfstudentPerEnrollmentId(Integer studentNo, Integer enrollmentId);
-	
+
 	Map<String, Object> updateSubmittedSubjectsOfstudentPerEnrollmentStatus(Integer submittedSubjectsId, String status);
-	
+
 	// ---------------------- FOR Evaluation Questions
 	List<EvaluationQuestion> selectAllEvaluationQuestions();
-	
+
 	EvaluationQuestion insertIntoEvaluationQuestions(EvaluationQuestion question) throws Exception;
-	
+
 	EvaluationQuestion updateEvaluationQuestion(EvaluationQuestion question) throws DuplicateKeyException, Exception;
-	
+
 	EvaluationQuestion deleteEvaluationQuestion(Integer evaluationQuestionId);
-	
+
 	// ------------ FOR WEBSITE ACTIVATION TOGGLE
 	WebsiteActivationToggle selectWebsiteActivationToggle();
-	
+
 	WebsiteActivationToggle toggleEvaluationOrProfessorGradingTime(WebsiteActivationToggle toggle);
-	
-	
+
 	// FOR STUDENT ENROLLMENT NEXT SEMESTER
-	List<Map<String, Object>> enrollStudentToNextSemester();
-	
+	List<Map<String, Object>> enrollStudentToNextSemester() throws NoEnrolledStudentFoundException, Exception;
+
 	// ------------ FOR SUMMARY OF PROFESSORS SUBJECT EVALUATION PER ACADEMIC YEAR
-	List<Map<String, Object>> selectProfessorsSubjectEvaluationSummaryByAcademicYear(Integer academicYearId, Integer profesorNo, Integer subjectCode);
+	List<Map<String, Object>> selectProfessorsSubjectEvaluationSummaryByAcademicYear(Integer academicYearId,
+			Integer profesorNo, Integer subjectCode);
 }
