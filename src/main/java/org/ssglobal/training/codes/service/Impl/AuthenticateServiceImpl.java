@@ -11,6 +11,7 @@ import javax.crypto.KeyGenerator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.ssglobal.training.codes.repository.AuthenticateRepository;
 import org.ssglobal.training.codes.service.AuthenticateService;
@@ -26,6 +27,9 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	@Autowired
 	private AuthenticateRepository repository;
 	
+	@Autowired
+	private PasswordEncoder encoder;
+	
 	@Override
 	public Map<String, Object> searchUserByUsernameAndPassword(String username, String password) {
 		Map<String, Object> user = repository.searchUserByUsernameAndPassword(username);
@@ -33,6 +37,18 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 			return user;
 		}
 		return null;
+	}
+	
+	@Override
+	public Map<String, Object> checkUsernameByForgotPassword(String username) {
+		Map<String, Object> user = repository.checkUsernameByForgotPassword(username);
+		return user;
+	}
+	
+	@Override
+	public boolean changePasswordByForgotPassword(String username, String password) {
+		boolean user = repository.changePasswordByForgotPassword(username, encoder.encode(password));
+		return user;
 	}
 	
 	@Override

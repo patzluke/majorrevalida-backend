@@ -49,4 +49,31 @@ public class AuthenticateController {
 		System.out.println("hey");
 		return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 	}
+	
+	@SuppressWarnings("rawtypes")
+	@PostMapping(value = "/forgot-password/checkUsername", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity checkUsername(@RequestBody Map<String, Object> payload) {
+		String username = payload.get("username").toString();
+		Map<String, Object> user = service.checkUsernameByForgotPassword(username);
+		if (user != null) {
+			return ResponseEntity.ok(user);
+		} else {
+			return ResponseEntity.badRequest().body("ERROR: Username didn't exist");
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@PostMapping(value = "/forgot-password/change-password", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity changePassword(@RequestBody Map<String, Object> payload) {
+		String username = payload.get("username").toString();
+		String password = payload.get("password").toString();
+		boolean user = service.changePasswordByForgotPassword(username, password);
+		if (user) {
+			return ResponseEntity.ok(user);
+		} else {
+			return ResponseEntity.badRequest().body("ERROR: Change Password Error");
+		}
+	}
 }
