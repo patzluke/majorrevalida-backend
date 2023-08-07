@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.ssglobal.training.codes.exception.NoEnrolledStudentFoundException;
 import org.ssglobal.training.codes.exception.RepeatedStatusException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EnrollmentData;
@@ -124,11 +125,9 @@ public interface AdminCapabilitiesService {
 	// ------------------------FOR Academic year
 	List<AcademicYear> selectAllAcademicYear();
 
-	AcademicYear addNewAcademicYear(AcademicYear academicYear)
-			throws RepeatedStatusException, Exception;
+	AcademicYear addNewAcademicYear(AcademicYear academicYear) throws RepeatedStatusException, Exception;
 
-	AcademicYear updateNewAcademicYear(AcademicYear academicYear)
-			throws RepeatedStatusException, Exception;
+	AcademicYear updateNewAcademicYear(AcademicYear academicYear) throws RepeatedStatusException, Exception;
 
 	AcademicYear addAcademicYear(AcademicYear academicYear);
 
@@ -253,7 +252,7 @@ public interface AdminCapabilitiesService {
 	WebsiteActivationToggle toggleEvaluationOrProfessorGradingTime(WebsiteActivationToggle toggle);
 
 	// FOR STUDENT ENROLLMENT NEXT SEMESTER
-	List<Map<String, Object>> enrollStudentToNextSemester();
+	List<Map<String, Object>> enrollStudentToNextSemester() throws NoEnrolledStudentFoundException, Exception;
 
 	// ------------ FOR SUMMARY OF PROFESSORS SUBJECT EVALUATION PER ACADEMIC YEAR
 	List<Map<String, Object>> selectProfessorsSubjectEvaluationSummaryByAcademicYear(Integer academicYearId,

@@ -2,6 +2,7 @@ package org.ssglobal.training.codes.controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -284,15 +285,52 @@ public class StudentCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 
-	@GetMapping(value = "/get/subjectstoenroll/{yearLevel}/{sem}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@GetMapping(value = "/get/subjectstoenroll/{yearLevel}/{sem}/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<Map<String, Object>>> selectAllSubjectsToEnrollPerYearAndSem(
-			@PathVariable(name = "yearLevel") Integer yearLevel, @PathVariable(name = "sem") Integer sem) {
+			@PathVariable(name = "yearLevel") Integer yearLevel, @PathVariable(name = "sem") Integer sem,
+			@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
+			List<Map<String, Object>> subjects = new ArrayList<>();
 			List<Map<String, Object>> minor = service.selectAllMajorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
 			List<Map<String, Object>> major = service.selectAllMinorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
-			List<Map<String, Object>> subjects = new ArrayList<>();
 			subjects.addAll(minor);
 			subjects.addAll(major);
+			
+			List<Map<String, Object>> failedSubjects = new ArrayList<>();
+			List<Map<String, Object>> failedMajorSubjects = service.selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
+			List<Map<String, Object>> failedMinorSubjects = service.selectAllFailedMinorSubjectPreviouslyOfStudent(studentNo);
+			failedSubjects.addAll(failedMajorSubjects);
+			failedSubjects.addAll(failedMinorSubjects);
+			
+			failedSubjects.forEach(subj -> {
+				for (Iterator iterator = subjects.iterator(); iterator.hasNext();) {
+					Map<String, Object> innerSubj = (Map<String, Object>) iterator.next();
+					if (subj.get("subjectCode").equals(innerSubj.get("preRequisite"))) {
+						iterator.remove();
+					}
+				}
+			});
+			
+			if (!subjects.isEmpty()) {
+				return ResponseEntity.ok(subjects);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@GetMapping(value = "/get/subjectstoenroll/backlog/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity selectAllFailedSubjectPreviouslyOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
+		try {
+			List<Map<String, Object>> subjects = new ArrayList<>();
+			List<Map<String, Object>> majorSubjects = service.selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
+			List<Map<String, Object>> minorSubjects = service.selectAllFailedMinorSubjectPreviouslyOfStudent(studentNo);
+			subjects.addAll(minorSubjects);
+			subjects.addAll(majorSubjects);
 			if (!subjects.isEmpty()) {
 				return ResponseEntity.ok(subjects);
 			}

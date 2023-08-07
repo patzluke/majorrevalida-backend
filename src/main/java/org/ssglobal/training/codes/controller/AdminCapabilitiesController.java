@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.ssglobal.training.codes.exception.NoEnrolledStudentFoundException;
 import org.ssglobal.training.codes.exception.RepeatedStatusException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EmailDetails;
@@ -1019,7 +1020,7 @@ public class AdminCapabilitiesController {
 				return ResponseEntity.ok(allSubjects);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("No Course Major Found Please Add Atleast One");
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -1418,6 +1419,8 @@ public class AdminCapabilitiesController {
 			if (student != null) {
 				return ResponseEntity.ok(student);
 			}
+		} catch (NoEnrolledStudentFoundException e1) {
+			return ResponseEntity.badRequest().build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

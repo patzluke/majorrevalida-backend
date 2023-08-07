@@ -10,6 +10,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.ssglobal.training.codes.exception.NoEnrolledStudentFoundException;
 import org.ssglobal.training.codes.exception.RepeatedStatusException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EnrollmentData;
@@ -404,7 +405,6 @@ public class AdminCapabilitiesRepository {
 						ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.STATUS)
 				.fetchMaps();
 
-		// System.out.println("hey matt: " + student);
 		return student;
 	}
 
@@ -1086,6 +1086,16 @@ public class AdminCapabilitiesRepository {
 		AcademicYear processStatusExist = dslContext
 				.select(ACADEMIC_YEAR.SEMESTER.as("semester"), ACADEMIC_YEAR.STATUS.as("status")).from(ACADEMIC_YEAR)
 				.where(ACADEMIC_YEAR.STATUS.eq("Process")).fetchOneInto(AcademicYear.class);
+
+		if (onGoingStatusExist == null && processStatusExist == null) {
+			return dslContext.insertInto(ACADEMIC_YEAR)
+					.set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
+					.set(ACADEMIC_YEAR.START_DATE, academicYear.getStartDate())
+					.set(ACADEMIC_YEAR.END_DATE, academicYear.getEndDate())
+					.set(ACADEMIC_YEAR.SEMESTER, academicYear.getSemester())
+					.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus()).returning().fetchOne()
+					.into(AcademicYear.class);
+		}
 
 		if (academicYear.getStatus().equals("On-going")) {
 			if (onGoingStatusExist != null) {
@@ -1883,6 +1893,7 @@ public class AdminCapabilitiesRepository {
 		return query;
 	}
 
+	// Bugs
 	public List<Map<String, Object>> selectAllMajorSubjectsByAllCourse(Integer courseCode) {
 		List<Curriculum> allCurriculum = dslContext
 				.select(CURRICULUM.CURRICULUM_CODE, CURRICULUM.CURRICULUM_ID, CURRICULUM.CURRICULUM_NAME,
@@ -1908,7 +1919,7 @@ public class AdminCapabilitiesRepository {
 						.and(MAJOR_SUBJECT.CURRICULUM_CODE.eq(allCurriculum.get(0).getCurriculumCode()))
 						.and(SUBJECT.ACTIVE_DEACTIVE.eq(true)))
 				.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM).fetchMaps();
-
+		System.out.println(query);
 		return query;
 	}
 
@@ -2655,8 +2666,8 @@ public class AdminCapabilitiesRepository {
 						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.ABBREVATION,
 						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
 						SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS)
-				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT).innerJoin(STUDENT_ENROLLMENT)
-				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
+				.innerJoin(STUDENT_ENROLLMENT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
 				.innerJoin(SUBJECT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
 						.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(enrollmentId)))
@@ -2726,10 +2737,14 @@ public class AdminCapabilitiesRepository {
 		return websiteActivationToggle;
 	}
 
-	public List<Map<String, Object>> enrollStudentToNextSemester() {
+	public List<Map<String, Object>> enrollStudentToNextSemester() throws NoEnrolledStudentFoundException, Exception {
 		// Getting all the enrolled student
 		List<Map<String, Object>> student = dslContext.selectFrom(STUDENT_ENROLLMENT)
 				.where(STUDENT_ENROLLMENT.STATUS.eq("Enrolled")).fetchMaps();
+		
+		if (student.isEmpty()) {
+			throw new NoEnrolledStudentFoundException();
+		}
 
 		student.forEach((data) -> {
 
