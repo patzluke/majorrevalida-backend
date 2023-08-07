@@ -395,20 +395,22 @@ public class StudentCapabilitiesRepository {
 													.from(SUBJECT)
 													.join(MAJOR_SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 													.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode())).fetchMaps();
-		List<Map<String, Object>> failedList = dslContext
-		.selectDistinct(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
-				SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE, MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisite"))
-		.from(SUBJECT)
-		.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
-		.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(SUBJECT.SUBJECT_CODE.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE))
-		.innerJoin(GRADES).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID.eq(GRADES.SUBJECT_DETAIL_HIS_ID))
-		.innerJoin(STUDENT_ENROLLMENT).on(GRADES.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
-		.where(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)).from(ACADEMIC_YEAR))
-				.and(MAJOR_SUBJECT.SEM.lessOrEqual(dslContext.select(DSL.max(ACADEMIC_YEAR.SEMESTER)).from(ACADEMIC_YEAR)))
-				.and(GRADES.REMARKS.eq("Failed"))
-				.and(GRADES.STUDENT_NO.eq(studentNo))
-		)
-		.fetchMaps();
+		List<Map<String, Object>> failedList = selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
+//		dslContext
+//		.selectDistinct(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
+//				SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE, MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisite"))
+//		.from(SUBJECT)
+//		.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+//		.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(SUBJECT.SUBJECT_CODE.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE))
+//		.innerJoin(GRADES).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID.eq(GRADES.SUBJECT_DETAIL_HIS_ID))
+//		.innerJoin(STUDENT_ENROLLMENT).on(GRADES.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
+//		.where(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)).from(ACADEMIC_YEAR))
+//				.and(MAJOR_SUBJECT.SEM.lessOrEqual(dslContext.select(DSL.max(ACADEMIC_YEAR.SEMESTER)).from(ACADEMIC_YEAR)))
+//				.and(GRADES.REMARKS.eq("Failed"))
+//				.and(GRADES.STUDENT_NO.eq(studentNo))
+//		)
+//		.fetchMaps();
+		
 		list.forEach((listSub) -> {
 			failedList.forEach((failedSub) -> {
 				if (Integer.valueOf(listSub.get("preRequisites").toString()).compareTo(Integer.valueOf(failedSub.get("subjectCode").toString())) == 0) {
