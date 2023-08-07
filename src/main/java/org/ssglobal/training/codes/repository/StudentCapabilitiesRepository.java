@@ -1,5 +1,6 @@
 package org.ssglobal.training.codes.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -383,11 +384,44 @@ public class StudentCapabilitiesRepository {
 	}
 	
 	//-------------FOR BACKLOGS SUBJECT () 
-	public List<Map<String, Object>> selectListOfBackLogsMajorSubject(Integer studentNo, Integer yearLevel, Integer sem, Integer curriculumCode) {
-		List<Map<String, Object>> list = dslContext.select(SUBJECT.SUBJECT_CODE).from(SUBJECT)
+	public List<Map<String, Object>> selectListOfBackLogsMajorSubject(Integer studentNo) {
+		Student student = dslContext.selectFrom(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo))
+				.fetchOneInto(Student.class);
+		
+		List<Map<String, Object>> backlogs = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> list = dslContext.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+															SUBJECT.ABBREVATION, SUBJECT.PRICE, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+															MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM)
+													.from(SUBJECT)
 													.join(MAJOR_SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-													.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(curriculumCode)).fetchMaps();
-		return list;
+													.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode())).fetchMaps();
+		List<Map<String, Object>> failedList = dslContext
+		.selectDistinct(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
+				SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE, MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisite"))
+		.from(SUBJECT)
+		.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+		.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(SUBJECT.SUBJECT_CODE.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE))
+		.innerJoin(GRADES).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID.eq(GRADES.SUBJECT_DETAIL_HIS_ID))
+		.innerJoin(STUDENT_ENROLLMENT).on(GRADES.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
+		.where(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)).from(ACADEMIC_YEAR))
+				.and(MAJOR_SUBJECT.SEM.lessOrEqual(dslContext.select(DSL.max(ACADEMIC_YEAR.SEMESTER)).from(ACADEMIC_YEAR)))
+				.and(GRADES.REMARKS.eq("Failed"))
+				.and(GRADES.STUDENT_NO.eq(studentNo))
+		)
+		.fetchMaps();
+		list.forEach((listSub) -> {
+			failedList.forEach((failedSub) -> {
+				if (Integer.valueOf(listSub.get("preRequisites").toString()).compareTo(Integer.valueOf(failedSub.get("subjectCode").toString())) == 0) {
+					System.out.println("checked");
+					if (Integer.valueOf(listSub.get("yearLevel").toString()).compareTo(student.getYearLevel()) < 0) {
+						backlogs.add(listSub);
+					}
+				}
+			});
+		});
+		System.out.println(backlogs + "logs");
+		System.out.println(failedList + "faileds");
+		return backlogs;
 	}
 
 	// ------------ FOR Major Subject (for curriculum display)

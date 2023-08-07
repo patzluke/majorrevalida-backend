@@ -208,7 +208,7 @@ public class ProfessorCapabilitiesRepository {
 			
 			if (totalGrade >= 75) {
 				remarks = "Passed";
-			} else if (totalGrade > 70 && totalGrade < 75 || student.getFinalsGrade() == 0) {
+			} else if (totalGrade >= 70 && totalGrade < 75 || student.getFinalsGrade() == 0) {
 				remarks = "Conditional";
 			} else if (totalGrade < 70) {
 				remarks = "Failed";

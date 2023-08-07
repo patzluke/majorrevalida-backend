@@ -136,7 +136,16 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	
 	@Override
 	public List<Map<String, Object>> selectAllFailedMajorSubjectPreviouslyOfStudent(Integer studentNo) {
-		return repository.selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
+		List<Map<String, Object>> backLogs = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> majorLogs = repository.selectListOfBackLogsMajorSubject(studentNo);
+		List<Map<String, Object>> majorFaileds = repository.selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
+		majorLogs.forEach((log) -> {
+			backLogs.add(log);
+		});
+		majorFaileds.forEach((fail) -> {
+			backLogs.add(fail);
+		});
+		return backLogs;
 	}
 	
 	@Override
