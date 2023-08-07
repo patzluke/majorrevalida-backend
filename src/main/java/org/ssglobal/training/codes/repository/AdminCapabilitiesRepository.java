@@ -10,6 +10,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.ssglobal.training.codes.exception.NoEnrolledStudentFoundException;
 import org.ssglobal.training.codes.exception.RepeatedStatusException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EnrollmentData;
@@ -1076,6 +1077,16 @@ public class AdminCapabilitiesRepository {
 				.select(ACADEMIC_YEAR.SEMESTER.as("semester"), ACADEMIC_YEAR.STATUS.as("status")).from(ACADEMIC_YEAR)
 				.where(ACADEMIC_YEAR.STATUS.eq("Process")).fetchOneInto(AcademicYear.class);
 
+		if (onGoingStatusExist == null && processStatusExist == null) {
+			return dslContext.insertInto(ACADEMIC_YEAR)
+					.set(ACADEMIC_YEAR.ACADEMIC_YEAR_, academicYear.getAcademicYear())
+					.set(ACADEMIC_YEAR.START_DATE, academicYear.getStartDate())
+					.set(ACADEMIC_YEAR.END_DATE, academicYear.getEndDate())
+					.set(ACADEMIC_YEAR.SEMESTER, academicYear.getSemester())
+					.set(ACADEMIC_YEAR.STATUS, academicYear.getStatus()).returning().fetchOne()
+					.into(AcademicYear.class);
+		}
+
 		if (academicYear.getStatus().equals("On-going")) {
 			if (onGoingStatusExist != null) {
 				throw new RepeatedStatusException(
@@ -1872,7 +1883,7 @@ public class AdminCapabilitiesRepository {
 		return query;
 	}
 
-	// Bugs 
+	// Bugs
 	public List<Map<String, Object>> selectAllMajorSubjectsByAllCourse(Integer courseCode) {
 		List<Curriculum> allCurriculum = dslContext
 				.select(CURRICULUM.CURRICULUM_CODE, CURRICULUM.CURRICULUM_ID, CURRICULUM.CURRICULUM_NAME,
@@ -2716,10 +2727,14 @@ public class AdminCapabilitiesRepository {
 		return websiteActivationToggle;
 	}
 
-	public List<Map<String, Object>> enrollStudentToNextSemester() {
+	public List<Map<String, Object>> enrollStudentToNextSemester() throws NoEnrolledStudentFoundException, Exception {
 		// Getting all the enrolled student
 		List<Map<String, Object>> student = dslContext.selectFrom(STUDENT_ENROLLMENT)
 				.where(STUDENT_ENROLLMENT.STATUS.eq("Enrolled")).fetchMaps();
+		
+		if (student.isEmpty()) {
+			throw new NoEnrolledStudentFoundException();
+		}
 
 		student.forEach((data) -> {
 

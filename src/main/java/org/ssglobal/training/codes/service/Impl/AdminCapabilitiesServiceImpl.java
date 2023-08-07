@@ -15,6 +15,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.ssglobal.training.codes.exception.NoEnrolledStudentFoundException;
 import org.ssglobal.training.codes.exception.RepeatedStatusException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EnrollmentData;
@@ -307,14 +308,12 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 
 	@Override
-	public AcademicYear addNewAcademicYear(AcademicYear academicYear)
-			throws RepeatedStatusException, Exception {
+	public AcademicYear addNewAcademicYear(AcademicYear academicYear) throws RepeatedStatusException, Exception {
 		return repository.addNewAcademicYear(academicYear);
 	}
 
 	@Override
-	public AcademicYear updateNewAcademicYear(AcademicYear academicYear)
-			throws RepeatedStatusException, Exception {
+	public AcademicYear updateNewAcademicYear(AcademicYear academicYear) throws RepeatedStatusException, Exception {
 		return repository.updateNewAcademicYear(academicYear);
 	}
 
@@ -681,7 +680,7 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 
 	@Override
-	public List<Map<String, Object>> enrollStudentToNextSemester() {
+	public List<Map<String, Object>> enrollStudentToNextSemester() throws NoEnrolledStudentFoundException, Exception {
 		return repository.enrollStudentToNextSemester();
 	}
 
