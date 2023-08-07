@@ -1019,7 +1019,7 @@ public class AdminCapabilitiesController {
 				return ResponseEntity.ok(allSubjects);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("No Course Major Found Please Add Atleast One");
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
