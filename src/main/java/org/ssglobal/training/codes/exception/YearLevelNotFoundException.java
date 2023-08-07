@@ -1,7 +1,8 @@
 package org.ssglobal.training.codes.exception;
 
 public class YearLevelNotFoundException extends Exception {
-	private static final long serialVersionUID = 1L;
+	
+	private static final long serialVersionUID = -2190508202797827306L;
 	private String message = "Year level not found Error";
 
 	public YearLevelNotFoundException() {

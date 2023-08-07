@@ -15,6 +15,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.ssglobal.training.codes.exception.RepeatedStatusException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
@@ -306,12 +307,14 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 
 	@Override
-	public AcademicYear addNewAcademicYear(AcademicYear academicYear) {
+	public AcademicYear addNewAcademicYear(AcademicYear academicYear)
+			throws RepeatedStatusException, Exception {
 		return repository.addNewAcademicYear(academicYear);
 	}
 
 	@Override
-	public AcademicYear updateNewAcademicYear(AcademicYear academicYear) {
+	public AcademicYear updateNewAcademicYear(AcademicYear academicYear)
+			throws RepeatedStatusException, Exception {
 		return repository.updateNewAcademicYear(academicYear);
 	}
 
@@ -681,10 +684,11 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	public List<Map<String, Object>> enrollStudentToNextSemester() {
 		return repository.enrollStudentToNextSemester();
 	}
-	
+
 	@Override
 	public List<Map<String, Object>> selectProfessorsSubjectEvaluationSummaryByAcademicYear(Integer academicYearId,
 			Integer profesorNo, Integer subjectCode) {
-		return repository.selectProfessorsSubjectEvaluationSummaryByAcademicYear(academicYearId, profesorNo, subjectCode);
+		return repository.selectProfessorsSubjectEvaluationSummaryByAcademicYear(academicYearId, profesorNo,
+				subjectCode);
 	}
 }
