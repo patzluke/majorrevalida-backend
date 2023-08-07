@@ -392,13 +392,13 @@ values
 ('Teacher is prepared for class.', 't'),
 ('Teacher knows his/her subject.', 't'),
 ('Teacher is organized and neat.', 't'),
-('Teacher is flexible and accomodating for individual student needs.', 't'),
-('Teacher is clear in giving directions and on explaining what is expected on assignments and tests.', 't'),
-('Teacher manages time well.', 't'),
-('Teacher returns homework in a timely manner.', 't'),
-('Teacher Grades fairly.', 't'),
-('Teacher is creating in developing activities and lessons', 't'),
-('I have learned a lot from this teacher.', 't');
+('Teacher is flexible and accomodating for individual student needs.', 't');
+--('Teacher is clear in giving directions and on explaining what is expected on assignments and tests.', 't'),
+--('Teacher manages time well.', 't'),
+--('Teacher returns homework in a timely manner.', 't'),
+--('Teacher Grades fairly.', 't'),
+--('Teacher is creating in developing activities and lessons', 't'),
+--('I have learned a lot from this teacher.', 't');
 
 
 --insert into academic_year table

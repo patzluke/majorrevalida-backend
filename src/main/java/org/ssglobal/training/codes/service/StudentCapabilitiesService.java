@@ -55,6 +55,10 @@ public interface StudentCapabilitiesService {
 	
 	List<Map<String, Object>> selectAllMinorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem);
 	
+	List<Map<String, Object>> selectAllFailedMajorSubjectPreviouslyOfStudent(Integer studentNo);
+	
+	List<Map<String, Object>> selectAllFailedMinorSubjectPreviouslyOfStudent(Integer studentNo);
+	
 	boolean insertIntoSubmittedSubjectsForEnrollment(List<SubmittedSubjectsForEnrollment> submittedSubjectsForEnrollment);
 	
 	List<SubmittedSubjectsForEnrollment> checkIfThereIsSubmittedSubjectsForEnrollment(Integer enrollmentId);

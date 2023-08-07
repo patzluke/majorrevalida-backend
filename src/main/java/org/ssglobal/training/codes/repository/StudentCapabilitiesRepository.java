@@ -295,6 +295,40 @@ public class StudentCapabilitiesRepository {
 						.and(STUDENT_SCHEDULE.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)).from(STUDENT_ENROLLMENT))))
 				.orderBy(SUBJECT.SUBJECT_TITLE).fetchMaps();
 	}
+	
+	// ------------ FOR Major And Minor Subject FAILED (for curriculum display)
+	public List<Map<String, Object>> selectAllFailedMajorSubjectPreviouslyOfStudent(Integer studentNo) {
+		return dslContext
+				.selectDistinct(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE, MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisite"))
+				.from(SUBJECT)
+				.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
+				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(SUBJECT.SUBJECT_CODE.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE))
+				.innerJoin(GRADES).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID.eq(GRADES.SUBJECT_DETAIL_HIS_ID))
+				.innerJoin(STUDENT_ENROLLMENT).on(GRADES.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
+				.where(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)).from(ACADEMIC_YEAR))
+						.and(MAJOR_SUBJECT.SEM.lessOrEqual(dslContext.select(DSL.max(ACADEMIC_YEAR.SEMESTER)).from(ACADEMIC_YEAR)))
+						.and(GRADES.REMARKS.eq("Failed"))
+				)
+				.fetchMaps();
+	}
+	
+	public List<Map<String, Object>> selectAllFailedMinorSubjectPreviouslyOfStudent(Integer studentNo) {
+		return dslContext
+				.selectDistinct(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE, MINOR_SUBJECT.PRE_REQUISITES.as("preRequisite"))
+				.from(SUBJECT)
+				.innerJoin(MINOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MINOR_SUBJECT.SUBJECT_CODE))
+				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(SUBJECT.SUBJECT_CODE.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE))
+				.innerJoin(GRADES).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID.eq(GRADES.SUBJECT_DETAIL_HIS_ID))
+				.innerJoin(STUDENT_ENROLLMENT).on(GRADES.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
+				.where(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(DSL.select(DSL.max(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)).from(ACADEMIC_YEAR))
+						.and(MINOR_SUBJECT.SEM.eq(DSL.select(DSL.max(ACADEMIC_YEAR.SEMESTER)).from(ACADEMIC_YEAR)))
+						.and(GRADES.REMARKS.eq("Failed"))
+						.and(GRADES.STUDENT_NO.eq(studentNo))
+				)
+				.fetchMaps();
+	}
 
 	// ------------ FOR Major Subject (for curriculum display)
 	public List<Map<String, Object>> selectAllMajorSubjectsInACurriculumOfStudent(Integer studentNo) {
@@ -352,7 +386,7 @@ public class StudentCapabilitiesRepository {
 	public List<Map<String, Object>> selectAllMajorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
 		return dslContext
 				.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
-						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE)
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE, MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisite"))
 				.from(MAJOR_SUBJECT).innerJoin(SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(MAJOR_SUBJECT.YEAR_LEVEL.eq(yearLevel).and(MAJOR_SUBJECT.SEM.eq(sem)))
 				.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM).fetchMaps();
@@ -362,7 +396,7 @@ public class StudentCapabilitiesRepository {
 	public List<Map<String, Object>> selectAllMinorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
 		return dslContext
 				.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
-						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE)
+						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE, MINOR_SUBJECT.PRE_REQUISITES.as("preRequisite"))
 				.from(MINOR_SUBJECT).innerJoin(SUBJECT).on(MINOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(MINOR_SUBJECT.YEAR_LEVEL.eq(yearLevel).and(MINOR_SUBJECT.SEM.eq(sem)))
 				.orderBy(MINOR_SUBJECT.YEAR_LEVEL, MINOR_SUBJECT.SEM).fetchMaps();
