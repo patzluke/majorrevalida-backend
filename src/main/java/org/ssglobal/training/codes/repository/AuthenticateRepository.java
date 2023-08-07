@@ -43,6 +43,21 @@ public class AuthenticateRepository {
 		return adminUser != null ? adminUser : parentUser != null ? parentUser : studentUser != null ? studentUser : professorUser != null ? professorUser : null;
 	}
 	
+	public Map<String, Object> checkUsernameByForgotPassword(String username) {
+		Map<String, Object> userForgot = dslContext.select(USERS.USERNAME.as("username"))
+													.from(USERS).where(USERS.USERNAME.eq(username)).fetchOneMap();
+		return userForgot != null ? userForgot : null;
+	}
+	
+	public boolean changePasswordByForgotPassword(String username, String password) {
+		System.out.println(username + " " + password);
+		boolean isUpdated = dslContext.update(USERS)
+								.set(USERS.PASSWORD, password)
+								.where(USERS.USERNAME.eq(username)).execute() == 1;
+		System.out.println(isUpdated + "change");
+		return isUpdated;
+	}
+	
 	public boolean createToken(Integer employeeId, String token) {
 		return dslContext.insertInto(USERTOKENS)
 						 .set(USERTOKENS.USER_ID, employeeId)

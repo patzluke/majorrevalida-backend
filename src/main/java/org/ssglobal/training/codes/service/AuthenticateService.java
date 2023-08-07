@@ -13,4 +13,6 @@ public interface AuthenticateService {
 	boolean isUserTokenExists(Integer userId, String token);
 	
 	String generateToken(Integer userId, Integer userNo, String username, String userType, Boolean isActive);
+	Map<String, Object> checkUsernameByForgotPassword(String username);
+	boolean changePasswordByForgotPassword(String username, String password);
 }
