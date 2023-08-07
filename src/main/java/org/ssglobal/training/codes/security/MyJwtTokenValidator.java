@@ -64,8 +64,6 @@ public class MyJwtTokenValidator extends OncePerRequestFilter {
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 			   //for authenticate
 		return request.getRequestURI().matches("/api/authenticate") ||
-			   //for admin api
-			   request.getRequestURI().matches("/api/admin/update/password") ||
 			   //for studentapplicant api
 			   request.getRequestURI().matches("/api/studentapplicant/.*") ||
 			   //for studentapplicant api

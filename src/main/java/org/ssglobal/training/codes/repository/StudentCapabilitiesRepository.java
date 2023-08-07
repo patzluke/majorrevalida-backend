@@ -272,7 +272,8 @@ public class StudentCapabilitiesRepository {
 				.from(STUDENT_ENROLLMENT).innerJoin(ACADEMIC_YEAR)
 				.on(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(ACADEMIC_YEAR.ACADEMIC_YEAR_ID))
 				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo))
-				.orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.SEMESTER).fetchMaps();
+				.orderBy(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)
+				.fetchMaps();
 	}
 
 	// ------------ FOR Student Schedule
@@ -291,7 +292,7 @@ public class StudentCapabilitiesRepository {
 				.on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO)).innerJoin(USERS)
 				.on(PROFESSOR.USER_ID.eq(USERS.USER_ID))
 				.where(STUDENT_SCHEDULE.STUDENT_NO.eq(studentNo)
-						.and(STUDENT_SCHEDULE.ACADEMIC_YEAR_ID.eq(academicYearId)))
+						.and(STUDENT_SCHEDULE.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)).from(STUDENT_ENROLLMENT))))
 				.orderBy(SUBJECT.SUBJECT_TITLE).fetchMaps();
 	}
 
@@ -342,7 +343,9 @@ public class StudentCapabilitiesRepository {
 				.innerJoin(STUDENT).on(STUDENT_ENROLLMENT.STUDENT_NO.eq(STUDENT.STUDENT_NO))
 				.innerJoin(USERS).on(STUDENT.USER_ID.eq(USERS.USER_ID))
 				.innerJoin(CURRICULUM).on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE))
-				.where(ACADEMIC_YEAR.STATUS.eq("Process").and(STUDENT.STUDENT_NO.eq(studentNo))).fetchOneMap();
+				.where(ACADEMIC_YEAR.STATUS.eq("Process")
+						.and(STUDENT.STUDENT_NO.eq(studentNo)))
+				.fetchOneMap();
 	}
 
 	// ------------ FOR Major Subject (for curriculum display)

@@ -387,11 +387,23 @@ create table website_activation_toggle (
 INSERT INTO website_activation_toggle (is_evaluation_time, is_professor_grading_time)
 values ('f', 'f');
 
+INSERT INTO evaluation_question (question, active_deactive)
+values 
+('Teacher is prepared for class.', 't'),
+('Teacher knows his/her subject.', 't'),
+('Teacher is organized and neat.', 't'),
+('Teacher is flexible and accomodating for individual student needs.', 't'),
+('Teacher is clear in giving directions and on explaining what is expected on assignments and tests.', 't'),
+('Teacher manages time well.', 't'),
+('Teacher returns homework in a timely manner.', 't'),
+('Teacher Grades fairly.', 't'),
+('Teacher is creating in developing activities and lessons', 't'),
+('I have learned a lot from this teacher.', 't');
+
+
 --insert into academic_year table
 INSERT INTO academic_year (academic_year, start_date, end_date, semester, status)
 VALUES
-  (2022, '2022-08-15', '2022-12-31', 1, 'Finished'),
-  (2023, '2023-01-17', '2023-06-12', 2, 'Finished'),
   (2023, '2023-08-15', '2023-12-31', 1, 'Process');
 
 

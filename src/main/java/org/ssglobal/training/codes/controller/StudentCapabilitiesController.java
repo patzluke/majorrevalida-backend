@@ -267,11 +267,13 @@ public class StudentCapabilitiesController {
 	}
 
 	// -------- For Curriculum
+	@SuppressWarnings("rawtypes")
 	@GetMapping(value = "/get/curriculum/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Map<String, Object>> selectStudentEnrollmentData(
+	public ResponseEntity selectStudentEnrollmentData(
 			@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
 			Map<String, Object> curriculum = service.selectStudentEnrollmentData(studentNo);
+			System.out.println(curriculum);
 			if (curriculum != null) {
 				return ResponseEntity.ok(curriculum);
 			}
