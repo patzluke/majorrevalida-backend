@@ -347,6 +347,14 @@ public class StudentCapabilitiesRepository {
 						.and(STUDENT.STUDENT_NO.eq(studentNo)))
 				.fetchOneMap();
 	}
+	
+	//-------------FOR BACKLOGS SUBJECT () 
+	public List<Map<String, Object>> selectListOfBackLogsMajorSubject(Integer studentNo, Integer yearLevel, Integer sem, Integer curriculumCode) {
+		List<Map<String, Object>> list = dslContext.select(SUBJECT.SUBJECT_CODE).from(SUBJECT)
+													.join(MAJOR_SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+													.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(curriculumCode)).fetchMaps();
+		return list;
+	}
 
 	// ------------ FOR Major Subject (for curriculum display)
 	public List<Map<String, Object>> selectAllMajorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {

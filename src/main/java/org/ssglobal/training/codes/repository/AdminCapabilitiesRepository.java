@@ -290,6 +290,15 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndStudent updateStudent(UserAndStudent student) {
+		UserAndStudent getPrevious = dslContext.select(STUDENT.CURRICULUM_CODE)
+												.from(STUDENT)
+												.where(STUDENT.STUDENT_NO.eq(student.getStudentNo()))
+												.fetchOne().into(UserAndStudent.class);
+		if (getPrevious.getCurriculumCode().compareTo(student.getCurriculumCode()) != 0) {
+			System.out.println(getPrevious.getCurriculumCode() + " " + student.getCurriculumCode());
+			System.out.println("Shift Student");
+		}
+		System.out.println(getPrevious.getCurriculumCode() + " " + student.getCurriculumCode());
 		Users updatedUser = dslContext.update(USERS).set(USERS.USERNAME, student.getUsername())
 				.set(USERS.PASSWORD, student.getPassword()).set(USERS.EMAIL, student.getEmail())
 				.set(USERS.CONTACT_NO, student.getContactNo()).set(USERS.FIRST_NAME, student.getFirstName())
@@ -323,6 +332,7 @@ public class AdminCapabilitiesRepository {
 
 			return information;
 		}
+//		return null;
 		return null;
 	}
 
