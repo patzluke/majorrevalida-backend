@@ -394,7 +394,6 @@ public class AdminCapabilitiesRepository {
 						ACADEMIC_YEAR.ACADEMIC_YEAR_, ACADEMIC_YEAR.STATUS)
 				.fetchMaps();
 
-		// System.out.println("hey matt: " + student);
 		return student;
 	}
 
@@ -1873,6 +1872,7 @@ public class AdminCapabilitiesRepository {
 		return query;
 	}
 
+	// Bugs 
 	public List<Map<String, Object>> selectAllMajorSubjectsByAllCourse(Integer courseCode) {
 		List<Curriculum> allCurriculum = dslContext
 				.select(CURRICULUM.CURRICULUM_CODE, CURRICULUM.CURRICULUM_ID, CURRICULUM.CURRICULUM_NAME,
@@ -1898,7 +1898,7 @@ public class AdminCapabilitiesRepository {
 						.and(MAJOR_SUBJECT.CURRICULUM_CODE.eq(allCurriculum.get(0).getCurriculumCode()))
 						.and(SUBJECT.ACTIVE_DEACTIVE.eq(true)))
 				.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM).fetchMaps();
-
+		System.out.println(query);
 		return query;
 	}
 
