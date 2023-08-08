@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.ssglobal.training.codes.exception.NoEnrolledStudentFoundException;
 import org.ssglobal.training.codes.exception.RepeatedStatusException;
+import org.ssglobal.training.codes.exception.SameSemesterException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
@@ -2639,14 +2640,12 @@ public class AdminCapabilitiesRepository {
 						PROFESSOR_LOAD.SECTION_ID.as("sectionId"), PROFESSOR_LOAD.DAY,
 						PROFESSOR_LOAD.PROFESSOR_NO.as("professorNo"), SUBJECT.SUBJECT_CODE.as("subjectCode"),
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS)
-				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
-				.innerJoin(STUDENT_ENROLLMENT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
-				.innerJoin(PROFESSOR_LOAD).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(PROFESSOR_LOAD.SUBJECT_CODE))
-				.innerJoin(SECTION).on(PROFESSOR_LOAD.SECTION_ID.eq(SECTION.SECTION_ID))
-				.innerJoin(SUBJECT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
-						.and(PROFESSOR_LOAD.SECTION_ID.lessOrEqual(sectionId))
-						.and(SECTION.SECTION_NAME.endsWith(dslContext.select(DSL.substring(SECTION.SECTION_NAME, 3)).from(SECTION).where(SECTION.SECTION_ID.eq(sectionId)).asField()))
+				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT).innerJoin(STUDENT_ENROLLMENT)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.innerJoin(PROFESSOR_LOAD)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(PROFESSOR_LOAD.SUBJECT_CODE)).innerJoin(SUBJECT)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo).and(PROFESSOR_LOAD.SECTION_ID.eq(sectionId))
 						.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS.eq("Approved"))
 						.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(enrollmentId)))
 				.orderBy(SUBJECT.SUBJECT_CODE).fetchMaps();
@@ -2730,7 +2729,7 @@ public class AdminCapabilitiesRepository {
 		return websiteActivationToggle;
 	}
 
-	public List<Map<String, Object>> enrollStudentToNextSemester() throws NoEnrolledStudentFoundException, Exception {
+	public List<Map<String, Object>> enrollStudentToNextSemester() throws NoEnrolledStudentFoundException, SameSemesterException, Exception {
 		// Getting all the enrolled student
 		List<Map<String, Object>> student = dslContext.selectFrom(STUDENT_ENROLLMENT)
 				.where(STUDENT_ENROLLMENT.STATUS.eq("Enrolled")).fetchMaps();
@@ -2752,55 +2751,87 @@ public class AdminCapabilitiesRepository {
 			 * studentEnrollment.setStatus((String) data.get("status"));
 			 */
 
+			// Get the student previous data
+			StudentEnrollment previousStudentData = new StudentEnrollment();
+			previousStudentData.setEnrollmentId((Integer) data.get("enrollment_id"));
+			previousStudentData.setStudentNo((Integer) data.get("student_no"));
+			previousStudentData.setAcademicYearId((Integer) data.get("academic_year_id"));
+			previousStudentData.setSectionId((Integer) data.get("section_id"));
+			previousStudentData.setPaymentStatus((String) data.get("payment_status"));
+			previousStudentData.setStatus((String) data.get("status"));
+
+			AcademicYear previousAcademicYear = dslContext.selectFrom(ACADEMIC_YEAR)
+					.where(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(previousStudentData.getAcademicYearId()))
+					.fetchOneInto(AcademicYear.class);
+
 			// Getting the new Academic Year
 			// NOTE: The admin needs to add the a 'process' status in the academic year
 			AcademicYear newAcademicYear = dslContext.selectFrom(ACADEMIC_YEAR)
 					.where(ACADEMIC_YEAR.STATUS.eq("Process")).fetchOneInto(AcademicYear.class);
 
-			// Put all the data in a StudentEnrollment Class
-			StudentEnrollment studentEnrollment = new StudentEnrollment();
-			studentEnrollment.setEnrollmentId((Integer) data.get("enrollment_id"));
-			studentEnrollment.setStudentNo((Integer) data.get("student_no"));
-			studentEnrollment.setAcademicYearId(newAcademicYear.getAcademicYearId());
-			studentEnrollment.setStatus("Not Enrolled");
+			// If the previous semester and new academic year semester is the same stop the
+			// execution
+			if (previousAcademicYear.getSemester() == newAcademicYear.getSemester()) {
+				 throw new SameSemesterException();
+			} else {
+				// Put all the data in a StudentEnrollment Class
+				StudentEnrollment studentEnrollment = new StudentEnrollment();
+				studentEnrollment.setEnrollmentId((Integer) data.get("enrollment_id"));
+				studentEnrollment.setStudentNo((Integer) data.get("student_no"));
+				studentEnrollment.setAcademicYearId(newAcademicYear.getAcademicYearId());
+				studentEnrollment.setStatus("Not Enrolled");
 
-			System.out.println(studentEnrollment.toString());
+				System.out.println(studentEnrollment.toString());
 
-			// Inserting new student data for the new academicYear
-			dslContext.insertInto(STUDENT_ENROLLMENT)
-					.set(STUDENT_ENROLLMENT.STUDENT_NO, studentEnrollment.getStudentNo())
-					.set(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID, studentEnrollment.getAcademicYearId())
-					.set(STUDENT_ENROLLMENT.STATUS, studentEnrollment.getStatus()).execute();
+				// Inserting new student data for the new academicYear
+				dslContext.insertInto(STUDENT_ENROLLMENT)
+						.set(STUDENT_ENROLLMENT.STUDENT_NO, studentEnrollment.getStudentNo())
+						.set(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID, studentEnrollment.getAcademicYearId())
+						.set(STUDENT_ENROLLMENT.STATUS, studentEnrollment.getStatus()).execute();
 
-			// Get the academic year table's semester
-			AcademicYear semester = dslContext.select(ACADEMIC_YEAR.SEMESTER.as("semester")).from(ACADEMIC_YEAR)
-					.where(ACADEMIC_YEAR.STATUS.eq("Process")).fetchOne().into(AcademicYear.class);
+				// Get the academic year table's semester
+				AcademicYear semester = dslContext.select(ACADEMIC_YEAR.SEMESTER.as("semester")).from(ACADEMIC_YEAR)
+						.where(ACADEMIC_YEAR.STATUS.eq("Process")).fetchOne().into(AcademicYear.class);
 
-			Student yearLevel = dslContext.select(STUDENT.YEAR_LEVEL.as("yearLevel")).from(STUDENT)
-					.where(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo())).fetchOne().into(Student.class);
+				Student yearLevel = dslContext.select(STUDENT.YEAR_LEVEL.as("yearLevel")).from(STUDENT)
+						.where(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo())).fetchOne().into(Student.class);
 
-			// Have a condition for the year level
-			if (semester.getSemester() == 1) {
-				if (yearLevel.getYearLevel() == 4) {
+				/*
+				 * Pending - If you want to change the active status to false // Selecting the
+				 * userId for the updating of active status Student userId =
+				 * dslContext.select(STUDENT.USER_ID.as("userId")).from(STUDENT).innerJoin(
+				 * USERS) .on(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo()))
+				 * .where(STUDENT.USER_ID.eq(USERS.USER_ID)).fetchOne().into(Student.class);
+				 * 
+				 * // Updating the active status
+				 * dslContext.update(USERS).set(USERS.ACTIVE_STATUS,
+				 * false).where(USERS.USER_ID.eq(userId.getUserId())) .execute();
+				 */
+
+				// Have a condition for the year level
+				if (semester.getSemester() == 1) {
+					if (yearLevel.getYearLevel() == 4) {
+						dslContext.update(STUDENT).set(STUDENT.ACADEMIC_YEAR_ID, studentEnrollment.getAcademicYearId())
+								.set(STUDENT.YEAR_LEVEL, yearLevel.getYearLevel())
+								.where(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo())).execute();
+
+					} else {
+						dslContext.update(STUDENT).set(STUDENT.ACADEMIC_YEAR_ID, studentEnrollment.getAcademicYearId())
+								.set(STUDENT.YEAR_LEVEL, yearLevel.getYearLevel() + 1)
+								.where(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo())).execute();
+					}
+
+				} else if (semester.getSemester() == 2) {
 					dslContext.update(STUDENT).set(STUDENT.ACADEMIC_YEAR_ID, studentEnrollment.getAcademicYearId())
 							.set(STUDENT.YEAR_LEVEL, yearLevel.getYearLevel())
 							.where(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo())).execute();
-
-				} else {
-					dslContext.update(STUDENT).set(STUDENT.ACADEMIC_YEAR_ID, studentEnrollment.getAcademicYearId())
-							.set(STUDENT.YEAR_LEVEL, yearLevel.getYearLevel() + 1)
-							.where(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo())).execute();
 				}
 
-			} else if (semester.getSemester() == 2) {
-				dslContext.update(STUDENT).set(STUDENT.ACADEMIC_YEAR_ID, studentEnrollment.getAcademicYearId())
-						.set(STUDENT.YEAR_LEVEL, yearLevel.getYearLevel())
-						.where(STUDENT.STUDENT_NO.eq(studentEnrollment.getStudentNo())).execute();
-			}
+				// Updating the previous status to Finished
+				dslContext.update(STUDENT_ENROLLMENT).set(STUDENT_ENROLLMENT.STATUS, "Finished")
+						.where(STUDENT_ENROLLMENT.ENROLLMENT_ID.eq(studentEnrollment.getEnrollmentId())).execute();
 
-			// Updating the previous status to Finished
-			dslContext.update(STUDENT_ENROLLMENT).set(STUDENT_ENROLLMENT.STATUS, "Finished")
-					.where(STUDENT_ENROLLMENT.ENROLLMENT_ID.eq(studentEnrollment.getEnrollmentId())).execute();
+			}
 
 		});
 

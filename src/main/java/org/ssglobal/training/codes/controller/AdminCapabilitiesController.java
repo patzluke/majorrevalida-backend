@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssglobal.training.codes.exception.NoEnrolledStudentFoundException;
 import org.ssglobal.training.codes.exception.RepeatedStatusException;
+import org.ssglobal.training.codes.exception.SameSemesterException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EmailDetails;
 import org.ssglobal.training.codes.model.EnrollmentData;
@@ -1425,6 +1426,10 @@ public class AdminCapabilitiesController {
 				return ResponseEntity.ok(student);
 			}
 		} catch (NoEnrolledStudentFoundException e1) {
+			e1.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		} catch (SameSemesterException e2) {
+			e2.printStackTrace();
 			return ResponseEntity.badRequest().build();
 		} catch (Exception e) {
 			e.printStackTrace();

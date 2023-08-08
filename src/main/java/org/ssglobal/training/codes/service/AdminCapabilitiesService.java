@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.dao.DuplicateKeyException;
 import org.ssglobal.training.codes.exception.NoEnrolledStudentFoundException;
 import org.ssglobal.training.codes.exception.RepeatedStatusException;
+import org.ssglobal.training.codes.exception.SameSemesterException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
@@ -252,7 +253,8 @@ public interface AdminCapabilitiesService {
 	WebsiteActivationToggle toggleEvaluationOrProfessorGradingTime(WebsiteActivationToggle toggle);
 
 	// FOR STUDENT ENROLLMENT NEXT SEMESTER
-	List<Map<String, Object>> enrollStudentToNextSemester() throws NoEnrolledStudentFoundException, Exception;
+	List<Map<String, Object>> enrollStudentToNextSemester()
+			throws NoEnrolledStudentFoundException, SameSemesterException, Exception;
 
 	// ------------ FOR SUMMARY OF PROFESSORS SUBJECT EVALUATION PER ACADEMIC YEAR
 	List<Map<String, Object>> selectProfessorsSubjectEvaluationSummaryByAcademicYear(Integer academicYearId,
