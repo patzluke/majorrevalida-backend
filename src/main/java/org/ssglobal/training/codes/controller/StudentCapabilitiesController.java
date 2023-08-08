@@ -314,6 +314,8 @@ public class StudentCapabilitiesController {
 				}
 			});
 			
+			System.out.println(failedSubjects + "faileds");
+			
 			failedSubjects.forEach(failedSubj -> {
 				for (Iterator iterator = subjects.iterator(); iterator.hasNext();) {
 					Map<String, Object> subj = (Map<String, Object>) iterator.next();
@@ -363,7 +365,8 @@ public class StudentCapabilitiesController {
 				}
 			});	
 			
-			
+			List<Map<String, Object>> backLogsMajorSubjects = service.selectListOfBackLogsMajorSubject(studentNo);
+			failedSubjects.addAll(backLogsMajorSubjects);
 			if (!failedSubjects.isEmpty()) {
 				return ResponseEntity.ok(failedSubjects);
 			}

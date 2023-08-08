@@ -1,6 +1,7 @@
 package org.ssglobal.training.codes.repository;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -302,7 +303,8 @@ public class StudentCapabilitiesRepository {
 				.select(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"))
 				.from(GRADES)
 				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
-				.where(GRADES.REMARKS.eq("Passed")
+//				.where(GRADES.REMARKS.eq("Passed")
+				.where(GRADES.REMARKS.ne("Failed")
 						.and(GRADES.STUDENT_NO.eq(studentNo))
 				)
 				.fetchMaps();
@@ -407,22 +409,16 @@ public class StudentCapabilitiesRepository {
 													.from(SUBJECT)
 													.join(MAJOR_SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 													.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode())).fetchMaps();
+		List<Map<String, Object>> minorList = dslContext.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), MINOR_SUBJECT.PRE_REQUISITES.as("preRequisite"),
+												SUBJECT.ABBREVATION, SUBJECT.PRICE, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+												MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM)
+												.from(SUBJECT)
+												.join(MINOR_SUBJECT).on(MINOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+												.fetchMaps();
+		List<Map<String, Object>> failedMinorList = selectAllFailedMinorSubjectPreviouslyOfStudent(studentNo);
 		List<Map<String, Object>> failedList = selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
-//		dslContext
-//		.selectDistinct(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
-//				SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE, MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisite"))
-//		.from(SUBJECT)
-//		.innerJoin(MAJOR_SUBJECT).on(SUBJECT.SUBJECT_CODE.eq(MAJOR_SUBJECT.SUBJECT_CODE))
-//		.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(SUBJECT.SUBJECT_CODE.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE))
-//		.innerJoin(GRADES).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID.eq(GRADES.SUBJECT_DETAIL_HIS_ID))
-//		.innerJoin(STUDENT_ENROLLMENT).on(GRADES.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
-//		.where(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)).from(ACADEMIC_YEAR))
-//				.and(MAJOR_SUBJECT.SEM.lessOrEqual(dslContext.select(DSL.max(ACADEMIC_YEAR.SEMESTER)).from(ACADEMIC_YEAR)))
-//				.and(GRADES.REMARKS.eq("Failed"))
-//				.and(GRADES.STUDENT_NO.eq(studentNo))
-//		)
-//		.fetchMaps();
-		
+		List<Map<String, Object>> passedSubject = selectAllPassedSubjectOfStudent(studentNo);
+
 		list.forEach((listSub) -> {
 			failedList.forEach((failedSub) -> {
 				if (Integer.valueOf(listSub.get("preRequisite").toString()).compareTo(Integer.valueOf(failedSub.get("subjectCode").toString())) == 0) {
@@ -432,6 +428,38 @@ public class StudentCapabilitiesRepository {
 				}
 			});
 		});
+		
+		minorList.forEach((listSub) -> {
+			failedMinorList.forEach((failedSub) -> {
+				if (Integer.valueOf(listSub.get("preRequisite").toString()).compareTo(Integer.valueOf(failedSub.get("subjectCode").toString())) == 0) {
+					if (Integer.valueOf(listSub.get("yearLevel").toString()).compareTo(student.getYearLevel()) < 0) {
+						backlogs.add(listSub);
+					}
+				}
+			});
+		});
+		
+		Iterator<Map<String, Object>> backlogIterator = backlogs.iterator();
+		while (backlogIterator.hasNext()) {
+		    Map<String, Object> log = backlogIterator.next();
+		    passedSubject.forEach((passed) -> {
+		        if (Integer.valueOf(passed.get("subjectCode").toString()).compareTo(Integer.valueOf(log.get("subjectCode").toString())) == 0) {
+		            backlogIterator.remove(); // Use the iterator's remove() method to safely remove the element
+		        }
+		    });
+		}
+		
+		Iterator<Map<String, Object>> backlogIterator2 = backlogs.iterator();
+		while (backlogIterator2.hasNext()) {
+		    Map<String, Object> log = backlogIterator2.next();
+		    passedSubject.forEach((passed) -> {
+		        if (Integer.valueOf(passed.get("subjectCode").toString()).compareTo(Integer.valueOf(log.get("subjectCode").toString())) == 0) {
+		            backlogIterator.remove(); // Use the iterator's remove() method to safely remove the element
+		        }
+		    });
+		}
+		
+		System.out.println(backlogs + "backlogs");
 		return backlogs;
 	}
 

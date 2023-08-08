@@ -137,11 +137,11 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	@Override
 	public List<Map<String, Object>> selectAllFailedMajorSubjectPreviouslyOfStudent(Integer studentNo) {
 		List<Map<String, Object>> backLogs = new ArrayList<Map<String, Object>>();
-		List<Map<String, Object>> majorLogs = repository.selectListOfBackLogsMajorSubject(studentNo);
+//		List<Map<String, Object>> majorLogs = repository.selectListOfBackLogsMajorSubject(studentNo);
 		List<Map<String, Object>> majorFaileds = repository.selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
-		majorLogs.forEach((log) -> {
-			backLogs.add(log);
-		});
+//		majorLogs.forEach((log) -> {
+//			backLogs.add(log);
+//		});
 		majorFaileds.forEach((fail) -> {
 			backLogs.add(fail);
 		});
@@ -161,6 +161,11 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	@Override
 	public Map<String, Object> selectStudentEnrollmentData(Integer studentNo) {
 		return repository.selectStudentEnrollmentData(studentNo);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectListOfBackLogsMajorSubject(Integer studentNo) {
+		return repository.selectListOfBackLogsMajorSubject(studentNo);
 	}
 	
 	@Override
