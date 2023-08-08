@@ -578,7 +578,6 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 		EnrollmentData enrolledStudent = repository.fullyEnrollStudent(student);
 		repository.selectSubmittedSubjectsOfstudentPerEnrollment(enrolledStudent.getStudentNo(),
 				enrolledStudent.getSectionId(), enrolledStudent.getEnrollmentId()).forEach(data -> {
-					System.out.println(data + " subject to enroll");
 					StudentSubjectEnrolled studentSubjectEnrolled = repository.fullyEnrollStudentSubjects(
 							Integer.valueOf(data.get("loadId").toString()), enrolledStudent.getEnrollmentId());
 					repository.insertGradesAndt_subject_detail_historyAndEvaluationAnswers(
