@@ -222,25 +222,24 @@ public class AdminCapabilitiesRepository {
 
 	// Return all the student's data
 	public List<UserAndStudent> selectAllStudent() {
-		/*
-		 * This will select the Student's data limited to: user_id, parent_no,
-		 * curriculumCode, and academicYearId
-		 */
 		return dslContext
 				.selectDistinct(USERS.USER_ID, USERS.USERNAME, USERS.EMAIL, USERS.CONTACT_NO, USERS.FIRST_NAME,
 						USERS.MIDDLE_NAME, USERS.LAST_NAME, USERS.USER_TYPE, USERS.BIRTH_DATE, USERS.ADDRESS,
 						USERS.CIVIL_STATUS, USERS.GENDER, USERS.NATIONALITY, USERS.ACTIVE_STATUS, USERS.ACTIVE_DEACTIVE,
 						USERS.IMAGE, STUDENT.STUDENT_ID, STUDENT.STUDENT_NO, STUDENT.PARENT_NO, STUDENT.CURRICULUM_CODE,
 						CURRICULUM.CURRICULUM_NAME, STUDENT.ACADEMIC_YEAR_ID, COURSE.COURSE_CODE, COURSE.COURSE_TITLE,
-						MAJOR.MAJOR_CODE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL, SECTION.SECTION_NAME)
+						MAJOR.MAJOR_CODE, MAJOR.MAJOR_TITLE, STUDENT.YEAR_LEVEL, SECTION.SECTION_ID,
+						SECTION.SECTION_NAME)
 				.from(USERS).innerJoin(STUDENT).on(USERS.USER_ID.eq(STUDENT.USER_ID)).innerJoin(CURRICULUM)
 				.on(STUDENT.CURRICULUM_CODE.eq(CURRICULUM.CURRICULUM_CODE)).innerJoin(MAJOR)
 				.on(CURRICULUM.MAJOR_CODE.eq(MAJOR.MAJOR_CODE)).innerJoin(COURSE)
 				.on(MAJOR.COURSE_CODE.eq(COURSE.COURSE_CODE)).innerJoin(STUDENT_ENROLLMENT)
 				.on(STUDENT.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO)).innerJoin(SECTION)
 				.on(STUDENT_ENROLLMENT.SECTION_ID.eq(SECTION.SECTION_ID))
-				.where(USERS.ACTIVE_DEACTIVE.eq(true).and(USERS.USER_TYPE.eq("Student"))).orderBy(STUDENT.STUDENT_NO)
-				.fetchInto(UserAndStudent.class);
+				.where(USERS.ACTIVE_DEACTIVE.eq(true).and(USERS.USER_TYPE.eq("Student"))
+						.and(STUDENT_ENROLLMENT.SECTION_ID.eq(DSL.select(DSL.max(STUDENT_ENROLLMENT.SECTION_ID))
+								.from(STUDENT_ENROLLMENT).where(STUDENT_ENROLLMENT.STUDENT_NO.eq(STUDENT.STUDENT_NO)))))
+				.orderBy(STUDENT.STUDENT_NO).fetchInto(UserAndStudent.class);
 	}
 
 	public UserAndStudent insertStudent(UserAndStudent student) {
@@ -291,15 +290,6 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndStudent updateStudent(UserAndStudent student) {
-		UserAndStudent getPrevious = dslContext.select(STUDENT.CURRICULUM_CODE)
-												.from(STUDENT)
-												.where(STUDENT.STUDENT_NO.eq(student.getStudentNo()))
-												.fetchOne().into(UserAndStudent.class);
-		if (getPrevious.getCurriculumCode().compareTo(student.getCurriculumCode()) != 0) {
-			System.out.println(getPrevious.getCurriculumCode() + " " + student.getCurriculumCode());
-			System.out.println("Shift Student");
-		}
-		System.out.println(getPrevious.getCurriculumCode() + " " + student.getCurriculumCode());
 		Users updatedUser = dslContext.update(USERS).set(USERS.USERNAME, student.getUsername())
 				.set(USERS.PASSWORD, student.getPassword()).set(USERS.EMAIL, student.getEmail())
 				.set(USERS.CONTACT_NO, student.getContactNo()).set(USERS.FIRST_NAME, student.getFirstName())
@@ -333,7 +323,6 @@ public class AdminCapabilitiesRepository {
 
 			return information;
 		}
-//		return null;
 		return null;
 	}
 
@@ -2668,8 +2657,8 @@ public class AdminCapabilitiesRepository {
 						STUDENT_ENROLLMENT.STUDENT_NO.as("studentNo"), SUBJECT.ABBREVATION,
 						SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
 						SUBMITTED_SUBJECTS_FOR_ENROLLMENT.STATUS)
-				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT)
-				.innerJoin(STUDENT_ENROLLMENT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
+				.from(SUBMITTED_SUBJECTS_FOR_ENROLLMENT).innerJoin(STUDENT_ENROLLMENT)
+				.on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(STUDENT_ENROLLMENT.ENROLLMENT_ID))
 				.innerJoin(SUBJECT).on(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 				.where(STUDENT_ENROLLMENT.STUDENT_NO.eq(studentNo)
 						.and(SUBMITTED_SUBJECTS_FOR_ENROLLMENT.ENROLLMENT_ID.eq(enrollmentId)))
@@ -2743,7 +2732,7 @@ public class AdminCapabilitiesRepository {
 		// Getting all the enrolled student
 		List<Map<String, Object>> student = dslContext.selectFrom(STUDENT_ENROLLMENT)
 				.where(STUDENT_ENROLLMENT.STATUS.eq("Enrolled")).fetchMaps();
-		
+
 		if (student.isEmpty()) {
 			throw new NoEnrolledStudentFoundException();
 		}
