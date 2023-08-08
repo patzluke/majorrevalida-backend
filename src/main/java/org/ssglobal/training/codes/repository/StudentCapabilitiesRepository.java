@@ -418,6 +418,16 @@ public class StudentCapabilitiesRepository {
 		List<Map<String, Object>> failedMinorList = selectAllFailedMinorSubjectPreviouslyOfStudent(studentNo);
 		List<Map<String, Object>> failedList = selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
 		List<Map<String, Object>> passedSubject = selectAllPassedSubjectOfStudent(studentNo);
+		list.forEach((sub) -> {
+			passedSubject.forEach((pass) -> {
+				if (Integer.valueOf(pass.get("subjectCode").toString()).compareTo(Integer.valueOf(sub.get("subjectCode").toString())) != 0) {
+					if (Integer.valueOf(sub.get("yearLevel").toString()).compareTo(student.getYearLevel()) < 0) {
+						backlogs.add(sub);
+					}
+				}
+			});
+		});
+		
 		list.forEach((listSub) -> {
 			failedList.forEach((failedSub) -> {
 				if (Integer.valueOf(listSub.get("preRequisite").toString()).compareTo(Integer.valueOf(failedSub.get("subjectCode").toString())) == 0) {
