@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.ssglobal.training.codes.exception.NoEnrolledStudentFoundException;
 import org.ssglobal.training.codes.exception.RepeatedStatusException;
+import org.ssglobal.training.codes.exception.SameSemesterException;
 import org.ssglobal.training.codes.exception.YearLevelNotFoundException;
 import org.ssglobal.training.codes.model.EnrollmentData;
 import org.ssglobal.training.codes.model.UserAndAdmin;
@@ -679,7 +680,8 @@ public class AdminCapabilitiesServiceImpl implements AdminCapabilitiesService {
 	}
 
 	@Override
-	public List<Map<String, Object>> enrollStudentToNextSemester() throws NoEnrolledStudentFoundException, Exception {
+	public List<Map<String, Object>> enrollStudentToNextSemester()
+			throws NoEnrolledStudentFoundException, SameSemesterException, Exception {
 		return repository.enrollStudentToNextSemester();
 	}
 
