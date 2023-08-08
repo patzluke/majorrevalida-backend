@@ -295,7 +295,7 @@ public class StudentCapabilitiesRepository {
 				.on(PROFESSOR.USER_ID.eq(USERS.USER_ID))
 				.where(STUDENT_SCHEDULE.STUDENT_NO.eq(studentNo)
 						.and(STUDENT_SCHEDULE.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)).from(STUDENT_ENROLLMENT))))
-				.orderBy(SUBJECT.SUBJECT_TITLE).fetchMaps();
+				.orderBy(SUBJECT.SUBJECT_CODE).fetchMaps();
 	}
 	
 	public List<Map<String, Object>> selectAllPassedSubjectOfStudent(Integer studentNo) {
@@ -303,8 +303,7 @@ public class StudentCapabilitiesRepository {
 				.select(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"))
 				.from(GRADES)
 				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
-//				.where(GRADES.REMARKS.eq("Passed")
-				.where(GRADES.REMARKS.ne("Failed")
+				.where(GRADES.REMARKS.eq("Passed")
 						.and(GRADES.STUDENT_NO.eq(studentNo))
 				)
 				.fetchMaps();
@@ -338,7 +337,7 @@ public class StudentCapabilitiesRepository {
 				.innerJoin(GRADES).on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID.eq(GRADES.SUBJECT_DETAIL_HIS_ID))
 				.innerJoin(STUDENT_ENROLLMENT).on(GRADES.STUDENT_NO.eq(STUDENT_ENROLLMENT.STUDENT_NO))
 				.where(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(DSL.select(DSL.max(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)).from(ACADEMIC_YEAR))
-						.and(MINOR_SUBJECT.SEM.eq(DSL.select(DSL.max(ACADEMIC_YEAR.SEMESTER)).from(ACADEMIC_YEAR)))
+						.and(MINOR_SUBJECT.SEM.lessOrEqual(DSL.select(DSL.max(ACADEMIC_YEAR.SEMESTER)).from(ACADEMIC_YEAR)))
 						.and(GRADES.REMARKS.eq("Failed"))
 						.and(GRADES.STUDENT_NO.eq(studentNo))
 				)

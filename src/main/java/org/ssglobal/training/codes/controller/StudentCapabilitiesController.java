@@ -311,7 +311,7 @@ public class StudentCapabilitiesController {
 					if (passedSubj.get("subjectCode").equals(failedSubj.get("subjectCode"))) {
 						iterator.remove();
 					}
-				}
+				}	
 				
 				for (Iterator iterator = subjects.iterator(); iterator.hasNext();) {
 					Map<String, Object> subj = (Map<String, Object>) iterator.next();
@@ -320,9 +320,7 @@ public class StudentCapabilitiesController {
 					}
 				}
 			});
-			
-			System.out.println(failedSubjects + "faileds");
-			
+							
 			failedSubjects.forEach(failedSubj -> {
 				for (Iterator iterator = subjects.iterator(); iterator.hasNext();) {
 					Map<String, Object> subj = (Map<String, Object>) iterator.next();
