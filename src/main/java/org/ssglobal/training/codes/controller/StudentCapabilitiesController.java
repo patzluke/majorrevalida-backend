@@ -322,6 +322,7 @@ public class StudentCapabilitiesController {
 				}
 			});
 			
+			
 			failedSubjects.forEach(failedSubj -> {
 				for (Iterator iterator = subjects.iterator(); iterator.hasNext();) {
 					Map<String, Object> subj = (Map<String, Object>) iterator.next();

@@ -294,7 +294,7 @@ public class StudentCapabilitiesRepository {
 				.on(PROFESSOR_LOAD.PROFESSOR_NO.eq(PROFESSOR.PROFESSOR_NO)).innerJoin(USERS)
 				.on(PROFESSOR.USER_ID.eq(USERS.USER_ID))
 				.where(STUDENT_SCHEDULE.STUDENT_NO.eq(studentNo)
-						.and(STUDENT_SCHEDULE.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID)).from(STUDENT_ENROLLMENT))))
+						.and(STUDENT_SCHEDULE.ACADEMIC_YEAR_ID.eq(3)))
 				.orderBy(SUBJECT.SUBJECT_CODE).fetchMaps();
 	}
 	
