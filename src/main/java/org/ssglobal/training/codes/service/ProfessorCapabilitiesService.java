@@ -8,6 +8,7 @@ import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.pojos.WebsiteActivationToggle;
 
 public interface ProfessorCapabilitiesService {
 
@@ -27,5 +28,6 @@ public interface ProfessorCapabilitiesService {
 	List<Map<String, Object>> updateStudentGrades(List<Grades> studentGrades);
 	
 	List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct(Integer loadId);
-	
+	WebsiteActivationToggle selectWebsiteActivationToggle();
+
 }
