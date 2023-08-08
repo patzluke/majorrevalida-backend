@@ -306,10 +306,17 @@ public class StudentCapabilitiesController {
 			
 			List<Map<String, Object>> passedSubjects = service.selectAllPassedSubjectOfStudent(studentNo);
 
-			passedSubjects.forEach(subj -> {
+			passedSubjects.forEach(passedSubj -> {
 				for (Iterator iterator = failedSubjects.iterator(); iterator.hasNext();) {
 					Map<String, Object> failedSubj = (Map<String, Object>) iterator.next();
-					if (subj.get("subjectCode").equals(failedSubj.get("subjectCode"))) {
+					if (passedSubj.get("subjectCode").equals(failedSubj.get("subjectCode"))) {
+						iterator.remove();
+					}
+				}
+				
+				for (Iterator iterator = subjects.iterator(); iterator.hasNext();) {
+					Map<String, Object> subj = (Map<String, Object>) iterator.next();
+					if (passedSubj.get("subjectCode").equals(subj.get("subjectCode"))) {
 						iterator.remove();
 					}
 				}
