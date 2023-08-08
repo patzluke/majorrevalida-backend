@@ -14,6 +14,7 @@ import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.pojos.WebsiteActivationToggle;
 
 @Service
 public class ProfessorCapabilitiesServiceImpl implements ProfessorCapabilitiesService {
@@ -108,5 +109,10 @@ public class ProfessorCapabilitiesServiceImpl implements ProfessorCapabilitiesSe
 	@Override
 	public List<StudentAttendance> selectStudentAttendanceByAttendanceDateDistinct(Integer loadId) {
 		return repository.selectStudentAttendanceByAttendanceDateDistinct(loadId);
+	}
+	
+	@Override
+	public WebsiteActivationToggle selectWebsiteActivationToggle() {
+		return repository.selectWebsiteActivationToggle();
 	}
 }

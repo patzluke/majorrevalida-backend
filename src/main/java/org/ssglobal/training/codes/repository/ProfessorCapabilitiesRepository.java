@@ -16,6 +16,7 @@ import org.ssglobal.training.codes.tables.pojos.Professor;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
 import org.ssglobal.training.codes.tables.pojos.Users;
+import org.ssglobal.training.codes.tables.pojos.WebsiteActivationToggle;
 
 @Repository
 public class ProfessorCapabilitiesRepository {
@@ -36,6 +37,7 @@ public class ProfessorCapabilitiesRepository {
 	private final org.ssglobal.training.codes.tables.Room ROOM = org.ssglobal.training.codes.tables.Room.ROOM;
 	private final org.ssglobal.training.codes.tables.Department DEPARTMENT = org.ssglobal.training.codes.tables.Department.DEPARTMENT;
 	private final org.ssglobal.training.codes.tables.AcademicYear ACADEMIC_YEAR = org.ssglobal.training.codes.tables.AcademicYear.ACADEMIC_YEAR;
+	private final org.ssglobal.training.codes.tables.WebsiteActivationToggle WEBSITE_ACTIVATION_TOGGLE = org.ssglobal.training.codes.tables.WebsiteActivationToggle.WEBSITE_ACTIVATION_TOGGLE;
 
 	public List<Users> selectAllUsers() {
 		return dslContext.selectFrom(USERS).fetchInto(Users.class);
@@ -268,6 +270,11 @@ public class ProfessorCapabilitiesRepository {
 								 .and(STUDENT_ATTENDANCE.LOAD_ID.eq(loadId)))
 						 .orderBy(STUDENT_ATTENDANCE.ATTENDANCE_DATE)
 						 .fetchInto(StudentAttendance.class);
+	}
+	
+	// ------------ FOR WEBSITE ACTIVATION TOGGLE
+	public WebsiteActivationToggle selectWebsiteActivationToggle() {
+		return dslContext.selectFrom(WEBSITE_ACTIVATION_TOGGLE).fetchOneInto(WebsiteActivationToggle.class);
 	}
 	
 }

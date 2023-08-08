@@ -20,6 +20,7 @@ import org.ssglobal.training.codes.service.ProfessorCapabilitiesService;
 import org.ssglobal.training.codes.tables.pojos.Grades;
 import org.ssglobal.training.codes.tables.pojos.ProfessorLoad;
 import org.ssglobal.training.codes.tables.pojos.StudentAttendance;
+import org.ssglobal.training.codes.tables.pojos.WebsiteActivationToggle;
 
 @RestController
 @RequestMapping(value = "/api/professor")
@@ -211,4 +212,18 @@ public class ProfessorCapabilitiesController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
+	@GetMapping(value = "/get/websiteactivationtoggle", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<WebsiteActivationToggle> selectWebsiteActivationToggle() {
+		try {
+			WebsiteActivationToggle toggle = service.selectWebsiteActivationToggle();
+			System.out.println(toggle);
+			if (toggle != null) {
+				return ResponseEntity.ok(toggle);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.notFound().build();
+	}
 }
