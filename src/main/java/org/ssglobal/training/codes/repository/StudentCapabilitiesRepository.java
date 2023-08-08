@@ -409,6 +409,7 @@ public class StudentCapabilitiesRepository {
 													.from(SUBJECT)
 													.join(MAJOR_SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
 													.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode())).fetchMaps();
+		
 		List<Map<String, Object>> minorList = dslContext.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), MINOR_SUBJECT.PRE_REQUISITES.as("preRequisite"),
 												SUBJECT.ABBREVATION, SUBJECT.PRICE, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
 												MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM)

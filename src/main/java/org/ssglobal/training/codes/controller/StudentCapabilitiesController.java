@@ -374,6 +374,9 @@ public class StudentCapabilitiesController {
 			
 			List<Map<String, Object>> backLogsMajorSubjects = service.selectListOfBackLogsMajorSubject(studentNo);
 			failedSubjects.addAll(backLogsMajorSubjects);
+			backLogsMajorSubjects.forEach(data -> {
+				System.out.println(data + " failed subjs");
+			});
 			if (!failedSubjects.isEmpty()) {
 				return ResponseEntity.ok(failedSubjects);
 			}
