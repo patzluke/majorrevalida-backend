@@ -373,10 +373,21 @@ public class StudentCapabilitiesController {
 			});	
 			
 			List<Map<String, Object>> backLogsMajorSubjects = service.selectListOfBackLogsMajorSubject(studentNo);
+			List<Map<String, Object>> backLogSubjects = service.selectListOfBackLogsSubjects(studentNo);
+//			failedSubjects.addAll(backLogSubjects);
 			failedSubjects.addAll(backLogsMajorSubjects);
-			backLogsMajorSubjects.forEach(data -> {
-				System.out.println(data + " failed subjs");
-			});
+			
+			List<Map<String, Object>> logsToRemove = new ArrayList<>(backLogSubjects);
+			for (Map<String, Object> data : backLogsMajorSubjects) {
+			    Iterator<Map<String, Object>> iterator = logsToRemove.iterator();
+			    while (iterator.hasNext()) {
+			        Map<String, Object> log = iterator.next();
+			        if (data.get("subjectCode").equals(log.get("subjectCode"))) {
+			            iterator.remove(); // Safely remove elements using iterator
+			        }
+			    }
+			}
+			failedSubjects.addAll(logsToRemove);
 			if (!failedSubjects.isEmpty()) {
 				return ResponseEntity.ok(failedSubjects);
 			}

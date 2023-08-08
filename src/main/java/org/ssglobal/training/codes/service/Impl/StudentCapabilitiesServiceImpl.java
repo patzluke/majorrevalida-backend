@@ -169,6 +169,11 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	}
 	
 	@Override
+	public List<Map<String, Object>> selectListOfBackLogsSubjects(Integer studentNo) {
+		return repository.selectListOfBackLogsSubjects(studentNo);
+	}
+	
+	@Override
 	public List<Map<String, Object>> selectAllMajorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem, Integer studentNo) {
 		return repository.selectAllMajorSubjectsToEnrollPerYearAndSem(yearLevel, sem, studentNo);
 	}

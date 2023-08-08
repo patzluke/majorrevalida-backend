@@ -304,7 +304,8 @@ public class StudentCapabilitiesRepository {
 				.select(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"))
 				.from(GRADES)
 				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
-				.where(GRADES.REMARKS.eq("Passed")
+//				.where(GRADES.REMARKS.eq("Passed")
+				.where(GRADES.REMARKS.ne("Failed")
 						.and(GRADES.STUDENT_NO.eq(studentNo))
 				)
 				.fetchMaps();
@@ -419,15 +420,6 @@ public class StudentCapabilitiesRepository {
 		List<Map<String, Object>> failedMinorList = selectAllFailedMinorSubjectPreviouslyOfStudent(studentNo);
 		List<Map<String, Object>> failedList = selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
 		List<Map<String, Object>> passedSubject = selectAllPassedSubjectOfStudent(studentNo);
-		list.forEach((sub) -> {
-			passedSubject.forEach((pass) -> {
-				if (Integer.valueOf(pass.get("subjectCode").toString()).compareTo(Integer.valueOf(sub.get("subjectCode").toString())) != 0) {
-					if (Integer.valueOf(sub.get("yearLevel").toString()).compareTo(student.getYearLevel()) < 0) {
-						backlogs.add(sub);
-					}
-				}
-			});
-		});
 		
 		list.forEach((listSub) -> {
 			failedList.forEach((failedSub) -> {
@@ -467,6 +459,58 @@ public class StudentCapabilitiesRepository {
 		        	backlogIterator2.remove(); // Use the iterator's remove() method to safely remove the element
 		        }
 		    });
+		}
+		
+		return backlogs;
+	}
+	public List<Map<String, Object>> selectListOfBackLogsSubjects(Integer studentNo) {
+		Student student = dslContext.selectFrom(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo))
+				.fetchOneInto(Student.class);
+		
+		List<Map<String, Object>> backlogs = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> majorlist = dslContext.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisite"),
+															SUBJECT.ABBREVATION, SUBJECT.PRICE, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+															MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM)
+													.from(SUBJECT)
+													.join(MAJOR_SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+													.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode())).fetchMaps();
+		
+		List<Map<String, Object>> minorList = dslContext.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), MINOR_SUBJECT.PRE_REQUISITES.as("preRequisite"),
+												SUBJECT.ABBREVATION, SUBJECT.PRICE, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
+												MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM)
+												.from(SUBJECT)
+												.join(MINOR_SUBJECT).on(MINOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+												.fetchMaps();
+		List<Map<String, Object>> passedSubject = selectAllPassedSubjectOfStudent(studentNo);
+		
+		Iterator<Map<String, Object>> backlogIterator = minorList.iterator();
+		while (backlogIterator.hasNext()) {
+		    Map<String, Object> minorSub = backlogIterator.next();
+		    boolean shouldAddToBackLogs = true;
+		    for (Map<String, Object> passed : passedSubject) {
+		        if (Integer.valueOf(passed.get("subjectCode").toString()).compareTo(Integer.valueOf(minorSub.get("subjectCode").toString())) == 0) {
+		        	shouldAddToBackLogs = false; // Subject is already passed, don't add to backlogs
+		            break; // No need to continue checking
+		        }
+		    }
+		    if (shouldAddToBackLogs && Integer.valueOf(minorSub.get("yearLevel").toString()).compareTo(student.getYearLevel()) < 0) {
+		        backlogs.add(minorSub); // Add the subject to backlogs if conditions are met
+		    }
+		}
+		
+		Iterator<Map<String, Object>> backlogIterator3 = majorlist.iterator();
+		while (backlogIterator3.hasNext()) {
+		    Map<String, Object> majorSub = backlogIterator3.next();
+		    boolean shouldAddToBackLogs = true;
+		    for (Map<String, Object> passed : passedSubject) {
+		        if (Integer.valueOf(passed.get("subjectCode").toString()).compareTo(Integer.valueOf(majorSub.get("subjectCode").toString())) == 0) {
+		        	shouldAddToBackLogs = false; // Subject is already passed, don't add to backlogs
+		            break; // No need to continue checking
+		        }
+		    }
+		    if (shouldAddToBackLogs && Integer.valueOf(majorSub.get("yearLevel").toString()).compareTo(student.getYearLevel()) < 0) {
+		        backlogs.add(majorSub); // Add the subject to backlogs if conditions are met
+		    }
 		}
 		
 		return backlogs;
