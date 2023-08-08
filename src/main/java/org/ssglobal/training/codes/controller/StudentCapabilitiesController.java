@@ -295,7 +295,7 @@ public class StudentCapabilitiesController {
 			List<Map<String, Object>> minor = service.selectAllMajorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
 			List<Map<String, Object>> major = service.selectAllMinorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
 			subjects.addAll(minor);
-			subjects.addAll(major);
+			subjects.addAll(major);			
 			
 			List<Map<String, Object>> failedSubjects = new ArrayList<>();
 			List<Map<String, Object>> failedMajorSubjects = service.selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
@@ -303,10 +303,21 @@ public class StudentCapabilitiesController {
 			failedSubjects.addAll(failedMajorSubjects);
 			failedSubjects.addAll(failedMinorSubjects);
 			
-			failedSubjects.forEach(subj -> {
+			List<Map<String, Object>> passedSubjects = service.selectAllPassedSubjectOfStudent(studentNo);
+
+			passedSubjects.forEach(subj -> {
+				for (Iterator iterator = failedSubjects.iterator(); iterator.hasNext();) {
+					Map<String, Object> failedSubj = (Map<String, Object>) iterator.next();
+					if (subj.get("subjectCode").equals(failedSubj.get("subjectCode"))) {
+						iterator.remove();
+					}
+				}
+			});
+			
+			failedSubjects.forEach(failedSubj -> {
 				for (Iterator iterator = subjects.iterator(); iterator.hasNext();) {
-					Map<String, Object> innerSubj = (Map<String, Object>) iterator.next();
-					if (subj.get("subjectCode").equals(innerSubj.get("preRequisite"))) {
+					Map<String, Object> subj = (Map<String, Object>) iterator.next();
+					if (failedSubj.get("subjectCode").equals(subj.get("preRequisite"))) {
 						iterator.remove();
 					}
 				}
@@ -322,17 +333,39 @@ public class StudentCapabilitiesController {
 		return ResponseEntity.badRequest().build();
 	}
 	
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@GetMapping(value = "/get/subjectstoenroll/backlog/{studentNo}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity selectAllFailedSubjectPreviouslyOfStudent(@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
-			List<Map<String, Object>> subjects = new ArrayList<>();
-			List<Map<String, Object>> majorSubjects = service.selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
-			List<Map<String, Object>> minorSubjects = service.selectAllFailedMinorSubjectPreviouslyOfStudent(studentNo);
-			subjects.addAll(minorSubjects);
-			subjects.addAll(majorSubjects);
-			if (!subjects.isEmpty()) {
-				return ResponseEntity.ok(subjects);
+			List<Map<String, Object>> failedSubjects = new ArrayList<>();
+			List<Map<String, Object>> failedMajorSubjects = service.selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
+			List<Map<String, Object>> failedMinorSubjects = service.selectAllFailedMinorSubjectPreviouslyOfStudent(studentNo);
+			failedSubjects.addAll(failedMajorSubjects);
+			failedSubjects.addAll(failedMinorSubjects);
+			List<Map<String, Object>> passedSubjects = service.selectAllPassedSubjectOfStudent(studentNo);
+					
+			passedSubjects.forEach(subj -> {
+				for (Iterator iterator = failedSubjects.iterator(); iterator.hasNext();) {
+					Map<String, Object> failedSubj = (Map<String, Object>) iterator.next();
+					if (subj.get("subjectCode").equals(failedSubj.get("subjectCode"))) {
+						iterator.remove();
+					}
+				}
+			});	
+			
+			List<Map<String, Object>> tempFailedSubjects = new ArrayList<>();			
+			tempFailedSubjects.forEach(subj -> {
+				for (Iterator iterator = failedSubjects.iterator(); iterator.hasNext();) {
+					Map<String, Object> failedSubj = (Map<String, Object>) iterator.next();
+					if (subj.get("subjectCode").equals(failedSubj.get("preRequisite"))) {
+						iterator.remove();
+					}
+				}
+			});	
+			
+			
+			if (!failedSubjects.isEmpty()) {
+				return ResponseEntity.ok(failedSubjects);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

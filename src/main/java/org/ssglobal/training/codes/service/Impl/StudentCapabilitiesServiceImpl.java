@@ -154,6 +154,11 @@ public class StudentCapabilitiesServiceImpl implements StudentCapabilitiesServic
 	}
 	
 	@Override
+	public List<Map<String, Object>> selectAllPassedSubjectOfStudent(Integer studentNo) {
+		return repository.selectAllPassedSubjectOfStudent(studentNo);
+	}
+	
+	@Override
 	public Map<String, Object> selectStudentEnrollmentData(Integer studentNo) {
 		return repository.selectStudentEnrollmentData(studentNo);
 	}

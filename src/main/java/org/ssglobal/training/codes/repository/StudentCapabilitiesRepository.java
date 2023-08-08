@@ -297,6 +297,17 @@ public class StudentCapabilitiesRepository {
 				.orderBy(SUBJECT.SUBJECT_TITLE).fetchMaps();
 	}
 	
+	public List<Map<String, Object>> selectAllPassedSubjectOfStudent(Integer studentNo) {
+		return dslContext
+				.select(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"))
+				.from(GRADES)
+				.innerJoin(T_SUBJECT_DETAIL_HISTORY).on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID))
+				.where(GRADES.REMARKS.eq("Passed")
+						.and(GRADES.STUDENT_NO.eq(studentNo))
+				)
+				.fetchMaps();
+	}
+	
 	// ------------ FOR Major And Minor Subject FAILED (for curriculum display)
 	public List<Map<String, Object>> selectAllFailedMajorSubjectPreviouslyOfStudent(Integer studentNo) {
 		return dslContext
@@ -310,6 +321,7 @@ public class StudentCapabilitiesRepository {
 				.where(STUDENT_ENROLLMENT.ACADEMIC_YEAR_ID.eq(dslContext.select(DSL.max(ACADEMIC_YEAR.ACADEMIC_YEAR_ID)).from(ACADEMIC_YEAR))
 						.and(MAJOR_SUBJECT.SEM.lessOrEqual(dslContext.select(DSL.max(ACADEMIC_YEAR.SEMESTER)).from(ACADEMIC_YEAR)))
 						.and(GRADES.REMARKS.eq("Failed"))
+						.and(GRADES.STUDENT_NO.eq(studentNo))
 				)
 				.fetchMaps();
 	}
@@ -389,7 +401,7 @@ public class StudentCapabilitiesRepository {
 				.fetchOneInto(Student.class);
 		
 		List<Map<String, Object>> backlogs = new ArrayList<Map<String, Object>>();
-		List<Map<String, Object>> list = dslContext.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisites"),
+		List<Map<String, Object>> list = dslContext.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisite"),
 															SUBJECT.ABBREVATION, SUBJECT.PRICE, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
 															MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM)
 													.from(SUBJECT)
@@ -413,16 +425,13 @@ public class StudentCapabilitiesRepository {
 		
 		list.forEach((listSub) -> {
 			failedList.forEach((failedSub) -> {
-				if (Integer.valueOf(listSub.get("preRequisites").toString()).compareTo(Integer.valueOf(failedSub.get("subjectCode").toString())) == 0) {
-					System.out.println("checked");
+				if (Integer.valueOf(listSub.get("preRequisite").toString()).compareTo(Integer.valueOf(failedSub.get("subjectCode").toString())) == 0) {
 					if (Integer.valueOf(listSub.get("yearLevel").toString()).compareTo(student.getYearLevel()) < 0) {
 						backlogs.add(listSub);
 					}
 				}
 			});
 		});
-		System.out.println(backlogs + "logs");
-		System.out.println(failedList + "faileds");
 		return backlogs;
 	}
 
