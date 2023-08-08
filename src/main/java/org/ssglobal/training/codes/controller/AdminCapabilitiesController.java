@@ -1233,13 +1233,18 @@ public class AdminCapabilitiesController {
 				emailToStudent.setSubject("Colegio De Seven Seven Portal Account");
 				emailToStudent.setMsgBody("Your Application is accepted, here's your School Portal Account Info"
 						+ "username: %s".formatted(student.getStudentNo().toString())
-						+ "password: birthdate + last name example (19990715Cortez)");
+						+ "password: birthdate + last name example (19990715Cortez)"
+						+ "Congratulations!\r\n"
+						+ "\r\n"
+						+ "We hope this email finds you in good health and high spirits. "
+						+ "We are pleased to extend our heartfelt congratulations now that you are accepted to our University. We commend you on your academic achievement.");
+				
 				emailService.sendSimpleMail(emailToStudent);
 				EmailDetails emailToParent = new EmailDetails();
 				emailToParent.setRecipient(parent.get("email").toString());
 				emailToParent.setSubject("Colegio De Seven Seven Portal Account");
 				emailToParent.setMsgBody("Your child's application is accepted, here's your School Portal Account Info"
-						+ "username: %s" + "password: bithdate + last name example (19990715Cortez)"
+						+ "username: %s" + "password: bithdate + last name example (19990715Cortez)\r\n\n"
 								.formatted(parent.get("parentNo").toString()));
 				emailService.sendSimpleMail(emailToParent);
 				return ResponseEntity.ok(applicant);
