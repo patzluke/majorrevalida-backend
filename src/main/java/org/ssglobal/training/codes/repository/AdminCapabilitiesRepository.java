@@ -1028,7 +1028,8 @@ public class AdminCapabilitiesRepository {
 	// ------------------------FOR Applicants
 	public List<StudentApplicant> selectAllStudentApplicants() {
 		List<StudentApplicant> students = dslContext.selectFrom(STUDENT_APPLICANT)
-				.orderBy(STUDENT_APPLICANT.DATE_APPLIED).fetchInto(StudentApplicant.class);
+				.orderBy(STUDENT_APPLICANT.DATE_APPLIED)
+				.fetchInto(StudentApplicant.class);
 		return students;
 	}
 
@@ -1470,7 +1471,7 @@ public class AdminCapabilitiesRepository {
 	// ------------ FOR GRADES
 	public List<Map<String, Object>> selectAllStudentsBySection() {
 		return dslContext
-				.select(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
+				.selectDistinct(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
 						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
 						USERS.LAST_NAME.as("lastName"), USERS.EMAIL, GRADES.PRELIM_GRADE.as("prelimGrade"),
 						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.COMMENT, GRADES.REMARKS,
@@ -1485,6 +1486,7 @@ public class AdminCapabilitiesRepository {
 				.on(GRADES.SUBJECT_DETAIL_HIS_ID.eq(T_SUBJECT_DETAIL_HISTORY.SUBJECT_DETAIL_HIS_ID)).innerJoin(SUBJECT)
 				.on(T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE)).join(ACADEMIC_YEAR)
 				.on(ACADEMIC_YEAR.ACADEMIC_YEAR_ID.eq(T_SUBJECT_DETAIL_HISTORY.ACADEMIC_YEAR_ID))
+				
 				.where(GRADES.IS_SUBMITTED.eq(false)).orderBy(GRADES.GRADE_ID).fetchMaps();
 	}
 
