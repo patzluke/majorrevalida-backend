@@ -417,7 +417,6 @@ public class StudentCapabilitiesRepository {
 		List<Map<String, Object>> failedMinorList = selectAllFailedMinorSubjectPreviouslyOfStudent(studentNo);
 		List<Map<String, Object>> failedList = selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
 		List<Map<String, Object>> passedSubject = selectAllPassedSubjectOfStudent(studentNo);
-
 		list.forEach((listSub) -> {
 			failedList.forEach((failedSub) -> {
 				if (Integer.valueOf(listSub.get("preRequisite").toString()).compareTo(Integer.valueOf(failedSub.get("subjectCode").toString())) == 0) {
@@ -447,18 +446,18 @@ public class StudentCapabilitiesRepository {
 		        }
 		    });
 		}
-		
+
 		Iterator<Map<String, Object>> backlogIterator2 = backlogs.iterator();
 		while (backlogIterator2.hasNext()) {
 		    Map<String, Object> log = backlogIterator2.next();
 		    passedSubject.forEach((passed) -> {
 		        if (Integer.valueOf(passed.get("subjectCode").toString()).compareTo(Integer.valueOf(log.get("subjectCode").toString())) == 0) {
-		            backlogIterator.remove(); // Use the iterator's remove() method to safely remove the element
+		        	backlogIterator2.remove(); // Use the iterator's remove() method to safely remove the element
 		        }
 		    });
 		}
 		
-		System.out.println(backlogs + "backlogs");
+		System.out.println(backlogs + "backlogs2");
 		return backlogs;
 	}
 
