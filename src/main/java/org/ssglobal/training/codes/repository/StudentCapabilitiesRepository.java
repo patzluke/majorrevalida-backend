@@ -462,17 +462,21 @@ public class StudentCapabilitiesRepository {
 	}
 
 	// ------------ FOR Major Subject (for curriculum display)
-	public List<Map<String, Object>> selectAllMajorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
+	public List<Map<String, Object>> selectAllMajorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem, Integer studentNo) {
+		Student student = dslContext.selectFrom(STUDENT).where(STUDENT.STUDENT_NO.eq(studentNo)).fetchOneInto(Student.class);
+		
 		return dslContext
 				.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE, MAJOR_SUBJECT.PRE_REQUISITES.as("preRequisite"))
 				.from(MAJOR_SUBJECT).innerJoin(SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-				.where(MAJOR_SUBJECT.YEAR_LEVEL.eq(yearLevel).and(MAJOR_SUBJECT.SEM.eq(sem)))
+				.where(MAJOR_SUBJECT.YEAR_LEVEL.eq(yearLevel)
+						.and(MAJOR_SUBJECT.SEM.eq(sem)))
+						.and(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode()))
 				.orderBy(MAJOR_SUBJECT.YEAR_LEVEL, MAJOR_SUBJECT.SEM).fetchMaps();
 	}
 
 	// ------------ FOR Minor Subject (for curriculum display)
-	public List<Map<String, Object>> selectAllMinorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem) {
+	public List<Map<String, Object>> selectAllMinorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem, Integer studentNo) {
 		return dslContext
 				.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), SUBJECT.ABBREVATION,
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS, SUBJECT.PRICE, MINOR_SUBJECT.PRE_REQUISITES.as("preRequisite"))

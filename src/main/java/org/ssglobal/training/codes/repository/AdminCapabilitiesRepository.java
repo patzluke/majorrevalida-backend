@@ -290,13 +290,13 @@ public class AdminCapabilitiesRepository {
 	}
 
 	public UserAndStudent updateStudent(UserAndStudent student) {
-		Users updatedUser = dslContext.update(USERS).set(USERS.USERNAME, student.getUsername())
-				.set(USERS.PASSWORD, student.getPassword()).set(USERS.EMAIL, student.getEmail())
+		Users updatedUser = dslContext.update(USERS)
+				.set(USERS.USERNAME, student.getUsername()).set(USERS.EMAIL, student.getEmail())
 				.set(USERS.CONTACT_NO, student.getContactNo()).set(USERS.FIRST_NAME, student.getFirstName())
 				.set(USERS.MIDDLE_NAME, student.getMiddleName()).set(USERS.LAST_NAME, student.getLastName())
-				.set(USERS.USER_TYPE, student.getUserType()).set(USERS.BIRTH_DATE, student.getBirthDate())
-				.set(USERS.ADDRESS, student.getAddress()).set(USERS.CIVIL_STATUS, student.getCivilStatus())
-				.set(USERS.GENDER, student.getGender()).set(USERS.NATIONALITY, student.getNationality())
+				.set(USERS.BIRTH_DATE, student.getBirthDate()).set(USERS.ADDRESS, student.getAddress())
+				.set(USERS.CIVIL_STATUS, student.getCivilStatus()).set(USERS.GENDER, student.getGender())
+				.set(USERS.NATIONALITY, student.getNationality())
 				.set(USERS.IMAGE, student.getImage()).where(USERS.USER_ID.eq(student.getUserId())).returning()
 				.fetchOne().into(Users.class);
 
@@ -1473,7 +1473,7 @@ public class AdminCapabilitiesRepository {
 		return dslContext
 				.selectDistinct(GRADES.GRADE_ID.as("gradeId"), GRADES.STUDENT_NO.as("studentNo"),
 						USERS.FIRST_NAME.as("firstName"), USERS.MIDDLE_NAME.as("middleName"),
-						USERS.LAST_NAME.as("lastName"), USERS.EMAIL, GRADES.PRELIM_GRADE.as("prelimGrade"),
+						USERS.LAST_NAME.as("lastName"), USERS.EMAIL, USERS.IMAGE ,GRADES.PRELIM_GRADE.as("prelimGrade"),
 						GRADES.FINALS_GRADE.as("finalsGrade"), GRADES.COMMENT, GRADES.REMARKS,
 						SECTION.SECTION_NAME.as("sectionName"), T_SUBJECT_DETAIL_HISTORY.SUBJECT_CODE.as("subjectCode"),
 						SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.ABBREVATION,

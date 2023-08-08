@@ -292,8 +292,8 @@ public class StudentCapabilitiesController {
 			@PathVariable(name = "studentNo") Integer studentNo) {
 		try {
 			List<Map<String, Object>> subjects = new ArrayList<>();
-			List<Map<String, Object>> minor = service.selectAllMajorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
-			List<Map<String, Object>> major = service.selectAllMinorSubjectsToEnrollPerYearAndSem(yearLevel, sem);
+			List<Map<String, Object>> minor = service.selectAllMajorSubjectsToEnrollPerYearAndSem(yearLevel, sem, studentNo);
+			List<Map<String, Object>> major = service.selectAllMinorSubjectsToEnrollPerYearAndSem(yearLevel, sem, studentNo);
 			subjects.addAll(minor);
 			subjects.addAll(major);			
 			

@@ -53,9 +53,9 @@ public interface StudentCapabilitiesService {
 	
 	List<Map<String, Object>> selectListOfBackLogsMajorSubject(Integer studentNo);
 	
-	List<Map<String, Object>> selectAllMajorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem);
+	List<Map<String, Object>> selectAllMajorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem, Integer studentNo);
 	
-	List<Map<String, Object>> selectAllMinorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem);
+	List<Map<String, Object>> selectAllMinorSubjectsToEnrollPerYearAndSem(Integer yearLevel, Integer sem, Integer studentNo);
 	
 	List<Map<String, Object>> selectAllFailedMajorSubjectPreviouslyOfStudent(Integer studentNo);
 	
