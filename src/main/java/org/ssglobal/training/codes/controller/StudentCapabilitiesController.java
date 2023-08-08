@@ -300,13 +300,12 @@ public class StudentCapabilitiesController {
 			List<Map<String, Object>> failedSubjects = new ArrayList<>();
 			List<Map<String, Object>> failedMajorSubjects = service.selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
 			List<Map<String, Object>> failedMinorSubjects = service.selectAllFailedMinorSubjectPreviouslyOfStudent(studentNo);
-			failedSubjects.addAll(failedMajorSubjects);
-			failedSubjects.addAll(failedMinorSubjects);
-			
-			List<Map<String, Object>> passedSubjects = service.selectAllPassedSubjectOfStudent(studentNo);
 			List<Map<String, Object>> backLogsMajorSubjects = service.selectListOfBackLogsMajorSubject(studentNo);
+			failedSubjects.addAll(failedMajorSubjects);
+			failedSubjects.addAll(failedMinorSubjects);			
 			failedSubjects.addAll(backLogsMajorSubjects);
 			
+			List<Map<String, Object>> passedSubjects = service.selectAllPassedSubjectOfStudent(studentNo);
 			passedSubjects.forEach(passedSubj -> {
 				for (Iterator iterator = failedSubjects.iterator(); iterator.hasNext();) {
 					Map<String, Object> failedSubj = (Map<String, Object>) iterator.next();
@@ -322,10 +321,6 @@ public class StudentCapabilitiesController {
 					}
 				}
 			});
-			
-			System.out.println("---------");
-			System.out.println(failedSubjects);
-
 			
 			failedSubjects.forEach(failedSubj -> {
 				for (Iterator iterator = subjects.iterator(); iterator.hasNext();) {
