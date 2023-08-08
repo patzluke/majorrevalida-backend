@@ -457,7 +457,6 @@ public class StudentCapabilitiesRepository {
 		    });
 		}
 		
-		System.out.println(backlogs + "backlogs2");
 		return backlogs;
 	}
 

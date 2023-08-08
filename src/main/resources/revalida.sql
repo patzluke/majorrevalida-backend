@@ -536,7 +536,7 @@ insert into curriculum(major_code, curriculum_name, active_deactive) values(4001
 	insert into subject(abbrevation, subject_title, units, active_deactive, active_status, price) 
 	values('THY 3', 'Christian Vision of the Church in Society', 3, 'true', 'true', 1000);
 	insert into minor_subject(subject_code, pre_requisites, year_level, sem)
-	values(9021, 9000, 2, 1);
+	values(9021, 9015, 2, 1);
 	
 	--for information technology major in web and mobile major subjects (SECOND year 2ND SEM)
 	--major subjs
