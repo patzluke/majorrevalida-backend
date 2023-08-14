@@ -676,7 +676,7 @@ insert into section(major_code, section_name) values(4001, '4-ITA'), (4001, '4-I
 
 --insert into users and admin table
 insert into users(username, password, email, contact_no, first_name, middle_name, last_name, user_type, birth_date, address, civil_status, gender, nationality, active_status, active_deactive) 
-values('pastrero', '123456', 'patzluke@gmail.com', '9055261296', 'Patrick', 'Artuz', 'Astrero', 'Admin', '1999-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true');
+values('pastrero', '123456', 'patzluke12@gmail.com', '9055261296', 'Patrick', 'Artuz', 'Astrero', 'Admin', '1999-07-08', 'Vista Verde, Cainta', 'Single', 'Male', 'Filipino', 'true', 'true');
 
 insert into admin(user_id) values(1);
 
