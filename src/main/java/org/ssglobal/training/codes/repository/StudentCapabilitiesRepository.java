@@ -409,13 +409,16 @@ public class StudentCapabilitiesRepository {
 															MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM)
 													.from(SUBJECT)
 													.join(MAJOR_SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-													.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode())).fetchMaps();
+													.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode())
+															.and(SUBJECT.ACTIVE_DEACTIVE.eq(true))
+															.and(SUBJECT.ACTIVE_STATUS.eq(true))).fetchMaps();
 		
 		List<Map<String, Object>> minorList = dslContext.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), MINOR_SUBJECT.PRE_REQUISITES.as("preRequisite"),
 												SUBJECT.ABBREVATION, SUBJECT.PRICE, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
 												MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM)
 												.from(SUBJECT)
 												.join(MINOR_SUBJECT).on(MINOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+												.where(SUBJECT.ACTIVE_DEACTIVE.eq(true).and(SUBJECT.ACTIVE_STATUS.eq(true)))
 												.fetchMaps();
 		List<Map<String, Object>> failedMinorList = selectAllFailedMinorSubjectPreviouslyOfStudent(studentNo);
 		List<Map<String, Object>> failedList = selectAllFailedMajorSubjectPreviouslyOfStudent(studentNo);
@@ -473,13 +476,16 @@ public class StudentCapabilitiesRepository {
 															MAJOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MAJOR_SUBJECT.SEM)
 													.from(SUBJECT)
 													.join(MAJOR_SUBJECT).on(MAJOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
-													.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode())).fetchMaps();
+													.where(MAJOR_SUBJECT.CURRICULUM_CODE.eq(student.getCurriculumCode())
+															.and(SUBJECT.ACTIVE_DEACTIVE.eq(true))
+															.and(SUBJECT.ACTIVE_STATUS.eq(true))).fetchMaps();
 		
 		List<Map<String, Object>> minorList = dslContext.select(SUBJECT.SUBJECT_ID.as("subjectId"), SUBJECT.SUBJECT_CODE.as("subjectCode"), MINOR_SUBJECT.PRE_REQUISITES.as("preRequisite"),
 												SUBJECT.ABBREVATION, SUBJECT.PRICE, SUBJECT.SUBJECT_TITLE.as("subjectTitle"), SUBJECT.UNITS,
 												MINOR_SUBJECT.YEAR_LEVEL.as("yearLevel"), MINOR_SUBJECT.SEM)
 												.from(SUBJECT)
 												.join(MINOR_SUBJECT).on(MINOR_SUBJECT.SUBJECT_CODE.eq(SUBJECT.SUBJECT_CODE))
+												.where(SUBJECT.ACTIVE_DEACTIVE.eq(true).and(SUBJECT.ACTIVE_STATUS.eq(true)))
 												.fetchMaps();
 		List<Map<String, Object>> passedSubject = selectAllPassedSubjectOfStudent(studentNo);
 		
